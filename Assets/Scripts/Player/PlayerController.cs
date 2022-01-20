@@ -1,3 +1,4 @@
+using Collision;
 using Inputter;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,15 +8,19 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
 
-    // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
+        GameManager.RegisterPlayer(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(transform.position, ModelRotation * Vector3.up * 5, Color.red);
+        if (InputManager.CheckKeyDown(KeyName.Reset))
+        {
+            Die();
+        }
+
         DoLook();
         UpdateModelPitch();
         RotateModel();
@@ -28,31 +33,29 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        transform.position = CheckpointManager.Instance.RespawnPoint.position;
-        internalEyeAngles = new Vector3(0, CheckpointManager.Instance.RespawnPoint.rotation.eulerAngles.y, 0);
+        transform.position = GameManager.Instance.RespawnPoint.position;
+        internalEyeAngles = new Vector3(0, GameManager.Instance.RespawnPoint.rotation.eulerAngles.y, 0);
         Velocity = Vector3.zero;
-        ModelPitchFrac = 0;
+        PitchFrac = 0;
         OnDie.Invoke();
     }
     #endregion
 
-    #region Model maneuvering 
+    #region Model maneuvering
     public Transform Model;
-    public float ModelPitchFrac = 0;
-    const float ModelPitchFracSpeed = 10;
+    public Transform Camera;
+    public float PitchFrac = 0;
+    const float ModelPitchMul = 1.5f;
+    const float PitchFracSpeed = 10;
 
-    public Quaternion ModelRotation
-    {
-        get
-        {
-            return Quaternion.Euler(ModelPitchFrac * EyeAngles.x, EyeAngles.y, EyeAngles.z);
-        }
-    }
+
+    public Quaternion ModelRotation => Quaternion.Euler(PitchFrac * ModelPitchMul * EyeAngles.x, EyeAngles.y, EyeAngles.z);
+    public Quaternion CameraRotation => Quaternion.Euler(PitchFrac * EyeAngles.x, EyeAngles.y, EyeAngles.z);
 
     void UpdateModelPitch()
     {
         float targetPitchFrac = InputManager.CheckKey(KeyName.Jump) ? 0 : 1;
-        ModelPitchFrac = Mathf.MoveTowards(ModelPitchFrac, targetPitchFrac, ModelPitchFracSpeed * Time.deltaTime);
+        PitchFrac = Mathf.MoveTowards(PitchFrac, targetPitchFrac, PitchFracSpeed * Time.deltaTime);
     }
 
     void RotateModel()
@@ -85,15 +88,11 @@ public class PlayerController : MonoBehaviour
         ApplyForce(Physics.gravity * Time.deltaTime);
     }
 
-    public void Jump()
+    public void Jump(CollisionEventArgs args)
     {
-        bool didHit = Physics.SphereCast(transform.position, 0.1f, ModelRotation * Vector3.down, out RaycastHit hitInfo, 5, LAYERMASK.SOLIDS_ONLY);
-        if (didHit)
-        {
-            Decelerate(hitInfo.normal, 0);
-        }
+        Accelerate(args.HitInfo.normal, 1);
         Accelerate(ModelRotation * Vector3.up, JumpForce);
-        Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed);
+        Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
     }
 
     public void Move()
@@ -136,14 +135,18 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="direction"></param>
     /// <param name="maxSpeed"></param>
-    public void Decelerate(Vector3 direction, float maxSpeed)
+    public void Decelerate(Vector3 direction, float maxSpeed, float maxSpeedReduction = float.MaxValue)
     {
         Vector3 tangentVel = Velocity.GetTangentComponent(direction);
         float curSpeed = tangentVel.magnitude;
         float removeSpeed = curSpeed - maxSpeed;
         if (removeSpeed > 0)
         {
-            Velocity -= tangentVel * removeSpeed / curSpeed;
+            if (removeSpeed > maxSpeedReduction)
+            {
+                Debug.Log($"{curSpeed} -> {curSpeed - Mathf.Min(removeSpeed, maxSpeedReduction)} (-{Mathf.Min(removeSpeed, maxSpeedReduction)})");
+            }
+            Velocity -= tangentVel * Mathf.Min(removeSpeed, maxSpeedReduction) / curSpeed;
         }
     }
 

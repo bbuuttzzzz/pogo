@@ -7,7 +7,8 @@ public enum KeyName
 {
     none = -1, Jump,
     Forward, Right, Backward, Left,
-    Pause
+    Pause,
+    Reset
 }
 
 public enum AxisSetName
@@ -57,6 +58,8 @@ namespace Inputter
             Keys[KeyName.Right] = new KeyboardButton(keyboard, Key.D);
             Keys[KeyName.Backward] = new KeyboardButton(keyboard, Key.S);
             Keys[KeyName.Left] = new KeyboardButton(keyboard, Key.A);
+
+            Keys[KeyName.Reset] = new KeyboardButton(keyboard, Key.R);
 
 #if UNITY_EDITOR
             Keys[KeyName.Pause] = new KeyboardButton(keyboard, Key.Backquote);

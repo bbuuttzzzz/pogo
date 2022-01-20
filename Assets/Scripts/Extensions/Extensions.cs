@@ -23,8 +23,10 @@ public static class LAYERMASK
 
         for (int otherLayer = 0; otherLayer <= LAYER.finalLayer; otherLayer++)
         {
-            currentMask += Physics.GetIgnoreLayerCollision(layer, otherLayer()
+            currentMask += Physics.GetIgnoreLayerCollision(layer, otherLayer) ? 0 : (1 << otherLayer);
         }
+
+        return currentMask;
     }
 };
 public static class LAYER

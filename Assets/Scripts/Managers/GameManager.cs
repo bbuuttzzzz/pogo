@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CheckpointManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    public static CheckpointManager Instance;
+    public static GameManager Instance;
     private PlayerController player;
     public PlayerController Player => player;
     private void Awake()
@@ -21,9 +21,9 @@ public class CheckpointManager : MonoBehaviour
         Instance = this;
     }
 
-    public void RegisterPlayer(PlayerController player)
+    public static void RegisterPlayer(PlayerController player)
     {
-        this.player = player;
+        Instance.player = player;
     }
 
     public static bool TryRegisterRespawnPoint(Transform newRespawnPoint)
@@ -40,6 +40,11 @@ public class CheckpointManager : MonoBehaviour
 
         return true;
 
+    }
+
+    public static void KillPlayer()
+    {
+        Instance?.player.Die();
     }
 
     public Transform RespawnPoint;

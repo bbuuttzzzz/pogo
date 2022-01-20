@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(BoxCollider))]
 public class CheckpointTrigger : MonoBehaviour
 {
     public Transform RespawnPoint;
@@ -10,7 +10,7 @@ public class CheckpointTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (CheckpointManager.TryRegisterRespawnPoint(RespawnPoint))
+        if (GameManager.TryRegisterRespawnPoint(RespawnPoint))
         {
             OnActivated.Invoke();
         }

@@ -1,90 +1,79 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-[RequireComponent(typeof(SphereCollider))]
-public class CollisionOrb : MonoBehaviour
+namespace Collision
 {
-    public bool QueryExits;
-
-    new SphereCollider collider;
-    private void Awake()
+    public class CollisionOrb : MonoBehaviour
     {
-        collider = GetComponent<SphereCollider>();
-        recalculateLayerMask();
-        Disjoint();
-    }
+        public bool QueryExits;
 
-    private void Update()
-    {
-        Move();
-    }
+        public CollisionEvent OnCollisionEnter;
+        public CollisionEvent OnCollisionExit;
 
-    Vector3 lastRecordedPosition;
-    void Move()
-    {
-        bool didHit = CheckPath(lastRecordedPosition, currentCenter, out RaycastHit hitinfo);
-        if (didHit)
+        public Vector3 Center;
+        public float Radius;
+
+
+        private void Awake()
         {
-
+            cachedLayerMask = LAYERMASK.MaskForLayer(gameObject.layer);
+            Disjoint();
         }
 
-        if(QueryExits)
+        private void Update()
         {
-            bool didExit = CheckPath(currentCenter, lastRecordedPosition, out RaycastHit exitInfo);
-            if (didHit)
-            {
-
-            }
+            Move();
         }
-    }
 
-    bool CheckPath(Vector3 start, Vector3 finish, out RaycastHit hitInfo)
-    {
-        Vector3 direction = finish - start;
-        float maxDistance = (finish - start).magnitude;
-        direction = direction / maxDistance;
-        return Physics.SphereCast(
-            ray: new Ray(start, direction),
-            radius: collider.radius * transform.lossyScale.x,
-            maxDistance: maxDistance,
-            hitInfo: out hitInfo,
-            layerMask: CurrentLayerMask);
-    }
-
-    /// <summary>
-    /// Reset last recorded position. you should call this immediately after teleporting
-    /// </summary>
-    public void Disjoint()
-    {
-        lastRecordedPosition = currentCenter;
-    }
-
-    Vector3 currentCenter => transform.TransformPoint(collider.center);
-
-    #region layermask
-    int cachedLayer;
-    int cachedLayerMask;
-
-    int CurrentLayerMask
-    {
-        get
+        Vector3 lastRecordedPosition;
+        void Move()
         {
-            if (cachedLayer != gameObject.layer)
+            if (CheckPath(lastRecordedPosition, currentCenter, out RaycastHit hitinfo))
             {
-                recalculateLayerMask();
+                OnCollisionEnter?.Invoke(new CollisionEventArgs(hitinfo));
             }
 
-            return cachedLayerMask;
+            if (QueryExits && CheckPath(currentCenter, lastRecordedPosition, out RaycastHit exitInfo))
+            {
+                OnCollisionExit?.Invoke(new CollisionEventArgs(exitInfo));
+            }
+
+            lastRecordedPosition = currentCenter;
         }
+
+        bool CheckPath(Vector3 start, Vector3 finish, out RaycastHit hitInfo)
+        {
+            Vector3 direction = finish - start;
+            float maxDistance = (finish - start).magnitude;
+            direction /= maxDistance;
+            return Physics.SphereCast(
+                ray: new Ray(start, direction),
+                radius: Radius * transform.lossyScale.x,
+                maxDistance: maxDistance,
+                hitInfo: out hitInfo,
+                layerMask: cachedLayerMask);
+        }
+
+        /// <summary>
+        /// Reset last recorded position. you should call this immediately after teleporting
+        /// </summary>
+        public void Disjoint()
+        {
+            lastRecordedPosition = currentCenter;
+        }
+
+        Vector3 currentCenter => transform.TransformPoint(Center);
+
+        int cachedLayerMask;
+
+        #region Gizmos
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(transform.TransformPoint(Center), transform.lossyScale.x * Radius);
+        }
+        #endregion
     }
-
-    void recalculateLayerMask()
-    {
-        cachedLayer = gameObject.layer;
-        cachedLayerMask = LAYERMASK.MaskForLayer(cachedLayer);
-    }
-
-
-    #endregion
 }
