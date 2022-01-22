@@ -1,5 +1,6 @@
 using Collision;
 using Inputter;
+using Pogo;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,17 +11,16 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        GameManager.RegisterPlayer(this);
+        PogoGameManager.RegisterPlayer(this);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
+        transform.rotation = Quaternion.identity;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (InputManager.CheckKeyDown(KeyName.Reset))
-        {
-            Die();
-        }
-
         DoLook();
         UpdateModelPitch();
         RotateModel();
@@ -31,13 +31,23 @@ public class PlayerController : MonoBehaviour
     #region Game Logic
     public UnityEvent OnDie;
 
+    public void DieFrom(CollisionEventArgs collision)
+    {
+        WizardEffects.EffectManager.CreateEffect("DeathMark", new WizardEffects.EffectData()
+        {
+            position = collision.HitInfo.point,
+            normal = collision.HitInfo.normal
+        });
+        Die();
+    }
     public void Die()
     {
-        transform.position = GameManager.Instance.RespawnPoint.position;
-        internalEyeAngles = new Vector3(0, GameManager.Instance.RespawnPoint.rotation.eulerAngles.y, 0);
+        transform.position = PogoGameManager.PogoInstance.RespawnPoint.position;
+        internalEyeAngles = new Vector3(0, PogoGameManager.PogoInstance.RespawnPoint.rotation.eulerAngles.y, 0);
         Velocity = Vector3.zero;
         PitchFrac = 0;
         OnDie.Invoke();
+        PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
     }
     #endregion
 
@@ -90,7 +100,7 @@ public class PlayerController : MonoBehaviour
 
     public void Jump(CollisionEventArgs args)
     {
-        Accelerate(args.HitInfo.normal, 1);
+        Accelerate(args.HitInfo.normal, 2);
         Accelerate(ModelRotation * Vector3.up, JumpForce);
         Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
     }
