@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 752080611037206422}
   - component: {fileID: 5132669384133402762}
   - component: {fileID: 586407359417420515}
+  - component: {fileID: 6668726909439737150}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -82,6 +83,23 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6668726909439737150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2732151824414234140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 556c25b7d63e5db4289889b0e24e034a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderer: {fileID: 586407359417420515}
+  TransitionDuration: 15
+  Waypoints:
+  - {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 1}
+  InitialWaypoint: -1
 --- !u!1 &7835401173025864649
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 885fbf0f932db2243bde3fd242485faa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifetime: 0
+  lifetime: 5
   idle: 1
   OnPerform:
     m_PersistentCalls:
@@ -144,9 +162,33 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 6668726909439737150}
+        m_TargetAssemblyTypeName: ColorWaypointer, Assembly-CSharp
+        m_MethodName: SnapToWaypoint
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: -1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnFinish:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6668726909439737150}
+        m_TargetAssemblyTypeName: ColorWaypointer, Assembly-CSharp
+        m_MethodName: GoToWaypoint
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4379149904416473585
 MonoBehaviour:
   m_ObjectHideFlags: 0
