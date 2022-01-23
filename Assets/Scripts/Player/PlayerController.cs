@@ -1,6 +1,7 @@
 using Collision;
 using Inputter;
 using Pogo;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,8 +13,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         PogoGameManager.RegisterPlayer(this);
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        PogoGameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
+        UpdateCursorLock(PogoGameManager.Paused);
         internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
         transform.rotation = Quaternion.identity;
     }
@@ -48,6 +49,17 @@ public class PlayerController : MonoBehaviour
         PitchFrac = 0;
         OnDie.Invoke();
         PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
+    }
+
+    private void onPauseStateChanged(object sender, bool e)
+    {
+        UpdateCursorLock(e);
+    }
+
+    private static void UpdateCursorLock(bool isPaused)
+    {
+        Cursor.visible = isPaused;
+        Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
     }
     #endregion
 
@@ -214,6 +226,8 @@ public class PlayerController : MonoBehaviour
     }
     void DoLook()
     {
+        if (PogoGameManager.Paused) return;
+
         //change eyeAngles based on mouse
         internalEyeAngles += InputManager.CheckAxisSet(AxisSetName.Aim).Scale(SENSITIVITY * SENS_PITCH_SCALE, SENSITIVITY, SENSITIVITY);
         //clamp pitch

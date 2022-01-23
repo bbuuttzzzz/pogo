@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 namespace WizardUtils
 {
-    public class GameManager : MonoBehaviour
+    public abstract class GameManager : MonoBehaviour
     {
         public static GameManager GameInstance;
         protected virtual void Awake()
@@ -22,6 +22,7 @@ namespace WizardUtils
 
             GameInstance = this;
             DontDestroyOnLoad(gameObject);
+            GameSettings = new List<GameSettingFloat>();
         }
 
         protected virtual void Update()
@@ -35,8 +36,7 @@ namespace WizardUtils
         }
 
         #region Pausing
-
-        public virtual bool CanPause => true;
+        public virtual bool LockPauseState => false;
 
         bool paused;
 
@@ -47,7 +47,7 @@ namespace WizardUtils
             {
                 if (!GameInstanceIsValid()) return;
 
-                if (GameInstance.paused == value || !GameInstance.CanPause) return;
+                if (GameInstance.paused == value || GameInstance.LockPauseState) return;
                 GameInstance.paused = value;
                 if (value)
                 {
@@ -77,6 +77,27 @@ namespace WizardUtils
         public void Quit(bool hardQuit)
         {
             throw new NotImplementedException();
+        }
+        #endregion
+
+        #region GameSettings
+        List<GameSettingFloat> GameSettings;
+
+        protected void RegisterGameSetting(GameSettingFloat setting)
+        {
+            GameSettings.Add(setting);
+        }
+
+        public GameSettingFloat FindGameSetting(string key)
+        {
+            foreach(GameSettingFloat setting in GameSettings)
+            {
+                if (setting.Key == key)
+                {
+                    return setting;
+                }
+            }
+            throw new KeyNotFoundException($"Missing GameSetting \"{key}\"");
         }
         #endregion
     }

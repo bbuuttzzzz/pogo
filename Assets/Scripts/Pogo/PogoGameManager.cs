@@ -16,8 +16,8 @@ namespace Pogo
         {
             base.Awake();
 
-            FieldOfViewSetting = new GameSettingFloat(GameSettingFloat.KEY_FIELD_OF_VIEW, 90);
-            SensitivitySetting = new GameSettingFloat(GameSettingFloat.KEY_SENSITIVITY, 0.1f);
+            RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
+            RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
         }
         protected override void Update()
         {
@@ -25,6 +25,10 @@ namespace Pogo
             if (InputManager.CheckKeyDown(KeyName.Reset))
             {
                 KillPlayer();
+            }
+            if (InputManager.CheckKeyDown(KeyName.Pause))
+            {
+                Paused = !Paused;
             }
         }
 
@@ -67,9 +71,8 @@ namespace Pogo
         #endregion
 
         #region Settings
-        public GameSettingFloat FieldOfViewSetting;
-        public GameSettingFloat SensitivitySetting;
-
+        public static string KEY_FIELD_OF_VIEW = "FieldOfView";
+        public static string KEY_SENSITIVITY = "Sensitivity";
         #endregion
 
     }

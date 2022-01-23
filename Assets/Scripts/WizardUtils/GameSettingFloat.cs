@@ -10,6 +10,7 @@ namespace WizardUtils
     public class GameSettingFloat
     {
         string key;
+        public string Key => key;
         float defaultValue;
 
         public EventHandler<GameSettingChangedEventArgs> OnChanged;
@@ -33,11 +34,6 @@ namespace WizardUtils
                 }
             }
         }
-
-        #region GameSetting Keys
-        public static string KEY_FIELD_OF_VIEW = "FieldOfView";
-        public static string KEY_SENSITIVITY = "Sensitivity";
-        #endregion
     }
 
     public class GameSettingChangedEventArgs : EventArgs

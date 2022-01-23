@@ -2,16 +2,22 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using WizardUtils;
 
 namespace Pogo
 {
     public class PogoPauseMenuController : WizardUtils.PauseMenuController
     {
+        GameSettingFloat FieldOfViewSetting;
+        GameSettingFloat SensitivitySetting;
+
         protected override void Start()
         {
             base.Start();
             SensitivitySlider?.onValueChanged.AddListener(onSensitivitySliderChanged);
             FOVSlider?.onValueChanged.AddListener(onFOVChanged);
+            FieldOfViewSetting = PogoGameManager.PogoInstance.FindGameSetting(PogoGameManager.KEY_FIELD_OF_VIEW);
+            SensitivitySetting = PogoGameManager.PogoInstance.FindGameSetting(PogoGameManager.KEY_SENSITIVITY);
         }
 
         protected override void onPauseStateChanged(object sender, bool isPaused)
@@ -19,9 +25,9 @@ namespace Pogo
             base.onPauseStateChanged(sender, isPaused);
             if (isPaused)
             {
-                fov = PogoGameManager.PogoInstance.FieldOfViewSetting.Value;
+                fov = FieldOfViewSetting.Value;
                 FOVSlider.value = fov;
-                sensitivity = PogoGameManager.PogoInstance.SensitivitySetting.Value;
+                sensitivity = SensitivitySetting.Value;
                 SensitivitySlider.value = sensitivity * SENSITIVITY_SLIDER_CONVERSION;
             }
         }
@@ -34,7 +40,7 @@ namespace Pogo
             get => fov;
             set
             {
-                PogoGameManager.PogoInstance.FieldOfViewSetting.Value = value;
+                FieldOfViewSetting.Value = value;
                 fov = value;
             }
         }
@@ -61,7 +67,7 @@ namespace Pogo
             set
             {
                 sensitivity = Mathf.Clamp(value, SENSITIVITY_MINIMUM, SENSITIVITY_MAXIMUM);
-                PogoGameManager.PogoInstance.SensitivitySetting.Value = sensitivity;
+                SensitivitySetting.Value = sensitivity;
             }
         }
 
