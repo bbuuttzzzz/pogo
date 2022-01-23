@@ -18,6 +18,7 @@ namespace Pogo
 
             RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
             RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
+            RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 1f));
         }
         protected override void Update()
         {
@@ -73,6 +74,7 @@ namespace Pogo
         #region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
+        public static string KEY_INVERT = "Invert";
         #endregion
 
     }

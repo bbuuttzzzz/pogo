@@ -10,14 +10,18 @@ namespace Pogo
     {
         GameSettingFloat FieldOfViewSetting;
         GameSettingFloat SensitivitySetting;
+        GameSettingFloat InvertYSetting;
 
         protected override void Start()
         {
             base.Start();
             SensitivitySlider?.onValueChanged.AddListener(onSensitivitySliderChanged);
             FOVSlider?.onValueChanged.AddListener(onFOVChanged);
+            InvertYButton?.onClick.AddListener(onInvertToggled);
+
             FieldOfViewSetting = PogoGameManager.PogoInstance.FindGameSetting(PogoGameManager.KEY_FIELD_OF_VIEW);
             SensitivitySetting = PogoGameManager.PogoInstance.FindGameSetting(PogoGameManager.KEY_SENSITIVITY);
+            InvertYSetting = PogoGameManager.PogoInstance.FindGameSetting(PogoGameManager.KEY_INVERT);
         }
 
         protected override void onPauseStateChanged(object sender, bool isPaused)
@@ -29,6 +33,7 @@ namespace Pogo
                 FOVSlider.value = fov;
                 sensitivity = SensitivitySetting.Value;
                 SensitivitySlider.value = sensitivity * SENSITIVITY_SLIDER_CONVERSION;
+                invertY = InvertYSetting.Value;
             }
         }
 
@@ -80,6 +85,30 @@ namespace Pogo
             Sensitivity = displayValue / SENSITIVITY_SLIDER_CONVERSION;
 
             SensitivityDisplayLabel.text = Sensitivity.ToString("N2");
+        }
+        #endregion
+
+        #region Invert Y
+        float invertY;
+        bool InvertY
+        {
+            get => invertY == -1;
+            set
+            {
+                invertY = InvertY ? 1 : -1;
+                InvertYSetting.Value = invertY;
+            }
+        }
+
+        public Button InvertYButton;
+        public Image CheckboxImage;
+
+        private void onInvertToggled()
+        {
+            InvertY = !InvertY;
+            Debug.Log(InvertY + " " + invertY);
+
+            CheckboxImage.gameObject.SetActive(InvertY);
         }
         #endregion
     }

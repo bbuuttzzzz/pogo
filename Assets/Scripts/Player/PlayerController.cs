@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using WizardUtils;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,9 +15,25 @@ public class PlayerController : MonoBehaviour
     {
         PogoGameManager.RegisterPlayer(this);
         PogoGameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
+        var sensitivitySetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_SENSITIVITY);
+        sensitivitySetting.OnChanged += onSensitivityChanged;
+        SENSITIVITY = sensitivitySetting.Value;
+        var invertYSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_INVERT);
+        invertYSetting.OnChanged += onInvertYChanged;
+        SENS_PITCH_SCALE = 0.8f * invertYSetting.Value;
         UpdateCursorLock(PogoGameManager.Paused);
         internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
         transform.rotation = Quaternion.identity;
+    }
+
+    private void onInvertYChanged(object sender, GameSettingChangedEventArgs e)
+    {
+        SENS_PITCH_SCALE = 0.8f * e.FinalValue;
+    }
+
+    private void onSensitivityChanged(object sender, GameSettingChangedEventArgs e)
+    {
+        SENSITIVITY = e.FinalValue;
     }
 
     // Update is called once per frame
