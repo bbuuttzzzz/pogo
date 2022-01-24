@@ -138,6 +138,12 @@ public class PlayerController : MonoBehaviour
     {
         transform.position += Velocity * Time.deltaTime;
     }
+
+    public UnityEvent OnDisjoint;
+    public void Disjoint()
+    {
+        OnDisjoint?.Invoke();
+    }
     #endregion
 
     #region Physics
