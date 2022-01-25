@@ -38,8 +38,8 @@ namespace WizardEffects
         private void accumulateMotion()
         {
             // add motion from this frame to accumulation
-            accumulation -= target.transform.position - lastPosition;
-            lastPosition = target.transform.position;
+            accumulation -= transform.position - lastPosition;
+            lastPosition = transform.position;
 
             // apply decay
             float magnitude = accumulation.magnitude;
@@ -65,7 +65,7 @@ namespace WizardEffects
 
         public void Disjoint()
         {
-            lastPosition = target.transform.position;
+            lastPosition = transform.position;
             accumulation = Vector3.zero;
             applyAccumulaion();
         }
