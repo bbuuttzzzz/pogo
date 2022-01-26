@@ -10,7 +10,7 @@ namespace Logic
 
         public UnityEvent OnHeard;
 
-        private void Awake()
+        private void Start()
         {
             SetListening(ListenOnSpawn);
         }

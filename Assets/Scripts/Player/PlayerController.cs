@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
     {
         Accelerate(args.HitInfo.normal, 2);
         Accelerate(ModelRotation * Vector3.up, JumpForce);
-        Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
+        //Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
     }
 
     public void Move()
