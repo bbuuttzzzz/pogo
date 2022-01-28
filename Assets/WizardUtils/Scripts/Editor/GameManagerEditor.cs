@@ -17,10 +17,8 @@ public class PogoGameManagerEditor : Editor
         {
             self = target as PogoGameManager;
             var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
-            if (results[0] != null)
+            foreach(PlayerController player in results)
             {
-                var player = results[0] as PlayerController;
-
                 player.transform.position = self.RespawnPoint.position;
                 player.transform.rotation = Quaternion.Euler(0, self.RespawnPoint.rotation.eulerAngles.y, 0);
                 Undo.RecordObject(player, "Move Player to Waypoint");
