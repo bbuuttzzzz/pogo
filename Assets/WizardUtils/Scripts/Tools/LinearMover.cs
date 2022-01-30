@@ -2,6 +2,8 @@
 
 public class LinearMover : MonoBehaviour
 {
+    public Transform target;
+
     Vector3 initialPosition;
     Vector3 targetPosition;
     bool arrived;
@@ -23,8 +25,8 @@ public class LinearMover : MonoBehaviour
 
     private void Awake()
     {
-        initialPosition = transform.position;
-        targetPosition = transform.position;
+        initialPosition = target.transform.position;
+        targetPosition = target.transform.position;
         arrived = true;
         GoToWaypoint(InitialWaypoint);
         ArriveNow();
@@ -34,8 +36,8 @@ public class LinearMover : MonoBehaviour
     {
         if (!arrived)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, TravelSpeed * Time.deltaTime);
-            if (transform.position == targetPosition)
+            target.transform.position = Vector3.MoveTowards(target.transform.position, targetPosition, TravelSpeed * Time.deltaTime);
+            if (target.transform.position == targetPosition)
             {
                 arrived = true;
             }
@@ -44,7 +46,7 @@ public class LinearMover : MonoBehaviour
 
     public void ArriveNow()
     {
-        transform.position = targetPosition;
+        target.transform.position = targetPosition;
         arrived = true;
     }
 
