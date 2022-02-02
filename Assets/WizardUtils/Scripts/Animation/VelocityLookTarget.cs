@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WizardEffects
+namespace WizardUtils
 {
     /// <summary>
     /// Takes all translation applied to this gameobject, and applies it with a delay & other parameters to <paramref name="target"/>
     /// </summary>
-    public class MomentumSwiveler : MonoBehaviour
+    public class VelocityLookTarget : MonoBehaviour
     {
         public Transform target;
 
