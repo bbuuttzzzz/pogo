@@ -364,9 +364,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1102246189}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.033787183, y: 0, z: -0, w: 0.9994291}
+  m_LocalPosition: {x: 9.3132255e-12, y: 0.00019845254, z: -3.7252902e-11}
+  m_LocalScale: {x: 1, y: 1, z: 0.99999994}
   m_Children: []
   m_Father: {fileID: 8118070386782921542}
   m_RootOrder: 1
@@ -541,9 +541,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1201620212}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.033787183, y: 0, z: -0, w: 0.9994291}
+  m_LocalPosition: {x: 9.3132255e-12, y: 0.00019845254, z: -3.7252902e-11}
+  m_LocalScale: {x: 1, y: 1, z: 0.99999994}
   m_Children: []
   m_Father: {fileID: 8118070386782921542}
   m_RootOrder: 2
@@ -1293,7 +1293,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8049285593264585010}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4590690700930264296
 MonoBehaviour:
@@ -1353,7 +1353,7 @@ MonoBehaviour:
       - m_Target: {fileID: 8049285594771530900}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: Jump
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1439,7 +1439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c430f382484144e925c097c2d33cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 0.5
+  m_Weight: 0.75
   m_Data:
     m_ConstrainedObject: {fileID: 1102246190}
     m_SourceObjects:
@@ -1627,7 +1627,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8049285593264585010}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5908074106086195938
 MonoBehaviour:
@@ -1687,7 +1687,7 @@ MonoBehaviour:
       - m_Target: {fileID: 8049285594771530900}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: Jump
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1889,7 +1889,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.27200007, z: -0.013000011}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 8049285594200099678}
   - {fileID: 255298237775988859}
   - {fileID: 505711167815504623}
   m_Father: {fileID: 8049285594818247008}
@@ -2072,7 +2071,7 @@ Transform:
   m_Children:
   - {fileID: 8049285592764507917}
   m_Father: {fileID: 8049285594771530901}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8049285594200099679
 GameObject:
@@ -2099,11 +2098,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8049285594200099679}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.27200007, z: -0.013000013}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 8049285593264585010}
+  m_Father: {fileID: 8049285594771530901}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &8049285594200099664
@@ -2214,10 +2213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f4de2d452022f2409c6df0039357fe9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Clips:
-  - {fileID: 8300000, guid: 8f11134628c0ab548b6304e0701cf94e, type: 3}
-  - {fileID: 8300000, guid: 9aee9c78e8c7c9b42a40cf793aac2b43, type: 3}
-  - {fileID: 8300000, guid: d591332a2c5364d47b292a8de76d0921, type: 3}
+  Clips: []
   ReplayDelay: 0.05
 --- !u!1 &8049285594771530898
 GameObject:
@@ -2247,6 +2243,7 @@ Transform:
   m_LocalPosition: {x: -4.000244, y: 1.9999998, z: -96.00009}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 8049285594200099678}
   - {fileID: 8049285594818247008}
   - {fileID: 8049285594168896995}
   m_Father: {fileID: 0}
@@ -2264,6 +2261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d18f796f7987974a92a4555f7579c84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AudioController: {fileID: 0}
   OnDie:
     m_PersistentCalls:
       m_Calls:
@@ -2363,6 +2361,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  DefaultSurfaceConfig: {fileID: 11400000, guid: 967206ddeef8bce4f87c8785969fba9e, type: 2}
   Model: {fileID: 8049285594818247008}
   Camera: {fileID: 0}
   PitchFrac: 0
@@ -2405,7 +2404,7 @@ Transform:
   - {fileID: 1692500070206633482}
   - {fileID: 596468387}
   m_Father: {fileID: 8049285594771530901}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8457525510371317643
 GameObject:

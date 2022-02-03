@@ -20,11 +20,25 @@ public class AudioController : MonoBehaviour
     float lastPlay = float.MinValue;
     public void Play()
     {
-        if (lastPlay + ReplayDelay < Time.time)
+        if (canPlay() && Clips.Length > 0)
         {
             lastPlay = Time.time;
             int chosenSoundIndex = Random.Range(0, Clips.Length);
             audioSource.PlayOneShot(Clips[chosenSoundIndex]);
         }
+    }
+
+    public void PlayOneShot(AudioClip clip)
+    {
+        if (canPlay())
+        {
+            lastPlay = Time.time;
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    private bool canPlay()
+    {
+        return lastPlay + ReplayDelay < Time.time;
     }
 }

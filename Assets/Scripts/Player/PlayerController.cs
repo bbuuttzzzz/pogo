@@ -10,17 +10,22 @@ using WizardUtils;
 
 public class PlayerController : MonoBehaviour
 {
+    public AudioController AudioController;
 
     void Start()
     {
         PogoGameManager.RegisterPlayer(this);
         PogoGameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
+        loadSurfaceProperties();
+
         var sensitivitySetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_SENSITIVITY);
         sensitivitySetting.OnChanged += onSensitivityChanged;
         SENSITIVITY = sensitivitySetting.Value;
+
         var invertYSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_INVERT);
         invertYSetting.OnChanged += onInvertYChanged;
         SENS_PITCH_SCALE = 0.8f * invertYSetting.Value;
+
         UpdateCursorLock(PogoGameManager.Paused);
         internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
         transform.rotation = Quaternion.identity;
@@ -48,6 +53,85 @@ public class PlayerController : MonoBehaviour
 
     #region Game Logic
     public UnityEvent OnDie;
+
+    public SurfaceConfig DefaultSurfaceConfig;
+    Dictionary<Material, SurfaceConfig> surfacePropertiesDict;
+    void loadSurfaceProperties()
+    {
+        surfacePropertiesDict = new Dictionary<Material, SurfaceConfig>();
+        var surfaceConfigs = Resources.LoadAll<SurfaceConfig>("Surfaces");
+        foreach( var config in surfaceConfigs )
+        {
+            foreach( var material in config.Materials )
+            {
+                try
+                {
+                    surfacePropertiesDict.Add(material, config);
+                }
+                catch(ArgumentException e)
+                {
+                    // throw a pretty error for duplicate materials
+                    var existingSurfaceConfigName = surfacePropertiesDict[material].name;
+                    throw new ArgumentException($"Duplicate Surface Definition for material {material.name}: {existingSurfaceConfigName} & {config.name}", e);
+                }
+            }
+        }
+
+        Debug.Log("Loaded SurfaceProperties!");
+    }
+
+    SurfaceConfigCacheEntry surfaceCache = new SurfaceConfigCacheEntry();
+    SurfaceConfig GetSurfacePropertyFromCollision(RaycastHit hitInfo)
+    {
+        Material material = null;
+        if (hitInfo.collider is MeshCollider)
+        {
+            MeshRenderer renderer;
+            if (hitInfo.collider == surfaceCache.Collider)
+            {
+                if (surfaceCache.TriangleIndex == hitInfo.triangleIndex)
+                {
+                    return surfaceCache.SurfaceConfig;
+                }
+                renderer = surfaceCache.Renderer as MeshRenderer;
+            }
+            else
+            {
+                renderer = hitInfo.collider.GetComponent<MeshRenderer>();
+                surfaceCache.Collider = hitInfo.collider;
+                surfaceCache.Renderer = renderer;
+                surfaceCache.TriangleIndex = hitInfo.triangleIndex;
+            }
+            if (renderer != null)
+            {
+                material = (hitInfo.collider as MeshCollider).sharedMesh.GetMaterialAtTriangle(renderer, hitInfo.triangleIndex);
+            }
+        }
+        else
+        {
+            Renderer renderer;
+            if (surfaceCache.Collider == hitInfo.collider)
+            {
+                return surfaceCache.SurfaceConfig;
+            }
+            else
+            {
+                renderer = hitInfo.collider.GetComponent<Renderer>();
+                surfaceCache.Collider = hitInfo.collider;
+                surfaceCache.Renderer = renderer;
+                surfaceCache.TriangleIndex = -1;
+            }
+
+            if (renderer != null)
+            {
+                material = renderer.sharedMaterial;
+            }
+        }
+
+        surfaceCache.SurfaceConfig = surfacePropertiesDict.ContainsKey(material) ? (surfacePropertiesDict[material] ?? DefaultSurfaceConfig)
+            : DefaultSurfaceConfig;
+        return surfaceCache.SurfaceConfig;
+    }
 
     public void DieFrom(CollisionEventArgs collision)
     {
@@ -130,6 +214,10 @@ public class PlayerController : MonoBehaviour
 
     public void Jump(CollisionEventArgs args)
     {
+        var surfaceConfig = GetSurfacePropertyFromCollision(args.HitInfo);
+        var sound = surfaceConfig.RandomSound;
+        if (sound != null) AudioController.PlayOneShot(sound);
+
         Accelerate(args.HitInfo.normal, 2);
         Accelerate(ModelRotation * Vector3.up, JumpForce);
         //Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
