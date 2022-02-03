@@ -94,6 +94,7 @@ public class PlayerController : MonoBehaviour
                     return surfaceCache.SurfaceConfig;
                 }
                 renderer = surfaceCache.Renderer as MeshRenderer;
+                surfaceCache.TriangleIndex = hitInfo.triangleIndex;
             }
             else
             {
