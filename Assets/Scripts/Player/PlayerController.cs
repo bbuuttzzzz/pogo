@@ -161,8 +161,12 @@ public class PlayerController : MonoBehaviour
 
     private static void UpdateCursorLock(bool isPaused)
     {
+#if UNITY_WEBGL
+        Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
+#else
         Cursor.visible = isPaused;
         Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
+#endif
     }
     #endregion
 
@@ -188,9 +192,9 @@ public class PlayerController : MonoBehaviour
         Model.rotation = ModelRotation;
     }
 
-    #endregion
+#endregion
 
-    #region Movement
+#region Movement
 
     public Vector3 Velocity;
 
@@ -234,9 +238,9 @@ public class PlayerController : MonoBehaviour
     {
         OnDisjoint?.Invoke();
     }
-    #endregion
+#endregion
 
-    #region Physics
+#region Physics
     /// <summary>
     /// Airstrafing function from quake 3 movement code
     /// </summary>
@@ -303,9 +307,9 @@ public class PlayerController : MonoBehaviour
         //since I'm not going too fast, make me go just the right speed in that direction
         Velocity += addSpeed * direction;
     }
-    #endregion
+#endregion
 
-    #region Aiming
+#region Aiming
     public Transform CameraSwivelPoint;
 
     private float SENSITIVITY = 0.1f; //default: 0.5. mouselook speed
@@ -348,5 +352,5 @@ public class PlayerController : MonoBehaviour
 
         CameraSwivelPoint.transform.rotation = GetAimQuat();
     }
-    #endregion
+#endregion
 }
