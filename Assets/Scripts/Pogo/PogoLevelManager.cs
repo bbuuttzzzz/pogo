@@ -52,6 +52,7 @@ namespace Pogo
             if (currentLevel == newLevel)
             {
                 Debug.LogWarning($"Tried to load already-loaded level {newLevel}");
+                return;
             }
             currentLevel = newLevel;
 
@@ -80,6 +81,7 @@ namespace Pogo
             if (currentLevel == newLevel)
             {
                 Debug.LogWarning($"Tried to load already-loaded level {newLevel}");
+                return;
             }
             currentLevel = newLevel;
 

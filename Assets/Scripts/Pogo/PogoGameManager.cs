@@ -99,15 +99,15 @@ namespace Pogo
                 return false;
             }
 
-            if (newRespawnPoint == PogoInstance.RespawnPointTransform) return false;
+            if (newRespawnPoint == PogoInstance.InitialRespawnPoint) return false;
 
-            PogoInstance.RespawnPointTransform = newRespawnPoint;
+            PogoInstance.InitialRespawnPoint = newRespawnPoint;
 
             return true;
 
         }
 
-        public Transform RespawnPointTransform;
+        public Transform InitialRespawnPoint;
 #endregion
 
 #region Settings
