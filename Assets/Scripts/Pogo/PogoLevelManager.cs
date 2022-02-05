@@ -44,7 +44,7 @@ namespace Pogo
                 }
             }
 
-            SceneManager.SetActiveScene(SceneManager.GetSceneAt(newLevel.BuildIndex));
+            //SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(newLevel.BuildIndex));
         }
 
         public void LoadLevelInstantly(LevelDescriptor newLevel)
