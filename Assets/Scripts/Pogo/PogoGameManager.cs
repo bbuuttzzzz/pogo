@@ -1,5 +1,6 @@
 ﻿using Inputter;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +17,7 @@ namespace Pogo
         {
             base.Awake();
 
+            levelManager = new PogoLevelManager(InitialLevel);
             RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
             RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
             RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 1f));
@@ -33,7 +35,44 @@ namespace Pogo
             }
         }
 
-        #region Player
+        #region Level Management
+        [SerializeField, Tooltip("In the editor, don't do any level loading")] private bool dontLoadLevelsInEditor;
+
+        PogoLevelManager levelManager;
+        [HideInInspector]
+        public LevelDescriptor InitialLevel;
+
+        public void LoadLevel(LevelDescriptor newLevel)
+        {
+#if UNITY_EDITOR
+            if (dontLoadLevelsInEditor) return;
+#endif
+            levelManager.LoadLevelAsync(newLevel, (tasks) => StartCoroutine(onCheckLevelProgress(tasks)));
+        }
+
+        IEnumerator onCheckLevelProgress(List<AsyncOperation> tasks)
+        {
+            bool finished = false;
+            while( !finished )
+            {
+                float progress = 0;
+                finished = true;
+
+                foreach(AsyncOperation Task in tasks)
+                {
+                    progress += Task.progress;
+                    finished = finished && Task.isDone;
+                }
+
+                progress /= tasks.Count;
+                Debug.Log($"Progress: %{(progress * 100):N2}");
+
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+#endregion
+
+#region Player
         private PlayerController player;
         public PlayerController Player => player;
 
@@ -49,9 +88,9 @@ namespace Pogo
 
 
         public UnityEvent OnPlayerDeath;
-        #endregion
+#endregion
 
-        #region Respawn Point
+#region Respawn Point
         public static bool TryRegisterRespawnPoint(Transform newRespawnPoint)
         {
             if (PogoInstance == null)
@@ -60,22 +99,22 @@ namespace Pogo
                 return false;
             }
 
-            if (newRespawnPoint == PogoInstance.RespawnPoint) return false;
+            if (newRespawnPoint == PogoInstance.RespawnPointTransform) return false;
 
-            PogoInstance.RespawnPoint = newRespawnPoint;
+            PogoInstance.RespawnPointTransform = newRespawnPoint;
 
             return true;
 
         }
 
-        public Transform RespawnPoint;
-        #endregion
+        public Transform RespawnPointTransform;
+#endregion
 
-        #region Settings
+#region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
         public static string KEY_INVERT = "Invert";
-        #endregion
+#endregion
 
     }
 }

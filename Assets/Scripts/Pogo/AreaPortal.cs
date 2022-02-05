@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AreaPortal : MonoBehaviour
+namespace Pogo
 {
-    public LevelDescriptor Level;
-
-    public void Enter()
+    public class AreaPortal : MonoBehaviour
     {
+        public LevelDescriptor Level;
 
+        public void EnterPortal()
+        {
+            PogoGameManager.PogoInstance.LoadLevel(Level);
+        }
     }
 }

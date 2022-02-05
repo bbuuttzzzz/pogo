@@ -1,9 +1,29 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [CreateAssetMenu(fileName = "new level", menuName = "ScriptableObjects/LevelDescriptor", order = 1)]
 public class LevelDescriptor : ScriptableObject
 {
-    public int SceneNumber;
+    [Tooltip("These other levels should be visible while the player is on this level")]
+    public LevelDescriptor[] AdjacentLevels;
+
+    /// <summary>
+    /// all levels that should be loaded. this includes itself
+    /// </summary>
+    public List<LevelDescriptor> LoadLevels
+    {
+        get
+        {
+            var list = new List<LevelDescriptor>(AdjacentLevels.Length + 1);
+            list.AddRange(AdjacentLevels);
+            list.Add(this);
+            return list;
+        }
+    }
+
+    public int BuildIndex;
+
+    public string ScenePath => SceneUtility.GetScenePathByBuildIndex(BuildIndex);
 }
