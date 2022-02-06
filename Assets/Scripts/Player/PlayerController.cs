@@ -76,8 +76,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
-        Debug.Log("Loaded SurfaceProperties!");
     }
 
     SurfaceConfigCacheEntry surfaceCache = new SurfaceConfigCacheEntry();

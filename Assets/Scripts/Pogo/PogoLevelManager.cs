@@ -15,10 +15,10 @@ namespace Pogo
             0 // this is GameScene
         };
 
-        public PogoLevelManager(LevelDescriptor initialLevel)
+        public PogoLevelManager(LevelDescriptor initialLevel, bool loadInitialLevelInstantly = true)
         {
             LoadedLevels = new List<LevelDescriptor>();
-            if (initialLevel != null)
+            if (initialLevel != null && loadInitialLevelInstantly)
             {
                 LoadLevelInstantly(initialLevel);
             }

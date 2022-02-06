@@ -1,6 +1,7 @@
 using Pogo;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -20,11 +21,20 @@ public class PogoGameManagerEditor : Editor
         base.OnInspectorGUI();
         self = target as PogoGameManager;
 
-        var newLevel = EditorGUILayout.ObjectField(new GUIContent("Current Level"), self.InitialLevel, typeof(LevelDescriptor), false) as LevelDescriptor;
-        if (newLevel != self.InitialLevel)
+        if (EditorGUILayout.DropdownButton(new GUIContent("Change Level to..."), FocusType.Passive))
         {
-            self.InitialLevel = newLevel;
-            PogoLevelManager.LoadLevelInEditor(self.InitialLevel);
+            GenericMenu menu = new GenericMenu();
+
+            var levels = AssetDatabase.FindAssets($"t:{nameof(LevelDescriptor)}")
+                .Select(id => AssetDatabase.LoadAssetAtPath<LevelDescriptor>(AssetDatabase.GUIDToAssetPath(id)));
+            foreach(var level in levels)
+            {
+                menu.AddItem(new GUIContent(level.name), level == self.InitialLevel, () =>
+                {
+                    PogoLevelManager.LoadLevelInEditor(level);
+                });
+            }
+            menu.DropDown(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 0f, 0f));
         }
 
         GUILayout.BeginHorizontal();

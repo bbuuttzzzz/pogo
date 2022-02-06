@@ -17,7 +17,7 @@ namespace Pogo
         {
             base.Awake();
 
-            levelManager = new PogoLevelManager(InitialLevel);
+            levelManager = new PogoLevelManager(InitialLevel, !dontLoadLevelsInEditor);
             RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
             RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
             RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 1f));
@@ -36,7 +36,7 @@ namespace Pogo
         }
 
         #region Level Management
-        [SerializeField, Tooltip("In the editor, don't do any level loading")] private bool dontLoadLevelsInEditor;
+        [Tooltip("In the editor, don't do any level loading")] public bool dontLoadLevelsInEditor;
 
         PogoLevelManager levelManager;
         [HideInInspector]
