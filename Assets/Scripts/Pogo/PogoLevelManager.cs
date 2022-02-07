@@ -8,26 +8,20 @@ using UnityEngine.SceneManagement;
 
 namespace Pogo
 {
-    public class PogoLevelManager
+    public class PogoLevelManager : MonoBehaviour
     {
-        static readonly int[] ignoredScenes =
+        void Start()
         {
-            0 // this is GameScene
-        };
-
-        public PogoLevelManager(LevelDescriptor initialLevel, bool loadInitialLevelInstantly = true)
-        {
-            LoadedLevels = new List<LevelDescriptor>();
-            if (initialLevel != null && loadInitialLevelInstantly)
+            PogoGameManager game = GetComponent<PogoGameManager>();
+            if (!game.dontLoadLevelsInEditor && game.InitialLevel != null)
             {
-                LoadLevelInstantly(initialLevel);
+                LoadLevelInstantly(game.InitialLevel);
             }
         }
 
-        List<LevelDescriptor> LoadedLevels;
         LevelDescriptor currentLevel;
 
-        public static void LoadLevelInEditor(LevelDescriptor newLevel)
+        public void LoadLevelInEditor(LevelDescriptor newLevel)
         {
             (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(newLevel);
 
@@ -44,7 +38,14 @@ namespace Pogo
                 }
             }
 
-            //SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(newLevel.BuildIndex));
+            foreach(var atmosphere in getExistingAtmospheres())
+            {
+                DestroyImmediate(atmosphere.gameObject);
+            }
+
+            var newAtmosphereObj = UnityEditor.PrefabUtility.InstantiatePrefab(newLevel.PostProcessingPrefab, AtmosphereParent) as GameObject;
+            var newAtmosphere = newAtmosphereObj.GetComponent<Atmosphere>();
+            newAtmosphere.SetWeightFromEditor(1);
         }
 
         public void LoadLevelInstantly(LevelDescriptor newLevel)
@@ -68,12 +69,7 @@ namespace Pogo
                 SceneManager.UnloadSceneAsync(scene);
             }
 
-            UpdateActiveScene();
-        }
-
-        public void UpdateActiveScene()
-        {
-            //SceneManager.SetActiveScene(SceneManager.GetSceneAt(currentLevel.BuildIndex));
+            TransitionAtmosphere(newLevel, true);
         }
 
         public void LoadLevelAsync(LevelDescriptor newLevel, Action<List<AsyncOperation>> callback = null)
@@ -100,8 +96,16 @@ namespace Pogo
                 tasks.Add(task);
             }
 
+            TransitionAtmosphere(newLevel, false);
+
             if (callback != null) callback(tasks);
         }
+
+        #region Scenes
+        static readonly int[] ignoredScenes =
+        {
+            0 // this is GameScene
+        };
 
         static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) getSceneDifference(LevelDescriptor newLevel)
         {
@@ -138,6 +142,30 @@ namespace Pogo
 
             return (scenesToLoad, scenesToUnload);
         }
+        #endregion
 
+        #region Atmosphere
+        public Transform AtmosphereParent;
+
+        Atmosphere[] getExistingAtmospheres()
+        {
+            return AtmosphereParent.GetComponentsInChildren<Atmosphere>();
+        }
+
+        void TransitionAtmosphere(LevelDescriptor newLevel, bool instant)
+        {
+            // remove existing atmospheres
+            var atmospheres = getExistingAtmospheres();
+            foreach(Atmosphere atmosphere in atmospheres)
+            {
+                atmosphere.DisableAndDestroy(instant);
+            }
+
+            // add new atmosphere
+            var newAtmosphereObj = Instantiate(newLevel.PostProcessingPrefab, AtmosphereParent);
+            var newAtmosphere = newAtmosphereObj.GetComponent<Atmosphere>();
+            newAtmosphere.SetWeight(1, instant);
+        }
+        #endregion
     }
 }

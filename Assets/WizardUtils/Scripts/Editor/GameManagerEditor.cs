@@ -31,13 +31,13 @@ public class PogoGameManagerEditor : Editor
             {
                 menu.AddItem(new GUIContent(level.name), level == self.InitialLevel, () =>
                 {
-                    PogoLevelManager.LoadLevelInEditor(level);
+                    self.InitialLevel = level;
+                    self.GetComponent<PogoLevelManager>().LoadLevelInEditor(level);
                 });
             }
             menu.DropDown(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 0f, 0f));
         }
 
-        GUILayout.BeginHorizontal();
         if (EditorGUILayout.DropdownButton(new GUIContent("Move Spawnpoint to..."), FocusType.Passive))
         {
             var spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
@@ -64,12 +64,12 @@ public class PogoGameManagerEditor : Editor
                         Undo.RecordObject(player, "Move Player to Spawnpoint");
                     }
 
+                    Selection.activeObject = self.InitialRespawnPoint;
                     Undo.CollapseUndoOperations(undoGroup);
                 });
             }
             menu.DropDown(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 0f, 0f));
         }
-        GUILayout.EndHorizontal();
 
         if (GUILayout.Button("Move Player to Spawnpoint"))
         {

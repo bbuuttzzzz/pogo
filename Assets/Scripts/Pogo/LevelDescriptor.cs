@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 [CreateAssetMenu(fileName = "new level", menuName = "ScriptableObjects/LevelDescriptor", order = 1)]
@@ -8,6 +9,8 @@ public class LevelDescriptor : ScriptableObject
 {
     [Tooltip("These other levels should be visible while the player is on this level")]
     public LevelDescriptor[] AdjacentLevels;
+
+    public GameObject PostProcessingPrefab;
 
     /// <summary>
     /// all levels that should be loaded. this includes itself
