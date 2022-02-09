@@ -143,8 +143,8 @@ public class PlayerController : MonoBehaviour
     }
     public void Die()
     {
-        transform.position = PogoGameManager.PogoInstance.InitialRespawnPoint.position;
-        internalEyeAngles = new Vector3(0, PogoGameManager.PogoInstance.InitialRespawnPoint.rotation.eulerAngles.y, 0);
+        transform.position = PogoGameManager.PogoInstance.RespawnPoint.position;
+        internalEyeAngles = new Vector3(0, PogoGameManager.PogoInstance.RespawnPoint.rotation.eulerAngles.y, 0);
         RotateModel();
         Velocity = Vector3.zero;
         PitchFrac = 0;
