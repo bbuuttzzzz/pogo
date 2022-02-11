@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Collision
+namespace WizardPhysics
 {
     [System.Serializable]
     public class CollisionEvent : UnityEvent<CollisionEventArgs>

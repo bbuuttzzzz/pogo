@@ -1,4 +1,3 @@
-using Collision;
 using Inputter;
 using Pogo;
 using System;
@@ -6,11 +5,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using WizardPhysics;
 using WizardUtils;
+
+[RequireComponent(typeof(CollisionGroup))]
 
 public class PlayerController : MonoBehaviour
 {
     public AudioController AudioController;
+    CollisionGroup collisionGroup;
+
+    private void Awake()
+    {
+        collisionGroup = GetComponent<CollisionGroup>();    
+    }
 
     void Start()
     {
@@ -44,9 +52,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DoLook();
-        UpdateModelPitch();
-        RotateModel();
         ApplyForces();
         Move();
     }
@@ -228,6 +233,10 @@ public class PlayerController : MonoBehaviour
 
     public void Move()
     {
+        var recording = collisionGroup.RecordPosition();
+        DoLook();
+        UpdateModelPitch();
+        RotateModel();
         transform.position += Velocity * Time.deltaTime;
     }
 

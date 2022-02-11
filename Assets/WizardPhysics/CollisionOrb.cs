@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Collision
+namespace WizardPhysics
 {
     public class CollisionOrb : MonoBehaviour
     {
@@ -15,6 +15,7 @@ namespace Collision
         public Vector3 Center;
         public float Radius;
 
+        public bool CheckPassively;
 
         private void Awake()
         {
@@ -24,18 +25,18 @@ namespace Collision
 
         private void Update()
         {
-            Move();
+            if (CheckPassively) CheckThisFramesMovement();
         }
 
         Vector3 lastRecordedPosition;
-        void Move()
+        void CheckThisFramesMovement()
         {
-            if (CheckPath(lastRecordedPosition, currentCenter, out RaycastHit hitinfo))
+            if (TestPath(lastRecordedPosition, currentCenter, out RaycastHit hitinfo))
             {
                 OnCollisionEnter?.Invoke(new CollisionEventArgs(hitinfo));
             }
 
-            if (QueryExits && CheckPath(currentCenter, lastRecordedPosition, out RaycastHit exitInfo))
+            if (QueryExits && TestPath(currentCenter, lastRecordedPosition, out RaycastHit exitInfo))
             {
                 OnCollisionExit?.Invoke(new CollisionEventArgs(exitInfo));
             }
@@ -43,7 +44,7 @@ namespace Collision
             lastRecordedPosition = currentCenter;
         }
 
-        bool CheckPath(Vector3 start, Vector3 finish, out RaycastHit hitInfo)
+        public bool TestPath(Vector3 start, Vector3 finish, out RaycastHit hitInfo)
         {
             Vector3 direction = finish - start;
             float maxDistance = (finish - start).magnitude;
@@ -54,6 +55,11 @@ namespace Collision
                 maxDistance: maxDistance,
                 hitInfo: out hitInfo,
                 layerMask: cachedLayerMask);
+        }
+
+        public bool TestRay(Ray ray, float maxDistance, out RaycastHit hitInfo)
+        {
+            return TestPath(ray.origin, ray.origin + ray.direction * maxDistance, out hitInfo);
         }
 
         /// <summary>
@@ -75,5 +81,17 @@ namespace Collision
             Gizmos.DrawWireSphere(transform.TransformPoint(Center), transform.lossyScale.x * Radius);
         }
         #endregion
+
+        public struct CollisionResult
+        {
+            public bool DidHit;
+            public RaycastHit HitInfo;
+
+            public static CollisionResult noHit = new CollisionResult() { DidHit = false };
+            public static CollisionResult Hit(RaycastHit hitInfo)
+            {
+                return new CollisionResult() { DidHit = false, HitInfo = hitInfo };
+            }
+        }
     }
 }
