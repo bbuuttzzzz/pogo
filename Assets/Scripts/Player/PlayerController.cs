@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
         UpdateCursorLock(PogoGameManager.Paused);
         internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
         transform.rotation = Quaternion.identity;
+
+        collisionGroup.OnCollide.AddListener(onCollide);
     }
 
     private void onInvertYChanged(object sender, GameSettingChangedEventArgs e)
@@ -52,8 +54,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        DoLook();
+        UpdateDesiredModelPitch();
         ApplyForces();
-        Move();
+        RotateAndMove();
     }
 
     #region Game Logic
@@ -150,7 +154,8 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = PogoGameManager.PogoInstance.RespawnPoint.position;
         internalEyeAngles = new Vector3(0, PogoGameManager.PogoInstance.RespawnPoint.rotation.eulerAngles.y, 0);
-        RotateModel();
+        Model.rotation = DesiredModelRotation;
+
         Velocity = Vector3.zero;
         PitchFrac = 0;
         OnDie.Invoke();
@@ -181,18 +186,13 @@ public class PlayerController : MonoBehaviour
     const float PitchFracSpeed = 10;
 
 
-    public Quaternion ModelRotation => Quaternion.Euler(PitchFrac * ModelPitchMul * EyeAngles.x, EyeAngles.y, EyeAngles.z);
+    public Quaternion DesiredModelRotation => Quaternion.Euler(PitchFrac * ModelPitchMul * EyeAngles.x, EyeAngles.y, EyeAngles.z);
     public Quaternion CameraRotation => Quaternion.Euler(PitchFrac * EyeAngles.x, EyeAngles.y, EyeAngles.z);
 
-    void UpdateModelPitch()
+    void UpdateDesiredModelPitch()
     {
         float targetPitchFrac = InputManager.CheckKey(KeyName.Jump) ? 0 : 1;
         PitchFrac = Mathf.MoveTowards(PitchFrac, targetPitchFrac, PitchFracSpeed * Time.deltaTime);
-    }
-
-    void RotateModel()
-    {
-        Model.rotation = ModelRotation;
     }
 
 #endregion
@@ -227,17 +227,24 @@ public class PlayerController : MonoBehaviour
         if (sound != null) AudioController.PlayOneShot(sound);
 
         Accelerate(args.HitInfo.normal, 2);
-        Accelerate(ModelRotation * Vector3.up, JumpForce);
+        Accelerate(DesiredModelRotation * Vector3.up, JumpForce);
         //Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
     }
 
-    public void Move()
+    public void RotateAndMove()
     {
-        var recording = collisionGroup.RecordPosition();
-        DoLook();
-        UpdateModelPitch();
-        RotateModel();
-        transform.position += Velocity * Time.deltaTime;
+        collisionGroup.RotateTo(DesiredModelRotation);
+        collisionGroup.Move(Velocity * Time.deltaTime);
+    }
+
+    private void onCollide(CollisionEventArgs e)
+    {
+        // if we have any speed into the surface, remove it
+        var normalVelocity = Velocity.GetNormalComponent(e.HitInfo.normal);
+        if (normalVelocity.magnitude < 0)
+        {
+            Velocity -= normalVelocity;
+        }
     }
 
     public UnityEvent OnDisjoint;
