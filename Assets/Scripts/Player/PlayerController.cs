@@ -226,8 +226,8 @@ public class PlayerController : MonoBehaviour
         var sound = surfaceConfig.RandomSound;
         if (sound != null) AudioController.PlayOneShot(sound);
 
-        Accelerate(args.HitInfo.normal, 2);
-        Accelerate(DesiredModelRotation * Vector3.up, JumpForce);
+        Accelerate(args.HitInfo.normal, 2 * surfaceConfig.JumpForceMultiplier);
+        Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
         //Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
     }
 

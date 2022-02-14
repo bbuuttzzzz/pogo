@@ -6,7 +6,7 @@ using WizardUtils.Math;
 
 namespace WizardPhysics
 {
-    public class CollisionGroup : MonoBehaviour
+    public partial class CollisionGroup : MonoBehaviour
     {
         public CollisionOrb[] CollisionOrbs;
         public float skinWidth = 0.01f;
@@ -39,8 +39,8 @@ namespace WizardPhysics
         public void Rotate(Quaternion addRotation)
         {
             // rotate the full distance and check for collisions
-            PositionRecording start = new PositionRecording(transform, SwivelTransform, CollisionOrbs);
-            PositionRecording fullRotation = start.Rotate(addRotation);
+            CollisionGroupPositionRecording start = new CollisionGroupPositionRecording(transform, SwivelTransform, CollisionOrbs);
+            CollisionGroupPositionRecording fullRotation = start.Rotate(addRotation);
             TestResult firstCollision = FindFirstCollision(start, fullRotation);
 
             if (firstCollision == null)
@@ -64,11 +64,11 @@ namespace WizardPhysics
             // rotate forward to the collision point 
             float firstAngle = Vector3.Angle(start.OrbPositions[pivotIndex] - start.ParentPosition, rotateForwardCollisionPoint - start.ParentPosition);
             Quaternion firstRotation = Quaternion.AngleAxis(firstAngle, addAxis);
-            PositionRecording rotatedToCollision = start.Rotate(firstRotation);
+            CollisionGroupPositionRecording rotatedToCollision = start.Rotate(firstRotation);
 
             // try rotating backwards the rest of the way
             Quaternion backRotation = Quaternion.AngleAxis(addAngle - firstAngle, addAxis);
-            PositionRecording backRotated = rotatedToCollision.RotateAround(rotatedToCollision.OrbPositions[pivotIndex], backRotation);
+            CollisionGroupPositionRecording backRotated = rotatedToCollision.RotateAround(rotatedToCollision.OrbPositions[pivotIndex], backRotation);
             bool backRotationDidHit = TestForCollision(start, backRotated, pivotIndex);
 
             if (backRotationDidHit)
@@ -80,6 +80,7 @@ namespace WizardPhysics
             }
 
             //rotate forward until we hit the first surface, and then rotate back the remainder of the way
+            Debug.Log("BackRotated.");
             ApplyRecording(backRotated);
 
             // call collision events
@@ -91,7 +92,7 @@ namespace WizardPhysics
         public void Move(Vector3 movement)
         {
             Vector3 remainingMovement = movement;
-            while (remainingMovement.magnitude >= 0.003f)
+            while (remainingMovement.magnitude >= skinWidth / 8)
             {
                 float distance = remainingMovement.magnitude;
                 TestResult firstCollision = null;
@@ -124,18 +125,24 @@ namespace WizardPhysics
                     OnCollide.Invoke(args);
                     firstCollision.CollidedOrb.OnCollisionEnter.Invoke(args);
                 }
+                else
+                {
+                    // move all the way up
+                    transform.position += remainingMovement;
+                    remainingMovement = Vector3.zero;
+                }
             }
         }
 
         #region Helper Functions
-        private void ApplyRecording(PositionRecording recording)
+        private void ApplyRecording(CollisionGroupPositionRecording recording)
         {
             transform.position = recording.ParentPosition;
             SwivelTransform.rotation = recording.ParentRotation;
         }
 
 
-        private bool TestForCollision(PositionRecording start, PositionRecording end, int ignoreThisIndex = -1)
+        private bool TestForCollision(CollisionGroupPositionRecording start, CollisionGroupPositionRecording end, int ignoreThisIndex = -1)
         {
             for (int n = 0; n < CollisionOrbs.Length; n++)
             {
@@ -151,7 +158,7 @@ namespace WizardPhysics
             return false;
         }
 
-        private TestResult FindFirstCollision(PositionRecording start, PositionRecording end)
+        private TestResult FindFirstCollision(CollisionGroupPositionRecording start, CollisionGroupPositionRecording end)
         {
             TestResult firstCollision = null;
 
@@ -174,7 +181,7 @@ namespace WizardPhysics
             return firstCollision;
         }
 
-        private Vector3 GetRealCollisionPoint(Quaternion addRotation, PositionRecording start, TestResult firstCollision, int pivotIndex)
+        private Vector3 GetRealCollisionPoint(Quaternion addRotation, CollisionGroupPositionRecording start, TestResult firstCollision, int pivotIndex)
         {
             // we need to look for the intersection point of a sphere and a plane
             // that's the same as the intersection of a point and a plane
@@ -232,76 +239,8 @@ namespace WizardPhysics
             }
             throw new MissingMemberException();
         }
-    #endregion
 
-        public class PositionRecording
-        {
-            public Vector3[] OrbPositions;
-            public Vector3 ParentPosition;
-            public Quaternion ParentRotation;
-
-            public PositionRecording(PositionRecording recording)
-            {
-                this.OrbPositions = recording.OrbPositions;
-                this.ParentPosition = recording.ParentPosition;
-                this.ParentRotation = recording.ParentRotation;
-            }
-
-            public PositionRecording(Transform parent, Transform swivel, CollisionOrb[] children)
-            {
-                ParentPosition = parent.position;
-                ParentRotation = swivel.rotation;
-
-                OrbPositions = new Vector3[children.Length];
-                for (int n = 0; n < children.Length; n++)
-                {
-                    OrbPositions[n] = children[n].transform.position;
-                }
-            }
-
-            public PositionRecording Rotate(Quaternion rotation)
-            {
-                PositionRecording newRecording = new PositionRecording(this);
-
-                for (int n = 0; n < OrbPositions.Length; n++)
-                {
-                    newRecording.OrbPositions[n] = rotation * (OrbPositions[n] - ParentPosition) + ParentPosition;
-                }
-
-                newRecording.ParentRotation *= rotation;
-
-                return newRecording;
-            }
-
-            public PositionRecording RotateAround(Vector3 origin, Quaternion rotation)
-            {
-                PositionRecording newRecording = new PositionRecording(this);
-
-                for (int n = 0; n < OrbPositions.Length; n++)
-                {
-                    newRecording.OrbPositions[n] = rotation * (OrbPositions[n] - origin) + origin;
-                }
-
-                newRecording.ParentPosition = rotation * (newRecording.ParentPosition - origin) + origin;
-                newRecording.ParentRotation *= rotation;
-
-                return newRecording;
-            }
-
-            internal PositionRecording Translate(Vector3 movement)
-            {
-                PositionRecording newRecording = new PositionRecording(this);
-
-                for (int n = 0; n < OrbPositions.Length; n++)
-                {
-                    newRecording.OrbPositions[n] += movement;
-                }
-
-                newRecording.ParentPosition += movement;
-
-                return newRecording;
-            }
-        }
+#endregion
 
         class TestResult
         {

@@ -7,6 +7,8 @@ public class SurfaceConfig : ScriptableObject
     public Material[] Materials;
     public AudioClip[] Sounds;
 
+    public float JumpForceMultiplier = 1;
+
     public AudioClip RandomSound => Sounds == null ? null
         : Sounds[Random.Range(0, Sounds.Length)];
 }
