@@ -35,7 +35,7 @@ namespace Pogo
             }
         }
 
-        #region Level Management
+#region Level Management
         [Tooltip("In the editor, don't do any level loading")] public bool dontLoadLevelsInEditor;
 
         PogoLevelManager levelManager;

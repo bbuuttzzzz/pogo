@@ -10,7 +10,8 @@ namespace WizardPhysics
 
         public CollisionGroupPositionRecording(CollisionGroupPositionRecording recording)
         {
-            this.OrbPositions = recording.OrbPositions;
+            this.OrbPositions = new Vector3[recording.OrbPositions.Length];
+            System.Array.Copy(recording.OrbPositions, this.OrbPositions, recording.OrbPositions.Length);
             this.ParentPosition = recording.ParentPosition;
             this.ParentRotation = recording.ParentRotation;
         }

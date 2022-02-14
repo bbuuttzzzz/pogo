@@ -16,6 +16,11 @@ namespace WizardPhysics
 
         public CollisionEvent OnCollide;
 
+        public bool DrawDebugGizmos;
+
+        CollisionGroupPositionRecording debug_startPosition;
+        CollisionGroupPositionRecording debug_firstRotationPosition;
+
         private void Awake()
         {
             if (SwivelTransform == null) SwivelTransform = transform;
@@ -42,6 +47,12 @@ namespace WizardPhysics
             CollisionGroupPositionRecording start = new CollisionGroupPositionRecording(transform, SwivelTransform, CollisionOrbs);
             CollisionGroupPositionRecording fullRotation = start.Rotate(addRotation);
             TestResult firstCollision = FindFirstCollision(start, fullRotation);
+
+            debug_startPosition = start;
+            debug_firstRotationPosition = fullRotation;
+            addRotation.ToAngleAxis(out float angle, out Vector3 axis);
+            Debug.Log(angle);
+
 
             if (firstCollision == null)
             {
@@ -87,6 +98,20 @@ namespace WizardPhysics
             var args = new CollisionEventArgs(firstCollision.HitInfo);
             OnCollide.Invoke(args);
             firstCollision.CollidedOrb.OnCollisionEnter.Invoke(args);
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (debug_startPosition != null && debug_firstRotationPosition != null)
+            {
+                for (int n = 0; n < CollisionOrbs.Length; n++)
+                {
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawWireSphere(debug_startPosition.OrbPositions[n], CollisionOrbs[n].Radius);
+                    Gizmos.color = new Color(1, 0.5f, 0.2f);
+                    Gizmos.DrawWireSphere(debug_firstRotationPosition.OrbPositions[n], CollisionOrbs[n].Radius);
+                }
+            }
         }
 
         public void Move(Vector3 movement)

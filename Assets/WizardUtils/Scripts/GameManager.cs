@@ -40,6 +40,10 @@ namespace WizardUtils
 
         bool paused;
 
+#if UNITY_EDITOR
+        public bool BreakOnPause;
+#endif
+
         public static bool Paused
         {
             get => GameInstance?.paused ?? false;
@@ -64,6 +68,9 @@ namespace WizardUtils
 
         private static void pause()
         {
+#if UNITY_EDITOR
+            if (GameInstance.BreakOnPause) Debug.Break();
+#endif
             Time.timeScale = 0;
         }
 
