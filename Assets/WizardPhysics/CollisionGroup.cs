@@ -10,6 +10,7 @@ namespace WizardPhysics
     {
         public CollisionOrb[] CollisionOrbs;
         public float skinWidth = 0.01f;
+        float rotationSkinDegrees;
 
         [Tooltip("Instead of rotating this transform, rotate this specific transform (must be a child)")]
         public Transform SwivelTransform;
@@ -18,22 +19,23 @@ namespace WizardPhysics
 
         public bool DrawDebugGizmos;
 
-        CollisionGroupPositionRecording debug_startPosition;
-        CollisionGroupPositionRecording debug_firstRotationPosition;
-
         private void Awake()
         {
             if (SwivelTransform == null) SwivelTransform = transform;
 
-#if UNITY_EDITOR
-            foreach(CollisionOrb orb in CollisionOrbs)
+            float minRadius = float.MaxValue;
+            foreach (CollisionOrb orb in CollisionOrbs)
             {
+#if UNITY_EDITOR
                 if (!orb.transform.IsChildOf(SwivelTransform))
                 {
                     Debug.LogWarning($"{orb.gameObject} isn't a child of CollisionGoup {gameObject}");
                 }
-            }
 #endif
+                minRadius = Mathf.Min(minRadius, (orb.transform.position - transform.position).magnitude);
+            }
+
+            rotationSkinDegrees = 360 * skinWidth / (2 * Mathf.PI * minRadius);
         }
 
         public void RotateTo(Quaternion targetRotation)
@@ -43,15 +45,14 @@ namespace WizardPhysics
 
         public void Rotate(Quaternion addRotation)
         {
-            // rotate the full distance and check for collisions
-            CollisionGroupPositionRecording start = new CollisionGroupPositionRecording(transform, SwivelTransform, CollisionOrbs);
-            CollisionGroupPositionRecording fullRotation = start.Rotate(addRotation);
-            TestResult firstCollision = FindFirstCollision(start, fullRotation);
+            // rotate the full distance (+ skin) and check for collisions
+            addRotation.ToAngleAxis(out float addAngle, out Vector3 addAxis);
+            if (addAngle < 0.0001f) return;
 
-            debug_startPosition = start;
-            debug_firstRotationPosition = fullRotation;
-            addRotation.ToAngleAxis(out float angle, out Vector3 axis);
-            Debug.Log(angle);
+            Quaternion skinnedAddRotation = Quaternion.AngleAxis(addAngle + rotationSkinDegrees, addAxis);
+            CollisionGroupPositionRecording start = new CollisionGroupPositionRecording(transform, SwivelTransform, CollisionOrbs);
+            CollisionGroupPositionRecording skinnedFullRotation = start.Rotate(skinnedAddRotation);
+            TestResult firstCollision = FindFirstCollision(start, skinnedFullRotation);
 
 
             if (firstCollision == null)
@@ -61,57 +62,41 @@ namespace WizardPhysics
                 return;
             }
 
-            // find the point we hit rotating instead of just lerping
-            int pivotIndex = FindOrb(firstCollision.CollidedOrb);
-            addRotation.ToAngleAxis(out float addAngle, out Vector3 addAxis);
-            Vector3 rotateForwardCollisionPoint = GetRealCollisionPoint(addRotation, start, firstCollision, pivotIndex);
-            if (rotateForwardCollisionPoint.x == float.NaN)
+            // see if we can still do our full rotation against this surface
+            int index = FindOrb(firstCollision.CollidedOrb);
+            CollisionGroupPositionRecording final = start.Rotate(addRotation);
+            float newHeight = Vector3.Dot(firstCollision.HitInfo.normal, final.OrbPositions[index] - firstCollision.HitInfo.point);
+            float addHeight = newHeight - firstCollision.CollidedOrb.Radius - skinWidth;
+            Vector3 translation;
+
+            if (addHeight > 0)
             {
-                // we should really have come into contact with the same plane... if this happened theres probably something wrong with GetRealCollisionPoint
-                Debug.LogWarning("IntersectCircle missed... that means use a new algorithm");
-                ApplyRecording(fullRotation);
+                translation = firstCollision.HitInfo.normal * addHeight;
+                final = start.Translate(translation);
+            }
+            else
+            {
+                translation = Vector3.zero;
             }
 
-            // rotate forward to the collision point 
-            float firstAngle = Vector3.Angle(start.OrbPositions[pivotIndex] - start.ParentPosition, rotateForwardCollisionPoint - start.ParentPosition);
-            Quaternion firstRotation = Quaternion.AngleAxis(firstAngle, addAxis);
-            CollisionGroupPositionRecording rotatedToCollision = start.Rotate(firstRotation);
-
-            // try rotating backwards the rest of the way
-            Quaternion backRotation = Quaternion.AngleAxis(addAngle - firstAngle, addAxis);
-            CollisionGroupPositionRecording backRotated = rotatedToCollision.RotateAround(rotatedToCollision.OrbPositions[pivotIndex], backRotation);
-            bool backRotationDidHit = TestForCollision(start, backRotated, pivotIndex);
-
-            if (backRotationDidHit)
+            bool collided = TestForCollision(start, final);
+            if (collided)
             {
-                // just clip into the original wall. oh well.
-                Debug.Log("CollisionGroup Rotation Clipped.");
-                ApplyRecording(fullRotation);
+                Debug.Log("No space for me... clipping & praying I die");
+
+                transform.position += translation;
+                SwivelTransform.rotation *= addRotation;
                 return;
             }
 
-            //rotate forward until we hit the first surface, and then rotate back the remainder of the way
-            Debug.Log("BackRotated.");
-            ApplyRecording(backRotated);
-
             // call collision events
-            var args = new CollisionEventArgs(firstCollision.HitInfo);
-            OnCollide.Invoke(args);
-            firstCollision.CollidedOrb.OnCollisionEnter.Invoke(args);
-        }
+            var firstCollisionArgs = new CollisionEventArgs(firstCollision.HitInfo);
+            OnCollide.Invoke(firstCollisionArgs);
+            firstCollision.CollidedOrb.OnCollisionEnter.Invoke(firstCollisionArgs);
 
-        private void OnDrawGizmos()
-        {
-            if (debug_startPosition != null && debug_firstRotationPosition != null)
-            {
-                for (int n = 0; n < CollisionOrbs.Length; n++)
-                {
-                    Gizmos.color = Color.red;
-                    Gizmos.DrawWireSphere(debug_startPosition.OrbPositions[n], CollisionOrbs[n].Radius);
-                    Gizmos.color = new Color(1, 0.5f, 0.2f);
-                    Gizmos.DrawWireSphere(debug_firstRotationPosition.OrbPositions[n], CollisionOrbs[n].Radius);
-                }
-            }
+            transform.position += translation;
+            SwivelTransform.rotation *= addRotation;
+            return;
         }
 
         public void Move(Vector3 movement)
@@ -138,9 +123,13 @@ namespace WizardPhysics
 
                 if (firstCollision != null)
                 {
-                    // move up to the object
-                    transform.position += (firstCollision.HitInfo.distance - skinWidth) * remainingMovement.normalized;
-                    remainingMovement -= (firstCollision.HitInfo.distance - skinWidth) * remainingMovement.normalized;
+                    // move up to the object, minus a skin width from the surface
+                    float angleOfIncidence = Vector3.Angle(firstCollision.HitInfo.normal, remainingMovement) - 90;
+                    float skinDepth = skinWidth / Mathf.Sin(angleOfIncidence * Mathf.Deg2Rad);
+
+                    float moveDistance = firstCollision.HitInfo.distance - skinDepth;
+                    transform.position += moveDistance * remainingMovement.normalized;
+                    remainingMovement -= moveDistance * remainingMovement.normalized;
 
                     // remove non-tangent component from remainingMovement
                     remainingMovement = remainingMovement.GetTangentComponent(firstCollision.HitInfo.normal);
@@ -211,7 +200,7 @@ namespace WizardPhysics
             // we need to look for the intersection point of a sphere and a plane
             // that's the same as the intersection of a point and a plane
             // ...if the plane is shifted forward by 1 radius
-            Vector3 planeOrigin = firstCollision.HitInfo.point + firstCollision.HitInfo.normal * (CollisionOrbs[pivotIndex].Radius + skinWidth);
+            Vector3 planeOrigin = firstCollision.HitInfo.point + firstCollision.HitInfo.normal * (CollisionOrbs[pivotIndex].Radius);
 
             // get the radius of our circle by orb's distance from the pivot point
             float radius = (start.OrbPositions[pivotIndex] - start.ParentPosition).magnitude;
@@ -240,15 +229,15 @@ namespace WizardPhysics
             Vector3 closestPoint = new Vector3(float.NaN, float.NaN, float.NaN);
             foreach (Vector2 localRotIntersect in localRotIntersects)
             {
-                Vector3 intersectPoint = rotSystem.Compose(localRotIntersect + rotCircleCenter);
+                Vector3 intersectPoint = rotSystem.Compose(localRotIntersect);
 
-                if (closestPoint.x == float.NaN || intersectPoint.sqrMagnitude < closestPoint.sqrMagnitude)
+                if (float.IsNaN(closestPoint.x) || intersectPoint.sqrMagnitude < closestPoint.sqrMagnitude)
                 {
                     closestPoint = intersectPoint;
                 }
             }
 
-            return closestPoint;
+            return closestPoint + start.ParentPosition;
         }
 
         internal void RotateTo(Quaternion desiredModelRotation, object onCollide)

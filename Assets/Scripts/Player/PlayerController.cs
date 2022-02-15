@@ -226,13 +226,14 @@ public class PlayerController : MonoBehaviour
         var sound = surfaceConfig.RandomSound;
         if (sound != null) AudioController.PlayOneShot(sound);
 
-        Accelerate(args.HitInfo.normal, 2 * surfaceConfig.JumpForceMultiplier);
+        Accelerate(args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
         Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
         //Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
     }
 
     public void RotateAndMove()
     {
+        if (Time.deltaTime == 0) return;
         collisionGroup.RotateTo(DesiredModelRotation);
         collisionGroup.Move(Velocity * Time.deltaTime);
     }
