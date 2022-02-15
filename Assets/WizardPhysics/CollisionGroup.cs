@@ -82,8 +82,6 @@ namespace WizardPhysics
             bool collided = TestForCollision(start, final);
             if (collided)
             {
-                Debug.Log("No space for me... clipping & praying I die");
-
                 transform.position += translation;
                 SwivelTransform.rotation *= addRotation;
                 return;
