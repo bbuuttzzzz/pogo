@@ -81,9 +81,9 @@ namespace Pogo
             PogoInstance.player = player;
         }
 
-        public static void KillPlayer()
+        public static void KillPlayer(KillType killType = null)
         {
-            PogoInstance?.player.Die();
+            PogoInstance?.player.Die(killType);
         }
 
 

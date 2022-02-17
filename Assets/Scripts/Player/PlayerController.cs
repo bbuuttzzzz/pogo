@@ -141,7 +141,7 @@ public class PlayerController : MonoBehaviour
         return surfaceCache.SurfaceConfig;
     }
 
-    public void DieFrom(CollisionEventArgs collision)
+    public void DieFromSurface(CollisionEventArgs collision)
     {
         WizardEffects.EffectManager.CreateEffect("DeathMark", new WizardEffects.EffectData()
         {
@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviour
         });
         Die();
     }
-    public void Die()
+    public void Die(KillType killType = null)
     {
         transform.position = PogoGameManager.PogoInstance.RespawnPoint.position;
         internalEyeAngles = new Vector3(0, PogoGameManager.PogoInstance.RespawnPoint.rotation.eulerAngles.y, 0);
@@ -160,6 +160,10 @@ public class PlayerController : MonoBehaviour
         PitchFrac = 0;
         OnDie.Invoke();
         PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
+        if (killType != null)
+        {
+            AudioController.PlayOneShot(killType.RandomSound);
+        }
     }
 
     private void onPauseStateChanged(object sender, bool e)
@@ -227,7 +231,10 @@ public class PlayerController : MonoBehaviour
         if (sound != null) AudioController.PlayOneShot(sound);
 
         Accelerate(args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
-        Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
+        if (surfaceConfig.JumpForceMultiplier > 0)
+        {
+            Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
+        }
         //Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
     }
 

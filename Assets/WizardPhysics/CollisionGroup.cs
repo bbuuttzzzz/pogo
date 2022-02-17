@@ -79,14 +79,6 @@ namespace WizardPhysics
                 translation = Vector3.zero;
             }
 
-            bool collided = TestForCollision(start, final);
-            if (collided)
-            {
-                transform.position += translation;
-                SwivelTransform.rotation *= addRotation;
-                return;
-            }
-
             // call collision events
             var firstCollisionArgs = new CollisionEventArgs(firstCollision.HitInfo);
             OnCollide.Invoke(firstCollisionArgs);

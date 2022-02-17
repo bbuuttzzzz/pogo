@@ -6,10 +6,11 @@ using UnityEngine.Events;
 public class KillTrigger : MonoBehaviour
 {
     public UnityEvent OnTriggered;
+    public KillType Type;
 
     private void OnTriggerEnter(Collider other)
     {
         OnTriggered.Invoke();
-        PogoGameManager.KillPlayer();
+        PogoGameManager.KillPlayer(Type);
     }
 }
