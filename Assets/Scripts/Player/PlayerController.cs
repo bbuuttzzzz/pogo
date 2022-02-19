@@ -222,6 +222,7 @@ public class PlayerController : MonoBehaviour
         Velocity = AirAccelerate(Velocity, airMove);
 
         ApplyForce(Physics.gravity * Time.deltaTime);
+        Debug.Log($"{Velocity.y:N3}\t{Time.deltaTime:N3}");
     }
 
     public void Jump(CollisionEventArgs args)

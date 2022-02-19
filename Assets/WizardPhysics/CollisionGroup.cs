@@ -47,7 +47,7 @@ namespace WizardPhysics
         {
             // rotate the full distance (+ skin) and check for collisions
             addRotation.ToAngleAxis(out float addAngle, out Vector3 addAxis);
-            if (addAngle < 0.0001f) return;
+            if (addAngle < 1E-8f) return;
 
             Quaternion skinnedAddRotation = Quaternion.AngleAxis(addAngle + rotationSkinDegrees, addAxis);
             CollisionGroupPositionRecording start = new CollisionGroupPositionRecording(transform, SwivelTransform, CollisionOrbs);
@@ -92,7 +92,7 @@ namespace WizardPhysics
         public void Move(Vector3 movement)
         {
             Vector3 remainingMovement = movement;
-            while (remainingMovement.magnitude >= skinWidth / 8)
+            while (remainingMovement.magnitude >= 1E-8f)
             {
                 float distance = remainingMovement.magnitude;
                 TestResult firstCollision = null;
