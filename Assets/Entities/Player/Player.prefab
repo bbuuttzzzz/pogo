@@ -1092,7 +1092,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8049285594771530900}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: DieFrom
+        m_MethodName: DieFromSurface
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1342,7 +1342,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   Center: {x: 0, y: 0, z: 0}
-  Radius: 0.1
+  Radius: 0.08
   CheckPassively: 0
 --- !u!1 &7112272247705662904
 GameObject:
@@ -1551,7 +1551,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8049285594771530900}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: DieFrom
+        m_MethodName: DieFromSurface
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1642,7 +1642,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   Center: {x: 0, y: 0, z: 0}
-  Radius: 0.1
+  Radius: 0.08
   CheckPassively: 0
 --- !u!1 &8049285592764507912
 GameObject:
@@ -2186,8 +2186,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8049285594771530898}
-  m_LocalRotation: {x: 0, y: -0.0000013411045, z: 0, w: 1}
-  m_LocalPosition: {x: -79, y: -10, z: 22}
+  m_LocalRotation: {x: 0, y: 0.70710796, z: 0, w: -0.70710564}
+  m_LocalPosition: {x: -56, y: -7.5, z: 7.9999847}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8049285594200099678}
@@ -2195,7 +2195,7 @@ Transform:
   - {fileID: 8049285594168896995}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8049285594771530900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2332,7 +2332,7 @@ MonoBehaviour:
   CollisionOrbs:
   - {fileID: 4590690700930264296}
   - {fileID: 5908074106086195938}
-  skinWidth: 0.01
+  skinWidth: 0.03
   SwivelTransform: {fileID: 8049285594818247008}
   OnCollide:
     m_PersistentCalls:
@@ -2627,7 +2627,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8049285594771530900}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: DieFrom
+        m_MethodName: DieFromSurface
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
