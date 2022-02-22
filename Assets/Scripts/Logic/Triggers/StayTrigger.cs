@@ -1,17 +1,18 @@
-﻿using UnityEngine;
+﻿using Logic;
+using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(Collider))]
 public class StayTrigger : MonoBehaviour
 {
-    public UnityEvent WhileInside;
+    public TriggedByColliderEvent WhileInside;
 
     bool triggeredThisFrame = false;
     private void OnTriggerStay(Collider other)
     {
         if (!triggeredThisFrame && CanTrigger(other))
         {
-            WhileInside.Invoke();
+            WhileInside.Invoke(other);
             triggeredThisFrame = true;
         }
     }
