@@ -226,15 +226,18 @@ public class PlayerController : MonoBehaviour
 
     public void Jump(CollisionEventArgs args)
     {
-        var surfaceConfig = GetSurfacePropertyFromCollision(args.HitInfo);
-        var sound = surfaceConfig.RandomSound;
+        SurfaceConfig surfaceConfig = GetSurfacePropertyFromCollision(args.HitInfo);
+        AudioClip sound = surfaceConfig.RandomSound;
         if (sound != null) AudioController.PlayOneShot(sound);
 
+        // jump away from the surface
         Accelerate(args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
         if (surfaceConfig.JumpForceMultiplier > 0)
         {
+            // jump up based on the player's rotation
             Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
         }
+        // apply a speedcap on tangent velocity
         //Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
     }
 
