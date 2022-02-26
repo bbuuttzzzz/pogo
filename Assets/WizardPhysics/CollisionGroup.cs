@@ -36,6 +36,8 @@ namespace WizardPhysics
             }
 
             rotationSkinDegrees = 360 * skinWidth / (2 * Mathf.PI * minRadius);
+
+            OnCollide.AddListener(checkForTriggers);
         }
 
         public void RotateTo(Quaternion targetRotation)
@@ -137,6 +139,17 @@ namespace WizardPhysics
                 }
             }
         }
+
+        #region Collision
+        private void checkForTriggers(CollisionEventArgs args)
+        {
+            CollisionOrbTrigger orbTrigger = args.HitInfo.collider.GetComponent<CollisionOrbTrigger>();
+            if (orbTrigger != null)
+            {
+                orbTrigger.OnActivated.Invoke(args);
+            }
+        }
+        #endregion
 
         #region Helper Functions
         private void ApplyRecording(CollisionGroupPositionRecording recording)
@@ -243,8 +256,7 @@ namespace WizardPhysics
             }
             throw new MissingMemberException();
         }
-
-#endregion
+        #endregion
 
         class TestResult
         {

@@ -20,7 +20,7 @@ namespace Pogo
         }
 
         LevelDescriptor currentLevel;
-
+#if UNITY_EDITOR
         public void LoadLevelInEditor(LevelDescriptor newLevel)
         {
             (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(newLevel);
@@ -47,6 +47,7 @@ namespace Pogo
             var newAtmosphere = newAtmosphereObj.GetComponent<Atmosphere>();
             newAtmosphere.SetWeightFromEditor(1);
         }
+#endif
 
         public void LoadLevelInstantly(LevelDescriptor newLevel)
         {

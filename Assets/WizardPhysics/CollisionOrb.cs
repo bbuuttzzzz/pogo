@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,19 @@ namespace WizardPhysics
         {
             cachedLayerMask = LAYERMASK.MaskForLayer(gameObject.layer);
             Disjoint();
+            if (CheckPassively)
+            {
+                OnCollisionEnter.AddListener(CheckForTriggers);
+            }
+        }
+
+        public void CheckForTriggers(CollisionEventArgs args)
+        {
+            CollisionOrbTrigger orbTrigger = args.HitInfo.collider.GetComponent<CollisionOrbTrigger>();
+            if (orbTrigger != null)
+            {
+                orbTrigger.OnActivated.Invoke(args);
+            }
         }
 
         private void Update()
