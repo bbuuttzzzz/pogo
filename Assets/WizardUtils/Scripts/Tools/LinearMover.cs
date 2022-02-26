@@ -67,8 +67,7 @@ public class LinearMover : MonoBehaviour
     {
         foreach(Vector3 localPosition in Waypoints)
         {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawIcon(transform.TransformPoint(localPosition), "sp_flag.tiff");
+            Gizmos.DrawIcon(transform.TransformPoint(localPosition), "sp_flag.tiff", false, Color.blue);
         }
     }
 }
