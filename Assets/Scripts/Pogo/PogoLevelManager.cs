@@ -5,15 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WizardUtils;
 
 namespace Pogo
 {
     public class PogoLevelManager : MonoBehaviour
     {
+        public bool LoadInitialLevelImmediately = true;
+
         void Start()
         {
             PogoGameManager game = GetComponent<PogoGameManager>();
-            if (!game.dontLoadLevelsInEditor && game.InitialLevel != null)
+            if (LoadInitialLevelImmediately && !game.DontLoadScenesInEditor && game.InitialLevel != null)
             {
                 LoadLevelInstantly(game.InitialLevel);
             }
@@ -88,13 +91,13 @@ namespace Pogo
             foreach (LevelDescriptor descriptor in scenesToLoad)
             {
                 var task = SceneManager.LoadSceneAsync(descriptor.BuildIndex, LoadSceneMode.Additive);
-                tasks.Add(task);
+                if (task != null) tasks.Add(task);
             }
 
             foreach(Scene scene in scenesToUnload)
             {
                 var task = SceneManager.UnloadSceneAsync(scene);
-                tasks.Add(task);
+                if (task != null) tasks.Add(task);
             }
 
             TransitionAtmosphere(newLevel, false);

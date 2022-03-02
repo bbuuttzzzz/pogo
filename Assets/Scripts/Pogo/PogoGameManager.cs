@@ -16,6 +16,7 @@ namespace Pogo
         protected override void Awake()
         {
             base.Awake();
+            if (GameInstance != this) return;
 
             levelManager = GetComponent<PogoLevelManager>();
             RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
@@ -35,8 +36,7 @@ namespace Pogo
             }
         }
 
-#region Level Management
-        [Tooltip("In the editor, don't do any level loading")] public bool dontLoadLevelsInEditor;
+        #region Level Management
 
         PogoLevelManager levelManager;
         [HideInInspector]
@@ -45,8 +45,9 @@ namespace Pogo
         public void LoadLevel(LevelDescriptor newLevel)
         {
 #if UNITY_EDITOR
-            if (dontLoadLevelsInEditor) return;
+            if (DontLoadScenesInEditor) return;
 #endif
+            UnloadControlScene();
             levelManager.LoadLevelAsync(newLevel, (tasks) => StartCoroutine(onCheckLevelProgress(tasks)));
         }
 

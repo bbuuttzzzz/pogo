@@ -20,10 +20,12 @@ public class PlayerController : MonoBehaviour
         collisionGroup = GetComponent<CollisionGroup>();    
     }
 
+
     void Start()
     {
         PogoGameManager.RegisterPlayer(this);
         PogoGameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
+        PogoGameManager.GameInstance.OnControlSceneChanged += onControlSceneChanged;
         loadSurfaceProperties();
 
         var sensitivitySetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_SENSITIVITY);
@@ -39,6 +41,15 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.identity;
 
         collisionGroup.OnCollide.AddListener(onCollide);
+
+        gameObject.SetActive(PogoGameManager.GameInstance.InControlScene);
+        setControlSceneBehavior(PogoGameManager.GameInstance.InControlScene);
+    }
+
+    private void OnDestroy()
+    {
+        PogoGameManager.GameInstance.OnPauseStateChanged -= onPauseStateChanged;
+        PogoGameManager.GameInstance.OnControlSceneChanged -= onControlSceneChanged;
     }
 
     private void onInvertYChanged(object sender, GameSettingChangedEventArgs e)
@@ -152,8 +163,15 @@ public class PlayerController : MonoBehaviour
     }
     public void Die(KillType killType = null)
     {
-        transform.position = PogoGameManager.PogoInstance.RespawnPoint.position;
-        internalEyeAngles = new Vector3(0, PogoGameManager.PogoInstance.RespawnPoint.rotation.eulerAngles.y, 0);
+        if (PogoGameManager.PogoInstance.RespawnPoint != null)
+        {
+            transform.position = PogoGameManager.PogoInstance.RespawnPoint.position;
+            internalEyeAngles = new Vector3(0, PogoGameManager.PogoInstance.RespawnPoint.rotation.eulerAngles.y, 0);
+        }
+        else
+        {
+            Debug.LogError($"Missing {nameof(PogoGameManager.PogoInstance.RespawnPoint)}");
+        }
         Model.rotation = DesiredModelRotation;
 
         Velocity = Vector3.zero;
@@ -164,6 +182,17 @@ public class PlayerController : MonoBehaviour
         {
             AudioController.PlayOneShot(killType.RandomSound);
         }
+    }
+
+    private void onControlSceneChanged(object sender, ControlSceneEventArgs e)
+    {
+        setControlSceneBehavior(e.InControlScene);
+    }
+
+    void setControlSceneBehavior(bool inControlScene)
+    {
+        gameObject.SetActive(!inControlScene);
+        UpdateCursorLock(inControlScene);
     }
 
     private void onPauseStateChanged(object sender, bool e)

@@ -5,16 +5,12 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using WizardUtils;
 
 [CustomEditor(typeof(PogoGameManager))]
-public class PogoGameManagerEditor : Editor
+public class PogoGameManagerEditor : GameManagerEditor
 {
     PogoGameManager self;
-
-    public override VisualElement CreateInspectorGUI()
-    {
-        return base.CreateInspectorGUI();
-    }
 
     public override void OnInspectorGUI()
     {
@@ -33,6 +29,7 @@ public class PogoGameManagerEditor : Editor
                 {
                     self.InitialLevel = level;
                     self.GetComponent<PogoLevelManager>().LoadLevelInEditor(level);
+                    self.CurrentControlScene = null;
                 });
             }
             menu.DropDown(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 0f, 0f));

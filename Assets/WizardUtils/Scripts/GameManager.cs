@@ -1,11 +1,14 @@
 ﻿using Inputter;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace WizardUtils
 {
@@ -81,6 +84,110 @@ namespace WizardUtils
         #endregion
 
         #region Scenes
+        static readonly int[] ignoredScenes =
+        {
+            0 // this is GameScene
+        };
+
+        public EventHandler<ControlSceneEventArgs> OnControlSceneChanged;
+        public bool InControlScene => CurrentControlScene != null;
+        public bool InGameScene => CurrentControlScene = null;
+
+        public ControlSceneDescriptor MainMenuControlScene;
+        [HideInInspector]
+        public ControlSceneDescriptor CurrentControlScene;
+
+#if UNITY_EDITOR
+        public void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
+        {
+            bool newSceneAlreadyLoaded = false;
+            List<Scene> scenesToUnload = new List<Scene>();
+            for (int n = 0; n < SceneManager.sceneCount; n++)
+            {
+                Scene scene = SceneManager.GetSceneAt(n);
+                if (!ignoredScenes.Contains(scene.buildIndex))
+                {
+                    if (scene.buildIndex == newScene.BuildIndex)
+                    {
+                        newSceneAlreadyLoaded = true;
+                    }
+                    else
+                    {
+                        scenesToUnload.Add(scene);
+                    }
+                }
+            }
+
+            // load the control scene
+            if (!newSceneAlreadyLoaded)
+            {
+                EditorSceneManager.OpenScene(newScene.ScenePath, OpenSceneMode.Additive);
+                CurrentControlScene = newScene;
+            }
+
+            // unload all non-ignored scenes
+            foreach (Scene scene in scenesToUnload)
+            {
+                EditorSceneManager.CloseScene(scene, true);
+            }
+        }
+#endif
+
+        public void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
+        {
+            if (DontLoadScenesInEditor) return;
+            List<AsyncOperation> tasks = new List<AsyncOperation>();
+
+            bool newSceneAlreadyLoaded = false;
+            List<Scene> scenesToUnload = new List<Scene>();
+            for (int n = 0; n < SceneManager.sceneCount; n++)
+            {
+                Scene scene = SceneManager.GetSceneAt(n);
+                if (!ignoredScenes.Contains(scene.buildIndex))
+                {
+                    if (scene.buildIndex == newScene.BuildIndex)
+                    {
+                        newSceneAlreadyLoaded = true;
+                    }
+                    else
+                    {
+                        scenesToUnload.Add(scene);
+                    }
+                }
+            }
+
+            // load the control scene
+            if (!newSceneAlreadyLoaded)
+            {
+                tasks.Add(SceneManager.LoadSceneAsync(newScene.BuildIndex, LoadSceneMode.Additive));
+                CurrentControlScene = newScene;
+            }
+
+            // unload all non-ignored scenes
+            foreach (Scene scene in scenesToUnload)
+            {
+                AsyncOperation task = SceneManager.UnloadSceneAsync(scene);
+                if (task != null)
+                {
+                    tasks.Add(task);
+                }
+                else
+                {
+                    Debug.LogWarning($"error unloading scene {scene.name}");
+                }
+            }
+
+            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(newScene));
+            callback?.Invoke(tasks);
+        }
+
+        public void UnloadControlScene()
+        {
+            SceneManager.UnloadSceneAsync(CurrentControlScene.BuildIndex);
+            CurrentControlScene = null;
+            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(null));
+        }
+
         public void Quit(bool hardQuit)
         {
 #if UNITY_EDITOR
@@ -91,10 +198,12 @@ namespace WizardUtils
             Application.Quit();
 #endif
         }
-#endregion
+        #endregion
 
 #region GameSettings
         List<GameSettingFloat> GameSettings;
+
+        public bool DontLoadScenesInEditor;
 
         protected void RegisterGameSetting(GameSettingFloat setting)
         {
