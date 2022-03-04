@@ -194,13 +194,23 @@ namespace WizardUtils
 
         public void Quit(bool hardQuit)
         {
+            if (hardQuit)
+            {
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+                UnityEditor.EditorApplication.isPlaying = false;
 #elif UNITY_WEBGL
-            Debug.LogError("Can't quit in web builds!!! D:");
+                Debug.LogError("Can't quit in web builds!!! D:");
 #else
-            Application.Quit();
+                Application.Quit();
 #endif
+            }
+            else
+            {
+                if (!InControlScene)
+                {
+                    LoadControlScene(MainMenuControlScene);
+                }
+            }
         }
         #endregion
 

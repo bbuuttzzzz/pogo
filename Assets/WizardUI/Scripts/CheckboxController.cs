@@ -39,10 +39,5 @@ namespace WizardUI
         {
             Toggled = toggledFloat == 1;
         }
-
-        private void OnValidate()
-        {
-            Toggled = Toggled;
-        }
     }
 }

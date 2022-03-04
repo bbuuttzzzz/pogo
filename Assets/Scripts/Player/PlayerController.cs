@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
 
         var invertYSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_INVERT);
         invertYSetting.OnChanged += onInvertYChanged;
-        SENS_PITCH_SCALE = 0.8f * invertYSetting.Value;
+        SENS_PITCH_SCALE = 0.8f * convertInvertYSetting(invertYSetting.Value);
 
         UpdateCursorLock(PogoGameManager.Paused);
         internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
@@ -46,6 +46,11 @@ public class PlayerController : MonoBehaviour
         setControlSceneBehavior(PogoGameManager.GameInstance.InControlScene);
     }
 
+    private static int convertInvertYSetting(float settingValue)
+    {
+        return settingValue == 1 ? -1 : 1;
+    }
+
     private void OnDestroy()
     {
         PogoGameManager.GameInstance.OnPauseStateChanged -= onPauseStateChanged;
@@ -54,7 +59,7 @@ public class PlayerController : MonoBehaviour
 
     private void onInvertYChanged(object sender, GameSettingChangedEventArgs e)
     {
-        SENS_PITCH_SCALE = 0.8f * e.FinalValue;
+        SENS_PITCH_SCALE = 0.8f * convertInvertYSetting(e.FinalValue);
     }
 
     private void onSensitivityChanged(object sender, GameSettingChangedEventArgs e)

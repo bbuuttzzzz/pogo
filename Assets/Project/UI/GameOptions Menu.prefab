@@ -1194,7 +1194,19 @@ MonoBehaviour:
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7172497701472556191}
+        m_TargetAssemblyTypeName: WizardUI.GameSettingChanger, Assembly-CSharp
+        m_MethodName: SetValue
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7172497701472556188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1676,6 +1688,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: LabelledSlider
       objectReference: {fileID: 0}
+    - target: {fileID: 1702999103011901501, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
+      propertyPath: OnValueLoaded.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702999103011901501, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
+      propertyPath: OnValueLoaded.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702999103011901501, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
+      propertyPath: OnValueLoaded.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7172497700687298269}
+    - target: {fileID: 1702999103011901501, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
+      propertyPath: OnValueLoaded.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702999103011901501, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
+      propertyPath: OnValueLoaded.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_value
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702999103011901501, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
+      propertyPath: OnValueLoaded.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.UI.Slider, UnityEngine.UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702999103011901501, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
+      propertyPath: OnValueLoaded.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5612502098102262319, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetValue
+      objectReference: {fileID: 0}
     - target: {fileID: 5612502098198552740, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1775,3 +1819,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7987360684734668660, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
   m_PrefabInstance: {fileID: 3344565131299300594}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7172497700687298269 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5612502098102262319, guid: 5c6aedf14fb141b4594b3663cefca4a2, type: 3}
+  m_PrefabInstance: {fileID: 3344565131299300594}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

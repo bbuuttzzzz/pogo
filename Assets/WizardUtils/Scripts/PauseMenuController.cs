@@ -8,15 +8,9 @@ namespace WizardUtils
     {
         public GameObject PauseScreen;
 
-        public Button QuitButton;
-        public Button ResumeButton;
-
-
         protected virtual void Start()
         {
             GameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
-            ResumeButton?.onClick.AddListener(onResumeClicked);
-            QuitButton?.onClick.AddListener(onQuitClicked);
         }
 
         protected virtual void onPauseStateChanged(object sender, bool nowPaused)
@@ -24,14 +18,14 @@ namespace WizardUtils
             PauseScreen?.SetActive(nowPaused);
         }
 
-
-        private void onResumeClicked()
+        public void Resume()
         {
             GameManager.Paused = false;
         }
 
-        private void onQuitClicked()
+        public void ReturnToMainMenu()
         {
+            Resume();
             GameManager.GameInstance?.Quit(false);
         }
 
