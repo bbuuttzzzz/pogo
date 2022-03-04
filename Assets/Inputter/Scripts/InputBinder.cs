@@ -64,7 +64,6 @@ namespace Inputter
 #if UNITY_EDITOR
             Keys[KeyName.Pause] = new KeyboardButton(keyboard, Key.Backquote);
 #else
-            Keys[KeyName.Pause] = new KeyboardButton(keyboard, Key.Backquote);
             Keys[KeyName.Pause] = new KeyboardButton(keyboard, Key.Escape);
 #endif
 

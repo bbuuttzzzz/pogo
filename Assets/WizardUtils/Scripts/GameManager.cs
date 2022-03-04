@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -125,14 +124,14 @@ namespace WizardUtils
             // load the control scene
             if (!newSceneAlreadyLoaded)
             {
-                EditorSceneManager.OpenScene(newScene.ScenePath, OpenSceneMode.Additive);
+                UnityEditor.SceneManagement.EditorSceneManager.OpenScene(newScene.ScenePath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
                 CurrentControlScene = newScene;
             }
 
             // unload all non-ignored scenes
             foreach (Scene scene in scenesToUnload)
             {
-                EditorSceneManager.CloseScene(scene, true);
+                UnityEditor.SceneManagement.EditorSceneManager.CloseScene(scene, true);
             }
         }
 #endif

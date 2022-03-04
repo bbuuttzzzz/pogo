@@ -111,6 +111,10 @@ namespace Pogo
 
         public override void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
         {
+            if (levelManager != null)
+            {
+                levelManager.ResetLoadedLevel();
+            }
             base.LoadControlScene(newScene, callback);
         }
 
