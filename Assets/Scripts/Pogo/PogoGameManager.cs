@@ -23,6 +23,11 @@ namespace Pogo
             RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
             RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
             RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 1f));
+
+#if UNITY_EDITOR
+#else
+            LoadControlScene(MainMenuControlScene);       
+#endif
         }
         protected override void Update()
         {
@@ -31,13 +36,13 @@ namespace Pogo
             {
                 KillPlayer();
             }
-            if (InputManager.CheckKeyDown(KeyName.Pause))
+            if (InputManager.CheckKeyDown(KeyName.Pause) && !InControlScene)
             {
                 Paused = !Paused;
             }
         }
 
-        #region Level Management
+#region Level Management
 
         PogoLevelManager levelManager;
         [HideInInspector]
@@ -121,13 +126,13 @@ namespace Pogo
         public Transform InitialRespawnPoint;
         [HideInInspector]
         public Transform RespawnPoint;
-        #endregion
+#endregion
 
-        #region Settings
+#region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
         public static string KEY_INVERT = "InvertY";
-        #endregion
+#endregion
 
     }
 }
