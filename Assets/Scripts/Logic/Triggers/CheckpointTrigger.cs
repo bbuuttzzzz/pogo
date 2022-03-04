@@ -7,7 +7,7 @@ public class CheckpointTrigger : Trigger
 {
     public Transform RespawnPoint;
 
-    public override bool CanTrigger(Collider other)
+    public override bool ColliderCanTrigger(Collider other)
     {
         return PogoGameManager.TryRegisterRespawnPoint(RespawnPoint);
     }

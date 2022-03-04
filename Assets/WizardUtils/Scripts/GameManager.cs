@@ -137,7 +137,7 @@ namespace WizardUtils
         }
 #endif
 
-        public void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
+        public virtual void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
         {
             if (DontLoadScenesInEditor) return;
             List<AsyncOperation> tasks = new List<AsyncOperation>();

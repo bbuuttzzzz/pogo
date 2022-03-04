@@ -105,6 +105,11 @@ namespace Pogo
             if (callback != null) callback(tasks);
         }
 
+        internal void ResetLoadedLevel()
+        {
+            currentLevel = null;
+        }
+
         #region Scenes
         static readonly int[] ignoredScenes =
         {

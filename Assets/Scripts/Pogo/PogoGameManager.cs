@@ -18,6 +18,7 @@ namespace Pogo
             base.Awake();
             if (GameInstance != this) return;
 
+            RespawnPoint = InitialRespawnPoint;
             levelManager = GetComponent<PogoLevelManager>();
             RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
             RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
@@ -47,7 +48,7 @@ namespace Pogo
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
 #endif
-            UnloadControlScene();
+            if (CurrentControlScene != null) UnloadControlScene();
             levelManager.LoadLevelAsync(newLevel, (tasks) => StartCoroutine(onCheckLevelProgress(tasks)));
         }
 
@@ -108,10 +109,17 @@ namespace Pogo
 
         }
 
-        public Transform RespawnPoint;
-#endregion
+        public override void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
+        {
+            base.LoadControlScene(newScene, callback);
+        }
 
-#region Settings
+        public Transform InitialRespawnPoint;
+        [HideInInspector]
+        public Transform RespawnPoint;
+        #endregion
+
+        #region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
         public static string KEY_INVERT = "InvertY";

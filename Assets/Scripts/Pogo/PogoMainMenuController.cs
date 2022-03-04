@@ -13,6 +13,8 @@ namespace Pogo
         public void LoadInitialLevel()
         {
             PogoGameManager.PogoInstance.LoadLevel(InitialLevel);
+            PogoGameManager.TryRegisterRespawnPoint(PogoGameManager.PogoInstance.InitialRespawnPoint);
+            PogoGameManager.KillPlayer();
         }
     }
 }
