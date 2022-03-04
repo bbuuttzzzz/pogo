@@ -114,8 +114,8 @@ namespace Pogo
 #region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
-        public static string KEY_INVERT = "Invert";
-#endregion
+        public static string KEY_INVERT = "InvertY";
+        #endregion
 
     }
 }

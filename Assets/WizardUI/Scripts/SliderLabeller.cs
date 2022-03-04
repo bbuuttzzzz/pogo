@@ -8,8 +8,10 @@ public class SliderLabeller : MonoBehaviour
     public Text MinLabel;
     public Text MaxLabel;
     public Text DisplayLabel;
+    public string LabelDisplayFormat = "N0";
 
     Slider slider;
+
 
     private void OnValidate()
     {
@@ -26,22 +28,22 @@ public class SliderLabeller : MonoBehaviour
 
     private void onDisplayValueChanged(float displayValue)
     {
-        DisplayLabel.text = displayValue.ToString();
+        DisplayLabel.text = displayValue.ToString(LabelDisplayFormat);
     }
 
     private void fixLabels()
     {
         if (MinLabel != null)
         {
-            MinLabel.text = slider.minValue.ToString();
+            MinLabel.text = slider.minValue.ToString(LabelDisplayFormat);
         }
         if (MaxLabel != null)
         {
-            MaxLabel.text = slider.maxValue.ToString();
+            MaxLabel.text = slider.maxValue.ToString(LabelDisplayFormat);
         }
         if (DisplayLabel != null)
         {
-            DisplayLabel.text = slider.value.ToString();
+            DisplayLabel.text = slider.value.ToString(LabelDisplayFormat);
         }
     }
 }

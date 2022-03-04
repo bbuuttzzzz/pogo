@@ -17,7 +17,6 @@ namespace WizardEffects.Inspector
             {
                 self.UpdateEffect();
                 Undo.RecordObject(self, "Update Effect");
-
             }
         }
     }

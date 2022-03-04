@@ -26,6 +26,10 @@ namespace WizardUtils
             GameInstance = this;
             DontDestroyOnLoad(gameObject);
             GameSettings = new List<GameSettingFloat>();
+
+            RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_MASTER, 100));
+            RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_EFFECTS, 80));
+            RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_AMBIENCE, 80));
         }
 
         protected virtual void Update()
@@ -193,14 +197,14 @@ namespace WizardUtils
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #elif UNITY_WEBGL
-
+            Debug.LogError("Can't quit in web builds!!! D:");
 #else
             Application.Quit();
 #endif
         }
         #endregion
 
-#region GameSettings
+        #region GameSettings
         List<GameSettingFloat> GameSettings;
 
         public bool DontLoadScenesInEditor;
@@ -221,6 +225,10 @@ namespace WizardUtils
             }
             throw new KeyNotFoundException($"Missing GameSetting \"{key}\"");
         }
+
+        public static string KEY_VOLUME_MASTER = "Volume_Master";
+        public static string KEY_VOLUME_EFFECTS = "Volume_Effects";
+        public static string KEY_VOLUME_AMBIENCE = "Volume_Ambience";
 #endregion
     }
 }
