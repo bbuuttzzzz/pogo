@@ -22,7 +22,9 @@ namespace Pogo
             levelManager = GetComponent<PogoLevelManager>();
             RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
             RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
-            RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 1f));
+            RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 0f));
+
+            OnPlayerDeath.AddListener(() => NumberOfDeaths++);
 
 #if UNITY_EDITOR
 #else
@@ -48,11 +50,13 @@ namespace Pogo
         [HideInInspector]
         public LevelDescriptor InitialLevel;
 
-        public void LoadLevel(LevelDescriptor newLevel)
+        public void LoadLevel(LevelDescriptor newLevel, bool isFirstLoad = false)
         {
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
 #endif
+            if (isFirstLoad) ResetStats();
+
             if (CurrentControlScene != null) UnloadControlScene();
             levelManager.LoadLevelAsync(newLevel, (tasks) => StartCoroutine(onCheckLevelProgress(tasks)));
         }
@@ -128,11 +132,23 @@ namespace Pogo
         public Transform RespawnPoint;
 #endregion
 
-#region Settings
+        #region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
         public static string KEY_INVERT = "InvertY";
-#endregion
+        #endregion
 
+        #region Stats
+        public int SecretsFoundCount;
+        public int NumberOfDeaths;
+        public float GameStartTime;
+
+        public void ResetStats()
+        {
+            SecretsFoundCount = 0;
+            NumberOfDeaths = 0;
+            GameStartTime = Time.time;
+        }
+        #endregion
     }
 }
