@@ -55,35 +55,50 @@ namespace Pogo
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
 #endif
-            if (isFirstLoad) ResetStats();
-
-            if (CurrentControlScene != null) UnloadControlScene();
-            levelManager.LoadLevelAsync(newLevel, (tasks) => StartCoroutine(onCheckLevelProgress(tasks)));
+            bool loadingFromMenu = CurrentControlScene != null;
+            levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(onCheckLevelProgress(levelLoadingData, loadingFromMenu)));
         }
 
-        IEnumerator onCheckLevelProgress(List<AsyncOperation> tasks)
+        IEnumerator onCheckLevelProgress(LevelLoadingData levelLoadingData, bool loadingFromMenu)
         {
+            foreach(AsyncOperation task in levelLoadingData.LoadingSceneTasks)
+            {
+                task.allowSceneActivation = false;
+            }
+
             bool finished = false;
             while( !finished )
             {
                 float progress = 0;
                 finished = true;
 
-                foreach(AsyncOperation Task in tasks)
+                string txt = "";
+                foreach(AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
                 {
-                    progress += Task.progress;
-                    finished = finished && Task.isDone;
+                    progress += Task.isDone ? 1 : Task.progress / 0.9f;
+                    finished = finished && (Task.progress >= 0.9f || Task.isDone);
+                    txt = txt + Task.progress + " ";
                 }
 
-                progress /= tasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2}");
+                progress /= levelLoadingData.LoadingSceneTasks.Count;
+                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
 
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.02f);
+            }
+
+            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
+            {
+                task.allowSceneActivation = true;
+            }
+            if (loadingFromMenu)
+            {
+                UnloadControlScene();
+                ResetStats();
             }
         }
-#endregion
+        #endregion
 
-#region Player
+        #region Player
         private PlayerController player;
         public PlayerController Player => player;
 

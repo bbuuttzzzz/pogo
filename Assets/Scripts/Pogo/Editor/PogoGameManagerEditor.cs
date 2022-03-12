@@ -10,12 +10,11 @@ using WizardUtils;
 [CustomEditor(typeof(PogoGameManager))]
 public class PogoGameManagerEditor : GameManagerEditor
 {
-    PogoGameManager self;
+    new PogoGameManager self => base.self as PogoGameManager;
 
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        self = target as PogoGameManager;
 
         if (EditorGUILayout.DropdownButton(new GUIContent("Change Level to..."), FocusType.Passive))
         {
@@ -28,6 +27,7 @@ public class PogoGameManagerEditor : GameManagerEditor
                 menu.AddItem(new GUIContent(level.name), level == self.InitialLevel, () =>
                 {
                     self.InitialLevel = level;
+                    self.UnloadControlSceneInEditor();
                     self.GetComponent<PogoLevelManager>().LoadLevelInEditor(level);
                     self.CurrentControlScene = null;
                 });

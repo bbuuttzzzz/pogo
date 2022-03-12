@@ -76,7 +76,7 @@ namespace Pogo
             TransitionAtmosphere(newLevel, true);
         }
 
-        public void LoadLevelAsync(LevelDescriptor newLevel, Action<List<AsyncOperation>> callback = null)
+        public void LoadLevelAsync(LevelDescriptor newLevel, Action<LevelLoadingData> callback = null)
         {
             if (currentLevel == newLevel)
             {
@@ -85,24 +85,25 @@ namespace Pogo
             }
             currentLevel = newLevel;
 
-            List<AsyncOperation> tasks = new List<AsyncOperation>();
+            List<AsyncOperation> loadTasks = new List<AsyncOperation>();
+            List<AsyncOperation> unloadTasks = new List<AsyncOperation>();
             (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(newLevel);
 
             foreach (LevelDescriptor descriptor in scenesToLoad)
             {
                 var task = SceneManager.LoadSceneAsync(descriptor.BuildIndex, LoadSceneMode.Additive);
-                if (task != null) tasks.Add(task);
+                if (task != null) loadTasks.Add(task);
             }
 
             foreach(Scene scene in scenesToUnload)
             {
                 var task = SceneManager.UnloadSceneAsync(scene);
-                if (task != null) tasks.Add(task);
+                if (task != null) unloadTasks.Add(task);
             }
 
             TransitionAtmosphere(newLevel, false);
 
-            if (callback != null) callback(tasks);
+            if (callback != null) callback(new LevelLoadingData(loadTasks, unloadTasks));
         }
 
         internal void ResetLoadedLevel()
@@ -111,10 +112,6 @@ namespace Pogo
         }
 
         #region Scenes
-        static readonly int[] ignoredScenes =
-        {
-            0 // this is GameScene
-        };
 
         static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) getSceneDifference(LevelDescriptor newLevel)
         {
@@ -125,7 +122,7 @@ namespace Pogo
             for (int n = 0; n < SceneManager.sceneCount; n++)
             {
                 Scene scene = SceneManager.GetSceneAt(n);
-                if (ignoredScenes.Contains(scene.buildIndex)) continue;
+                if (GameManager.ignoredScenes.Contains(scene.buildIndex)) continue;
 
                 LevelDescriptor matchingLevel = null;
 

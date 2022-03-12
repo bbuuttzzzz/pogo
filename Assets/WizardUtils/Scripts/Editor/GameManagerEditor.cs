@@ -12,7 +12,7 @@ namespace WizardUtils
     [CustomEditor(typeof(GameManager))]
     public class GameManagerEditor : Editor
     {
-        GameManager self;
+        protected GameManager self;
 
         public override void OnInspectorGUI()
         {

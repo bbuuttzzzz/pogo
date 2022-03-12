@@ -87,9 +87,10 @@ namespace WizardUtils
         #endregion
 
         #region Scenes
-        static readonly int[] ignoredScenes =
+        public static readonly int[] ignoredScenes =
         {
-            0 // this is GameScene
+            0, // this is GameScene
+            7, // this is MainMenu
         };
 
         public EventHandler<ControlSceneEventArgs> OnControlSceneChanged;
@@ -101,6 +102,22 @@ namespace WizardUtils
         public ControlSceneDescriptor CurrentControlScene;
 
 #if UNITY_EDITOR
+        public void UnloadControlSceneInEditor()
+        {
+            List<Scene> scenesToUnload = new List<Scene>();
+            for (int n = 0; n < SceneManager.sceneCount; n++)
+            {
+                Scene scene = SceneManager.GetSceneAt(n);
+                if (scene.buildIndex == CurrentControlScene.BuildIndex)
+                {
+                    UnityEditor.SceneManagement.EditorSceneManager.CloseScene(scene, true);
+                    CurrentControlScene = null;
+                    break;
+                }
+            }
+
+        }
+
         public void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
         {
             bool newSceneAlreadyLoaded = false;
