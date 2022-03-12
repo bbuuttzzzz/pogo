@@ -44,11 +44,20 @@ namespace Pogo
             }
         }
 
-#region Level Management
-
+        #region Level Management
         PogoLevelManager levelManager;
         [HideInInspector]
         public LevelDescriptor InitialLevel;
+
+#if UNITY_EDITOR
+        public override void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
+        {
+            base.LoadControlSceneInEditor(newScene);
+            var levelManager = GetComponent<PogoLevelManager>();
+
+            levelManager.LoadDefaultAtmosphere();
+        }
+#endif
 
         public void LoadLevel(LevelDescriptor newLevel, bool isFirstLoad = false)
         {
@@ -116,36 +125,36 @@ namespace Pogo
         public UnityEvent OnPlayerDeath;
 #endregion
 
-#region Respawn Point
-        public static bool TryRegisterRespawnPoint(Transform newRespawnPoint)
-        {
-            if (PogoInstance == null)
+    #region Respawn Point
+            public static bool TryRegisterRespawnPoint(Transform newRespawnPoint)
             {
-                Debug.LogWarning("Tried to register a RespawnPoint with no CheckpointManager");
-                return false;
+                if (PogoInstance == null)
+                {
+                    Debug.LogWarning("Tried to register a RespawnPoint with no CheckpointManager");
+                    return false;
+                }
+
+                if (newRespawnPoint == PogoInstance.RespawnPoint) return false;
+
+                PogoInstance.RespawnPoint = newRespawnPoint;
+
+                return true;
+
             }
 
-            if (newRespawnPoint == PogoInstance.RespawnPoint) return false;
-
-            PogoInstance.RespawnPoint = newRespawnPoint;
-
-            return true;
-
-        }
-
-        public override void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
-        {
-            if (levelManager != null)
+            public override void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
             {
-                levelManager.ResetLoadedLevel();
+                if (levelManager != null)
+                {
+                    levelManager.ResetLoadedLevel();
+                }
+                base.LoadControlScene(newScene, callback);
             }
-            base.LoadControlScene(newScene, callback);
-        }
 
-        public Transform InitialRespawnPoint;
-        [HideInInspector]
-        public Transform RespawnPoint;
-#endregion
+            public Transform InitialRespawnPoint;
+            [HideInInspector]
+            public Transform RespawnPoint;
+    #endregion
 
         #region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";

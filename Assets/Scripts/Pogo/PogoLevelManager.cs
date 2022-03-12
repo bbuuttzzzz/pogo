@@ -16,9 +16,18 @@ namespace Pogo
         void Start()
         {
             PogoGameManager game = GetComponent<PogoGameManager>();
+            game.OnControlSceneChanged += onControlSceneChanged;
             if (LoadInitialLevelImmediately && !game.DontLoadScenesInEditor && game.InitialLevel != null)
             {
                 LoadLevelInstantly(game.InitialLevel);
+            }
+        }
+
+        private void onControlSceneChanged(object sender, ControlSceneEventArgs e)
+        {
+            if (e.InitialScene == null)
+            {
+                LoadDefaultAtmosphere();
             }
         }
 
@@ -152,6 +161,12 @@ namespace Pogo
 
         #region Atmosphere
         public Transform AtmosphereParent;
+        public GameObject DefaultPostProcessingPrefab;
+
+        public void LoadDefaultAtmosphere()
+        {
+            TransitionAtmosphere(DefaultPostProcessingPrefab, true);
+        }
 
         Atmosphere[] getExistingAtmospheres()
         {
@@ -160,17 +175,44 @@ namespace Pogo
 
         void TransitionAtmosphere(LevelDescriptor newLevel, bool instant)
         {
+            TransitionAtmosphere(newLevel.PostProcessingPrefab, instant);
+        }
+
+        void TransitionAtmosphere(GameObject Prefab, bool instant)
+        {
             // remove existing atmospheres
             var atmospheres = getExistingAtmospheres();
-            foreach(Atmosphere atmosphere in atmospheres)
+            foreach (Atmosphere atmosphere in atmospheres)
             {
+#if UNITY_EDITOR
+                if (!UnityEditor.EditorApplication.isPlaying)
+                {
+                    DestroyImmediate(atmosphere.gameObject);
+                }
+                else
+                {
+                    atmosphere.DisableAndDestroy(instant);
+                }
+#else
                 atmosphere.DisableAndDestroy(instant);
+#endif
             }
 
             // add new atmosphere
-            var newAtmosphereObj = Instantiate(newLevel.PostProcessingPrefab, AtmosphereParent);
+            var newAtmosphereObj = Instantiate(Prefab, AtmosphereParent);
             var newAtmosphere = newAtmosphereObj.GetComponent<Atmosphere>();
+#if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlaying)
+            {
+                newAtmosphere.SetWeightFromEditor(1);
+            }
+            else
+            {
+                newAtmosphere.SetWeight(1, instant);
+            }
+#else
             newAtmosphere.SetWeight(1, instant);
+#endif
         }
         #endregion
     }

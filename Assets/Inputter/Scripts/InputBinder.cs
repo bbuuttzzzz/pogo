@@ -62,9 +62,15 @@ namespace Inputter
             Keys[KeyName.Reset] = new KeyboardButton(keyboard, Key.R);
 
 #if UNITY_EDITOR
-            Keys[KeyName.Pause] = new KeyboardButton(keyboard, Key.Backquote);
+            Keys[KeyName.Pause] = new MultiButton(new Button[]{
+                new KeyboardButton(keyboard, Key.Backquote),
+                new KeyboardButton(keyboard, Key.P)
+            });
 #else
-            Keys[KeyName.Pause] = new KeyboardButton(keyboard, Key.Escape);
+            Keys[KeyName.Pause] = new MultiButton(new Button[]{
+                new KeyboardButton(keyboard, Key.Escape),
+                new KeyboardButton(keyboard, Key.P)
+            });
 #endif
 
             var movementAxisX = new DualButtonAxis(Keys[KeyName.Right], Keys[KeyName.Left]);
@@ -83,20 +89,12 @@ namespace Inputter
             if (hard)
             {
                 moveVector = Vector3.zero;
-                for (int n = 0; n < keycount; n++)
-                {
-                    KeyName nKey = (KeyName)n;
-                    Keys[nKey].Reset();
-                }
             }
-            else
+
+            for (int n = 0; n < keycount; n++)
             {
-                for (int n = 0; n < keycount; n++)
-                {
-                    KeyName nKey = (KeyName)n;
-                    Keys[nKey].Pressed = false;
-                    Keys[nKey].Released = false;
-                }
+                KeyName nKey = (KeyName)n;
+                Keys[nKey].Reset(hard);
             }
         }
         public void GetInputs()

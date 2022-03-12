@@ -21,9 +21,9 @@ namespace Inputter
             Released = false;
         }
 
-        public void Reset()
+        public virtual void Reset(bool hard = false)
         {
-            held = false;
+            if (hard) held = false;
             Pressed = false;
             Released = false;
         }

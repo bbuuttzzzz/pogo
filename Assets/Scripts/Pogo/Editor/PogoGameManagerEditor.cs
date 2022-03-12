@@ -27,7 +27,7 @@ public class PogoGameManagerEditor : GameManagerEditor
                 menu.AddItem(new GUIContent(level.name), level == self.InitialLevel, () =>
                 {
                     self.InitialLevel = level;
-                    self.UnloadControlSceneInEditor();
+                    if (self.InControlScene) self.UnloadControlSceneInEditor();
                     self.GetComponent<PogoLevelManager>().LoadLevelInEditor(level);
                     self.CurrentControlScene = null;
                 });

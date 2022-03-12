@@ -104,6 +104,7 @@ namespace WizardUtils
 #if UNITY_EDITOR
         public void UnloadControlSceneInEditor()
         {
+            var initialScene = CurrentControlScene;
             List<Scene> scenesToUnload = new List<Scene>();
             for (int n = 0; n < SceneManager.sceneCount; n++)
             {
@@ -115,10 +116,10 @@ namespace WizardUtils
                     break;
                 }
             }
-
+            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, null));
         }
 
-        public void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
+        public virtual void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
         {
             bool newSceneAlreadyLoaded = false;
             List<Scene> scenesToUnload = new List<Scene>();
@@ -156,6 +157,7 @@ namespace WizardUtils
         public virtual void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
         {
             if (DontLoadScenesInEditor) return;
+            var initialScene = CurrentControlScene;
             List<AsyncOperation> tasks = new List<AsyncOperation>();
 
             bool newSceneAlreadyLoaded = false;
@@ -197,15 +199,16 @@ namespace WizardUtils
                 }
             }
 
-            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(newScene));
+            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, newScene));
             callback?.Invoke(tasks);
         }
 
         public void UnloadControlScene()
         {
             SceneManager.UnloadSceneAsync(CurrentControlScene.BuildIndex);
+            var initialScene = CurrentControlScene;
             CurrentControlScene = null;
-            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(null));
+            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, null));
         }
 
         public void Quit(bool hardQuit)

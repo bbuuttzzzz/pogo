@@ -4,13 +4,15 @@ namespace WizardUtils
 {
     public class ControlSceneEventArgs : EventArgs
     {
-        public readonly ControlSceneDescriptor ControlScene;
+        public readonly ControlSceneDescriptor InitialScene;
+        public readonly ControlSceneDescriptor FinalScene;
 
-        public ControlSceneEventArgs(ControlSceneDescriptor controlScene)
+        public ControlSceneEventArgs(ControlSceneDescriptor initialScene, ControlSceneDescriptor finalScene)
         {
-            ControlScene = controlScene;
+            this.InitialScene = initialScene;
+            this.FinalScene = finalScene;
         }
 
-        public bool InControlScene => ControlScene != null;
+        public bool InControlScene => FinalScene != null;
     }
 }
