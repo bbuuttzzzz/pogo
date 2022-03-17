@@ -95,7 +95,7 @@ namespace WizardUtils
 
         public EventHandler<ControlSceneEventArgs> OnControlSceneChanged;
         public bool InControlScene => CurrentControlScene != null;
-        public bool InGameScene => CurrentControlScene = null;
+        public bool InGameScene => CurrentControlScene == null;
 
         public ControlSceneDescriptor MainMenuControlScene;
         [HideInInspector]
@@ -199,6 +199,7 @@ namespace WizardUtils
                 }
             }
 
+            CurrentControlScene = newScene;
             OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, newScene));
             callback?.Invoke(tasks);
         }

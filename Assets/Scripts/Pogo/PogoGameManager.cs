@@ -65,10 +65,14 @@ namespace Pogo
             if (DontLoadScenesInEditor) return;
 #endif
             bool loadingFromMenu = CurrentControlScene != null;
-            levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(onCheckLevelProgress(levelLoadingData, loadingFromMenu)));
+#if UNITY_WEBGL
+            levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(loadLevelsInOrder(levelLoadingData, loadingFromMenu)));
+#else
+            levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(loadLevelsSimultaneous(levelLoadingData, loadingFromMenu)));
+#endif
         }
 
-        IEnumerator onCheckLevelProgress(LevelLoadingData levelLoadingData, bool loadingFromMenu)
+        IEnumerator loadLevelsSimultaneous(LevelLoadingData levelLoadingData, bool loadingFromMenu)
         {
             foreach(AsyncOperation task in levelLoadingData.LoadingSceneTasks)
             {
@@ -105,9 +109,45 @@ namespace Pogo
                 ResetStats();
             }
         }
-        #endregion
 
-        #region Player
+        IEnumerator loadLevelsInOrder(LevelLoadingData levelLoadingData, bool loadingFromMenu)
+        {
+            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
+            {
+                task.allowSceneActivation = false;
+            }
+
+            int completed = 0;
+            foreach(AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
+            {
+                bool finished = false;
+                while (!finished)
+                {
+                    finished = (Task.progress >= 0.9f || Task.isDone);
+
+                    Debug.Log($"Progress: %{(Task.progress * 100):N2} ({completed + 1}/{levelLoadingData.LoadingSceneTasks.Count})");
+
+                    if (finished)
+                    {
+                        completed++;
+                        Task.allowSceneActivation = true;
+                    }
+                    else
+                    {
+                        yield return new WaitForSeconds(0.02f);
+                    }
+                }
+            }
+
+            if (loadingFromMenu)
+            {
+                UnloadControlScene();
+                ResetStats();
+            }
+        }
+#endregion
+
+#region Player
         private PlayerController player;
         public PlayerController Player => player;
 
@@ -118,14 +158,24 @@ namespace Pogo
 
         public static void KillPlayer(KillType killType = null)
         {
-            PogoInstance?.player.Die(killType);
+            if (GameInstanceIsValid() && PogoInstance.player != null)
+            {
+                PogoInstance.player.Die(killType);
+            }
         }
 
+        public static void ResetPlayer()
+        {
+            if (GameInstanceIsValid() && PogoInstance.player != null)
+            {
+                PogoInstance.player.Reset();
+            }
+        }
 
         public UnityEvent OnPlayerDeath;
 #endregion
 
-    #region Respawn Point
+#region Respawn Point
             public static bool TryRegisterRespawnPoint(Transform newRespawnPoint)
             {
                 if (PogoInstance == null)
@@ -154,15 +204,15 @@ namespace Pogo
             public Transform InitialRespawnPoint;
             [HideInInspector]
             public Transform RespawnPoint;
-    #endregion
+#endregion
 
-        #region Settings
+#region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
         public static string KEY_INVERT = "InvertY";
-        #endregion
+#endregion
 
-        #region Stats
+#region Stats
         public int SecretsFoundCount;
         public int NumberOfDeaths;
         public float GameStartTime;
@@ -173,6 +223,6 @@ namespace Pogo
             NumberOfDeaths = 0;
             GameStartTime = Time.time;
         }
-        #endregion
+#endregion
     }
 }

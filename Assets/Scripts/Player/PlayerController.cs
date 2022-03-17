@@ -168,6 +168,20 @@ public class PlayerController : MonoBehaviour
     }
     public void Die(KillType killType = null)
     {
+        Reset();
+
+        Velocity = Vector3.zero;
+        PitchFrac = 0;
+        OnDie.Invoke();
+        PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
+        if (killType != null)
+        {
+            AudioController.PlayOneShot(killType.RandomSound);
+        }
+    }
+
+    public void Reset()
+    {
         if (PogoGameManager.PogoInstance.RespawnPoint != null)
         {
             transform.position = PogoGameManager.PogoInstance.RespawnPoint.position;
@@ -178,15 +192,6 @@ public class PlayerController : MonoBehaviour
             Debug.LogError($"Missing {nameof(PogoGameManager.PogoInstance.RespawnPoint)}");
         }
         Model.rotation = DesiredModelRotation;
-
-        Velocity = Vector3.zero;
-        PitchFrac = 0;
-        OnDie.Invoke();
-        PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
-        if (killType != null)
-        {
-            AudioController.PlayOneShot(killType.RandomSound);
-        }
     }
 
     private void onControlSceneChanged(object sender, ControlSceneEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace WizardUtils
@@ -8,6 +9,8 @@ namespace WizardUtils
     {
         public GameObject PauseScreen;
 
+        public UnityEvent OnMenuClosed;
+
         protected virtual void Start()
         {
             GameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
@@ -15,6 +18,7 @@ namespace WizardUtils
 
         protected virtual void onPauseStateChanged(object sender, bool nowPaused)
         {
+            OnMenuClosed?.Invoke();
             PauseScreen?.SetActive(nowPaused);
         }
 

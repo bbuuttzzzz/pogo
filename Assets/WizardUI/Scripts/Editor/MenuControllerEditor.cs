@@ -6,14 +6,14 @@ using UnityEngine;
 
 namespace WizardUI.Inspector
 {
-    [CustomEditor(typeof(MenuController))]
+    [CustomEditor(typeof(ToggleableUIElement))]
     class MenuControllerEditor : Editor
     {
-        MenuController self;
+        ToggleableUIElement self;
 
         public override void OnInspectorGUI()
         {
-            self = target as MenuController;
+            self = target as ToggleableUIElement;
             DrawDefaultInspector();
 
             bool wasOpen = self.IsOpen;

@@ -101,14 +101,22 @@ namespace Pogo
             foreach (LevelDescriptor descriptor in scenesToLoad)
             {
                 var task = SceneManager.LoadSceneAsync(descriptor.BuildIndex, LoadSceneMode.Additive);
-                if (task != null) loadTasks.Add(task);
+                if (task != null)
+                {
+                    Debug.Log($"Loading scene {descriptor.name}");
+                    loadTasks.Add(task);
+                }
             }
 
+            string sceneNames = "Already Loaded: ";
             foreach(Scene scene in scenesToUnload)
             {
+                sceneNames += $"{scene.name} ";
                 var task = SceneManager.UnloadSceneAsync(scene);
+                Debug.Log($"Unloading scene {scene.name}");
                 if (task != null) unloadTasks.Add(task);
             }
+            Debug.Log(sceneNames);
 
             TransitionAtmosphere(newLevel, false);
 
