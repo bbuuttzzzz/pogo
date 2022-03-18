@@ -182,6 +182,7 @@ public class PlayerController : MonoBehaviour
 
     public void Reset()
     {
+        Debug.Log("Reset Player");
         if (PogoGameManager.PogoInstance.RespawnPoint != null)
         {
             transform.position = PogoGameManager.PogoInstance.RespawnPoint.position;
@@ -202,6 +203,7 @@ public class PlayerController : MonoBehaviour
 
     void setControlSceneBehavior(bool inControlScene)
     {
+        Debug.Log($"Player setControlSceneBehavior {inControlScene}");
         gameObject.SetActive(!inControlScene);
         UpdateCursorLock(inControlScene);
     }

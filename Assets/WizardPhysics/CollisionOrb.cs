@@ -81,6 +81,7 @@ namespace WizardPhysics
         /// </summary>
         public void Disjoint()
         {
+            Debug.Log($"Disjointed {name}");
             lastRecordedPosition = currentCenter;
         }
 

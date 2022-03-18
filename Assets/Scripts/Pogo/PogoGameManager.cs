@@ -221,7 +221,8 @@ namespace Pogo
 
         private void finishLoadingChapter(ChapterDescriptor newChapter)
         {
-            GameObject respawnPoint = newChapter.FindStartPoint();
+            ChapterStartPoint respawnPoint = newChapter.FindStartPoint();
+            respawnPoint.OnLoaded?.Invoke();
             TryRegisterRespawnPoint(respawnPoint.transform);
             ResetPlayer();
         }

@@ -9,14 +9,14 @@ namespace Pogo
     {
         public LevelDescriptor Level;
 
-        public GameObject FindStartPoint()
+        public ChapterStartPoint FindStartPoint()
         {
             var startPoints = FindObjectsOfType(typeof(ChapterStartPoint)) as ChapterStartPoint[];
             foreach(var startPoint in startPoints)
             {
                 if (startPoint.Chapter == this)
                 {
-                    return startPoint.gameObject;
+                    return startPoint;
                 }
             }
 
