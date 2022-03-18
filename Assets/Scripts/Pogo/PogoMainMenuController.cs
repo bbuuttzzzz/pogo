@@ -9,12 +9,10 @@ namespace Pogo
 {
     public class PogoMainMenuController : MonoBehaviour
     {
-        public LevelDescriptor InitialLevel;
-        public void LoadInitialLevel()
+        public ChapterDescriptor InitialChapter;
+        public void LoadInitialChapter()
         {
-            PogoGameManager.PogoInstance.LoadLevel(InitialLevel, true);
-            PogoGameManager.TryRegisterRespawnPoint(PogoGameManager.PogoInstance.InitialRespawnPoint);
-            PogoGameManager.ResetPlayer();
+            PogoGameManager.PogoInstance.LoadChapter(InitialChapter);
         }
     }
 }

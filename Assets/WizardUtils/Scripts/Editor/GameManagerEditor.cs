@@ -1,10 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace WizardUtils
 {

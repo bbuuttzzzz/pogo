@@ -44,10 +44,17 @@ namespace Pogo
             }
         }
 
+
+
+
+
+
         #region Level Management
         PogoLevelManager levelManager;
         [HideInInspector]
         public LevelDescriptor InitialLevel;
+
+        public UnityEvent OnLevelLoaded;
 
 #if UNITY_EDITOR
         public override void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
@@ -103,11 +110,33 @@ namespace Pogo
             {
                 task.allowSceneActivation = true;
             }
+            finished = false;
+            while (!finished )
+            {
+                float progress = 0;
+                finished = true;
+
+                string txt = "";
+                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
+                {
+                    progress += Task.isDone ? 1 : Task.progress;
+                    finished = finished && Task.isDone;
+                    txt = txt + Task.progress + " ";
+                }
+
+                progress /= levelLoadingData.LoadingSceneTasks.Count;
+                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
+
+                yield return new WaitForSeconds(0.02f);
+            }
+
             if (loadingFromMenu)
             {
                 UnloadControlScene();
                 ResetStats();
             }
+
+            OnLevelLoaded?.Invoke();
         }
 
         IEnumerator loadLevelsInOrder(LevelLoadingData levelLoadingData, bool loadingFromMenu)
@@ -139,15 +168,67 @@ namespace Pogo
                 }
             }
 
+            bool cleanupFinished = false;
+            while (!cleanupFinished)
+            {
+                float progress = 0;
+                cleanupFinished = true;
+
+                string txt = "";
+                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
+                {
+                    progress += Task.isDone ? 1 : Task.progress;
+                    cleanupFinished = cleanupFinished && Task.isDone;
+                    txt = txt + Task.progress + " ";
+                }
+
+                progress /= levelLoadingData.LoadingSceneTasks.Count;
+                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
+
+
+                if (cleanupFinished)
+                {
+                    break;
+                }
+                else
+                {
+                    yield return new WaitForSeconds(0.02f);
+                }
+            }
+
             if (loadingFromMenu)
             {
                 UnloadControlScene();
                 ResetStats();
             }
-        }
-#endregion
 
-#region Player
+            OnLevelLoaded?.Invoke();
+        }
+        #endregion
+
+        #region Chapters
+        public void LoadChapter(ChapterDescriptor newChapter)
+        {
+            UnityAction finishLoading = null;
+            finishLoading = () =>
+            {
+                finishLoadingChapter(newChapter);
+                OnLevelLoaded.RemoveListener(finishLoading);
+            };
+            OnLevelLoaded.AddListener(finishLoading);
+            LoadLevel(newChapter.Level, true);
+        }
+
+        private void finishLoadingChapter(ChapterDescriptor newChapter)
+        {
+            GameObject respawnPoint = newChapter.FindStartPoint();
+            TryRegisterRespawnPoint(respawnPoint.transform);
+            ResetPlayer();
+        }
+
+        #endregion
+
+        #region Player
         private PlayerController player;
         public PlayerController Player => player;
 
@@ -173,46 +254,46 @@ namespace Pogo
         }
 
         public UnityEvent OnPlayerDeath;
-#endregion
+        #endregion
 
-#region Respawn Point
-            public static bool TryRegisterRespawnPoint(Transform newRespawnPoint)
+        #region Respawn Point
+        public static bool TryRegisterRespawnPoint(Transform newRespawnPoint)
+        {
+            if (PogoInstance == null)
             {
-                if (PogoInstance == null)
-                {
-                    Debug.LogWarning("Tried to register a RespawnPoint with no CheckpointManager");
-                    return false;
-                }
-
-                if (newRespawnPoint == PogoInstance.RespawnPoint) return false;
-
-                PogoInstance.RespawnPoint = newRespawnPoint;
-
-                return true;
-
+                Debug.LogWarning("Tried to register a RespawnPoint with no CheckpointManager");
+                return false;
             }
 
-            public override void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
+            if (newRespawnPoint == PogoInstance.RespawnPoint) return false;
+
+            PogoInstance.RespawnPoint = newRespawnPoint;
+
+            return true;
+
+        }
+
+        public override void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
+        {
+            if (levelManager != null)
             {
-                if (levelManager != null)
-                {
-                    levelManager.ResetLoadedLevel();
-                }
-                base.LoadControlScene(newScene, callback);
+                levelManager.ResetLoadedLevel();
             }
+            base.LoadControlScene(newScene, callback);
+        }
 
-            public Transform InitialRespawnPoint;
-            [HideInInspector]
-            public Transform RespawnPoint;
-#endregion
+        public Transform InitialRespawnPoint;
+        [HideInInspector]
+        public Transform RespawnPoint;
+        #endregion
 
-#region Settings
+        #region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
         public static string KEY_INVERT = "InvertY";
-#endregion
+        #endregion
 
-#region Stats
+        #region Stats
         public int SecretsFoundCount;
         public int NumberOfDeaths;
         public float GameStartTime;
@@ -223,6 +304,6 @@ namespace Pogo
             NumberOfDeaths = 0;
             GameStartTime = Time.time;
         }
-#endregion
+        #endregion
     }
 }

@@ -192,6 +192,7 @@ public class PlayerController : MonoBehaviour
             Debug.LogError($"Missing {nameof(PogoGameManager.PogoInstance.RespawnPoint)}");
         }
         Model.rotation = DesiredModelRotation;
+        Disjoint();
     }
 
     private void onControlSceneChanged(object sender, ControlSceneEventArgs e)
