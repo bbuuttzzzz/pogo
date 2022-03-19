@@ -209,6 +209,7 @@ namespace Pogo
         #region Chapters
         public void LoadChapter(ChapterDescriptor newChapter)
         {
+            StartingChapter = newChapter;
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
@@ -298,6 +299,7 @@ namespace Pogo
         public int SecretsFoundCount;
         public int NumberOfDeaths;
         public float GameStartTime;
+        public ChapterDescriptor StartingChapter;
 
         public void ResetStats()
         {
