@@ -9,6 +9,11 @@ namespace Pogo
     {
         public LevelDescriptor Level;
 
+        public int Number;
+        public string Title;
+
+        public string LongTitle => $"Part {Number} - {Title}";
+
         public ChapterStartPoint FindStartPoint()
         {
             var startPoints = FindObjectsOfType(typeof(ChapterStartPoint)) as ChapterStartPoint[];

@@ -170,8 +170,6 @@ public class PlayerController : MonoBehaviour
     {
         Reset();
 
-        Velocity = Vector3.zero;
-        PitchFrac = 0;
         OnDie.Invoke();
         PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
         if (killType != null)
@@ -192,6 +190,9 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError($"Missing {nameof(PogoGameManager.PogoInstance.RespawnPoint)}");
         }
+
+        Velocity = Vector3.zero;
+        PitchFrac = 0;
         Model.rotation = DesiredModelRotation;
         Disjoint();
     }
