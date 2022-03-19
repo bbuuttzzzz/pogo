@@ -183,17 +183,29 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Reset Player");
         if (PogoGameManager.PogoInstance.RespawnPoint != null)
         {
-            transform.position = PogoGameManager.PogoInstance.RespawnPoint.position;
-            internalEyeAngles = new Vector3(0, PogoGameManager.PogoInstance.RespawnPoint.rotation.eulerAngles.y, 0);
+            TeleportTo(PogoGameManager.PogoInstance.RespawnPoint);
         }
         else
         {
             Debug.LogError($"Missing {nameof(PogoGameManager.PogoInstance.RespawnPoint)}");
         }
+    }
 
+    private void ResetPhysics()
+    {
         Velocity = Vector3.zero;
         PitchFrac = 0;
         Model.rotation = DesiredModelRotation;
+    }
+
+    public void TeleportTo(Transform target, bool preservePhysics = false)
+    {
+        transform.position = target.position;
+        internalEyeAngles = new Vector3(0, target.rotation.eulerAngles.y, 0);
+        if (!preservePhysics)
+        {
+            ResetPhysics();
+        }
         Disjoint();
     }
 
