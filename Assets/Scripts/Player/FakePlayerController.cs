@@ -146,7 +146,7 @@ namespace Pogo
                     {
                         // throw a pretty error for duplicate materials
                         var existingSurfaceConfigName = surfacePropertiesDict[material].name;
-                        throw new ArgumentException($"Duplicate Surface Definition for material {material.name}: {existingSurfaceConfigName} & {config.name}", e);
+                        Debug.LogError($"Duplicate Surface Definition for material {material.name}: {existingSurfaceConfigName} & {config.name}", config);
                     }
                 }
             }

@@ -30,7 +30,7 @@ namespace Inputter
 
         public override float Check()
         {
-            return control.ReadUnprocessedValue() * (invert ? -1 : 1);
+            return control.ReadValue() * (invert ? -1 : 1);
         }
     }
 }
