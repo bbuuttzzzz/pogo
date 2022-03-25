@@ -29,4 +29,6 @@ public class LevelDescriptor : ScriptableObject
     public int BuildIndex;
 
     public string ScenePath => SceneUtility.GetScenePathByBuildIndex(BuildIndex);
+
+    public bool HideInEditor = false;
 }

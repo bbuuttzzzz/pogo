@@ -24,6 +24,8 @@ public class PogoGameManagerEditor : GameManagerEditor
                 .Select(id => AssetDatabase.LoadAssetAtPath<LevelDescriptor>(AssetDatabase.GUIDToAssetPath(id)));
             foreach(var level in levels)
             {
+                if (level.HideInEditor) continue;
+
                 menu.AddItem(new GUIContent(level.name), level == self.InitialLevel, () =>
                 {
                     self.InitialLevel = level;
