@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using WizardUtils.Saving;
 
 namespace WizardUtils
 {
@@ -25,6 +26,7 @@ namespace WizardUtils
             GameInstance = this;
             DontDestroyOnLoad(gameObject);
             GameSettings = new List<GameSettingFloat>();
+            if (MainSaveManifest != null) saveDataTracker = new SaveDataTrackerFile(MainSaveManifest);
 
             RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_MASTER, 100));
             RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_EFFECTS, 80));
@@ -259,6 +261,35 @@ namespace WizardUtils
         public static string KEY_VOLUME_MASTER = "Volume_Master";
         public static string KEY_VOLUME_EFFECTS = "Volume_Effects";
         public static string KEY_VOLUME_AMBIENCE = "Volume_Ambience";
-#endregion
+        #endregion
+
+        #region Saving
+        public SaveManifest MainSaveManifest;
+        public bool DontSaveInEditor;
+        SaveDataTrackerFile saveDataTracker;
+
+        public string GetMainSaveValue(SaveValueDescriptor descriptor)
+        {
+#if UNITY_EDITOR
+            if (saveDataTracker == null)
+            {
+                Debug.LogWarning("Tried so load data without a MainSaveManifest", this);
+            }
+#endif
+            return saveDataTracker?.GetSaveValue(descriptor)?? null;
+        }
+
+        public void SetMainSaveValue(SaveValueDescriptor descriptor, string stringValue)
+        {
+
+#if UNITY_EDITOR
+            if (saveDataTracker == null)
+            {
+                Debug.LogWarning("Tried so save data without a MainSaveManifest", this);
+            }
+#endif
+            saveDataTracker?.SetSaveValue(descriptor, stringValue);
+        }
+        #endregion
     }
 }

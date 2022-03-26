@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace WizardUI
+namespace WizardUtils
 {
     public class ToggleableUIElement : MonoBehaviour
     {

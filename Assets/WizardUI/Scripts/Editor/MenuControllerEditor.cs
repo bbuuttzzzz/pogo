@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace WizardUI.Inspector
+namespace WizardUtils.Inspector
 {
     [CustomEditor(typeof(ToggleableUIElement))]
     class MenuControllerEditor : Editor

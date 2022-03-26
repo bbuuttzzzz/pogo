@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using WizardUtils;
 
-namespace WizardUI
+namespace WizardUtils
 {
     public class GameSettingChanger : MonoBehaviour
     {

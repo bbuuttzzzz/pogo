@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using WizardUtils;
 
-namespace WizardUI
+namespace WizardUtils
 {
     public class FocusWarningController : ToggleableUIElement
     {

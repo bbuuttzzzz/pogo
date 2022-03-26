@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using WizardUI;
+using WizardUtils;
 using WizardUtils;
 
 namespace Pogo

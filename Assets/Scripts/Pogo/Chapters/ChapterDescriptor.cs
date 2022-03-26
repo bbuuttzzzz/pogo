@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WizardUtils;
+using WizardUtils.Saving;
 
 namespace Pogo
 {
@@ -27,5 +29,22 @@ namespace Pogo
 
             throw new MissingReferenceException($"Could not find ChapterStartPoint for ChapterDescriptor {name}");
         }
+
+        #region Unlocking
+        public SaveValueDescriptor UnlockedSaveValue;
+        public bool IsUnlocked
+        {
+            get
+            {
+                return UnlockedSaveValue != null
+                    || GameManager.GameInstance?.GetMainSaveValue(UnlockedSaveValue) == "1";
+            }
+            set
+            {
+                GameManager.GameInstance?.SetMainSaveValue(UnlockedSaveValue, value ? "1" : "0");
+            }
+        }
+
+        #endregion
     }
 }

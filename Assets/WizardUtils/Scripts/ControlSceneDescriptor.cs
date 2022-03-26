@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 namespace WizardUtils
 {
 
-    [CreateAssetMenu(fileName = "ControlSceneDescriptor", menuName = "ScriptableObjects/WizardUtils/ControlSceneDescriptor", order = 1)]
+    [CreateAssetMenu(fileName = "ControlSceneDescriptor", menuName = "WizardUtils/ControlSceneDescriptor", order = 1)]
     public class ControlSceneDescriptor : ScriptableObject
     {
         public int BuildIndex;

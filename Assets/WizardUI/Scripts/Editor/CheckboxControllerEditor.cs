@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace WizardUI
+namespace WizardUtils
 {
     [CustomEditor(typeof(CheckboxController))]
     public class CheckboxControllerEditor : Editor
