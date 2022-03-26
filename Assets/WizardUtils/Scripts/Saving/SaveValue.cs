@@ -9,6 +9,12 @@ namespace WizardUtils.Saving
         public SaveValueDescriptor Descriptor;
         public string StringValue;
 
+        public SaveValue(SaveValue other)
+        {
+            Descriptor = other.Descriptor;
+            StringValue = other.StringValue;
+        }
+
         public SaveValue(SaveValueDescriptor descriptor)
         {
             Descriptor = descriptor;

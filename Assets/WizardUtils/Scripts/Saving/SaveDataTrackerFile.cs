@@ -8,64 +8,13 @@ using UnityEngine;
 
 namespace WizardUtils.Saving
 {
-    public class SaveDataTrackerFile
+    public class SaveDataTrackerFile : SaveDataTracker
     {
-        public SaveManifest Manifest;
-        public Dictionary<SaveValueDescriptor, SaveValue> LoadedValues;
-
-        public SaveDataTrackerFile(SaveManifest manifest)
+        public SaveDataTrackerFile(SaveManifest manifest) : base(manifest)
         {
-            Manifest = manifest;
-            LoadFromFile();
         }
 
-        public string GetSaveValue(SaveValueDescriptor descriptor)
-        {
-            // check LoadedValues
-            if (LoadedValues.TryGetValue(descriptor, out SaveValue value))
-            {
-                return value.StringValue;
-            }
-
-#if UNITY_EDITOR
-            _ = ValidateDescriptor(descriptor);
-#endif
-            SaveValue newValue = AddFromDescriptor(descriptor);
-
-            return newValue.StringValue;
-        }
-
-        private bool ValidateDescriptor(SaveValueDescriptor descriptor)
-        {
-            if (Manifest.ContainsDescriptor(descriptor))
-            {
-                return true;
-            }
-            else
-            {
-                Debug.LogWarning($"Missing SaveValueDescriptor {descriptor} for manifest {Manifest}");
-                return false;
-            }
-        }
-
-        public void SetSaveValue(SaveValueDescriptor descriptor, string stringValue)
-        {
-            // check LoadedValues
-            if (LoadedValues.TryGetValue(descriptor, out SaveValue value))
-            {
-                 value.StringValue = stringValue;
-            }
-        }
-
-        private SaveValue AddFromDescriptor(SaveValueDescriptor descriptor)
-        {
-            var value = new SaveValue(descriptor);
-            LoadedValues[descriptor] = value;
-
-            return value;
-        }
-
-        public void SaveToFile()
+        public override void Save()
         {
             using (StreamWriter file = new StreamWriter(Manifest.DefaultPath))
             {
@@ -79,7 +28,7 @@ namespace WizardUtils.Saving
             }       
         }
 
-        private void LoadFromFile()
+        public override void Load()
         {
             LoadedValues = new Dictionary<SaveValueDescriptor, SaveValue>();
 
