@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using WizardPhysics;
 using WizardUtils;
+using WizardUtils.SceneManagement;
 
 [RequireComponent(typeof(CollisionGroup))]
 

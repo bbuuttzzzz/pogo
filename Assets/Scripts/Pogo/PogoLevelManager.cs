@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WizardUtils;
+using WizardUtils.SceneManagement;
 
 namespace Pogo
 {

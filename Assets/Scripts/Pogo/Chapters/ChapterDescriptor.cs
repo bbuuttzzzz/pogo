@@ -36,7 +36,7 @@ namespace Pogo
         {
             get
             {
-                return UnlockedSaveValue != null
+                return UnlockedSaveValue == null
                     || GameManager.GameInstance?.GetMainSaveValue(UnlockedSaveValue) == "1";
             }
             set

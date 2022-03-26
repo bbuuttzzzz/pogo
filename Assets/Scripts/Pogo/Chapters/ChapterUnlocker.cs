@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using WizardUtils;
 
 namespace Pogo
 {
@@ -9,6 +10,8 @@ namespace Pogo
         public void SetUnlocked(bool newValue)
         {
             Chapter.IsUnlocked = newValue;
+
+            GameManager.GameInstance?.SaveData();
         }
     }
 }

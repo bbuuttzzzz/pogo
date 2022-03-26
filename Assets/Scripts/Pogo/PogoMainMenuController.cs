@@ -12,33 +12,52 @@ namespace Pogo
 {
     public class PogoMainMenuController : MonoBehaviour
     {
-        public ChapterDescriptor[] ChapterList;
+        public ChapterDescriptor[] Chapters;
+        [HideInInspector]
+        public ChapterDescriptor[] UnlockedChapters;
+        [HideInInspector]
         public int ActiveChapterIndex = 0;
 
         public UnityEvent OnActiveChapterChanged;
         public UnityStringEvent OnChapterNameChanged;
 
-        private void Awake()
+        private void Start()
         {
+            SetupUnlockedChapters();
+
             OnActiveChapterChanged.AddListener(updateChapterName);
             OnActiveChapterChanged.AddListener(updateButtonInteractableStates);
             OnActiveChapterChanged?.Invoke();
         }
 
+        private void SetupUnlockedChapters()
+        {
+            List<ChapterDescriptor> unlockedChapterList = new List<ChapterDescriptor>();
+            foreach(ChapterDescriptor chapter in Chapters)
+            {
+                if (chapter.IsUnlocked)
+                {
+                    unlockedChapterList.Add(chapter);
+                }
+            }
+
+            UnlockedChapters = unlockedChapterList.ToArray();
+        }
+
         void updateChapterName()
         {
-            OnChapterNameChanged.Invoke(ChapterList[ActiveChapterIndex].LongTitle);
+            OnChapterNameChanged.Invoke(UnlockedChapters[ActiveChapterIndex].LongTitle);
         }
 
         public void LoadActiveChapter()
         {
-            PogoGameManager.PogoInstance.LoadChapter(ChapterList[ActiveChapterIndex]);
+            PogoGameManager.PogoInstance.LoadChapter(UnlockedChapters[ActiveChapterIndex]);
         }
 
         public Button IncrementButton; 
         public void IncrementChapter()
         {
-            ActiveChapterIndex = Math.Min(ChapterList.Length - 1, ActiveChapterIndex + 1);
+            ActiveChapterIndex = Math.Min(UnlockedChapters.Length - 1, ActiveChapterIndex + 1);
             OnActiveChapterChanged?.Invoke();
         }
 
@@ -52,7 +71,7 @@ namespace Pogo
         private void updateButtonInteractableStates()
         {
             DecrementButton.interactable = (ActiveChapterIndex > 0);
-            IncrementButton.interactable = (ActiveChapterIndex < ChapterList.Length - 1);
+            IncrementButton.interactable = (ActiveChapterIndex < UnlockedChapters.Length - 1);
         }
     }
 }

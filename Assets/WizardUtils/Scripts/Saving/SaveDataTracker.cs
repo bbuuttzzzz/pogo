@@ -15,7 +15,6 @@ namespace WizardUtils.Saving
         protected SaveDataTracker(SaveManifest manifest)
         {
             Manifest = manifest;
-            Load();
         }
 
         public string GetSaveValue(SaveValueDescriptor descriptor)

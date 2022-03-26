@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace WizardUtils
+namespace WizardUtils.SceneManagement
 {
 
     [CreateAssetMenu(fileName = "ControlSceneDescriptor", menuName = "WizardUtils/ControlSceneDescriptor", order = 1)]

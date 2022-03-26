@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WizardUtils
+namespace WizardUtils.SceneManagement
 {
     public class ControlSceneEventArgs : EventArgs
     {
@@ -9,8 +9,8 @@ namespace WizardUtils
 
         public ControlSceneEventArgs(ControlSceneDescriptor initialScene, ControlSceneDescriptor finalScene)
         {
-            this.InitialScene = initialScene;
-            this.FinalScene = finalScene;
+            InitialScene = initialScene;
+            FinalScene = finalScene;
         }
 
         public bool InControlScene => FinalScene != null;

@@ -16,6 +16,7 @@ namespace WizardUtils.Saving
 
         public override void Save()
         {
+            Debug.Log($"Writing to {Manifest.DefaultPath}");
             using (StreamWriter file = new StreamWriter(Manifest.DefaultPath))
             {
                 foreach ((_, SaveValue saveValue) in LoadedValues.ToList())
@@ -32,6 +33,7 @@ namespace WizardUtils.Saving
         {
             LoadedValues = new Dictionary<SaveValueDescriptor, SaveValue>();
 
+            if (!File.Exists(Manifest.DefaultPath)) return;
             using (StreamReader file = new StreamReader(Manifest.DefaultPath))
             {
                 string line;

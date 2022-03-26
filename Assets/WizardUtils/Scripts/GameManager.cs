@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using WizardUtils.Saving;
+using WizardUtils.SceneManagement;
 
 namespace WizardUtils
 {
@@ -26,7 +27,7 @@ namespace WizardUtils
             GameInstance = this;
             DontDestroyOnLoad(gameObject);
             GameSettings = new List<GameSettingFloat>();
-            if (MainSaveManifest != null) saveDataTracker = new SaveDataTrackerFile(MainSaveManifest);
+            SetupSaveData();
 
             RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_MASTER, 100));
             RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_EFFECTS, 80));
@@ -265,8 +266,28 @@ namespace WizardUtils
 
         #region Saving
         public SaveManifest MainSaveManifest;
+        public ExplicitSaveData EditorOverrideSaveData;
         public bool DontSaveInEditor;
-        SaveDataTrackerFile saveDataTracker;
+        SaveDataTracker saveDataTracker;
+
+        private void SetupSaveData()
+        {
+            if (MainSaveManifest == null) return;
+
+#if UNITY_EDITOR
+            if (EditorOverrideSaveData != null)
+            {
+                saveDataTracker = new SaveDataTrackerExplicit(MainSaveManifest, EditorOverrideSaveData);
+            }
+            else
+            {
+                saveDataTracker = new SaveDataTrackerFile(MainSaveManifest);
+            }
+#else
+            saveDataTracker = new SaveDataTrackerFile(MainSaveManifest);
+#endif
+            saveDataTracker.Load();
+        }
 
         public string GetMainSaveValue(SaveValueDescriptor descriptor)
         {
@@ -290,6 +311,11 @@ namespace WizardUtils
 #endif
             saveDataTracker?.SetSaveValue(descriptor, stringValue);
         }
-        #endregion
+
+        public void SaveData()
+        {
+            saveDataTracker.Save();
+        }
+#endregion
     }
 }
