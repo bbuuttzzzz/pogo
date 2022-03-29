@@ -433,5 +433,5 @@ public class PlayerController : MonoBehaviour
 
         CameraSwivelPoint.transform.rotation = GetAimQuat();
     }
-#endregion
+    #endregion
 }

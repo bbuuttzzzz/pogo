@@ -175,6 +175,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Root: {fileID: 1538237404}
   Debug: 0
+--- !u!4 &477168033 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1692500070206633482, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
+  m_PrefabInstance: {fileID: 8049285593714969209}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &581690834
 GameObject:
   m_ObjectHideFlags: 0
@@ -911,14 +916,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 419918522, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 911522801073828722, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8049285594771530898, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
       propertyPath: m_Name
       value: Player
@@ -969,3 +966,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
+--- !u!1 &8049285593714969210 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8049285594771530898, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
+  m_PrefabInstance: {fileID: 8049285593714969209}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8049285593714969211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8049285593714969210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de153f7632da2c049a48ed5ebdee3f56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Manifest: {fileID: 11400000, guid: 04655b3e255e6d14e94eb209fdc99867, type: 2}
+  StartingEquipment:
+  - Slot: {fileID: 11400000, guid: 5006501cf268b644ca6689413df3991c, type: 2}
+    Equipment: {fileID: 11400000, guid: bd25fc3e8fd43034f840eff4b3a11728, type: 2}
+    PrefabInstantiationParent: {fileID: 477168033}
+  Equipment: []
+  OnEquip:
+    m_PersistentCalls:
+      m_Calls: []
+  EquipAllOnAwake: 1
