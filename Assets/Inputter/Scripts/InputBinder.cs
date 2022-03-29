@@ -8,7 +8,8 @@ public enum KeyName
     none = -1, Jump,
     Forward, Right, Backward, Left,
     Pause,
-    Reset
+    Reset,
+    UIAdvance
 }
 
 public enum AxisSetName
@@ -72,6 +73,7 @@ namespace Inputter
                 new KeyboardButton(keyboard, Key.P)
             });
 #endif
+            Keys[KeyName.UIAdvance] = MouseButton.LeftClick(mouse);
 
             var movementAxisX = new DualButtonAxis(Keys[KeyName.Right], Keys[KeyName.Left]);
             var movementAxisY = new DualButtonAxis(Keys[KeyName.Forward], Keys[KeyName.Backward]);
