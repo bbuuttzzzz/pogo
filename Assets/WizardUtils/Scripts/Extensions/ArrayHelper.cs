@@ -23,5 +23,27 @@ namespace WizardUtils
             }
             return false;
         }
+
+        /// <summary>
+        /// Delete the member at <paramref name="deleteIndex"/>, reducing the array size by one<br/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="deleteIndex"></param>
+        public static void DeleteAndResize<T>(ref T[] array, int deleteIndex)
+        {
+            T[] newArray = new T[array.Length - 1];
+            int newIndex = 0;
+            for (int oldIndex = 0; oldIndex < array.Length; oldIndex++)
+            {
+                if (oldIndex == deleteIndex)
+                {
+                    continue;
+                }
+                newArray[newIndex++] = array[oldIndex];
+            }
+
+            array = newArray;
+        }
     }
 }

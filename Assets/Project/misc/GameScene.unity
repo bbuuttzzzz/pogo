@@ -916,6 +916,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1960020659, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8049285594771530898, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
       propertyPath: m_Name
       value: Player
@@ -983,13 +987,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de153f7632da2c049a48ed5ebdee3f56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Manifest: {fileID: 11400000, guid: 04655b3e255e6d14e94eb209fdc99867, type: 2}
-  StartingEquipment:
-  - Slot: {fileID: 11400000, guid: 5006501cf268b644ca6689413df3991c, type: 2}
+  Equipment:
+  - SlotType: {fileID: 11400000, guid: 7a2119408764991479c5ff0e14a12625, type: 2}
     Equipment: {fileID: 11400000, guid: bd25fc3e8fd43034f840eff4b3a11728, type: 2}
     PrefabInstantiationParent: {fileID: 477168033}
-  Equipment: []
+    ObjectInstance: {fileID: 0}
   OnEquip:
     m_PersistentCalls:
       m_Calls: []
-  EquipAllOnAwake: 1

@@ -11,6 +11,7 @@ namespace WizardUtils.Equipment
 
     public class EquipmentDescriptor : ScriptableObject
     {
+        public EquipmentTypeDescriptor SlotType;
         public GameObject Prefab;
     }
 }

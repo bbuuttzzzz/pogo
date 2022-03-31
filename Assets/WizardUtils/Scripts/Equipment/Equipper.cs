@@ -10,42 +10,151 @@ namespace WizardUtils.Equipment
 {
     public class Equipper : MonoBehaviour
     {
-        public EquipmentSlotManifest Manifest;
-        public EquipmentSlot[] StartingEquipment;
-
         [HideInInspector]
-        public List<EquipmentSlot> Equipment;
+        public EquipmentSlot[] EquipmentSlots;
 
         public UnityEvent<EquipmentSlot> OnEquip;
 
-        public bool EquipAllOnAwake = true;
-
-        public void EquipAll()
+        private void Awake()
         {
-            foreach(EquipmentSlot slot in StartingEquipment)
+            ApplyAll();
+        }
+
+        #region Applying
+        private void ApplyAll()
+        {
+            foreach(EquipmentSlot slot in EquipmentSlots)
             {
-                Equip(slot);
+                ApplySlot(slot);
             }
         }
 
-        public void Equip(EquipmentSlot slot)
+        private void ApplySlot(EquipmentSlot slot)
         {
+            if (slot.Equipment == null) return;
+            if (slot.ObjectInstance != null) return;
+
 #if UNITY_EDITOR
-            if (!VerifySlot(slot))
+            if (slot.Equipment.SlotType != slot.EquipmentType)
             {
-                Debug.LogError($"EquipmentSlot mismatch. no slot {slot.Slot} in Manifest {Manifest}");
+                Debug.LogError($"EquipmentSlot mismatch. Equipment SlotType {slot.Equipment.SlotType} != {slot.EquipmentType}");
             }
 #endif
-
             var result = Instantiate(slot.Equipment.Prefab, slot.PrefabInstantiationParent);
             slot.ObjectInstance = result;
         }
 
-        private bool VerifySlot(EquipmentSlot slot)
+        private void DeApplySlot(EquipmentSlot slot)
         {
-            foreach (var verifyingSlotDescriptor in Manifest.Slots)
+            if (slot.ObjectInstance != null)
             {
-                if (verifyingSlotDescriptor == slot.Slot)
+                Destroy(slot.ObjectInstance);
+                slot.ObjectInstance = null;
+            }
+        }
+
+#if UNITY_EDITOR
+        public void DeApplySlotInEditor(EquipmentSlot slot)
+        {
+            if (slot.ObjectInstance != null)
+            {
+                if (Application.isPlaying)
+                    Destroy(slot.ObjectInstance);
+                else
+                {
+                    UnityEditor.Undo.RecordObject(slot.ObjectInstance, "Destroy Old Equip Instance");
+                    DestroyImmediate(slot.ObjectInstance);
+                }
+
+                slot.ObjectInstance = null;
+            }
+        }
+
+        public void ApplySlotInEditor(EquipmentSlot slot)
+        {
+            if (slot.Equipment == null) return;
+
+            if (slot.Equipment.SlotType != slot.EquipmentType)
+            {
+                Debug.LogError($"EquipmentSlot mismatch. Equipment SlotType {slot.Equipment.SlotType} != {slot.EquipmentType}");
+            }
+
+            if (Application.isPlaying)
+            {
+                var result = Instantiate(slot.Equipment.Prefab, slot.PrefabInstantiationParent);
+                slot.ObjectInstance = result;
+            }
+            else
+            {
+                var result = UnityEditor.PrefabUtility.InstantiatePrefab(slot.Equipment.Prefab, slot.PrefabInstantiationParent);
+                slot.ObjectInstance = result as GameObject;
+            }
+        }
+#endif
+        #endregion
+
+
+        #region Equipping
+        public void Equip(EquipmentDescriptor equipment)
+        {
+            var slot = FindSlot(equipment.SlotType);
+
+            if (slot.Equipment != null)
+            {
+                DeApplySlot(slot);
+            }
+
+            slot.Equipment = equipment;
+            ApplySlot(slot);
+        }
+
+        public void UnEquip(EquipmentSlot slot)
+        {
+            DeApplySlot(slot);
+            slot.Equipment = null;
+        }
+
+#if UNITY_EDITOR
+        public void EquipInEditor(EquipmentDescriptor equipment)
+        {
+            var slot = FindSlot(equipment.SlotType);
+
+            if (slot.Equipment != null && slot.ObjectInstance != null)
+            {
+                DeApplySlotInEditor(slot);
+            }
+
+            slot.Equipment = equipment;
+            ApplySlotInEditor(slot);
+        }
+
+        public void UnEquipInEditor(EquipmentSlot slot)
+        {
+            DeApplySlotInEditor(slot);
+            slot.Equipment = null;
+        }
+#endif
+        #endregion
+
+        #region Slot Helpers
+        public EquipmentSlot FindSlot(EquipmentTypeDescriptor slotType)
+        {
+            foreach (var slot in EquipmentSlots)
+            {
+                if (slot.EquipmentType == slotType)
+                {
+                    return slot;
+                }
+            }
+
+            return null;
+        }
+
+        public bool HasSlot(EquipmentTypeDescriptor slotType)
+        {
+            foreach (var slot in EquipmentSlots)
+            {
+                if (slot.EquipmentType == slotType)
                 {
                     return true;
                 }
@@ -53,5 +162,6 @@ namespace WizardUtils.Equipment
 
             return false;
         }
+        #endregion
     }
 }
