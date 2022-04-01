@@ -9,7 +9,10 @@ public class CheckpointTrigger : Trigger
 
     public override bool ColliderCanTrigger(Collider other)
     {
-        return PogoGameManager.TryRegisterRespawnPoint(RespawnPoint);
+        if (WizardUtils.GameManager.GameInstanceIsValid())
+            return PogoGameManager.PogoInstance.TryRegisterRespawnPoint(RespawnPoint);
+        else
+            return false;
     }
 
     private void OnDrawGizmos()

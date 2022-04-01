@@ -13,5 +13,8 @@ namespace WizardUtils.Equipment
     {
         public EquipmentTypeDescriptor SlotType;
         public GameObject Prefab;
+
+        public string DisplayName;
+        public string Description;
     }
 }

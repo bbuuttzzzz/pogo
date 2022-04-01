@@ -51,6 +51,44 @@ namespace WizardUtils.Equipment.Inspector
             }
         }
 
+        private void DrawEquipmentObjectDropdown(EquipmentSlot currentSlot)
+        {
+            GUI.enabled = false;
+            _ = EditorGUILayout.ObjectField(currentSlot.Equipment, typeof(EquipmentDescriptor), false, GUILayout.Width(200));
+            GUI.enabled = true;
+
+            string buttonLabel = currentSlot.Equipment != null ? currentSlot.Equipment.name : "None";
+            if (EditorGUILayout.DropdownButton(new GUIContent(""), FocusType.Passive, GUILayout.ExpandWidth(false)))
+            {
+                GenericMenu menu = new GenericMenu();
+
+                menu.AddItem(new GUIContent($"(None)"), false, () =>
+                {
+                    self.UnEquipInEditor(currentSlot);
+
+                    Undo.RecordObject(self, "Unequip Equipment");
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(self);
+                });
+
+                var equipments = AssetDatabase.FindAssets($"t:{nameof(EquipmentDescriptor)}")
+                    .Select(id => AssetDatabase.LoadAssetAtPath<EquipmentDescriptor>(AssetDatabase.GUIDToAssetPath(id)));
+                foreach (var equipment in equipments)
+                {
+                    // skip equipment this can't use
+                    if (equipment.SlotType != currentSlot.EquipmentType) continue;
+
+                    menu.AddItem(new GUIContent($"{equipment.name}"), false, () =>
+                    {
+                        self.EquipInEditor(equipment);
+
+                        Undo.RecordObject(self, "Change Equipment");
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(self);
+                    });
+                }
+                menu.DropDown(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 0f, 0f));
+            }
+        }
+
 
         private void DrawAddSlotDropdown()
         {
@@ -109,7 +147,7 @@ namespace WizardUtils.Equipment.Inspector
                     GUILayout.EndHorizontal();
                     if (slot.PrefabInstantiationParent == null)
                     {
-                        EditorGUILayout.LabelField("Set a Prefab Parent", EditorStyles.helpBox);
+                        EditorGUILayout.HelpBox("Missing Parent Transform", MessageType.Warning);
                     }
                 }
                 EditorGUILayout.Space();
@@ -139,10 +177,10 @@ namespace WizardUtils.Equipment.Inspector
                 EquipmentSlot slot = self.EquipmentSlots[i];
                 GUILayout.BeginHorizontal();
                 {
-                    var newEquip = (EquipmentDescriptor)EditorGUILayout.ObjectField(slot.Equipment, typeof(EquipmentDescriptor), false);
+                    DrawEquipmentObjectDropdown(slot);
                     if (slot.ObjectInstance == null)
                     {
-                        EditorGUI.BeginDisabledGroup(self.EquipmentSlots == null);
+                        EditorGUI.BeginDisabledGroup(self.EquipmentSlots[i].Equipment == null);
                         {
                             if (GUILayout.Button("Apply Equip"))
                             {
@@ -150,7 +188,6 @@ namespace WizardUtils.Equipment.Inspector
                                 {
                                     self.DeApplySlotInEditor(slot);
                                 }
-                                slot.Equipment = newEquip;
                                 self.ApplySlotInEditor(slot);
 
                                 Undo.RecordObject(self, "Apply Equipment");
@@ -161,7 +198,9 @@ namespace WizardUtils.Equipment.Inspector
                     }
                     else
                     {
-                        EditorGUILayout.LabelField(slot.ObjectInstance.name);
+                        GUI.enabled = false;
+                        _ = EditorGUILayout.ObjectField(slot.ObjectInstance, typeof(Transform), false);
+                        GUI.enabled = true;
 
                         if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                         {
@@ -170,14 +209,6 @@ namespace WizardUtils.Equipment.Inspector
                             Undo.RecordObject(self, "DeApply Equipment");
                             PrefabUtility.RecordPrefabInstancePropertyModifications(self);
                         }
-                    }
-
-                    if (newEquip != slot.Equipment)
-                    {
-                        self.EquipInEditor(newEquip);
-
-                        Undo.RecordObject(self, "Change Equipment");
-                        PrefabUtility.RecordPrefabInstancePropertyModifications(self);
                     }
                 }
                 GUILayout.EndHorizontal();

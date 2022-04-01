@@ -234,7 +234,6 @@ namespace Pogo
         #region Player
         private PlayerController player;
         public PlayerController Player => player;
-
         public static void RegisterPlayer(PlayerController player)
         {
             PogoInstance.player = player;
@@ -260,7 +259,24 @@ namespace Pogo
         #endregion
 
         #region Respawn Point
-        public static bool TryRegisterRespawnPoint(Transform newRespawnPoint)
+        public enum Difficulty
+        {
+            Normal,
+            Hard,
+            Hardcore
+        }
+        private Difficulty currentDifficulty = Difficulty.Normal;
+        public Difficulty CurrentDifficulty
+        {
+            get => currentDifficulty;
+            set
+            {
+                Debug.Log($"Changing difficulty {currentDifficulty} -> {value}");
+                currentDifficulty = value;
+            }
+        }
+
+        public bool TryRegisterRespawnPoint(Transform newRespawnPointTransform)
         {
             if (PogoInstance == null)
             {
@@ -268,12 +284,26 @@ namespace Pogo
                 return false;
             }
 
-            if (newRespawnPoint == PogoInstance.RespawnPoint) return false;
+            if (!CanRegisterRespawnPoint(newRespawnPointTransform)) return false;
 
-            PogoInstance.RespawnPoint = newRespawnPoint;
-
+            PogoInstance.RespawnPoint = newRespawnPointTransform;
             return true;
+        }
 
+        public bool CanRegisterRespawnPoint(Transform newRespawnPointTransform)
+        {
+            if (newRespawnPointTransform == PogoInstance.RespawnPoint) return false;
+
+            if (CurrentDifficulty == Difficulty.Normal)
+            {
+                return true;
+            }
+
+            var respawnPoint = newRespawnPointTransform.gameObject.GetComponent<RespawnPoint>();
+            if (respawnPoint == null) return true;
+
+            return (CurrentDifficulty == Difficulty.Hard && respawnPoint.EnabledInHardMode)
+                || (CurrentDifficulty == Difficulty.Hardcore && respawnPoint.EnableInHardcoreMode);
         }
 
         public override void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)

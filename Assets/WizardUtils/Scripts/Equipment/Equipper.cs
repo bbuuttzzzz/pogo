@@ -106,6 +106,7 @@ namespace WizardUtils.Equipment
 
             slot.Equipment = equipment;
             ApplySlot(slot);
+            OnEquip?.Invoke(slot);
         }
 
         public void UnEquip(EquipmentSlot slot)
