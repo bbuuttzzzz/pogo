@@ -363,6 +363,14 @@ PrefabInstance:
       propertyPath: EmissionModule.rateOverTime.scalar
       value: 188.00003
       objectReference: {fileID: 0}
+    - target: {fileID: 3302431724827653911, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
+      propertyPath: EnabledInHardMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3338012049242360593, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c76781eb5cd16184cb8541163b9e0e06, type: 2}
     - target: {fileID: 4452495269832164838, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.9999886
@@ -479,6 +487,10 @@ PrefabInstance:
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 4791242705117414321, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c76781eb5cd16184cb8541163b9e0e06, type: 2}
     - target: {fileID: 5924138990539864286, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.7
@@ -4331,6 +4343,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1031179549, guid: 546612975aa09cd4d8a11cb0dde5c07b, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031179549, guid: 546612975aa09cd4d8a11cb0dde5c07b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: af86d3fcb981edb419204643b8c19a77, type: 2}
     - target: {fileID: 41909850878182836, guid: 546612975aa09cd4d8a11cb0dde5c07b, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -4581,3 +4601,55 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 546612975aa09cd4d8a11cb0dde5c07b, type: 3}
+--- !u!1 &41909850882594807 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031179546, guid: 546612975aa09cd4d8a11cb0dde5c07b, type: 3}
+  m_PrefabInstance: {fileID: 41909850882594806}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &41909850882594808 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1031179549, guid: 546612975aa09cd4d8a11cb0dde5c07b, type: 3}
+  m_PrefabInstance: {fileID: 41909850882594806}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &41909850882594809 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 41909852556163101, guid: 546612975aa09cd4d8a11cb0dde5c07b, type: 3}
+  m_PrefabInstance: {fileID: 41909850882594806}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &41909850882594810 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 41909852556163099, guid: 546612975aa09cd4d8a11cb0dde5c07b, type: 3}
+  m_PrefabInstance: {fileID: 41909850882594806}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &41909850882594811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41909850882594807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d39ceabfb10745847b62914351fd54d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 41909850882594808}
+  MaterialIndex: 0
+  HardModeMaterial: {fileID: 2100000, guid: 55397449e08ed9744bb2e6bebe4a476c, type: 2}
+  HardcoreModeMaterial: {fileID: 2100000, guid: b5ef3bbadb464f34da94abf4729abcfb, type: 2}
+--- !u!114 &41909850882594812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41909850882594809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d39ceabfb10745847b62914351fd54d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 41909850882594810}
+  MaterialIndex: 0
+  HardModeMaterial: {fileID: 2100000, guid: 55397449e08ed9744bb2e6bebe4a476c, type: 2}
+  HardcoreModeMaterial: {fileID: 2100000, guid: b5ef3bbadb464f34da94abf4729abcfb, type: 2}

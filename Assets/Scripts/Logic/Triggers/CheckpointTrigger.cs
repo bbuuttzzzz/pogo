@@ -7,10 +7,16 @@ public class CheckpointTrigger : Trigger
 {
     public Transform RespawnPoint;
 
+    public UnityEvent OnEnteredNotActivated;
+
     public override bool ColliderCanTrigger(Collider other)
     {
         if (WizardUtils.GameManager.GameInstanceIsValid())
-            return PogoGameManager.PogoInstance.TryRegisterRespawnPoint(RespawnPoint);
+        {
+            bool success = PogoGameManager.PogoInstance.TryRegisterRespawnPoint(RespawnPoint);
+            if (!success) OnEnteredNotActivated?.Invoke();
+            return success;
+        }
         else
             return false;
     }
