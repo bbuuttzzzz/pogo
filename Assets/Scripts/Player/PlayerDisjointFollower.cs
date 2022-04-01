@@ -11,13 +11,10 @@ namespace Pogo
         {
             var player = GetComponentInParent<PlayerController>(true);
 
-#if UNITY_EDITOR
             if (player == null)
             {
-                Debug.LogError($"Missing Player for PlayerDisjointFollower {gameObject.name}", gameObject);
                 return;
             }
-#endif
             player.OnDisjoint?.AddListener(() => OnPlayerDisjoint?.Invoke());
         }
     }
