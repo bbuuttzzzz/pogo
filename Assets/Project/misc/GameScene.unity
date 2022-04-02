@@ -123,6 +123,26 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &219864229 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8049285594771530898, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
+  m_PrefabInstance: {fileID: 8049285593714969209}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &219864235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 219864229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec3c39a8e3bb5e8449d334c484f6e865, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowedTypes:
+  - {fileID: 11400000, guid: 7a2119408764991479c5ff0e14a12625, type: 2}
+  EquipOnAwake: 1
 --- !u!114 &257619468 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5151545848922768529, guid: fd32e00aa890845439fd4fc9a79449c6, type: 3}
@@ -691,10 +711,16 @@ MonoBehaviour:
   CurrentControlScene: {fileID: 11400000, guid: 1789605e5fbbc9d439528ae48addc3a3, type: 2}
   DontLoadScenesInEditor: 0
   MainSaveManifest: {fileID: 11400000, guid: 87514b401570d854abd5287c5294ed32, type: 2}
-  EditorOverrideSaveData: {fileID: 11400000, guid: c2294bad783e3214ba227e3713a01b5f, type: 2}
+  EditorOverrideSaveData: {fileID: 11400000, guid: 692408df174fa754ebca090677004e6f, type: 2}
   DontSaveInEditor: 0
   InitialLevel: {fileID: 11400000, guid: ed8e7c0e04a8c054280ab2454b8047df, type: 2}
   OnLevelLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  Loadout:
+  - EquipmentType: {fileID: 11400000, guid: 7a2119408764991479c5ff0e14a12625, type: 2}
+    Equipment: {fileID: 11400000, guid: bd25fc3e8fd43034f840eff4b3a11728, type: 2}
+  OnEquip:
     m_PersistentCalls:
       m_Calls: []
   OnPlayerDeath:

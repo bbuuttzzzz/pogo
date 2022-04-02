@@ -1,17 +1,14 @@
 ﻿using System;
 using UnityEngine;
-
 namespace WizardUtils.Equipment
 {
     [Serializable]
-    public class EquipmentSlot
+    public class NonInstancedEquipmentSlot
     {
         public EquipmentTypeDescriptor EquipmentType;
         public EquipmentDescriptor Equipment;
-        public Transform PrefabInstantiationParent;
-        public GameObject ObjectInstance;
 
-        public EquipmentSlot(EquipmentTypeDescriptor equipmentType)
+        public NonInstancedEquipmentSlot(EquipmentTypeDescriptor equipmentType)
         {
             EquipmentType = equipmentType;
         }

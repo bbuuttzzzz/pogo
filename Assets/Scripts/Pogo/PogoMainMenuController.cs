@@ -1,77 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
-using WizardUtils;
 
 namespace Pogo
 {
     public class PogoMainMenuController : MonoBehaviour
     {
-        public ChapterDescriptor[] Chapters;
-        [HideInInspector]
-        public ChapterDescriptor[] UnlockedChapters;
-        [HideInInspector]
-        public int ActiveChapterIndex = 0;
+        public UnityEvent OnOpenGamemodeScreen;
+        public UnityEvent OnCloseGamemodeScreen;
 
-        public UnityEvent OnActiveChapterChanged;
-        public UnityStringEvent OnChapterNameChanged;
+        public EquipmentSelectorController PogoSelector;
+        public PogoChapterSelectorController ChapterSelector;
 
-        private void Start()
+        public void SetGamemodeOrStart()
         {
-            SetupUnlockedChapters();
-
-            OnActiveChapterChanged.AddListener(updateChapterName);
-            OnActiveChapterChanged.AddListener(updateButtonInteractableStates);
-            OnActiveChapterChanged?.Invoke();
-        }
-
-        private void SetupUnlockedChapters()
-        {
-            List<ChapterDescriptor> unlockedChapterList = new List<ChapterDescriptor>();
-            foreach(ChapterDescriptor chapter in Chapters)
+            if (PogoSelector.UnlockedEquipment.Length <= 1
+                && ChapterSelector.UnlockedChapters.Length <= 1)
             {
-                if (chapter.IsUnlocked)
-                {
-                    unlockedChapterList.Add(chapter);
-                }
+                StartGame();
             }
-
-            UnlockedChapters = unlockedChapterList.ToArray();
+            else
+            {
+                OpenGamemodeScreen();
+            }
         }
 
-        void updateChapterName()
+        public void OpenGamemodeScreen()
         {
-            OnChapterNameChanged.Invoke(UnlockedChapters[ActiveChapterIndex].LongTitle);
+            OnOpenGamemodeScreen?.Invoke();
         }
 
-        public void LoadActiveChapter()
+        public void CloseGamemodeScreen()
         {
-            PogoGameManager.PogoInstance.LoadChapter(UnlockedChapters[ActiveChapterIndex]);
+            OnCloseGamemodeScreen?.Invoke();
         }
 
-        public Button IncrementButton; 
-        public void IncrementChapter()
+        public void StartGame()
         {
-            ActiveChapterIndex = Math.Min(UnlockedChapters.Length - 1, ActiveChapterIndex + 1);
-            OnActiveChapterChanged?.Invoke();
-        }
-
-        public Button DecrementButton;
-        public void DecrementChapter()
-        {
-            ActiveChapterIndex = Math.Max(0, ActiveChapterIndex - 1);
-            OnActiveChapterChanged?.Invoke();
-        }
-
-        private void updateButtonInteractableStates()
-        {
-            DecrementButton.interactable = (ActiveChapterIndex > 0);
-            IncrementButton.interactable = (ActiveChapterIndex < UnlockedChapters.Length - 1);
+            ChapterSelector.LoadActiveChapter();
         }
     }
 }

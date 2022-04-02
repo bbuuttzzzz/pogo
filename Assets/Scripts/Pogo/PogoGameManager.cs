@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using WizardUtils;
+using WizardUtils.Equipment;
 using WizardUtils.SceneManagement;
 
 namespace Pogo
@@ -229,6 +230,39 @@ namespace Pogo
             ResetPlayer();
         }
 
+        #endregion
+
+        #region Equipment
+
+        public NonInstancedEquipmentSlot[] Loadout;
+
+        public UnityEvent<NonInstancedEquipmentSlot> OnEquip;
+        public void Equip(EquipmentDescriptor equipment)
+        {
+            var slot = FindSlot(equipment.SlotType);
+
+            if (slot == null)
+            {
+                Debug.LogWarning($"Tried to equip equipment {equipment} without its slot {equipment.SlotType}");
+                return;
+            }
+
+            slot.Equipment = equipment;
+            OnEquip?.Invoke(slot);
+        }
+
+        public NonInstancedEquipmentSlot FindSlot(EquipmentTypeDescriptor slotType)
+        {
+            foreach (var slot in Loadout)
+            {
+                if (slot.EquipmentType == slotType)
+                {
+                    return slot;
+                }
+            }
+
+            return null;
+        }
         #endregion
 
         #region Player

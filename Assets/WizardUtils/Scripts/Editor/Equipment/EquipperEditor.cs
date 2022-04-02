@@ -171,6 +171,8 @@ namespace WizardUtils.Equipment.Inspector
 
         private void DrawEquipment()
         {
+            if (self.EquipmentSlots == null) self.EquipmentSlots = new EquipmentSlot[0];
+
             EditorGUILayout.LabelField("Equipment", EditorStyles.boldLabel);
             for (int i = 0; i < self.EquipmentSlots.Length; i++)
             {

@@ -99,6 +99,12 @@ namespace WizardUtils.Equipment
         {
             var slot = FindSlot(equipment.SlotType);
 
+            if (slot == null)
+            {
+                Debug.LogWarning($"Tried to equip equipment {equipment} without its slot {equipment.SlotType}");
+                return;
+            }
+
             if (slot.Equipment != null)
             {
                 DeApplySlot(slot);
