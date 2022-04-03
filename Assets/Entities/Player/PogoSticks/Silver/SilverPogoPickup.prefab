@@ -9885,8 +9885,9 @@ GameObject:
   - component: {fileID: 7870740394344632505}
   - component: {fileID: 7870740394344632510}
   - component: {fileID: 7487027057725334158}
-  - component: {fileID: 7487027057725334156}
   - component: {fileID: 7487027057725334157}
+  - component: {fileID: 2006907857}
+  - component: {fileID: 2006907858}
   m_Layer: 7
   m_Name: SilverPogoPickup
   m_TagString: Untagged
@@ -10083,8 +10084,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 7487027057725334156}
-        m_TargetAssemblyTypeName: Pogo.ChapterUnlocker, Assembly-CSharp
+      - m_Target: {fileID: 2006907857}
+        m_TargetAssemblyTypeName: WizardUtils.Saving.Unlocker, Assembly-CSharp
         m_MethodName: SetUnlocked
         m_Mode: 6
         m_Arguments:
@@ -10095,7 +10096,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
---- !u!114 &7487027057725334156
+--- !u!114 &7487027057725334157
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10104,10 +10105,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 7870740394344632511}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37635d0d318a80e49996ad9b0297a133, type: 3}
+  m_Script: {fileID: 11500000, guid: 713efa365ae68ad46861f566d75c8ad6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Chapter: {fileID: 11400000, guid: 3e000a411fee5af48a0fcd26edb682c9, type: 2}
+  Prefab: {fileID: 3834550728489001674, guid: 1ae01a14d12c4f3448b9472d8bbb4da0, type: 3}
+--- !u!114 &2006907857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7870740394344632511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 873c0edc27dab24418f8256b876a8b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Save: {fileID: 11400000, guid: 91852e9e6a9eeef468a7ad837a214cfb, type: 2}
   OnUnlocked:
     m_PersistentCalls:
       m_Calls:
@@ -10123,7 +10137,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7487027057725334157
+--- !u!114 &2006907858
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10132,10 +10146,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 7870740394344632511}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 713efa365ae68ad46861f566d75c8ad6, type: 3}
+  m_Script: {fileID: 11500000, guid: aa3d799733878d14c9df44c6fd8b8cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 3834550728489001674, guid: 2426bf16b0be2894fa94e85f2a30f4d4, type: 3}
+  Save: {fileID: 11400000, guid: 91852e9e6a9eeef468a7ad837a214cfb, type: 2}
+  CheckOnAwake: 1
+  OnCheckedLocked:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCheckedUnlocked:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7870740394344632511}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &3062799554025781421
 PrefabInstance:
   m_ObjectHideFlags: 0

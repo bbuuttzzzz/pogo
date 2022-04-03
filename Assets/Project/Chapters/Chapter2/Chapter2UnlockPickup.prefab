@@ -5166,6 +5166,7 @@ GameObject:
   - component: {fileID: 6069019524519829191}
   - component: {fileID: 6069019524519829189}
   - component: {fileID: 6069019524519829188}
+  - component: {fileID: 7547236602812578444}
   m_Layer: 7
   m_Name: Chapter2UnlockPickup
   m_TagString: Untagged
@@ -5415,6 +5416,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab: {fileID: 3834550728489001674, guid: 8414496bdf60026468ece16817e5e271, type: 3}
+--- !u!114 &7547236602812578444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6837663641926642934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa3d799733878d14c9df44c6fd8b8cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Save: {fileID: 11400000, guid: 7fcf60c774c8c254eb350b47fde88241, type: 2}
+  CheckOnAwake: 1
+  OnCheckedLocked:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCheckedUnlocked:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6837663641926642934}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &844585754874097202
 PrefabInstance:
   m_ObjectHideFlags: 0
