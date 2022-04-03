@@ -15,8 +15,7 @@ namespace Pogo
         public ChapterDescriptor[] Chapters;
         [HideInInspector]
         public ChapterDescriptor[] UnlockedChapters;
-        [HideInInspector]
-        public int ActiveChapterIndex = 0;
+        private int ActiveChapterIndex = 0;
 
         public UnityEvent OnActiveChapterChanged;
         public UnityStringEvent OnChapterNameChanged;
@@ -30,7 +29,7 @@ namespace Pogo
             OnActiveChapterChanged?.Invoke();
 
             if (IncrementButton != null) IncrementButton.onClick.AddListener(Increment);
-            if (DecrementButton != null) IncrementButton.onClick.AddListener(Decrement);
+            if (DecrementButton != null) DecrementButton.onClick.AddListener(Decrement);
         }
 
         private void SetupUnlockedChapters()

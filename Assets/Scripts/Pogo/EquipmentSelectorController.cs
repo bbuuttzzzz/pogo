@@ -15,8 +15,7 @@ namespace Pogo
         public EquipmentUnlockDescriptor[] Equipment;
         [HideInInspector]
         public EquipmentUnlockDescriptor[] UnlockedEquipment;
-        [HideInInspector]
-        public int ActiveUnlockIndex = 0;
+        private int ActiveUnlockIndex = 0;
 
         public UnityEvent OnActiveUnlockChanged;
         public UnityStringEvent OnUnlockNameChanged;
@@ -31,7 +30,7 @@ namespace Pogo
             OnActiveUnlockChanged?.Invoke();
 
             if (IncrementButton != null) IncrementButton.onClick.AddListener(Increment);
-            if (DecrementButton != null) IncrementButton.onClick.AddListener(Decrement);
+            if (DecrementButton != null) DecrementButton.onClick.AddListener(Decrement);
         }
 
         private void SetupUnlockedEquipment()

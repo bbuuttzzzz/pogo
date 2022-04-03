@@ -16,5 +16,18 @@ namespace WizardUtils.Saving
 
         [TextArea(3,3)]
         public string DeveloperNote;
+
+        public bool IsUnlocked
+        {
+            get
+            {
+                return GameManager.GameInstance?.GetMainSaveValue(this) == "1";
+            }
+            set
+            {
+                GameManager.GameInstance?.SetMainSaveValue(this, value ? "1" : "0");
+            }
+        }
+
     }
 }
