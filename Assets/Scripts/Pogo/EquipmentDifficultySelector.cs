@@ -8,7 +8,7 @@ namespace Pogo
         public EquipmentTypeDescriptor EquipmentTypeToCheck;
 
         public EquipmentDescriptor[] HardModeEquipment;
-        public EquipmentDescriptor[] HardcoreModeEquipment;
+        public EquipmentDescriptor[] FreeplayModeEquipment;
 
         public void Start()
         {
@@ -35,11 +35,11 @@ namespace Pogo
                     return;
                 }
             }
-            foreach (EquipmentDescriptor descriptor in HardcoreModeEquipment)
+            foreach (EquipmentDescriptor descriptor in FreeplayModeEquipment)
             {
                 if (descriptor == equipment)
                 {
-                    SetDifficulty(PogoGameManager.Difficulty.Hardcore);
+                    SetDifficulty(PogoGameManager.Difficulty.Freeplay);
                     return;
                 }
             }

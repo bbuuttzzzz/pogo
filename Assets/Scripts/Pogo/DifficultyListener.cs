@@ -18,7 +18,7 @@ namespace Pogo
                 {
                     OnHardMode?.Invoke();
                 }
-                else if (difficulty == PogoGameManager.Difficulty.Hardcore)
+                else if (difficulty == PogoGameManager.Difficulty.Freeplay)
                 {
                     OnHardcoreMode?.Invoke();
                 }

@@ -9,7 +9,8 @@ public enum KeyName
     Forward, Right, Backward, Left,
     Pause,
     Reset,
-    UIAdvance
+    UIAdvance,
+    Checkpoint
 }
 
 public enum AxisSetName
@@ -61,6 +62,9 @@ namespace Inputter
             Keys[KeyName.Left] = new KeyboardButton(keyboard, Key.A);
 
             Keys[KeyName.Reset] = new KeyboardButton(keyboard, Key.R);
+
+            Keys[KeyName.Checkpoint] = new KeyboardButton(keyboard, Key.C);
+
 
 #if UNITY_EDITOR
             Keys[KeyName.Pause] = new MultiButton(new Button[]{

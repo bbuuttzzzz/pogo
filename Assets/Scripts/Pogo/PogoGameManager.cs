@@ -297,7 +297,7 @@ namespace Pogo
         {
             Normal,
             Hard,
-            Hardcore
+            Freeplay
         }
         private Difficulty currentDifficulty = Difficulty.Normal;
         public Difficulty CurrentDifficulty
@@ -336,8 +336,7 @@ namespace Pogo
             var respawnPoint = newRespawnPointTransform.gameObject.GetComponent<RespawnPoint>();
             if (respawnPoint == null) return true;
 
-            return (CurrentDifficulty == Difficulty.Hard && respawnPoint.EnabledInHardMode)
-                || (CurrentDifficulty == Difficulty.Hardcore && respawnPoint.EnableInHardcoreMode);
+            return (CurrentDifficulty == Difficulty.Hard && respawnPoint.EnabledInHardMode);
         }
 
         public override void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)

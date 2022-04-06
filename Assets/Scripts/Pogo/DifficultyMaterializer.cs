@@ -21,7 +21,7 @@ namespace Pogo
                     mats[MaterialIndex] = HardModeMaterial;
                     Target.materials = mats;
                 }
-                else if (difficulty == PogoGameManager.Difficulty.Hardcore)
+                else if (difficulty == PogoGameManager.Difficulty.Freeplay)
                 {
                     var mats = Target.materials;
                     mats[MaterialIndex] = HardcoreModeMaterial;

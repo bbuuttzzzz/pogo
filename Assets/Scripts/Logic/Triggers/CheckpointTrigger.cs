@@ -20,16 +20,4 @@ public class CheckpointTrigger : Trigger
         else
             return false;
     }
-
-    private void OnDrawGizmos()
-    {
-        if (RespawnPoint != null)
-        {
-            //resources.Load every frame to draw this btw LOL!!!
-            Mesh arrowMesh = Resources.Load<Mesh>("Models/enterIndicator");
-
-            Gizmos.color = Color.green;
-            Gizmos.DrawMesh(arrowMesh, RespawnPoint.position, RespawnPoint.rotation, Vector3.one);
-        }
-    }
 }
