@@ -16,6 +16,8 @@ namespace Assets.Scripts.Pogo
 
         public float Height;
 
+        public float HeightOffset;
+
         public bool Place(Vector3 targetPosition)
         {
             if (CanPlace(targetPosition, out Vector3 finalPosition))
@@ -29,31 +31,33 @@ namespace Assets.Scripts.Pogo
 
         public bool CanPlace(Vector3 targetPosition, out Vector3 finalPosition)
         {
-            if (enoughRoomAtLocation(targetPosition))
+            Vector3 top = targetPosition + Vector3.up * HeightOffset;
+
+            if (enoughRoomAtLocation(top))
             {
-                if (enoughRoomBelow(targetPosition, out RaycastHit belowHit))
+                if (enoughRoomBelow(top, out RaycastHit belowHit))
                 {
                     finalPosition = targetPosition;
                     return true;
                 }
                 else
                 {
-                    if (enoughRoomAbove(targetPosition, belowHit, out RaycastHit aboveHit))
+                    if (enoughRoomAbove(top, belowHit, out RaycastHit aboveHit))
                     {
-                        Vector3 bottomPoint = targetPosition + Vector3.down * belowHit.distance;
-                        finalPosition = bottomPoint + Vector3.up * Height;
+                        Vector3 bottomPoint = top + Vector3.down * belowHit.distance;
+                        finalPosition = bottomPoint + Vector3.up * (Height - HeightOffset);
                         return true;
                     }
                     else
                     {
-                        finalPosition = targetPosition;
+                        finalPosition = Vector3.zero;
                         return false;
                     }
                 }
             }
             else
             {
-                finalPosition = targetPosition;
+                finalPosition = Vector3.zero;
                 return false;
             }
         }
@@ -82,24 +86,26 @@ namespace Assets.Scripts.Pogo
 
         private void OnDrawGizmosSelected()
         {
-            if (enoughRoomAtLocation(transform.position))
+            Vector3 top = transform.position + Vector3.up * HeightOffset;
+
+            if (enoughRoomAtLocation(top))
             {
                 Gizmos.color = Color.blue;
-                Gizmos.DrawWireSphere(transform.position, Radius);
+                Gizmos.DrawWireSphere(top, Radius);
 
-                if (enoughRoomBelow(transform.position, out RaycastHit belowHit))
+                if (enoughRoomBelow(top, out RaycastHit belowHit))
                 {
                     Gizmos.color = Color.green;
-                    Vector3 bottomPoint = transform.position + Vector3.down * Height;
+                    Vector3 bottomPoint = top + Vector3.down * Height;
                     Gizmos.DrawWireSphere(bottomPoint, Radius);
-                    GizmosHelper.DrawSphereConnection(transform.position, bottomPoint, Radius, Radius);
+                    GizmosHelper.DrawSphereConnection(top, bottomPoint, Radius, Radius);
                 }
                 else
                 {
-                    if (enoughRoomAbove(transform.position, belowHit, out RaycastHit aboveHit))
+                    if (enoughRoomAbove(top, belowHit, out RaycastHit aboveHit))
                     {
                         Gizmos.color = new Color(0.5f, 1, 0.5f);
-                        Vector3 bottomPoint = transform.position + Vector3.down * belowHit.distance;
+                        Vector3 bottomPoint = top + Vector3.down * belowHit.distance;
                         Vector3 topPoint = bottomPoint + Vector3.up * Height;
                         Gizmos.DrawWireSphere(bottomPoint, Radius);
                         Gizmos.DrawWireSphere(topPoint, Radius);
@@ -108,8 +114,8 @@ namespace Assets.Scripts.Pogo
                     else
                     {
                         Gizmos.color = Color.red;
-                        Vector3 center1 = transform.position + Vector3.down * belowHit.distance;
-                        Vector3 center2 = transform.position + Vector3.up * aboveHit.distance;
+                        Vector3 center1 = top + Vector3.down * belowHit.distance;
+                        Vector3 center2 = top + Vector3.up * aboveHit.distance;
                         Gizmos.DrawWireSphere(center1, Radius);
                         Gizmos.DrawWireSphere(center2, Radius);
                         GizmosHelper.DrawSphereConnection(center1, center2, Radius, Radius);
@@ -119,7 +125,7 @@ namespace Assets.Scripts.Pogo
             else
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(transform.position, Radius);
+                Gizmos.DrawWireSphere(top, Radius);
             }
         }
         
