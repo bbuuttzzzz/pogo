@@ -293,6 +293,13 @@ namespace Pogo
         #endregion
 
         #region Respawn Point
+
+        public Transform InitialRespawnPoint;
+        [HideInInspector]
+        public Transform RespawnPoint;
+        public Transform CustomRespawnPoint;
+        public bool CustomRespawnActive;
+
         public enum Difficulty
         {
             Normal,
@@ -308,6 +315,11 @@ namespace Pogo
                 Debug.Log($"Changing difficulty {currentDifficulty} -> {value}");
                 currentDifficulty = value;
             }
+        }
+
+        public bool RegisterCustomRespawnPoint(Vector3 point)
+        {
+            return false;
         }
 
         public bool TryRegisterRespawnPoint(Transform newRespawnPointTransform)
@@ -348,9 +360,6 @@ namespace Pogo
             base.LoadControlScene(newScene, callback);
         }
 
-        public Transform InitialRespawnPoint;
-        [HideInInspector]
-        public Transform RespawnPoint;
         #endregion
 
         #region Settings
