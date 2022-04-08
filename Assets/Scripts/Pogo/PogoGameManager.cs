@@ -297,7 +297,7 @@ namespace Pogo
         public Transform InitialRespawnPoint;
         [HideInInspector]
         public Transform RespawnPoint;
-        public Transform CustomRespawnPoint;
+        public CustomCheckpointController CustomRespawnPoint;
         public bool CustomRespawnActive;
 
         public enum Difficulty
@@ -319,7 +319,18 @@ namespace Pogo
 
         public bool RegisterCustomRespawnPoint(Vector3 point)
         {
+            if (CurrentDifficulty == Difficulty.Freeplay && CustomRespawnPoint.Place(point))
+            {
+                CustomRespawnActive = true;
+                return true;
+            }
+
             return false;
+        }
+
+        public void ResetCustomRespawnPoint()
+        {
+            CustomRespawnActive = false;
         }
 
         public bool TryRegisterRespawnPoint(Transform newRespawnPointTransform)

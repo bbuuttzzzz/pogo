@@ -1,9 +1,8 @@
-﻿using Pogo;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using WizardUtils.Extensions;
 
-namespace Assets.Scripts.Pogo
+namespace Pogo
 {
     public class CustomCheckpointController : MonoBehaviour
     {
@@ -128,7 +127,7 @@ namespace Assets.Scripts.Pogo
                 Gizmos.DrawWireSphere(top, Radius);
             }
         }
-        
+
         private void OnValidate()
         {
             layermask = LAYERMASK.MaskForLayer(gameObject.layer);
