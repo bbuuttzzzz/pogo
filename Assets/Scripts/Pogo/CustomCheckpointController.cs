@@ -17,15 +17,22 @@ namespace Pogo
 
         public float HeightOffset;
 
-        public bool Place(Vector3 targetPosition)
+        public bool Place(Vector3 targetPosition, Quaternion forward)
         {
             if (CanPlace(targetPosition, out Vector3 finalPosition))
             {
                 transform.position = finalPosition;
+                transform.rotation = forward;
+                gameObject.SetActive(true);
                 OnPlaced?.Invoke();
                 return true;
             }
             return false;
+        }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
         }
 
         public bool CanPlace(Vector3 targetPosition, out Vector3 finalPosition)
@@ -132,6 +139,5 @@ namespace Pogo
         {
             layermask = LAYERMASK.MaskForLayer(gameObject.layer);
         }
-
     }
 }

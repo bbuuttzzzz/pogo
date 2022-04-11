@@ -15,7 +15,10 @@ namespace WizardUtils.Tools
 
         public void Snap()
         {
-
+            if (CheckForSurface(out RaycastHit hitInfo))
+            {
+                Target.transform.position = hitInfo.point;
+            }
         }
 
         private void OnValidate()

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace WizardTools
+namespace WizardUtils
 {
     public abstract class Waypointer<T> : MonoBehaviour
     {

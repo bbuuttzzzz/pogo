@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WizardTools
+namespace WizardUtils
 {
     public class AudioVolumeWaypointer : Waypointer<float>
     {
@@ -17,7 +17,7 @@ namespace WizardTools
             {
                 Target.Play();
             }
-            else if(newValue == 0 && Target.volume > 0)
+            else if (newValue == 0 && Target.volume > 0)
             {
                 Target.Stop();
             }

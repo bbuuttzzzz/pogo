@@ -71,7 +71,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateCustomRespawn();
         DoLook();
         UpdateDesiredModelPitch();
         ApplyForces();
@@ -182,15 +181,7 @@ public class PlayerController : MonoBehaviour
 
     public void Reset()
     {
-        Debug.Log("Reset Player");
-        if (PogoGameManager.PogoInstance.RespawnPoint != null)
-        {
-            TeleportTo(PogoGameManager.PogoInstance.RespawnPoint);
-        }
-        else
-        {
-            Debug.LogError($"Missing {nameof(PogoGameManager.PogoInstance.RespawnPoint)}");
-        }
+        TeleportTo(PogoGameManager.PogoInstance.GetRespawnTransform());
     }
 
     private void ResetPhysics()
@@ -433,46 +424,6 @@ public class PlayerController : MonoBehaviour
         internalEyeAngles.x = Mathf.Clamp(internalEyeAngles.x, -89.9f, 89.9f);
 
         CameraSwivelPoint.transform.rotation = GetAimQuat();
-    }
-    #endregion
-
-    #region Custom Respawn
-    bool pressQueued = false;
-    float lastPress;
-    const float holdInterval = 1;
-
-    private void UpdateCustomRespawn()
-    {
-        if (pressQueued)
-        {
-            if (lastPress + holdInterval < Time.time)
-            {
-                pressQueued = false;
-                resetRespawn();
-            }
-            else if(InputManager.CheckKeyUp(KeyName.Checkpoint))
-            {
-                pressQueued = false;
-                setRespawn();
-            }
-        }
-
-        if (InputManager.CheckKeyDown(KeyName.Checkpoint))
-        {
-            pressQueued = true;
-            lastPress = Time.time;
-        }
-
-    }
-
-    private void setRespawn()
-    {
-        Debug.Log("SET");
-    }
-
-    private void resetRespawn()
-    {
-        Debug.Log("RESET");
     }
     #endregion
 }

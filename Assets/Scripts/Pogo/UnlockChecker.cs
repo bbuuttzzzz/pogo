@@ -15,9 +15,14 @@ namespace Pogo
 
         public void Start()
         {
-            if (CheckOnAwake) Check();
+            if (CheckOnAwake) TriggerCheck();
         }
 
+        public void TriggerCheck()
+        {
+            _ = Check();
+        }
+        
         public bool Check()
         {
             bool unlocked = Save.IsUnlocked;

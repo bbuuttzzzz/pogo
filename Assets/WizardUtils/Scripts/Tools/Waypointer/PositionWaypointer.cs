@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace WizardTools
+namespace WizardUtils
 {
     public class PositionWaypointer : Waypointer<Vector3>
     {
@@ -44,7 +44,7 @@ namespace WizardTools
             {
                 foreach (Vector3 worldOffset in Waypoints)
                 {
-                    Gizmos.DrawIcon(transform.position + worldOffset, "sp_flag.tiff", false,Color.blue);
+                    Gizmos.DrawIcon(transform.position + worldOffset, "sp_flag.tiff", false, Color.blue);
                 }
             }
         }

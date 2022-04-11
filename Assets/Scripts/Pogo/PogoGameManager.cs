@@ -226,7 +226,7 @@ namespace Pogo
         {
             ChapterStartPoint respawnPoint = newChapter.FindStartPoint();
             respawnPoint.OnLoaded?.Invoke();
-            TryRegisterRespawnPoint(respawnPoint.transform);
+            RegisterRespawnPoint(respawnPoint.transform);
             ResetPlayer();
         }
 
@@ -297,8 +297,13 @@ namespace Pogo
         public Transform InitialRespawnPoint;
         [HideInInspector]
         public Transform RespawnPoint;
-        public CustomCheckpointController CustomRespawnPoint;
+        public CustomCheckpointController CustomCheckpoint;
         public bool CustomRespawnActive;
+
+        public Transform GetRespawnTransform()
+        {
+            return CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint;
+        }
 
         public enum Difficulty
         {
@@ -317,9 +322,9 @@ namespace Pogo
             }
         }
 
-        public bool RegisterCustomRespawnPoint(Vector3 point)
+        public bool RegisterCustomRespawnPoint(Vector3 point, Quaternion forward)
         {
-            if (CurrentDifficulty == Difficulty.Freeplay && CustomRespawnPoint.Place(point))
+            if (CurrentDifficulty == Difficulty.Freeplay && CustomCheckpoint.Place(point, forward))
             {
                 CustomRespawnActive = true;
                 return true;
@@ -328,9 +333,16 @@ namespace Pogo
             return false;
         }
 
-        public void ResetCustomRespawnPoint()
+        public bool ResetCustomRespawnPoint()
         {
-            CustomRespawnActive = false;
+
+            if (CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive)
+            {
+                CustomRespawnActive = false;
+                CustomCheckpoint.Hide();
+                return true;
+            }
+            return false;
         }
 
         public bool TryRegisterRespawnPoint(Transform newRespawnPointTransform)
@@ -343,8 +355,13 @@ namespace Pogo
 
             if (!CanRegisterRespawnPoint(newRespawnPointTransform)) return false;
 
-            PogoInstance.RespawnPoint = newRespawnPointTransform;
+            RegisterRespawnPoint(newRespawnPointTransform);
             return true;
+        }
+
+        public void RegisterRespawnPoint(Transform newRespawnPointTransform)
+        {
+            PogoInstance.RespawnPoint = newRespawnPointTransform;
         }
 
         public bool CanRegisterRespawnPoint(Transform newRespawnPointTransform)

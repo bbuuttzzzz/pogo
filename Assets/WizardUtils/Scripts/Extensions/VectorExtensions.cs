@@ -297,5 +297,11 @@ namespace WizardUtils
 
             return a;
         }
+
+        // Quaternions
+        public static Quaternion YawOnly(this Quaternion self)
+        {
+            return Quaternion.Euler(0, self.eulerAngles.y, 0);
+        }
     }
 }
