@@ -9,6 +9,7 @@ namespace Pogo
 
         public EquipmentDescriptor[] HardModeEquipment;
         public EquipmentDescriptor[] FreeplayModeEquipment;
+        public EquipmentDescriptor[] ExpertModeEquipment;
 
         public void Start()
         {
@@ -43,6 +44,15 @@ namespace Pogo
                     return;
                 }
             }
+            foreach (EquipmentDescriptor descriptor in ExpertModeEquipment)
+            {
+                if (descriptor == equipment)
+                {
+                    SetDifficulty(PogoGameManager.Difficulty.Expert);
+                    return;
+                }
+            }
+
 
             SetDifficulty(PogoGameManager.Difficulty.Normal);
         }

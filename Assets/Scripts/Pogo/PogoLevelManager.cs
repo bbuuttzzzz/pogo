@@ -32,6 +32,7 @@ namespace Pogo
             }
         }
 
+        public LevelDescriptor CurrentLevel => currentLevel;
         LevelDescriptor currentLevel;
 #if UNITY_EDITOR
         public void LoadLevelInEditor(LevelDescriptor newLevel)
@@ -86,12 +87,18 @@ namespace Pogo
             TransitionAtmosphere(newLevel, true);
         }
 
-        public void LoadLevelAsync(LevelDescriptor newLevel, Action<LevelLoadingData> callback = null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newLevel">the level to load</param>
+        /// <param name="callback">called only if level loading starts successfully</param>
+        /// <returns>FALSE if level is already loaded</returns>
+        public bool LoadLevelAsync(LevelDescriptor newLevel, Action<LevelLoadingData> callback = null)
         {
             if (currentLevel == newLevel)
             {
                 Debug.LogWarning($"Tried to load already-loaded level {newLevel}");
-                return;
+                return false;
             }
             currentLevel = newLevel;
 
@@ -122,6 +129,7 @@ namespace Pogo
             TransitionAtmosphere(newLevel, false);
 
             if (callback != null) callback(new LevelLoadingData(loadTasks, unloadTasks));
+            return true;
         }
 
         internal void ResetLoadedLevel()

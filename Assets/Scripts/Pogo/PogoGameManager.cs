@@ -27,6 +27,7 @@ namespace Pogo
             RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 0f));
 
             OnPlayerDeath.AddListener(() => NumberOfDeaths++);
+            OnPlayerDeath.AddListener(() => ResetLoadedLevel());
 
 #if UNITY_EDITOR
 #else
@@ -58,6 +59,9 @@ namespace Pogo
 
         public UnityEvent OnLevelLoaded;
 
+        bool isLoadingLevel;
+        LevelDescriptor queuedLevel;
+
 #if UNITY_EDITOR
         public override void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
         {
@@ -73,12 +77,22 @@ namespace Pogo
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
 #endif
+            if (isLoadingLevel)
+            {
+                queuedLevel = newLevel;
+                return;
+            }
+            isLoadingLevel = true;
+
             bool loadingFromMenu = CurrentControlScene != null;
 #if UNITY_WEBGL
-            levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(loadLevelsInOrder(levelLoadingData, loadingFromMenu)));
+            if (!levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(loadLevelsInOrder(levelLoadingData, loadingFromMenu))))
 #else
-            levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(loadLevelsSimultaneous(levelLoadingData, loadingFromMenu)));
+            if (!levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(loadLevelsSimultaneous(levelLoadingData, loadingFromMenu))))
 #endif
+            {
+                isLoadingLevel = false;
+            }
         }
 
         IEnumerator loadLevelsSimultaneous(LevelLoadingData levelLoadingData, bool loadingFromMenu)
@@ -138,6 +152,7 @@ namespace Pogo
                 ResetStats();
             }
 
+            isLoadingLevel = false;
             OnLevelLoaded?.Invoke();
         }
 
@@ -204,7 +219,16 @@ namespace Pogo
                 ResetStats();
             }
 
+            isLoadingLevel = false;
             OnLevelLoaded?.Invoke();
+        }
+
+        void ResetLoadedLevel()
+        {
+            if (RealTargetRespawnLevel != null && levelManager.CurrentLevel != RealTargetRespawnLevel)
+            {
+                LoadLevel(RealTargetRespawnLevel);
+            }
         }
         #endregion
 
@@ -300,6 +324,10 @@ namespace Pogo
         public CustomCheckpointController CustomCheckpoint;
         public bool CustomRespawnActive;
 
+        LevelDescriptor RespawnLevel;
+        LevelDescriptor CustomRespawnLevel;
+        LevelDescriptor RealTargetRespawnLevel => CustomRespawnActive ? CustomRespawnLevel : RespawnLevel;
+
         public Transform GetRespawnTransform()
         {
             return CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint;
@@ -309,7 +337,8 @@ namespace Pogo
         {
             Normal,
             Hard,
-            Freeplay
+            Freeplay,
+            Expert
         }
         private Difficulty currentDifficulty = Difficulty.Normal;
         public Difficulty CurrentDifficulty
@@ -327,6 +356,7 @@ namespace Pogo
             if (CurrentDifficulty == Difficulty.Freeplay && CustomCheckpoint.Place(point, forward))
             {
                 CustomRespawnActive = true;
+                CustomRespawnLevel = levelManager.CurrentLevel;
                 return true;
             }
 
@@ -361,14 +391,15 @@ namespace Pogo
 
         public void RegisterRespawnPoint(Transform newRespawnPointTransform)
         {
+            RespawnLevel = levelManager.CurrentLevel;
             PogoInstance.RespawnPoint = newRespawnPointTransform;
         }
 
         public bool CanRegisterRespawnPoint(Transform newRespawnPointTransform)
         {
-            if (newRespawnPointTransform == PogoInstance.RespawnPoint) return false;
+            if (newRespawnPointTransform == PogoInstance.RespawnPoint || CurrentDifficulty == Difficulty.Expert) return false;
 
-            if (CurrentDifficulty == Difficulty.Normal)
+            if (CurrentDifficulty == Difficulty.Normal || CurrentDifficulty == Difficulty.Freeplay)
             {
                 return true;
             }

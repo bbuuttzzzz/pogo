@@ -5,8 +5,10 @@ namespace Pogo
 {
     public class DifficultyListener : MonoBehaviour
     {
+        public UnityEvent OnNormalMode;
         public UnityEvent OnHardMode;
-        public UnityEvent OnHardcoreMode;
+        public UnityEvent OnExpertMode;
+        public UnityEvent OnFreeplayMode;
 
         private void Start()
         {
@@ -14,13 +16,21 @@ namespace Pogo
             {
                 var difficulty = PogoGameManager.PogoInstance.CurrentDifficulty;
 
-                if (difficulty == PogoGameManager.Difficulty.Hard)
+                if (difficulty == PogoGameManager.Difficulty.Normal)
+                {
+                    OnNormalMode?.Invoke();
+                }    
+                else if (difficulty == PogoGameManager.Difficulty.Hard)
                 {
                     OnHardMode?.Invoke();
                 }
                 else if (difficulty == PogoGameManager.Difficulty.Freeplay)
                 {
-                    OnHardcoreMode?.Invoke();
+                    OnFreeplayMode?.Invoke();
+                }
+                else if (difficulty == PogoGameManager.Difficulty.Expert)
+                {
+                    OnExpertMode?.Invoke();
                 }
             }
             
