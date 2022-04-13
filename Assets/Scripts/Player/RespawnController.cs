@@ -17,7 +17,7 @@ namespace Pogo
 
         private void Update()
         {
-            if (InputManager.CheckKeyDown(KeyName.Checkpoint))
+            if (InputManager.CheckKeyDown(KeyName.Reset))
             {
                 setRespawn();
             }
@@ -39,23 +39,19 @@ namespace Pogo
                     pressQueued = false;
                     resetRespawn();
                 }
-                else if (InputManager.CheckKeyUp(KeyName.Reset))
+                else if (InputManager.CheckKeyUp(KeyName.Checkpoint))
                 {
                     pressQueued = false;
-                    killPlayer();
+                    setRespawn();
                 }
             }
 
-            if (InputManager.CheckKeyDown(KeyName.Reset))
+            if (InputManager.CheckKeyDown(KeyName.Checkpoint))
             {
                 if (PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Freeplay)
                 {
                     pressQueued = true;
                     lastPress = Time.time;
-                }
-                else
-                {
-                    killPlayer();
                 }
             }
 
