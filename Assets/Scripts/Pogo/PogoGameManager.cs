@@ -37,10 +37,6 @@ namespace Pogo
         protected override void Update()
         {
             base.Update();
-            if (InputManager.CheckKeyDown(KeyName.Reset))
-            {
-                KillPlayer();
-            }
             if (InputManager.CheckKeyDown(KeyName.Pause) && !InControlScene)
             {
                 Paused = !Paused;

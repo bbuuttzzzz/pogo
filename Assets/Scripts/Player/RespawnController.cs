@@ -5,7 +5,7 @@ using WizardUtils;
 
 namespace Pogo
 {
-    public class CustomRespawnController : MonoBehaviour
+    public class RespawnController : MonoBehaviour
     {
         public UnityEvent OnSetRespawn;
         public UnityEvent OnResetRespawn;
@@ -17,7 +17,11 @@ namespace Pogo
 
         private void Update()
         {
-            UpdateCustomRespawn();
+            if (InputManager.CheckKeyDown(KeyName.Checkpoint))
+            {
+                setRespawn();
+            }
+            CheckRespawnButton();
         }
 
         bool pressQueued = false;
@@ -26,7 +30,7 @@ namespace Pogo
         const float holdInterval = 1;
         public float Cooldown;
 
-        private void UpdateCustomRespawn()
+        private void CheckRespawnButton()
         {
             if (pressQueued)
             {
@@ -35,33 +39,42 @@ namespace Pogo
                     pressQueued = false;
                     resetRespawn();
                 }
-                else if (InputManager.CheckKeyUp(KeyName.Checkpoint))
+                else if (InputManager.CheckKeyUp(KeyName.Reset))
                 {
                     pressQueued = false;
-                    if (lastSet + Cooldown < Time.time)
-                    {
-                        setRespawn();
-                    }
+                    killPlayer();
                 }
             }
 
-            if (InputManager.CheckKeyDown(KeyName.Checkpoint))
+            if (InputManager.CheckKeyDown(KeyName.Reset))
             {
-                pressQueued = true;
-                lastPress = Time.time;
+                if (PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Freeplay)
+                {
+                    pressQueued = true;
+                    lastPress = Time.time;
+                }
+                else
+                {
+                    killPlayer();
+                }
             }
 
         }
 
+        private void killPlayer()
+        {
+            PogoGameManager.KillPlayer();
+        }
+
         private void setRespawn()
         {
-            if (GameManager.GameInstanceIsValid())
+            if (lastSet + Cooldown < Time.time
+                && GameManager.GameInstanceIsValid()
+                && PogoGameManager.PogoInstance.RegisterCustomRespawnPoint(transform.position, transform.rotation.YawOnly())
+                )
             {
-                if (PogoGameManager.PogoInstance.RegisterCustomRespawnPoint(transform.position, transform.rotation.YawOnly()))
-                {
-                    lastSet = Time.time;
-                    OnSetRespawn?.Invoke();
-                }
+                lastSet = Time.time;
+                OnSetRespawn?.Invoke();
             }
         }
 
