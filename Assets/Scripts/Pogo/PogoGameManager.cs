@@ -49,6 +49,7 @@ namespace Pogo
 
 
         #region Level Management
+        public PogoLevelManager LevelManager => levelManager;
         PogoLevelManager levelManager;
         [HideInInspector]
         public LevelDescriptor InitialLevel;
@@ -322,7 +323,7 @@ namespace Pogo
 
         LevelDescriptor RespawnLevel;
         LevelDescriptor CustomRespawnLevel;
-        LevelDescriptor RealTargetRespawnLevel => CustomRespawnActive ? CustomRespawnLevel : RespawnLevel;
+        public LevelDescriptor RealTargetRespawnLevel => CustomRespawnActive ? CustomRespawnLevel : RespawnLevel;
 
         public Transform GetRespawnTransform()
         {

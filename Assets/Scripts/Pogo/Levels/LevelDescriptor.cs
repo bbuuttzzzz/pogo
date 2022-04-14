@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
-[CreateAssetMenu(fileName = "new level", menuName = "ScriptableObjects/LevelDescriptor", order = 1)]
+[CreateAssetMenu(fileName = "new level", menuName = "Pogo/LevelDescriptor", order = 1)]
 public class LevelDescriptor : ScriptableObject
 {
     [Tooltip("These other levels should be visible while the player is on this level")]
@@ -27,6 +27,9 @@ public class LevelDescriptor : ScriptableObject
     }
 
     public int BuildIndex;
+
+    [Range(0, 255)]
+    public int ShareIndex;
 
     public string ScenePath => SceneUtility.GetScenePathByBuildIndex(BuildIndex);
 
