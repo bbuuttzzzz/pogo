@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using WizardUtils.Math;
 using WizardUtils.Tools;
 
@@ -9,6 +10,25 @@ namespace Pogo.Challenges
     public class ChallengeBuilder : MonoBehaviour
     {
         public LevelManifest ValidLevels;
+
+        public Challenge CurrentChallenge;
+        public string CurrentCode;
+
+        public UnityEvent OnChallengeChanged;
+        public UnityEvent<string> OnCodeChanged;
+
+        public void CalculateNewChallenge()
+        {
+            CurrentChallenge = CreateChallenge();
+            CurrentCode = null;
+            OnChallengeChanged?.Invoke();
+            OnCodeChanged?.Invoke(CurrentCode);
+        }
+
+        public void RegisterTime(float time)
+        {
+
+        }
 
         public Challenge CreateChallenge()
         {
@@ -35,14 +55,14 @@ namespace Pogo.Challenges
         public string EncodeChallenge(Challenge challenge)
         {
             // todo WRAP THIS cuz maybe I use it later... i guess. this just feels so ugly being in here
-            byte[] completeChallenge = new byte[sizeof(float) * 3 * 2 + 3];
+            byte[] completeChallenge = new byte[sizeof(short) * 3 * 2 + 3];
             int offset = 0;
 
-            addVector3(ref completeChallenge, offset, challenge.StartPoint);
-            offset += sizeof(float) * 3;
-            
-            addVector3(ref completeChallenge, offset, challenge.EndPoint);
-            offset += sizeof(float) * 3;
+            AddVector3Short(ref completeChallenge, offset, challenge.StartPointCm);
+            offset += sizeof(short) * 3;
+
+            AddVector3Short(ref completeChallenge, offset, challenge.EndPointCm);
+            offset += sizeof(short) * 3;
             
             byte yaw = Convert.ToByte(challenge.StartYaw / 2);
             addByte(ref completeChallenge, offset, yaw);
@@ -52,12 +72,6 @@ namespace Pogo.Challenges
             byte levelIndex = Convert.ToByte(rawIndex);
             addByte(ref completeChallenge, offset, yaw);
             offset++;
-
-            string atlas = "";
-            foreach(char c in Pretty256Helper.AtlasFleschutz)
-            {
-                atlas += c;
-            }
 
             string result = Pretty256Helper.Encode(completeChallenge);
             return result;

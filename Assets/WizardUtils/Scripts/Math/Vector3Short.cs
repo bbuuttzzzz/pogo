@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace WizardUtils.Math
 {
+    [Serializable]
     public struct Vector3Short
     {
         public short x, y, z;

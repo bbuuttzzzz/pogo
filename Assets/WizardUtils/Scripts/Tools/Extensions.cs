@@ -25,7 +25,7 @@ namespace WizardUtils
             float left = rect.x;
             for (int n = 0; n < partFractions.Length; n++)
             {
-                float right = left + partFractions[n] *rect.width;
+                float right = left + partFractions[n] * rect.width;
                 results[n] = new Rect(left, rect.y, rect.width * partFractions[n], rect.height);
 
                 left = right;

@@ -8,13 +8,13 @@ using WizardUtils.Math;
 
 namespace Pogo.Challenges
 {
+    [Serializable]
     public class Challenge
     {
         public LevelDescriptor Level;
 
-        public Vector3 StartPoint => startPointCm.ToVector3() / 100;
-        public Vector3Short StartPointCm => startPointCm;
-        public Vector3Short startPointCm;
+        public Vector3 StartPoint => StartPointCm.ToVector3() / 100;
+        public Vector3Short StartPointCm;
 
         int startYaw;
         public int StartYaw
@@ -27,16 +27,18 @@ namespace Pogo.Challenges
         }
 
 
-        public Vector3 EndPoint => endPointCm.ToVector3() / 100;
-        public Vector3Short EndPointC => endPointCm;
-        public Vector3Short endPointCm;
+        public Vector3 EndPoint => EndPointCm.ToVector3() / 100;
+        public Vector3Short EndPointCm;
+
+        public short BestTimeMS;
+        public float BestTime => (BestTimeMS * 1f) / 1000;
 
         public Challenge(LevelDescriptor level, Transform start, Vector3 end)
         {
             Level = level;
-            startPointCm = Vector3Short.FromVector3(start.position * 100);
+            StartPointCm = Vector3Short.FromVector3(start.position * 100);
             StartYaw = (int)start.rotation.eulerAngles.y;
-            endPointCm = Vector3Short.FromVector3(end * 100);
+            EndPointCm = Vector3Short.FromVector3(end * 100);
         }
 
         public Challenge()

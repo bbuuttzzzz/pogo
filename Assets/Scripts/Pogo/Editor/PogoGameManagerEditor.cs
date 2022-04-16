@@ -41,18 +41,25 @@ public class PogoGameManagerEditor : GameManagerEditor
         {
             var spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
 
-            GenericMenu menu = new GenericMenu();
+            var itempaths = new List<(GameObject item, string path)>();
             foreach(var spawnPoint in spawnPoints)
             {
                 string path = AnimationUtility.CalculateTransformPath(spawnPoint.transform, null);
-                path = path.Replace("/"," -> ");
-                menu.AddItem(new GUIContent(path), false, () =>
+                path = path.Replace("/", " -> ");
+
+                itempaths.Add((spawnPoint, path));
+            }
+
+            GenericMenu menu = new GenericMenu();
+            foreach (var itempath in itempaths.OrderBy(ip => ip.path))
+            {
+                menu.AddItem(new GUIContent(itempath.path), false, () =>
                 {
                     Undo.SetCurrentGroupName("Move Spawnpoint");
                     int undoGroup = Undo.GetCurrentGroup();
 
-                    self.RespawnPoint.position = spawnPoint.transform.position;
-                    self.RespawnPoint.rotation = Quaternion.Euler(0, spawnPoint.transform.rotation.eulerAngles.y, 0);
+                    self.RespawnPoint.position = itempath.item.transform.position;
+                    self.RespawnPoint.rotation = Quaternion.Euler(0, itempath.item.transform.rotation.eulerAngles.y, 0);
                     Undo.RecordObject(self.RespawnPoint, "Move Player to Spawnpoint");
 
                     var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));

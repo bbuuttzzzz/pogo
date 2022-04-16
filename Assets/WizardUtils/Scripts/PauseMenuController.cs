@@ -5,21 +5,52 @@ using UnityEngine.UI;
 
 namespace WizardUtils
 {
-    public class PauseMenuController : MonoBehaviour
+    public class PauseMenuController : ToggleableUIElement
     {
-        public GameObject PauseScreen;
-
         public UnityEvent OnMenuClosed;
+
+        public ToggleableUIElement BaseMenu;
+
+        ToggleableUIElement currentMenu;
+        public ToggleableUIElement CurrentMenu
+        {
+            get
+            {
+                return currentMenu;
+            }
+            set
+            {
+                if (currentMenu == value) return;
+
+                if (currentMenu != null)
+                {
+                    currentMenu.SetOpen(false);
+                }
+                if (value != null)
+                {
+                    value.SetOpen(true);
+                }
+
+                currentMenu = value;
+            }
+        }
+
+        public void ReturnToBaseMenu()
+        {
+            CurrentMenu = BaseMenu;
+        }
 
         protected virtual void Start()
         {
+            currentMenu = null;
             GameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
         }
 
         protected virtual void onPauseStateChanged(object sender, bool nowPaused)
         {
             OnMenuClosed?.Invoke();
-            PauseScreen?.SetActive(nowPaused);
+            Root?.SetActive(nowPaused);
+            CurrentMenu = nowPaused ? BaseMenu : null;
         }
 
         public void Resume()
