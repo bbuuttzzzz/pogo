@@ -53,6 +53,8 @@ namespace Pogo
 
         public Trigger ChallengePickup;
 
+        float lastChallengeStartTime;
+
         public void LoadChallenge(Challenge challenge)
         {
             CurrentChallenge = challenge;
@@ -60,19 +62,22 @@ namespace Pogo
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
+                Debug.Log("Finished loading challenge");
                 CustomCheckpoint.transform.position = CurrentChallenge.StartPoint;
+                CustomCheckpoint.transform.rotation = CurrentChallenge.StartRotation;
+                RegisterRespawnPoint(CustomCheckpoint.transform);
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
                 resetChallenge();
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
             OnLevelLoaded.AddListener(finishLoading);
-            LoadLevel(challenge.Level, true);
+            LoadLevel(challenge.Level, new LevelLoadingSettings() { ForceReload = true });
         }
 
         private void resetChallenge()
         {
-            player.transform.position = CurrentChallenge.StartPoint;
-            
+            lastChallengeStartTime = Time.time;
+            player.Reset();
         }
 
         #endregion
@@ -98,7 +103,12 @@ namespace Pogo
         }
 #endif
 
-        public void LoadLevel(LevelDescriptor newLevel, bool isFirstLoad = false)
+        public void LoadLevel(LevelDescriptor newLevel)
+        {
+            LoadLevel(newLevel, LevelLoadingSettings.Default);
+        }
+
+        public void LoadLevel(LevelDescriptor newLevel, LevelLoadingSettings settings)
         {
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
@@ -110,18 +120,18 @@ namespace Pogo
             }
             isLoadingLevel = true;
 
-            bool loadingFromMenu = CurrentControlScene != null;
+            settings.LoadingFromMenu = settings.LoadingFromMenu || CurrentControlScene != null;
 #if UNITY_WEBGL
-            if (!levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(loadLevelsInOrder(levelLoadingData, loadingFromMenu))))
+            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelsInOrder(levelLoadingData, settings))))
 #else
-            if (!levelManager.LoadLevelAsync(newLevel, (levelLoadingData) => StartCoroutine(loadLevelsSimultaneous(levelLoadingData, loadingFromMenu))))
+            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelsSimultaneous(levelLoadingData, settings))))
 #endif
             {
                 isLoadingLevel = false;
             }
         }
 
-        IEnumerator loadLevelsSimultaneous(LevelLoadingData levelLoadingData, bool loadingFromMenu)
+        IEnumerator loadLevelsSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings)
         {
             foreach(AsyncOperation task in levelLoadingData.LoadingSceneTasks)
             {
@@ -172,7 +182,7 @@ namespace Pogo
                 yield return new WaitForSeconds(0.02f);
             }
 
-            if (loadingFromMenu)
+            if (settings.LoadingFromMenu)
             {
                 UnloadControlScene();
                 ResetStats();
@@ -182,7 +192,7 @@ namespace Pogo
             OnLevelLoaded?.Invoke();
         }
 
-        IEnumerator loadLevelsInOrder(LevelLoadingData levelLoadingData, bool loadingFromMenu)
+        IEnumerator loadLevelsInOrder(LevelLoadingData levelLoadingData, LevelLoadingSettings settings)
         {
             foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
             {
@@ -239,7 +249,7 @@ namespace Pogo
                 }
             }
 
-            if (loadingFromMenu)
+            if (settings.LoadingFromMenu)
             {
                 UnloadControlScene();
                 ResetStats();
@@ -269,7 +279,7 @@ namespace Pogo
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
             OnLevelLoaded.AddListener(finishLoading);
-            LoadLevel(newChapter.Level, true);
+            LoadLevel(newChapter.Level);
         }
 
         private void finishLoadingChapter(ChapterDescriptor newChapter)

@@ -33,6 +33,8 @@ namespace Pogo.Challenges
         public ushort BestTimeMS;
         public float BestTime => (BestTimeMS * 1f) / 1000;
 
+        public Quaternion StartRotation => Quaternion.Euler(0, StartYaw, 0);
+
         public Challenge(LevelDescriptor level, Transform start, Vector3 end)
         {
             Level = level;

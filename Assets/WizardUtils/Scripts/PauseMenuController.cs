@@ -35,6 +35,13 @@ namespace WizardUtils
             }
         }
 
+        public ToggleableUIElement[] SubMenus;
+
+        public void OpenSubMenu(int index)
+        {
+            CurrentMenu = SubMenus[index];
+        }
+
         public void ReturnToBaseMenu()
         {
             CurrentMenu = BaseMenu;

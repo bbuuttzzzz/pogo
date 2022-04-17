@@ -5,11 +5,9 @@ namespace Pogo
 {
     public class EquipmentDifficultySelector : MonoBehaviour
     {
-        public EquipmentTypeDescriptor EquipmentTypeToCheck;
+        public EquipmentDifficulty[] EquipmentDifficulties;
 
-        public EquipmentDescriptor[] HardModeEquipment;
-        public EquipmentDescriptor[] FreeplayModeEquipment;
-        public EquipmentDescriptor[] ExpertModeEquipment;
+        public EquipmentTypeDescriptor EquipmentTypeToCheck;
 
         public void Start()
         {
@@ -28,31 +26,14 @@ namespace Pogo
 
         public void UpdateDifficulty(EquipmentDescriptor equipment)
         {
-            foreach(EquipmentDescriptor descriptor in HardModeEquipment)
+            foreach(EquipmentDifficulty equipmentDifficulty in EquipmentDifficulties)
             {
-                if (descriptor == equipment)
+                if (equipmentDifficulty.Equipment == equipment)
                 {
-                    SetDifficulty(PogoGameManager.Difficulty.Hard);
+                    SetDifficulty(equipmentDifficulty.Difficulty);
                     return;
                 }
             }
-            foreach (EquipmentDescriptor descriptor in FreeplayModeEquipment)
-            {
-                if (descriptor == equipment)
-                {
-                    SetDifficulty(PogoGameManager.Difficulty.Freeplay);
-                    return;
-                }
-            }
-            foreach (EquipmentDescriptor descriptor in ExpertModeEquipment)
-            {
-                if (descriptor == equipment)
-                {
-                    SetDifficulty(PogoGameManager.Difficulty.Expert);
-                    return;
-                }
-            }
-
 
             SetDifficulty(PogoGameManager.Difficulty.Normal);
         }

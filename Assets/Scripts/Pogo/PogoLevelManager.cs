@@ -91,11 +91,12 @@ namespace Pogo
         /// 
         /// </summary>
         /// <param name="newLevel">the level to load</param>
-        /// <param name="callback">called only if level loading starts successfully</param>
+        /// <param name="settings"></param>
         /// <returns>FALSE if level is already loaded</returns>
-        public bool LoadLevelAsync(LevelDescriptor newLevel, Action<LevelLoadingData> callback = null)
+        /// <param name="callback">called only if level loading starts successfully</param>
+        public bool LoadLevelAsync(LevelDescriptor newLevel, LevelLoadingSettings settings, Action<LevelLoadingData> callback = null)
         {
-            if (currentLevel == newLevel)
+            if (currentLevel == newLevel && !settings.ForceReload)
             {
                 Debug.LogWarning($"Tried to load already-loaded level {newLevel}");
                 return false;
