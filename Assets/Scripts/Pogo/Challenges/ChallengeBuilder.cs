@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using WizardUtils;
 using WizardUtils.Math;
 using WizardUtils.Tools;
 
@@ -17,6 +18,9 @@ namespace Pogo.Challenges
         public UnityEvent OnChallengeChanged;
         public UnityEvent<string> OnCodeChanged;
 
+        public PauseMenuController PauseMenu;
+        public ToggleableUIElement OverrideMenu;
+
         public void CalculateNewChallenge()
         {
             CurrentChallenge = CreateChallenge();
@@ -25,9 +29,9 @@ namespace Pogo.Challenges
             OnCodeChanged?.Invoke(CurrentCode);
         }
 
-        public void RegisterTime(float time)
+        public void RegisterTime()
         {
-            CurrentChallenge.BestTimeMS = Math.Min(CurrentChallenge.BestTimeMS, (ushort)Mathf.RoundToInt((time * 1000)));
+            CurrentChallenge.FinishAttempt();
         }
 
         public Challenge CreateChallenge()
@@ -46,6 +50,7 @@ namespace Pogo.Challenges
 
         public void LoadChallenge()
         {
+            PauseMenu.OverrideMenu = OverrideMenu;
             PogoGameManager.PogoInstance.LoadChallenge(CurrentChallenge);
         }
 

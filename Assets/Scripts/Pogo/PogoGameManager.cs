@@ -76,7 +76,7 @@ namespace Pogo
 
         private void resetChallenge()
         {
-            lastChallengeStartTime = Time.time;
+            CurrentChallenge?.StartAttempt();
             player.Reset();
         }
 

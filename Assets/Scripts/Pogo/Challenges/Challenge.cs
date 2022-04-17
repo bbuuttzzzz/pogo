@@ -47,5 +47,16 @@ namespace Pogo.Challenges
         {
 
         }
+
+        public float AttemptStartTime;
+        public void StartAttempt()
+        {
+            AttemptStartTime = Time.time;
+        }
+        public void FinishAttempt()
+        {
+            float time = Time.time - AttemptStartTime;
+            BestTimeMS = Math.Min(BestTimeMS, (ushort)Mathf.RoundToInt((time * 1000)));
+        }
     }
 }

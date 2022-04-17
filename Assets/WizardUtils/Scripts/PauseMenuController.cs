@@ -35,12 +35,10 @@ namespace WizardUtils
             }
         }
 
-        public ToggleableUIElement[] SubMenus;
-
-        public void OpenSubMenu(int index)
-        {
-            CurrentMenu = SubMenus[index];
-        }
+        /// <summary>
+        /// When the game is paused, start in this menu instead of the base menu
+        /// </summary>
+        public ToggleableUIElement OverrideMenu;
 
         public void ReturnToBaseMenu()
         {
@@ -57,7 +55,7 @@ namespace WizardUtils
         {
             OnMenuClosed?.Invoke();
             Root?.SetActive(nowPaused);
-            CurrentMenu = nowPaused ? BaseMenu : null;
+            CurrentMenu = nowPaused ? (OverrideMenu ?? BaseMenu) : null;
         }
 
         public void Resume()

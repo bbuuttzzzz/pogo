@@ -1523,7 +1523,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4168817546200763736}
   - component: {fileID: 4665257232987267916}
-  - component: {fileID: 3700627011719074583}
+  - component: {fileID: 6624819934586515460}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -1559,7 +1559,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5044340522573239865}
   m_CullTransparentMesh: 1
---- !u!114 &3700627011719074583
+--- !u!114 &6624819934586515460
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2091,6 +2091,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   BaseMenu: {fileID: 8772280597289818548}
+  OverrideMenu: {fileID: 0}
 --- !u!1 &6824855571443682184
 GameObject:
   m_ObjectHideFlags: 0
@@ -2355,7 +2356,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
-      - m_Target: {fileID: 6145529356169570264}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Pogo.Challenges.ChallengeBuilder, Assembly-CSharp
         m_MethodName: LoadChallenge
         m_Mode: 1
@@ -2927,7 +2928,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8898208439929894005}
   - component: {fileID: 8898208439929894004}
-  - component: {fileID: 6145529356169570264}
   m_Layer: 5
   m_Name: Challenge Menu
   m_TagString: Untagged
@@ -2972,53 +2972,10 @@ MonoBehaviour:
   OnOpen:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6145529356169570264}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Pogo.Challenges.ChallengeBuilder, Assembly-CSharp
         m_MethodName: CalculateNewChallenge
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &6145529356169570264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8898208439929894006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1107b776f47fbfc4babf0e293925633b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ValidLevels: {fileID: 11400000, guid: 8f47e23cb572ce24ebd5fbd971d5799d, type: 2}
-  CurrentChallenge:
-    Level: {fileID: 0}
-    StartPointCm:
-      x: 0
-      y: 0
-      z: 0
-    EndPointCm:
-      x: 0
-      y: 0
-      z: 0
-    BestTimeMS: 0
-  CurrentCode: 
-  OnChallengeChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnCodeChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3700627011719074583}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Text, UnityEngine.UI
-        m_MethodName: set_text
-        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
