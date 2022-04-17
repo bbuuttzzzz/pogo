@@ -30,7 +30,7 @@ namespace Pogo.Challenges
         public Vector3 EndPoint => EndPointCm.ToVector3() / 100;
         public Vector3Short EndPointCm;
 
-        public short BestTimeMS;
+        public ushort BestTimeMS;
         public float BestTime => (BestTimeMS * 1f) / 1000;
 
         public Challenge(LevelDescriptor level, Transform start, Vector3 end)

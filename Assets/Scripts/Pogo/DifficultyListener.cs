@@ -9,28 +9,30 @@ namespace Pogo
         public UnityEvent OnHardMode;
         public UnityEvent OnExpertMode;
         public UnityEvent OnFreeplayMode;
+        public UnityEvent OnChallengeMode;
 
         private void Start()
         {
             if (PogoGameManager.GameInstanceIsValid())
             {
                 var difficulty = PogoGameManager.PogoInstance.CurrentDifficulty;
-
-                if (difficulty == PogoGameManager.Difficulty.Normal)
+                switch (difficulty)
                 {
-                    OnNormalMode?.Invoke();
-                }    
-                else if (difficulty == PogoGameManager.Difficulty.Hard)
-                {
-                    OnHardMode?.Invoke();
-                }
-                else if (difficulty == PogoGameManager.Difficulty.Freeplay)
-                {
-                    OnFreeplayMode?.Invoke();
-                }
-                else if (difficulty == PogoGameManager.Difficulty.Expert)
-                {
-                    OnExpertMode?.Invoke();
+                    case PogoGameManager.Difficulty.Normal:
+                        OnNormalMode?.Invoke();
+                        break;
+                    case PogoGameManager.Difficulty.Hard:
+                        OnHardMode?.Invoke();
+                        break;
+                    case PogoGameManager.Difficulty.Freeplay:
+                        OnFreeplayMode?.Invoke();
+                        break;
+                    case PogoGameManager.Difficulty.Expert:
+                        OnExpertMode?.Invoke();
+                        break;
+                    case PogoGameManager.Difficulty.Challenge:
+                        OnChallengeMode?.Invoke();
+                        break;
                 }
             }
             

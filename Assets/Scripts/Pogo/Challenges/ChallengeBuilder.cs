@@ -27,7 +27,7 @@ namespace Pogo.Challenges
 
         public void RegisterTime(float time)
         {
-
+            CurrentChallenge.BestTimeMS = Math.Min(CurrentChallenge.BestTimeMS, (ushort)Mathf.RoundToInt((time * 1000)));
         }
 
         public Challenge CreateChallenge()
@@ -42,6 +42,11 @@ namespace Pogo.Challenges
             var level = pogoInstance.RealTargetRespawnLevel ?? pogoInstance.LevelManager.CurrentLevel;
             var endPoint = pogoInstance.Player.transform.position;
             return new Challenge(level, startTransform, endPoint);
+        }
+
+        public void LoadChallenge()
+        {
+            PogoGameManager.PogoInstance.LoadChallenge(CurrentChallenge);
         }
 
         public void EncodeAndPrint()

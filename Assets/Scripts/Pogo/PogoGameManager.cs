@@ -1,4 +1,5 @@
 ﻿using Inputter;
+using Pogo.Challenges;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -46,7 +47,35 @@ namespace Pogo
 
 
 
+        #region Challenges
+        public EquipmentDescriptor ChallengeStick;
+        public Challenge CurrentChallenge;
 
+        public Trigger ChallengePickup;
+
+        public void LoadChallenge(Challenge challenge)
+        {
+            CurrentChallenge = challenge;
+            Equip(ChallengeStick);
+            UnityAction finishLoading = null;
+            finishLoading = () =>
+            {
+                CustomCheckpoint.transform.position = CurrentChallenge.StartPoint;
+                ChallengePickup.transform.position = CurrentChallenge.EndPoint;
+                resetChallenge();
+                OnLevelLoaded.RemoveListener(finishLoading);
+            };
+            OnLevelLoaded.AddListener(finishLoading);
+            LoadLevel(challenge.Level, true);
+        }
+
+        private void resetChallenge()
+        {
+            player.transform.position = CurrentChallenge.StartPoint;
+            
+        }
+
+        #endregion
 
         #region Level Management
         public PogoLevelManager LevelManager => levelManager;
@@ -335,7 +364,8 @@ namespace Pogo
             Normal,
             Hard,
             Freeplay,
-            Expert
+            Expert,
+            Challenge
         }
         private Difficulty currentDifficulty = Difficulty.Normal;
         public Difficulty CurrentDifficulty
