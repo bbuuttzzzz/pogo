@@ -17331,6 +17331,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1567025870923818456}
+  - component: {fileID: 1567025870923818473}
+  - component: {fileID: 1567025870923818472}
   - component: {fileID: 1567025870923818471}
   m_Layer: 0
   m_Name: Sound
@@ -17350,8 +17352,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 5736269856515367849, guid: 4df3a00c9f161ad4ca137dada8aef10f, type: 2}
   m_audioClip: {fileID: 8300000, guid: 3d5738c3ca146694facdcd0cbffb9b30, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 0.22
+  m_PlayOnAwake: 0
+  m_Volume: 0
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -17435,6 +17437,54 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1567025870923818472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567025870923818457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1d9f3aed71b09478d8da4daa93c711, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Waypoints:
+  - 0.22
+  InitialWaypointIndex: -1
+  TransitionDuration: 2
+  Target: {fileID: 1567025870923818471}
+--- !u!114 &1567025870923818473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567025870923818457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0f6f4f650519bd46be9948482fe283a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnTimerEnded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1567025870923818472}
+        m_TargetAssemblyTypeName: WizardUtils.Waypointer`1[[System.Single, mscorlib
+        m_MethodName: GoToWaypoint
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  CallOnAwake: 1
+  Duration: 1
+  RandomRange: 0
+  Realtime: 0
 --- !u!33 &1567025870987148952
 MeshFilter:
   m_ObjectHideFlags: 0

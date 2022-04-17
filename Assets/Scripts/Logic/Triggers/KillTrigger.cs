@@ -11,6 +11,6 @@ public class KillTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         OnTriggered.Invoke();
-        PogoGameManager.KillPlayer(Type);
+        PogoGameManager.PogoInstance.KillPlayer(Type);
     }
 }

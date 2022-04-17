@@ -44,44 +44,6 @@ namespace Pogo
             }
         }
 
-
-
-
-        #region Challenges
-        public EquipmentDescriptor ChallengeStick;
-        public Challenge CurrentChallenge;
-
-        public Trigger ChallengePickup;
-
-        float lastChallengeStartTime;
-
-        public void LoadChallenge(Challenge challenge)
-        {
-            CurrentChallenge = challenge;
-            Equip(ChallengeStick);
-            UnityAction finishLoading = null;
-            finishLoading = () =>
-            {
-                Debug.Log("Finished loading challenge");
-                CustomCheckpoint.transform.position = CurrentChallenge.StartPoint;
-                CustomCheckpoint.transform.rotation = CurrentChallenge.StartRotation;
-                RegisterRespawnPoint(CustomCheckpoint.transform);
-                ChallengePickup.transform.position = CurrentChallenge.EndPoint;
-                resetChallenge();
-                OnLevelLoaded.RemoveListener(finishLoading);
-            };
-            OnLevelLoaded.AddListener(finishLoading);
-            LoadLevel(challenge.Level, new LevelLoadingSettings() { ForceReload = true });
-        }
-
-        private void resetChallenge()
-        {
-            CurrentChallenge?.StartAttempt();
-            player.Reset();
-        }
-
-        #endregion
-
         #region Level Management
         public PogoLevelManager LevelManager => levelManager;
         PogoLevelManager levelManager;
@@ -333,7 +295,7 @@ namespace Pogo
             PogoInstance.player = player;
         }
 
-        public static void KillPlayer(KillType killType = null)
+        public void KillPlayer(KillType killType = null)
         {
             if (GameInstanceIsValid() && PogoInstance.player != null)
             {

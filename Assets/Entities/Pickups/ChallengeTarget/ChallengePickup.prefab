@@ -9939,7 +9939,7 @@ GameObject:
   - component: {fileID: 5834614552610605791}
   - component: {fileID: 5834614552610605784}
   - component: {fileID: 6495748417961081064}
-  - component: {fileID: 4027465330677080366}
+  - component: {fileID: 6445744712139980567}
   m_Layer: 7
   m_Name: ChallengePickup
   m_TagString: Untagged
@@ -10162,7 +10162,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4027465330677080366
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Pogo.Challenges.ChallengeBuilder, Assembly-CSharp
+        m_MethodName: RegisterTime
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6445744712139980567
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10171,11 +10183,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5834614552610605785}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b86446f7dcc7b884e877b45def00e180, type: 3}
+  m_Script: {fileID: 11500000, guid: 4a219836eb1093b4a9dd5f537b9c0798, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ListenOnSpawn: 1
-  OnHeard:
+  OnReset:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 406563785320118345}

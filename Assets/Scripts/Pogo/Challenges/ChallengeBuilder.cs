@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using WizardUtils;
+using WizardUtils.Equipment;
 using WizardUtils.Math;
 using WizardUtils.Tools;
 
@@ -15,23 +16,30 @@ namespace Pogo.Challenges
         public Challenge CurrentChallenge;
         public string CurrentCode;
 
-        public UnityEvent OnChallengeChanged;
+        public UnityEvent<Challenge> OnChallengeChanged;
         public UnityEvent<string> OnCodeChanged;
 
         public PauseMenuController PauseMenu;
         public ToggleableUIElement OverrideMenu;
 
+        public Trigger ChallengePickup;
+
+        public EquipmentDescriptor ChallengeStick;
+
+        public UnityEvent OnChallengeReset;
+
         public void CalculateNewChallenge()
         {
             CurrentChallenge = CreateChallenge();
             CurrentCode = null;
-            OnChallengeChanged?.Invoke();
+            OnChallengeChanged?.Invoke(CurrentChallenge);
             OnCodeChanged?.Invoke(CurrentCode);
         }
 
         public void RegisterTime()
         {
             CurrentChallenge.FinishAttempt();
+            OnChallengeChanged?.Invoke(CurrentChallenge);
         }
 
         public Challenge CreateChallenge()
@@ -48,11 +56,41 @@ namespace Pogo.Challenges
             return new Challenge(level, startTransform, endPoint);
         }
 
+        public void ExitChallenge()
+        {
+            PauseMenu.OverrideMenu = null;
+            CurrentChallenge = null;
+            PogoGameManager.PogoInstance.OnPlayerDeath.RemoveListener(resetChallenge);
+        }
+
         public void LoadChallenge()
         {
             PauseMenu.OverrideMenu = OverrideMenu;
-            PogoGameManager.PogoInstance.LoadChallenge(CurrentChallenge);
+            PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
+            pogoInstance.Equip(ChallengeStick);
+            UnityAction finishLoading = null;
+            finishLoading = () =>
+            {
+                Debug.Log("Finished loading challenge");
+                pogoInstance.CustomCheckpoint.transform.position = CurrentChallenge.StartPoint;
+                pogoInstance.CustomCheckpoint.transform.rotation = CurrentChallenge.StartRotation;
+                pogoInstance.CustomCheckpoint.OnPlaced?.Invoke();
+                pogoInstance.RegisterRespawnPoint(pogoInstance.CustomCheckpoint.transform);
+                ChallengePickup.transform.position = CurrentChallenge.EndPoint;
+                PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
+                PogoGameManager.PogoInstance.KillPlayer();
+                pogoInstance.OnLevelLoaded.RemoveListener(finishLoading);
+            };
+            pogoInstance.OnLevelLoaded.AddListener(finishLoading);
+            pogoInstance.LoadLevel(CurrentChallenge.Level, new LevelLoadingSettings() { ForceReload = true });
         }
+
+        private void resetChallenge()
+        {
+            CurrentChallenge?.StartAttempt();
+            OnChallengeReset?.Invoke();
+        }
+
 
         public void EncodeAndPrint()
         {

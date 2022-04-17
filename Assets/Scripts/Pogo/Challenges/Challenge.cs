@@ -41,6 +41,7 @@ namespace Pogo.Challenges
             StartPointCm = Vector3Short.FromVector3(start.position * 100);
             StartYaw = (int)start.rotation.eulerAngles.y;
             EndPointCm = Vector3Short.FromVector3(end * 100);
+            BestTimeMS = ushort.MaxValue;
         }
 
         public Challenge()

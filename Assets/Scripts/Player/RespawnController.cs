@@ -59,7 +59,7 @@ namespace Pogo
 
         private void killPlayer()
         {
-            PogoGameManager.KillPlayer();
+            PogoGameManager.PogoInstance.KillPlayer();
         }
 
         private void setRespawn()

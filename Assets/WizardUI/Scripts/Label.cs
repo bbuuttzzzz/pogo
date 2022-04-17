@@ -10,7 +10,15 @@ namespace WizardUI
         Text textElement;
 
         private string text;
-        public string Text { get => text; set => text = value; }
+        public string Text
+        {
+            get => text;
+            set
+            {
+                text = value;
+                updateText();
+            }
+        }
 
         public Color Color = Color.white;
         public Color PlaceholderColor = Color.white;
