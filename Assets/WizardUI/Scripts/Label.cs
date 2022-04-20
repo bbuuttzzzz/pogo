@@ -40,6 +40,7 @@ namespace WizardUI
 
         private void updateText()
         {
+            if (textElement == null) textElement = GetComponent<Text>();
             textElement.text = shouldUsePlaceholder ? Text : PlaceholderText;
             textElement.color = shouldUsePlaceholder ? Color : PlaceholderColor;
         }

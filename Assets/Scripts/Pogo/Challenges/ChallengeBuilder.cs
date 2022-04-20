@@ -44,6 +44,11 @@ namespace Pogo.Challenges
             float newTime = CurrentChallenge.LastAttemptTime;
             if (newTime != oldTime)
             {
+                if (CurrentChallenge.BestTimeMS < 60_000)
+                {
+                    CurrentCode = EncodeChallenge(CurrentChallenge);
+                    OnCodeChanged?.Invoke(CurrentCode);
+                }
                 OnChallengeChanged?.Invoke(CurrentChallenge);
             }
             OnChallengeComplete?.Invoke();
@@ -100,7 +105,7 @@ namespace Pogo.Challenges
             OnChallengeReset?.Invoke();
         }
 
-
+        #region Encoding
         public void EncodeAndPrint()
         {
             var challenge = CreateChallenge();
@@ -209,6 +214,7 @@ namespace Pogo.Challenges
         {
             array[offset] = value;
         }
+        #endregion
 
         public Challenge DecodeChallenge(string payload)
         {
