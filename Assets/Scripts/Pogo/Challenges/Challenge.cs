@@ -11,6 +11,14 @@ namespace Pogo.Challenges
     [Serializable]
     public class Challenge
     {
+
+        public enum ChallengeTypes
+        {
+            Create,
+            Play
+        }
+        public ChallengeTypes ChallengeType;
+
         public LevelDescriptor Level;
 
         public Vector3 StartPoint => StartPointCm.ToVector3() / 100;
@@ -30,13 +38,17 @@ namespace Pogo.Challenges
         public Vector3 EndPoint => EndPointCm.ToVector3() / 100;
         public Vector3Short EndPointCm;
 
-        public ushort BestTimeMS;
+        public ushort LastAttemptTimeMS;
+        public float LastAttemptTime => (LastAttemptTimeMS * 1f) / 1000;
         public float BestTime => (BestTimeMS * 1f) / 1000;
+
+        public ushort BestTimeMS;
 
         public Quaternion StartRotation => Quaternion.Euler(0, StartYaw, 0);
 
         public Challenge(LevelDescriptor level, Transform start, Vector3 end)
         {
+            ChallengeType = ChallengeTypes.Create;
             Level = level;
             StartPointCm = Vector3Short.FromVector3(start.position * 100);
             StartYaw = (int)start.rotation.eulerAngles.y;
@@ -54,10 +66,15 @@ namespace Pogo.Challenges
         {
             AttemptStartTime = Time.time;
         }
+        /// <summary>
+        /// Finish counting the run's time
+        /// </summary>
+        /// <returns>True if the new time is faster</returns>
         public void FinishAttempt()
         {
             float time = Time.time - AttemptStartTime;
-            BestTimeMS = Math.Min(BestTimeMS, (ushort)Mathf.RoundToInt((time * 1000)));
+            LastAttemptTimeMS = (ushort)Mathf.RoundToInt((time * 1000));
+            BestTimeMS = Math.Min(BestTimeMS, LastAttemptTimeMS);
         }
     }
 }

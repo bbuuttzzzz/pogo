@@ -23,6 +23,13 @@ namespace Pogo
 
             RespawnPoint = InitialRespawnPoint;
             levelManager = GetComponent<PogoLevelManager>();
+
+#if UNITY_EDITOR
+            if (InitialLevel != null)
+            {
+                levelManager.SetCurrentLevelInEditor(InitialLevel);
+            }
+#endif
             RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
             RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
             RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 0f));
@@ -44,7 +51,7 @@ namespace Pogo
             }
         }
 
-        #region Level Management
+#region Level Management
         public PogoLevelManager LevelManager => levelManager;
         PogoLevelManager levelManager;
         [HideInInspector]
@@ -228,9 +235,9 @@ namespace Pogo
                 LoadLevel(RealTargetRespawnLevel);
             }
         }
-        #endregion
+#endregion
 
-        #region Chapters
+#region Chapters
         public void LoadChapter(ChapterDescriptor newChapter)
         {
             StartingChapter = newChapter;
@@ -252,9 +259,9 @@ namespace Pogo
             ResetPlayer();
         }
 
-        #endregion
+#endregion
 
-        #region Equipment
+#region Equipment
 
         public NonInstancedEquipmentSlot[] Loadout;
 
@@ -285,9 +292,9 @@ namespace Pogo
 
             return null;
         }
-        #endregion
+#endregion
 
-        #region Player
+#region Player
         private PlayerController player;
         public PlayerController Player => player;
         public static void RegisterPlayer(PlayerController player)
@@ -312,9 +319,9 @@ namespace Pogo
         }
 
         public UnityEvent OnPlayerDeath;
-        #endregion
+#endregion
 
-        #region Respawn Point
+#region Respawn Point
 
         public Transform InitialRespawnPoint;
         [HideInInspector]
@@ -418,15 +425,15 @@ namespace Pogo
             base.LoadControlScene(newScene, callback);
         }
 
-        #endregion
+#endregion
 
-        #region Settings
+#region Settings
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
         public static string KEY_INVERT = "InvertY";
-        #endregion
+#endregion
 
-        #region Stats
+#region Stats
         public int SecretsFoundCount;
         public int NumberOfDeaths;
         public float GameStartTime;
@@ -438,6 +445,6 @@ namespace Pogo
             NumberOfDeaths = 0;
             GameStartTime = Time.time;
         }
-        #endregion
+#endregion
     }
 }

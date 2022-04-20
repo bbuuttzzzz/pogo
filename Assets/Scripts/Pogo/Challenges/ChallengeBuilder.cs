@@ -26,6 +26,7 @@ namespace Pogo.Challenges
 
         public EquipmentDescriptor ChallengeStick;
 
+        public UnityEvent OnChallengeComplete;
         public UnityEvent OnChallengeReset;
 
         public void CalculateNewChallenge()
@@ -36,10 +37,16 @@ namespace Pogo.Challenges
             OnCodeChanged?.Invoke(CurrentCode);
         }
 
-        public void RegisterTime()
+        public void CompleteChallenge()
         {
+            float oldTime = CurrentChallenge.BestTime;
             CurrentChallenge.FinishAttempt();
-            OnChallengeChanged?.Invoke(CurrentChallenge);
+            float newTime = CurrentChallenge.LastAttemptTime;
+            if (newTime != oldTime)
+            {
+                OnChallengeChanged?.Invoke(CurrentChallenge);
+            }
+            OnChallengeComplete?.Invoke();
         }
 
         public Challenge CreateChallenge()
@@ -60,6 +67,7 @@ namespace Pogo.Challenges
         {
             PauseMenu.OverrideMenu = null;
             CurrentChallenge = null;
+            OnChallengeChanged?.Invoke(CurrentChallenge);
             PogoGameManager.PogoInstance.OnPlayerDeath.RemoveListener(resetChallenge);
         }
 
@@ -79,6 +87,7 @@ namespace Pogo.Challenges
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
                 PogoGameManager.PogoInstance.KillPlayer();
+                OnChallengeChanged?.Invoke(CurrentChallenge);
                 pogoInstance.OnLevelLoaded.RemoveListener(finishLoading);
             };
             pogoInstance.OnLevelLoaded.AddListener(finishLoading);
