@@ -10,7 +10,8 @@ public enum KeyName
     Pause,
     Reset,
     UIAdvance,
-    Checkpoint
+    Checkpoint,
+    Balloon
 }
 
 public enum AxisSetName
@@ -65,6 +66,7 @@ namespace Inputter
 
             Keys[KeyName.Checkpoint] = new KeyboardButton(keyboard, Key.C);
 
+            Keys[KeyName.Balloon] = new KeyboardButton(keyboard, Key.B);
 
 #if UNITY_EDITOR
             Keys[KeyName.Pause] = new MultiButton(new Button[]{

@@ -58,9 +58,14 @@ namespace WizardUtils
             CurrentMenu = nowPaused ? (OverrideMenu ?? BaseMenu) : null;
         }
 
+        public void Pause()
+        {
+            GameManager.GameInstance.Paused = true;
+        }
+
         public void Resume()
         {
-            GameManager.Paused = false;
+            GameManager.GameInstance.Paused = false;
         }
 
         public void ReturnToMainMenu()

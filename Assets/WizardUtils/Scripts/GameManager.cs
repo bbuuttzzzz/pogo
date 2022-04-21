@@ -53,15 +53,15 @@ namespace WizardUtils
         public bool BreakOnPause;
 #endif
 
-        public static bool Paused
+        public bool Paused
         {
-            get => GameInstance?.paused ?? false;
+            get => paused;
             set
             {
                 if (!GameInstanceIsValid()) return;
 
-                if (GameInstance.paused == value || GameInstance.LockPauseState) return;
-                GameInstance.paused = value;
+                if (paused == value || GameInstance.LockPauseState) return;
+                paused = value;
                 if (value)
                 {
                     pause();

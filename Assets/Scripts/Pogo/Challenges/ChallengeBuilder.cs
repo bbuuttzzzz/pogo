@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Inputter;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,6 +14,7 @@ namespace Pogo.Challenges
     {
         public LevelManifest ValidLevels;
 
+        [NonSerialized]
         public Challenge CurrentChallenge;
         public string CurrentCode;
 
@@ -28,6 +30,28 @@ namespace Pogo.Challenges
 
         public UnityEvent OnChallengeComplete;
         public UnityEvent OnChallengeReset;
+
+        public ToggleableUIElement StartChallengeMenu;
+
+        public void Update()
+        {
+            bool balloonPressed = InputManager.CheckKeyDown(KeyName.Balloon);
+
+            if (CurrentChallenge == null
+                && PogoGameManager.PogoInstance.CustomRespawnActive
+                && PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Freeplay
+                && InputManager.CheckKeyDown(KeyName.Balloon))
+            {
+                PromptForNewChallenge();
+            }
+        }
+
+        private void PromptForNewChallenge()
+        {
+            PauseMenu.OverrideMenu = StartChallengeMenu;
+            PauseMenu.Pause();
+            PauseMenu.OverrideMenu = null;
+        }
 
         public void CalculateNewChallenge()
         {
@@ -117,7 +141,7 @@ namespace Pogo.Challenges
         public string EncodeChallenge(Challenge challenge)
         {
             // todo WRAP THIS cuz maybe I use it later... i guess. this just feels so ugly being in here
-            byte[] completeChallenge = new byte[sizeof(short) * 3 * 2 + 3];
+            byte[] completeChallenge = new byte[sizeof(short) * 3 * 2 + 4];
             int offset = 0;
 
             AddVector3Short(ref completeChallenge, offset, challenge.StartPointCm);
@@ -134,6 +158,10 @@ namespace Pogo.Challenges
             byte levelIndex = Convert.ToByte(rawIndex);
             addByte(ref completeChallenge, offset, yaw);
             offset++;
+
+            // really lazy error checking 
+            short hash = (short)completeChallenge.GetHashCode();
+            addByte(ref completeChallenge, offset, (byte)hash);
 
             string result = Pretty256Helper.Encode(completeChallenge);
             return result;

@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
         invertYSetting.OnChanged += onInvertYChanged;
         SENS_PITCH_SCALE = 0.8f * convertInvertYSetting(invertYSetting.Value);
 
-        UpdateCursorLock(PogoGameManager.Paused);
+        UpdateCursorLock(PogoGameManager.GameInstance.Paused);
         internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
         transform.rotation = Quaternion.identity;
 
@@ -416,7 +416,7 @@ public class PlayerController : MonoBehaviour
     }
     void DoLook()
     {
-        if (PogoGameManager.Paused) return;
+        if (GameManager.GameInstance.Paused) return;
 
         //change eyeAngles based on mouse
         internalEyeAngles += InputManager.CheckAxisSet(AxisSetName.Aim).Scale(SENSITIVITY * SENS_PITCH_SCALE, SENSITIVITY, SENSITIVITY);
