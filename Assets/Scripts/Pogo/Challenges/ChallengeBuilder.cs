@@ -16,7 +16,8 @@ namespace Pogo.Challenges
 
         [NonSerialized]
         public Challenge CurrentChallenge;
-        public string CurrentCode;
+        private string currentCode;
+        public string CurrentCode { get => currentCode; set => currentCode = value; }
 
         public UnityEvent<Challenge> OnChallengeChanged;
         public UnityEvent<string> OnCodeChanged;
@@ -130,6 +131,20 @@ namespace Pogo.Challenges
         }
 
         #region Encoding
+        public const int PayloadLength =
+            // StartPointCM
+            sizeof(short) * 3
+            // EndPointCM
+            + sizeof(short) * 3
+            // Yaw
+            + 1
+            // Level Index
+            + 1
+            // Best Time
+            + sizeof(short)
+            // Checksum
+            + 1;
+
         public void EncodeAndPrint()
         {
             var challenge = CreateChallenge();
@@ -141,7 +156,7 @@ namespace Pogo.Challenges
         public string EncodeChallenge(Challenge challenge)
         {
             // todo WRAP THIS cuz maybe I use it later... i guess. this just feels so ugly being in here
-            byte[] completeChallenge = new byte[sizeof(short) * 3 * 2 + 4];
+            byte[] completeChallenge = new byte[PayloadLength];
             int offset = 0;
 
             AddVector3Short(ref completeChallenge, offset, challenge.StartPointCm);
@@ -149,18 +164,21 @@ namespace Pogo.Challenges
 
             AddVector3Short(ref completeChallenge, offset, challenge.EndPointCm);
             offset += sizeof(short) * 3;
-            
+
             byte yaw = Convert.ToByte(challenge.StartYaw / 2);
             addByte(ref completeChallenge, offset, yaw);
             offset++;
 
             int rawIndex = GetLevelIndex(challenge.Level);
             byte levelIndex = Convert.ToByte(rawIndex);
-            addByte(ref completeChallenge, offset, yaw);
+            addByte(ref completeChallenge, offset, levelIndex);
             offset++;
 
+            addShort(ref completeChallenge, offset, (short)challenge.BestTimeMS);
+            offset += sizeof(short);
+
             // really lazy error checking 
-            short hash = (short)completeChallenge.GetHashCode();
+            byte hash = getHash(completeChallenge);
             addByte(ref completeChallenge, offset, (byte)hash);
 
             string result = Pretty256Helper.Encode(completeChallenge);
@@ -169,7 +187,7 @@ namespace Pogo.Challenges
 
         private int GetLevelIndex(LevelDescriptor level)
         {
-            foreach(LevelDescriptor validLevel in ValidLevels.Levels)
+            foreach (LevelDescriptor validLevel in ValidLevels.Levels)
             {
                 if (validLevel == level)
                 {
@@ -238,15 +256,130 @@ namespace Pogo.Challenges
             Buffer.BlockCopy(valueArray, 0, array, offset, valueArray.Length);
         }
 
-        static void addByte(ref byte[] array, int offset, byte value )
+        static void addByte(ref byte[] array, int offset, byte value)
         {
             array[offset] = value;
         }
+
+        byte getHash(byte[] array)
+        {
+            byte hash = 69;
+            foreach(byte b in array)
+            {
+                hash ^= b;
+            }
+
+            return hash;
+        }
         #endregion
 
-        public Challenge DecodeChallenge(string payload)
+        #region Decoding
+        public enum DecodeFailReason
         {
-            throw new NotImplementedException();
+            _none,
+            WrongLength,
+            Invalid
         }
+
+        public UnityEvent<DecodeFailReason> OnDecodeFailed;
+        public void DecodeCurrentCode()
+        {
+            var challenge = DecodeChallenge(CurrentCode, out DecodeFailReason failReason);
+
+            if (challenge == null)
+            {
+                OnDecodeFailed?.Invoke(failReason);
+                return;
+            }
+
+            CurrentChallenge = challenge;
+            LoadChallenge();
+        }
+
+        public Challenge DecodeChallenge(string encodedPayload, out DecodeFailReason failReason)
+        {
+            if (encodedPayload.Length != PayloadLength)
+            {
+                failReason = DecodeFailReason.WrongLength;
+                return null;
+            }
+
+            byte[] rawPayload = Pretty256Helper.Decode(encodedPayload);
+
+            // really lazy error checking 
+            byte suppliedHash = rawPayload[PayloadLength - 1];
+            rawPayload[PayloadLength - 1] = 0;
+            byte calculatedHash = getHash(rawPayload);
+            if (calculatedHash != suppliedHash)
+            {
+                failReason = DecodeFailReason.Invalid;
+                return null;
+            }
+
+            Challenge challenge = new Challenge();
+
+            int offset = 0;
+
+            challenge.StartPointCm = GetVector3Short(rawPayload, offset);
+            offset += sizeof(short) * 3;
+
+            challenge.EndPointCm = GetVector3Short(rawPayload, offset);
+            offset += sizeof(short) * 3;
+
+            byte yaw = getByte(rawPayload, offset);
+            challenge.StartYaw = Convert.ToInt32(yaw * 2);
+            offset++;
+
+
+            byte levelIndex = getByte(rawPayload, offset);
+            challenge.Level = GetLevelFromIndex(levelIndex);
+            offset++;
+
+
+            challenge.BestTimeMS = (ushort)getShort(rawPayload, offset);
+            //offset += sizeof(short); don't need this because it's the last entry
+
+            failReason = DecodeFailReason._none;
+            return challenge;
+        }
+
+        static Vector3Short GetVector3Short(byte[] array, int offset)
+        {
+            Vector3Short value = new Vector3Short()
+            {
+                x = getShort(array, offset),
+                y = getShort(array, offset + sizeof(short)),
+                z = getShort(array, offset + 2 * sizeof(short))
+            };
+
+            return value;
+        }
+
+        static short getShort(byte[] array, int offset)
+        {
+
+            byte[] shortArray = getByteArray(array, offset, sizeof(short));
+
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(shortArray);
+            }
+
+            return BitConverter.ToInt16(shortArray);
+        }
+
+        static byte[] getByteArray(byte[] array, int offset, int length)
+        {
+            byte[] valueArray = new byte[length];
+            Buffer.BlockCopy(array, offset, valueArray, 0, length);
+            return valueArray;
+        }
+
+        static byte getByte(byte[] array, int offset)
+        {
+            return array[offset];
+        }
+
+        #endregion
     }
 }

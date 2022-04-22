@@ -17,9 +17,6 @@ namespace WizardUtils.Tools
 
             foreach (byte b in inArray)
             {
-                string yourByteString = Convert.ToString(b, 2).PadLeft(8, '0');
-                //Debug.Log($"{b} - {yourByteString}");
-
                 try
                 {
                     final += Atlas[b];
@@ -33,6 +30,29 @@ namespace WizardUtils.Tools
 
             return final;
         }
+
+        public static byte[] Decode(string payload, char[] Atlas = null)
+        {
+            if (Atlas == null) Atlas = AtlasFleschutz;
+
+            byte[] output = new byte[payload.Length];
+
+            for (int payloadIndex = 0; payloadIndex < payload.Length; payloadIndex++)
+            {
+                char c = payload[payloadIndex];
+                for (int atlasIndex = 0; atlasIndex < 256; atlasIndex++)
+                {
+                    if (Atlas[atlasIndex] == c)
+                    {
+                        output[payloadIndex] = (byte)atlasIndex;
+                        break;
+                    }    
+                }
+            }
+
+            return output;
+        }
+
 
         // ported from https://github.com/fleschutz/base256unicode
         public static char[] AtlasFleschutz => new char[256]

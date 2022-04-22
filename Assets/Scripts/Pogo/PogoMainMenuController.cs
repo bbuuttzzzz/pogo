@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Challenges;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,7 +8,8 @@ namespace Pogo
     public class PogoMainMenuController : MonoBehaviour
     {
         public UnityEvent OnOpenGamemodeScreen;
-        public UnityEvent OnCloseGamemodeScreen;
+        public UnityEvent OnOpenHomeScreen;
+        public UnityEvent OnOpenChallengeScreen;
 
         public EquipmentSelectorController PogoSelector;
         public PogoChapterSelectorController ChapterSelector;
@@ -25,14 +27,27 @@ namespace Pogo
             }
         }
 
+        public string CurrentCode { get; set; }
+        public void LoadChallenge()
+        {
+            var builder = PogoGameManager.PogoInstance.GetComponent<ChallengeBuilder>();
+            builder.CurrentCode = CurrentCode;
+            builder.DecodeCurrentCode();
+        }
+
         public void OpenGamemodeScreen()
         {
             OnOpenGamemodeScreen?.Invoke();
         }
 
-        public void CloseGamemodeScreen()
+        public void OpenHomeScreen()
         {
-            OnCloseGamemodeScreen?.Invoke();
+            OnOpenHomeScreen?.Invoke();
+        }
+
+        public void OpenChallengeScreen()
+        {
+            OnOpenChallengeScreen?.Invoke();
         }
 
         public void StartGame()

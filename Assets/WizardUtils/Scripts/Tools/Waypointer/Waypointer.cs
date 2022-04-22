@@ -5,7 +5,6 @@ namespace WizardUtils
 {
     public abstract class Waypointer<T> : MonoBehaviour
     {
-
         public T[] Waypoints;
 
         /// <summary>
@@ -23,6 +22,11 @@ namespace WizardUtils
         bool arrived;
         private float changeStartTime;
 
+        public bool UseRealTime;
+
+        public bool UseCustomCurve;
+        public AnimationCurve CustomCurve;
+
         public virtual void Awake()
         {
             initialValue = GetCurrentValue();
@@ -33,13 +37,29 @@ namespace WizardUtils
         {
             if (!arrived)
             {
-                InterpolateAndApply(lastValue, nextValue, (Time.time - changeStartTime) / TransitionDuration);
-                if (Time.time > changeStartTime + TransitionDuration)
+                float now = Now;
+                float i = ConvertParametric((now - changeStartTime) / TransitionDuration);
+                InterpolateAndApply(lastValue, nextValue, i);
+                if (now > changeStartTime + TransitionDuration)
                 {
                     arrived = true;
                 }
             }
         }
+
+        private float ConvertParametric(float rawParametric)
+        {
+            if (UseCustomCurve)
+            {
+                return CustomCurve.Evaluate(rawParametric);
+            }
+            else
+            {
+                return rawParametric;
+            }
+        }
+
+        private float Now => UseRealTime ? Time.realtimeSinceStartup : Time.time;
 
         /// <summary>
         /// Get the value we're currently at
@@ -59,7 +79,7 @@ namespace WizardUtils
         {
             lastValue = GetCurrentValue();
             nextValue = GetWaypoint(waypointIndex);
-            changeStartTime = Time.time;
+            changeStartTime = Now;
             arrived = false;
         }
 

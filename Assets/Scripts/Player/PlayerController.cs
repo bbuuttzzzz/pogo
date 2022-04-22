@@ -152,9 +152,15 @@ public class PlayerController : MonoBehaviour
                 material = renderer.sharedMaterial;
             }
         }
-
-        surfaceCache.SurfaceConfig = surfacePropertiesDict.ContainsKey(material) ? (surfacePropertiesDict[material] ?? DefaultSurfaceConfig)
-            : DefaultSurfaceConfig;
+        try
+        {
+            surfaceCache.SurfaceConfig = surfacePropertiesDict.ContainsKey(material) ? (surfacePropertiesDict[material] ?? DefaultSurfaceConfig)
+                : DefaultSurfaceConfig;
+        }
+        catch(ArgumentNullException e)
+        {
+            Debug.LogError($"Missing surfaceConfig for material {material}", material);
+        }
         return surfaceCache.SurfaceConfig;
     }
 
