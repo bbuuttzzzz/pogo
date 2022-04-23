@@ -20,14 +20,6 @@ namespace Pogo.Challenges
 
         private void Start()
         {
-            var atlas = WizardUtils.Tools.Pretty256Helper.AtlasFleschutz;
-            string txt = "";
-            for (int n = 0; n < 256; n++)
-            {
-                txt += atlas[n];
-            }
-            Debug.Log(txt);
-
             challengeBuilder = PogoGameManager.GameInstance.GetComponent<ChallengeBuilder>();
             challengeBuilder.OnDecodeFailed.AddListener(ReceiveLoadError);
             text = GetComponent<Text>();

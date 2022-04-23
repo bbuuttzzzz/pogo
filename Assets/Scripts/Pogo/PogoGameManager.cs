@@ -36,12 +36,13 @@ namespace Pogo
 
             OnPlayerDeath.AddListener(() => NumberOfDeaths++);
             OnPlayerDeath.AddListener(() => ResetLoadedLevel());
-
+            OnSoftQuit += onSoftQuit;
 #if UNITY_EDITOR
 #else
             LoadControlScene(MainMenuControlScene);       
 #endif
         }
+
         protected override void Update()
         {
             base.Update();
@@ -51,7 +52,13 @@ namespace Pogo
             }
         }
 
-#region Level Management
+        private void onSoftQuit(object sender, EventArgs e)
+        {
+            ResetCustomRespawnPoint();
+        }
+
+
+        #region Level Management
         public PogoLevelManager LevelManager => levelManager;
         PogoLevelManager levelManager;
         [HideInInspector]

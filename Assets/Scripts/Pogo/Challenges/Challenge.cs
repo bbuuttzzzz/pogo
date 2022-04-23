@@ -44,21 +44,25 @@ namespace Pogo.Challenges
 
         public ushort BestTimeMS;
 
+        public float PersonalBestTime => (PersonalBestTimeMS * 1f) / 1000;
+        public ushort PersonalBestTimeMS;
+
         public Quaternion StartRotation => Quaternion.Euler(0, StartYaw, 0);
 
-        public Challenge(LevelDescriptor level, Transform start, Vector3 end)
+        public Challenge(LevelDescriptor level, Transform start, Vector3 end) : this()
         {
             ChallengeType = ChallengeTypes.Create;
             Level = level;
             StartPointCm = Vector3Short.FromVector3(start.position * 100);
             StartYaw = (int)start.rotation.eulerAngles.y;
             EndPointCm = Vector3Short.FromVector3(end * 100);
-            BestTimeMS = ushort.MaxValue;
         }
 
         public Challenge()
         {
-
+            BestTimeMS = 60_000;
+            PersonalBestTimeMS = ushort.MaxValue;
+            LastAttemptTimeMS = ushort.MaxValue;
         }
 
         public float AttemptStartTime;
@@ -74,6 +78,7 @@ namespace Pogo.Challenges
         {
             float time = Time.time - AttemptStartTime;
             LastAttemptTimeMS = (ushort)Mathf.RoundToInt((time * 1000));
+            PersonalBestTimeMS = Math.Min(PersonalBestTimeMS, LastAttemptTimeMS);
             BestTimeMS = Math.Min(BestTimeMS, LastAttemptTimeMS);
         }
     }

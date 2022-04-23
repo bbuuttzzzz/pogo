@@ -34,6 +34,11 @@ namespace Pogo.Challenges
 
         public ToggleableUIElement StartChallengeMenu;
 
+        public void Start()
+        {
+            GameManager.GameInstance.OnSoftQuit += OnReturnToMainMenu;
+        }
+
         public void Update()
         {
             bool balloonPressed = InputManager.CheckKeyDown(KeyName.Balloon);
@@ -45,6 +50,11 @@ namespace Pogo.Challenges
             {
                 PromptForNewChallenge();
             }
+        }
+
+        private void OnReturnToMainMenu(object sender, EventArgs e)
+        {
+            ExitChallenge();
         }
 
         private void PromptForNewChallenge()
@@ -95,6 +105,7 @@ namespace Pogo.Challenges
 
         public void ExitChallenge()
         {
+            ChallengePickup.transform.position = new Vector3(0, -20, 0);
             PauseMenu.OverrideMenu = null;
             CurrentChallenge = null;
             OnChallengeChanged?.Invoke(CurrentChallenge);
@@ -337,7 +348,7 @@ namespace Pogo.Challenges
 
 
             challenge.BestTimeMS = (ushort)getShort(rawPayload, offset);
-            //offset += sizeof(short); don't need this because it's the last entry
+            //offset += sizeof(short); don't need this because it's the last entry we're reading
 
             failReason = DecodeFailReason._none;
             return challenge;

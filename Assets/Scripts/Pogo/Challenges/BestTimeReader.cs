@@ -10,19 +10,40 @@ namespace Pogo.Challenges
 {
     public class BestTimeReader : MonoBehaviour
     {
+        public enum BestTimeType
+        {
+            Personal,
+            World
+        }
+        public BestTimeType ReadType;
+
         public UnityEvent<string> OnReadBestTimeText;
 
         public void Read(Challenge challenge)
         {
+            if (challenge == null) return;
+
             string text;
-            if (challenge.BestTimeMS == ushort.MaxValue)
+            ushort bestTimeMS = ReadType switch
+            {
+                BestTimeType.Personal => challenge.PersonalBestTimeMS,
+                BestTimeType.World => challenge.BestTimeMS,
+                _ => throw new NotImplementedException()
+            };
+
+            if (bestTimeMS == ushort.MaxValue)
             {
                 text = null;
             }
             else
             {
-                var timeSpan = TimeSpan.FromSeconds(challenge.BestTime);
-                text = timeSpan.ToString("s\\.fff");
+                float bestTime = ReadType switch
+                {
+                    BestTimeType.Personal => challenge.PersonalBestTime,
+                    BestTimeType.World => challenge.BestTime,
+                    _ => throw new NotImplementedException()
+                };
+                text = bestTime.ToString("N3");
             }
 
             OnReadBestTimeText?.Invoke(text);

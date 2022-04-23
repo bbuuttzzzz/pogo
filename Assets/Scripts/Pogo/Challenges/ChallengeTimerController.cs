@@ -25,9 +25,14 @@ namespace Pogo.Challenges
             set
             {
                 animator.SetBool("shouldShow", value);
-                if (!isActive)
+                if (!value)
                 {
                     StopTimer();
+                }
+                else if (!isActive)
+                {
+                    cachedBestTime = challengeBuilder.CurrentChallenge.BestTime;
+                    ResetTimer();
                 }
                 isActive = value;
             }
@@ -60,7 +65,7 @@ namespace Pogo.Challenges
             {
                 spawnFloater(challengeBuilder.CurrentChallenge.LastAttemptTime - cachedBestTime);
             }
-            cachedBestTime = challengeBuilder.CurrentChallenge.BestTime;
+            cachedBestTime = challengeBuilder.CurrentChallenge.PersonalBestTime;
         }
 
         public void ResetTimer()

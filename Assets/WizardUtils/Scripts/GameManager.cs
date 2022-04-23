@@ -16,6 +16,7 @@ namespace WizardUtils
     public abstract class GameManager : MonoBehaviour
     {
         public static GameManager GameInstance;
+        public EventHandler OnSoftQuit;
         protected virtual void Awake()
         {
             if (GameInstance != null)
@@ -108,18 +109,22 @@ namespace WizardUtils
         public void UnloadControlSceneInEditor()
         {
             var initialScene = CurrentControlScene;
-            List<Scene> scenesToUnload = new List<Scene>();
-            for (int n = 0; n < SceneManager.sceneCount; n++)
+
+            if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
-                Scene scene = SceneManager.GetSceneAt(n);
-                if (scene.buildIndex == CurrentControlScene.BuildIndex)
+                for (int n = 0; n < SceneManager.sceneCount; n++)
                 {
-                    UnityEditor.SceneManagement.EditorSceneManager.CloseScene(scene, true);
-                    CurrentControlScene = null;
-                    break;
+                    Scene scene = SceneManager.GetSceneAt(n);
+                    if (scene.buildIndex == CurrentControlScene.BuildIndex)
+                    {
+
+                        UnityEditor.SceneManagement.EditorSceneManager.CloseScene(scene, true);
+                        CurrentControlScene = null;
+                        break;
+                    }
                 }
+                OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, null));
             }
-            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, null));
         }
 
         public virtual void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
@@ -142,17 +147,20 @@ namespace WizardUtils
                 }
             }
 
-            // load the control scene
-            if (!newSceneAlreadyLoaded)
+            if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
-                UnityEditor.SceneManagement.EditorSceneManager.OpenScene(newScene.ScenePath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
-                CurrentControlScene = newScene;
-            }
+                // load the control scene
+                if (!newSceneAlreadyLoaded)
+                {
+                    UnityEditor.SceneManagement.EditorSceneManager.OpenScene(newScene.ScenePath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
+                    CurrentControlScene = newScene;
+                }
 
-            // unload all non-ignored scenes
-            foreach (Scene scene in scenesToUnload)
-            {
-                UnityEditor.SceneManagement.EditorSceneManager.CloseScene(scene, true);
+                // unload all non-ignored scenes
+                foreach (Scene scene in scenesToUnload)
+                {
+                    UnityEditor.SceneManagement.EditorSceneManager.CloseScene(scene, true);
+                }
             }
         }
 #endif
@@ -229,6 +237,7 @@ namespace WizardUtils
             }
             else
             {
+                OnSoftQuit?.Invoke(this, EventArgs.Empty);
                 if (!InControlScene)
                 {
                     LoadControlScene(MainMenuControlScene);
