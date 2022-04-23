@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Pogo.Challenges
@@ -12,11 +13,21 @@ namespace Pogo.Challenges
 
     public class ChallengeWarningTextController : MonoBehaviour
     {
+        public UnityEvent OnShowWarning;
+
         ChallengeBuilder challengeBuilder;
         Text text;
 
         private void Start()
         {
+            var atlas = WizardUtils.Tools.Pretty256Helper.AtlasFleschutz;
+            string txt = "";
+            for (int n = 0; n < 256; n++)
+            {
+                txt += atlas[n];
+            }
+            Debug.Log(txt);
+
             challengeBuilder = PogoGameManager.GameInstance.GetComponent<ChallengeBuilder>();
             challengeBuilder.OnDecodeFailed.AddListener(ReceiveLoadError);
             text = GetComponent<Text>();
@@ -26,12 +37,14 @@ namespace Pogo.Challenges
         {
             if (failReason == ChallengeBuilder.DecodeFailReason.WrongLength)
             {
-                setText($"Correct codes will be {ChallengeBuilder.PayloadLength} characters long", Color.red);
+                setText($"Failed to Decode. Expected {ChallengeBuilder.PayloadLength} characters", Color.red);
             }
             else if (failReason == ChallengeBuilder.DecodeFailReason.Invalid)
             {
-                setText($"Failed to decode. Is this code correct?", Color.red);
+                setText($"Failed to decode. Code is not valid", Color.red);
             }
+
+            OnShowWarning?.Invoke();
         }
 
         Coroutine resetRoutine;

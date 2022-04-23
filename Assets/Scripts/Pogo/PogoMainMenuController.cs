@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Pogo
 {
@@ -27,11 +28,12 @@ namespace Pogo
             }
         }
 
+        public string DefaultCode;
         public string CurrentCode { get; set; }
         public void LoadChallenge()
         {
             var builder = PogoGameManager.PogoInstance.GetComponent<ChallengeBuilder>();
-            builder.CurrentCode = CurrentCode;
+            builder.CurrentCode = CurrentCode == null || CurrentCode == "" ? DefaultCode : CurrentCode; 
             builder.DecodeCurrentCode();
         }
 
@@ -53,6 +55,13 @@ namespace Pogo
         public void StartGame()
         {
             ChapterSelector.LoadActiveChapter();
+        }
+
+        public InputField ChallengeInputField;
+        public void SelectChallengeTextbox()
+        {
+            ChallengeInputField.Select();
+            ChallengeInputField.ActivateInputField();
         }
     }
 }
