@@ -37,6 +37,7 @@ namespace Pogo
             OnPlayerDeath.AddListener(() => NumberOfDeaths++);
             OnPlayerDeath.AddListener(() => ResetLoadedLevel());
             OnSoftQuit += onSoftQuit;
+            CustomCheckpoint.OnPlaced.AddListener(() => OnCustomCheckpointChanged?.Invoke(this, EventArgs.Empty));
 #if UNITY_EDITOR
 #else
             LoadControlScene(MainMenuControlScene);       
@@ -326,9 +327,11 @@ namespace Pogo
         }
 
         public UnityEvent OnPlayerDeath;
-#endregion
+        #endregion
 
-#region Respawn Point
+        #region Respawn Point
+
+        public EventHandler OnCustomCheckpointChanged;
 
         public Transform InitialRespawnPoint;
         [HideInInspector]
@@ -353,6 +356,7 @@ namespace Pogo
             Expert,
             Challenge
         }
+        public EventHandler OnDifficultyChanged;
         private Difficulty currentDifficulty = Difficulty.Normal;
         public Difficulty CurrentDifficulty
         {
@@ -360,6 +364,7 @@ namespace Pogo
             set
             {
                 Debug.Log($"Changing difficulty {currentDifficulty} -> {value}");
+                OnDifficultyChanged?.Invoke(this, EventArgs.Empty);
                 currentDifficulty = value;
             }
         }
@@ -370,6 +375,7 @@ namespace Pogo
             {
                 CustomRespawnActive = true;
                 CustomRespawnLevel = levelManager.CurrentLevel;
+                OnCustomCheckpointChanged?.Invoke(this, EventArgs.Empty);
                 return true;
             }
 
@@ -383,6 +389,7 @@ namespace Pogo
             {
                 CustomRespawnActive = false;
                 CustomCheckpoint.Hide();
+                OnCustomCheckpointChanged?.Invoke(this, EventArgs.Empty);
                 return true;
             }
             return false;

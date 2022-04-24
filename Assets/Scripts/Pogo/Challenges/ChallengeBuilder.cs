@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using WizardUI;
 using WizardUtils;
 using WizardUtils.Equipment;
 using WizardUtils.Math;
@@ -33,6 +34,8 @@ namespace Pogo.Challenges
         public UnityEvent OnChallengeReset;
 
         public ToggleableUIElement StartChallengeMenu;
+
+        public PopupSpawner PopupSpawner;
 
         public void Start()
         {
@@ -74,13 +77,17 @@ namespace Pogo.Challenges
 
         public void CompleteChallenge()
         {
-            float oldTime = CurrentChallenge.BestTime;
+            ushort oldTimeMS = CurrentChallenge.BestTimeMS;
             CurrentChallenge.FinishAttempt();
-            float newTime = CurrentChallenge.LastAttemptTime;
-            if (newTime != oldTime)
+            float newTimeMS = CurrentChallenge.LastAttemptTimeMS;
+            if (newTimeMS != oldTimeMS)
             {
                 if (CurrentChallenge.BestTimeMS < 60_000)
                 {
+                    if (oldTimeMS >= 60_000)
+                    {
+                        PopupSpawner.Spawn();
+                    }
                     CurrentCode = EncodeChallenge(CurrentChallenge);
                     OnCodeChanged?.Invoke(CurrentCode);
                 }
@@ -121,9 +128,7 @@ namespace Pogo.Challenges
             finishLoading = () =>
             {
                 Debug.Log("Finished loading challenge");
-                pogoInstance.CustomCheckpoint.transform.position = CurrentChallenge.StartPoint;
-                pogoInstance.CustomCheckpoint.transform.rotation = CurrentChallenge.StartRotation;
-                pogoInstance.CustomCheckpoint.OnPlaced?.Invoke();
+                pogoInstance.CustomCheckpoint.Place(CurrentChallenge.StartPoint, CurrentChallenge.StartRotation);
                 pogoInstance.RegisterRespawnPoint(pogoInstance.CustomCheckpoint.transform);
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
