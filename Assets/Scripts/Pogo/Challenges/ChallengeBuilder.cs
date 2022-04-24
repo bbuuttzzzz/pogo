@@ -24,7 +24,7 @@ namespace Pogo.Challenges
         public UnityEvent<string> OnCodeChanged;
 
         public PauseMenuController PauseMenu;
-        public ToggleableUIElement OverrideMenu;
+        public ToggleableUIElement ChallengeMenu;
 
         public Trigger ChallengePickup;
 
@@ -53,11 +53,23 @@ namespace Pogo.Challenges
             {
                 PromptForNewChallenge();
             }
+            if (PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Challenge
+                && InputManager.CheckKeyDown(KeyName.Balloon))
+            {
+                OpenChallengeMenu();
+            }
         }
 
         private void OnReturnToMainMenu(object sender, EventArgs e)
         {
             ExitChallenge();
+        }
+
+        private void OpenChallengeMenu()
+        {
+            PauseMenu.OverrideMenu = ChallengeMenu;
+            PauseMenu.Pause();
+            PauseMenu.OverrideMenu = null;
         }
 
         private void PromptForNewChallenge()
@@ -121,7 +133,7 @@ namespace Pogo.Challenges
 
         public void LoadChallenge()
         {
-            PauseMenu.OverrideMenu = OverrideMenu;
+            PauseMenu.OverrideMenu = ChallengeMenu;
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
             pogoInstance.Equip(ChallengeStick);
             UnityAction finishLoading = null;
@@ -144,6 +156,36 @@ namespace Pogo.Challenges
         {
             CurrentChallenge?.StartAttempt();
             OnChallengeReset?.Invoke();
+        }
+
+        const string composeTweetLinkHeader = "https://twitter.com/compose/tweet?text=";
+        public static readonly string[] TweetFormats =
+        {
+@"Find my balloon in #pogo3dballoons  
+Code: {0}
+My Best Time: {1:N3} seconds",
+
+@"Beat my time in #pogo3dballoons  
+Code: {0}
+My Best Time: {1:N3} seconds",
+
+@"Try my challenge in #pogo3dballoons  
+Code: {0}
+My Best Time: {1:N3} seconds"
+        };
+        public void TweetChallenge()
+        {
+            if (CurrentCode == null || CurrentCode == "" || CurrentChallenge == null)
+            {
+                OnDecodeFailed?.Invoke(DecodeFailReason.CantShare);
+                return;
+            }
+            string format = TweetFormats[UnityEngine.Random.Range(0, TweetFormats.Length)];
+
+            string formattedTweet = string.Format(format, CurrentCode, CurrentChallenge.PersonalBestTime);
+            string link = composeTweetLinkHeader + UnityEngine.Networking.UnityWebRequest.EscapeURL(formattedTweet);
+            Debug.Log(link);
+            Application.OpenURL(link);
         }
 
         #region Encoding
@@ -294,7 +336,8 @@ namespace Pogo.Challenges
         {
             _none,
             WrongLength,
-            Invalid
+            Invalid,
+            CantShare
         }
 
         public UnityEvent<DecodeFailReason> OnDecodeFailed;
