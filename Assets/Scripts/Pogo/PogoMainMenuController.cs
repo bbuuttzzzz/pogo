@@ -33,7 +33,7 @@ namespace Pogo
         public void LoadChallenge()
         {
             var builder = PogoGameManager.PogoInstance.GetComponent<ChallengeBuilder>();
-            builder.CurrentCode = CurrentCode == null || CurrentCode == "" ? DefaultCode : CurrentCode; 
+            builder.SetCode(CurrentCode == null || CurrentCode == "" ? DefaultCode : CurrentCode, true);
             builder.DecodeCurrentCode();
         }
 

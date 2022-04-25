@@ -18,6 +18,7 @@ namespace Pogo.Challenges
         [NonSerialized]
         public Challenge CurrentChallenge;
         private string currentCode;
+        private bool codeIsValid;
         public string CurrentCode { get => currentCode; set => currentCode = value; }
 
         public UnityEvent<Challenge> OnChallengeChanged;
@@ -58,6 +59,18 @@ namespace Pogo.Challenges
             {
                 OpenChallengeMenu();
             }
+        }
+
+        public void SetCode(string code)
+        {
+            SetCode(code, false);
+        }
+
+        public void SetCode(string code, bool codeIsValid)
+        {
+            CurrentCode = code;
+            this.codeIsValid = codeIsValid;
+            OnCodeChanged?.Invoke(CurrentCode);
         }
 
         private void OnReturnToMainMenu(object sender, EventArgs e)
@@ -101,6 +114,7 @@ namespace Pogo.Challenges
                         PopupSpawner.Spawn();
                     }
                     CurrentCode = EncodeChallenge(CurrentChallenge);
+                    codeIsValid = true;
                     OnCodeChanged?.Invoke(CurrentCode);
                 }
                 OnChallengeChanged?.Invoke(CurrentChallenge);
@@ -133,13 +147,11 @@ namespace Pogo.Challenges
 
         public void LoadChallenge()
         {
-            PauseMenu.OverrideMenu = ChallengeMenu;
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
             pogoInstance.Equip(ChallengeStick);
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
-                Debug.Log("Finished loading challenge");
                 pogoInstance.CustomCheckpoint.Place(CurrentChallenge.StartPoint, CurrentChallenge.StartRotation);
                 pogoInstance.RegisterRespawnPoint(pogoInstance.CustomCheckpoint.transform);
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
@@ -147,6 +159,7 @@ namespace Pogo.Challenges
                 PogoGameManager.PogoInstance.KillPlayer();
                 OnChallengeChanged?.Invoke(CurrentChallenge);
                 pogoInstance.OnLevelLoaded.RemoveListener(finishLoading);
+                Debug.Log("Finished loading challenge");
             };
             pogoInstance.OnLevelLoaded.AddListener(finishLoading);
             pogoInstance.LoadLevel(CurrentChallenge.Level, new LevelLoadingSettings() { ForceReload = true });
@@ -175,16 +188,21 @@ My Best Time: {1:N3} seconds"
         };
         public void TweetChallenge()
         {
-            if (CurrentCode == null || CurrentCode == "" || CurrentChallenge == null)
+            if (CurrentCode == null || CurrentCode == "" || CurrentChallenge == null || !codeIsValid)
             {
-                OnDecodeFailed?.Invoke(DecodeFailReason.CantShare);
+                OnDecodeFailed?.Invoke(DecodeFailReason.CantShareInvalid);
                 return;
             }
+            if (CurrentChallenge.PersonalBestTimeMS >= 60_000 && CurrentChallenge.BestTimeMS >= 60_000)
+            {
+                OnDecodeFailed?.Invoke(DecodeFailReason.CantShareUncleared);
+            }
+
             string format = TweetFormats[UnityEngine.Random.Range(0, TweetFormats.Length)];
 
-            string formattedTweet = string.Format(format, CurrentCode, CurrentChallenge.PersonalBestTime);
+            float bestTime = CurrentChallenge.PersonalBestTime >= 60_000 ? CurrentChallenge.BestTimeMS : CurrentChallenge.PersonalBestTime;
+            string formattedTweet = string.Format(format, CurrentCode, bestTime);
             string link = composeTweetLinkHeader + UnityEngine.Networking.UnityWebRequest.EscapeURL(formattedTweet);
-            Debug.Log(link);
             Application.OpenURL(link);
         }
 
@@ -337,7 +355,8 @@ My Best Time: {1:N3} seconds"
             _none,
             WrongLength,
             Invalid,
-            CantShare
+            CantShareInvalid,
+            CantShareUncleared
         }
 
         public UnityEvent<DecodeFailReason> OnDecodeFailed;

@@ -29,11 +29,19 @@ namespace Pogo.Challenges
         {
             if (failReason == ChallengeBuilder.DecodeFailReason.WrongLength)
             {
-                setText($"Failed to Decode. Expected {ChallengeBuilder.PayloadLength} characters", Color.red);
+                setText($"Failed to Decode.\nExpected {ChallengeBuilder.PayloadLength} characters", Color.red);
             }
             else if (failReason == ChallengeBuilder.DecodeFailReason.Invalid)
             {
-                setText($"Failed to decode. Code is not valid", Color.red);
+                setText($"Failed to Decode.\nCode is not valid", Color.red);
+            }
+            else if (failReason == ChallengeBuilder.DecodeFailReason.CantShareInvalid)
+            {
+                setText($"Failed to share.\nCode is not valid", Color.red);
+            }
+            else if (failReason == ChallengeBuilder.DecodeFailReason.CantShareUncleared)
+            {
+                setText($"Failed to share.\nPop the balloon in less than 60 seconds first", Color.red);
             }
 
             OnShowWarning?.Invoke();
