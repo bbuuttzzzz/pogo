@@ -12,6 +12,12 @@ public class PogoGameManagerEditor : GameManagerEditor
 {
     new PogoGameManager self => base.self as PogoGameManager;
 
+    public override void OnControlSceneLoadedInEditor()
+    {
+        self.GetComponent<PogoLevelManager>().CurrentLevel = null;
+        base.OnControlSceneLoadedInEditor();
+    }
+
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();

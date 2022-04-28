@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using WizardUtils.SceneManagement;
@@ -28,6 +29,7 @@ namespace WizardUtils
                     menu.AddItem(new GUIContent(level.name), false, () =>
                     {
                         self.LoadControlSceneInEditor(level);
+                        OnControlSceneLoadedInEditor();
                     });
                 }
                 menu.DropDown(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 0f, 0f));
@@ -35,6 +37,10 @@ namespace WizardUtils
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(self.CurrentControlScene)));
             EditorGUI.EndDisabledGroup();
+        }
+
+        public virtual void OnControlSceneLoadedInEditor()
+        {
         }
     }
 }

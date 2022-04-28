@@ -62,7 +62,6 @@ namespace Pogo
         #region Level Management
         public PogoLevelManager LevelManager => levelManager;
         PogoLevelManager levelManager;
-        [HideInInspector]
         public LevelDescriptor InitialLevel;
 
         public UnityEvent OnLevelLoaded;

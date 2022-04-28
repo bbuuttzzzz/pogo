@@ -38,7 +38,18 @@ namespace Pogo
             currentLevel = level;
         }
 #endif
-        public LevelDescriptor CurrentLevel => currentLevel;
+        public LevelDescriptor CurrentLevel
+        {
+            get
+            {
+                return currentLevel;
+            }
+            set
+            {
+                currentLevel = value;
+            }
+        }
+
         LevelDescriptor currentLevel;
 #if UNITY_EDITOR
         public void LoadLevelInEditor(LevelDescriptor newLevel)
