@@ -55,7 +55,7 @@ namespace Pogo
 
         private void onSoftQuit(object sender, EventArgs e)
         {
-            ResetCustomRespawnPoint();
+            ResetCustomRespawnPoint(true);
         }
 
 
@@ -382,10 +382,9 @@ namespace Pogo
             return false;
         }
 
-        public bool ResetCustomRespawnPoint()
+        public bool ResetCustomRespawnPoint(bool force = false)
         {
-
-            if (CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive)
+            if (force || CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive)
             {
                 CustomRespawnActive = false;
                 CustomCheckpoint.Hide();

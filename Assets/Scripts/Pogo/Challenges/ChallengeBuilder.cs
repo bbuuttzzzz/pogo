@@ -41,6 +41,8 @@ namespace Pogo.Challenges
         public void Start()
         {
             GameManager.GameInstance.OnSoftQuit += OnReturnToMainMenu;
+
+            OnDecodeFailed?.AddListener((reason) => Debug.LogWarning($"Failed to decode challenge: {reason}"));
         }
 
         public void Update()
@@ -68,6 +70,8 @@ namespace Pogo.Challenges
 
         public void SetCode(string code, bool codeIsValid)
         {
+            if (CurrentCode == code) return;
+
             CurrentCode = code;
             this.codeIsValid = codeIsValid;
             OnCodeChanged?.Invoke(CurrentCode);
@@ -96,6 +100,7 @@ namespace Pogo.Challenges
         {
             CurrentChallenge = CreateChallenge();
             CurrentCode = null;
+            codeIsValid = false;
             OnChallengeChanged?.Invoke(CurrentChallenge);
             OnCodeChanged?.Invoke(CurrentCode);
         }
@@ -188,14 +193,15 @@ My Best Time: {1:N3} seconds"
         };
         public void TweetChallenge()
         {
+            if (CurrentChallenge.PersonalBestTimeMS >= 60_000 && CurrentChallenge.BestTimeMS >= 60_000)
+            {
+                OnDecodeFailed?.Invoke(DecodeFailReason.CantShareUncleared);
+                return;
+            }
             if (CurrentCode == null || CurrentCode == "" || CurrentChallenge == null || !codeIsValid)
             {
                 OnDecodeFailed?.Invoke(DecodeFailReason.CantShareInvalid);
                 return;
-            }
-            if (CurrentChallenge.PersonalBestTimeMS >= 60_000 && CurrentChallenge.BestTimeMS >= 60_000)
-            {
-                OnDecodeFailed?.Invoke(DecodeFailReason.CantShareUncleared);
             }
 
             string format = TweetFormats[UnityEngine.Random.Range(0, TweetFormats.Length)];

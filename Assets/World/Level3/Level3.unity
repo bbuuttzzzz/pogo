@@ -2794,6 +2794,28 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211281353}
   m_Mesh: {fileID: 2494185979427425891, guid: 61c0e0708eadaaa449ab08a1a2eb4d12, type: 3}
+--- !u!114 &1302123781 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3103870065730880033, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+  m_PrefabInstance: {fileID: 7026886090545378974}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1006273154574149a3f5c7f2a6a9703, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1302123782 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5789498525675059992, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+  m_PrefabInstance: {fileID: 7026886090545378974}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa3d799733878d14c9df44c6fd8b8cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1313138652
 GameObject:
   m_ObjectHideFlags: 0
@@ -4778,6 +4800,42 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6103901085530405088, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: TargetDifficulty
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103901085530405088, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103901085530405088, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103901085530405088, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1302123781}
+    - target: {fileID: 6103901085530405088, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1302123782}
+    - target: {fileID: 6103901085530405088, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_IsToggledOn
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103901085530405088, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TriggerCheck
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103901085530405088, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Logic.Toggler, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103901085530405088, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Pogo.UnlockChecker, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 7350164119747456354, guid: aab591831fbf12946900e96877d5f74c, type: 3}
       propertyPath: m_Name
       value: Gold UnlockPickup
@@ -4828,60 +4886,60 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aab591831fbf12946900e96877d5f74c, type: 3}
---- !u!1001 &8844507816052139681
+--- !u!1001 &7092535855471994100
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384138, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+      propertyPath: m_Name
+      value: Silver UnlockPickup
+      objectReference: {fileID: 0}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -52.552185
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 33.13
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.3969994
+      value: 80.21666
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442584, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+    - target: {fileID: 7343184277085384141, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9023951441571442591, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
-      propertyPath: m_Name
-      value: Silver UnlockPickup
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
