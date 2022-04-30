@@ -9,12 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 541985538549685591}
+  - component: {fileID: 5208925393910696039}
+  - component: {fileID: 961724374500061026}
+  - component: {fileID: 3593007835907820330}
   - component: {fileID: 5374952464919491091}
   - component: {fileID: 541985538549685590}
   - component: {fileID: 541985538549685585}
   - component: {fileID: 961724374500061025}
-  - component: {fileID: 961724374500061026}
-  - component: {fileID: 3593007835907820330}
   - component: {fileID: 3833102154047965394}
   m_Layer: 7
   m_Name: UnlockPickup
@@ -40,6 +41,79 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5208925393910696039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541985538549685584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 873c0edc27dab24418f8256b876a8b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Save: {fileID: 0}
+  OnUnlocked:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 961724374500061026}
+        m_TargetAssemblyTypeName: WizardUI.PopupSpawner, Assembly-CSharp
+        m_MethodName: Spawn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &961724374500061026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541985538549685584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 713efa365ae68ad46861f566d75c8ad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 0}
+--- !u!114 &3593007835907820330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541985538549685584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa3d799733878d14c9df44c6fd8b8cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Save: {fileID: 0}
+  CheckOnAwake: 0
+  OnCheckedLocked:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCheckedUnlocked:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5374952464919491091}
+        m_TargetAssemblyTypeName: Logic.Toggler, Assembly-CSharp
+        m_MethodName: set_IsToggledOn
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5374952464919491091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52,7 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1006273154574149a3f5c7f2a6a9703, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initalState: 0
+  initalState: 1
+  isToggledOn: 0
+  CallEventsOnInitialStateSet: 1
   OnToggledOn:
     m_PersistentCalls:
       m_Calls:
@@ -84,6 +160,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Trigger, Assembly-CSharp
         m_MethodName: set_CanTrigger
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 3593007835907820330}
+        m_TargetAssemblyTypeName: Pogo.UnlockChecker, Assembly-CSharp
+        m_MethodName: TriggerCheck
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -279,39 +367,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &961724374500061026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541985538549685584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 713efa365ae68ad46861f566d75c8ad6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prefab: {fileID: 0}
---- !u!114 &3593007835907820330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541985538549685584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa3d799733878d14c9df44c6fd8b8cd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Save: {fileID: 0}
-  CheckOnAwake: 1
-  OnCheckedLocked:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5374952464919491091}
-        m_TargetAssemblyTypeName: Logic.Toggler, Assembly-CSharp
-        m_MethodName: set_IsToggledOn
+      - m_Target: {fileID: 5208925393910696039}
+        m_TargetAssemblyTypeName: WizardUtils.Saving.SaveEditor, Assembly-CSharp
+        m_MethodName: SetUnlocked
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -320,21 +378,6 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
-        m_CallState: 2
-  OnCheckedUnlocked:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5374952464919491091}
-        m_TargetAssemblyTypeName: Logic.Toggler, Assembly-CSharp
-        m_MethodName: set_IsToggledOn
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &3833102154047965394
 MonoBehaviour:

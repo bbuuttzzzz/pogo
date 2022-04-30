@@ -5048,7 +5048,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 541985538549685584, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
       propertyPath: m_Name
-      value: UnlockPickup
+      value: Chapter2 Pickup
       objectReference: {fileID: 0}
     - target: {fileID: 541985538549685591, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
       propertyPath: m_RootOrder
@@ -5094,38 +5094,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Target
-      value: 
-      objectReference: {fileID: 6685363622616560512}
-    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: SetUnlocked
-      objectReference: {fileID: 0}
-    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: Pogo.ChapterUnlocker, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 961724374500061026, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
       propertyPath: Prefab
       value: 
@@ -5134,6 +5102,14 @@ PrefabInstance:
       propertyPath: Save
       value: 
       objectReference: {fileID: 11400000, guid: 7fcf60c774c8c254eb350b47fde88241, type: 2}
+    - target: {fileID: 5208925393910696039, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: Save
+      value: 
+      objectReference: {fileID: 11400000, guid: 7fcf60c774c8c254eb350b47fde88241, type: 2}
+    - target: {fileID: 5374952464919491091, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: initalState
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
 --- !u!4 &1913231916476554542 stripped
@@ -5141,50 +5117,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5214207706069293917, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
   m_PrefabInstance: {fileID: 5967757701438703219}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &6148602041980427043 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 541985538549685584, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-  m_PrefabInstance: {fileID: 5967757701438703219}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6685363622616560512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6148602041980427043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37635d0d318a80e49996ad9b0297a133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Chapter: {fileID: 11400000, guid: 0ef54d58e913a3148b10ebd586c01903, type: 2}
-  OnUnlocked:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6884041459326134545}
-        m_TargetAssemblyTypeName: WizardUI.PopupSpawner, Assembly-CSharp
-        m_MethodName: Spawn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &6884041459326134545 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 961724374500061026, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
-  m_PrefabInstance: {fileID: 5967757701438703219}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6148602041980427043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 713efa365ae68ad46861f566d75c8ad6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &8630281329312469478
 PrefabInstance:
   m_ObjectHideFlags: 0

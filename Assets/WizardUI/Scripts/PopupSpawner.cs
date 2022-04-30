@@ -13,6 +13,7 @@ namespace WizardUI
 
         public void Spawn()
         {
+            Debug.Log("Spawning Prefab");
             SpawnPrefab(Prefab);
         }
 

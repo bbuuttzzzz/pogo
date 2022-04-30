@@ -11,14 +11,16 @@ namespace Logic
     public class Toggler : MonoBehaviour
     {
         public bool initalState;
+        [SerializeField]
         private bool isToggledOn;
 
         public bool CallEventsOnInitialStateSet;
 
-        private void Start()
+        private void Awake()
         {
             if (CallEventsOnInitialStateSet)
             {
+                isToggledOn = !initalState;
                 IsToggledOn = initalState;
             }
             else

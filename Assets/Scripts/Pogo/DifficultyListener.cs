@@ -20,6 +20,10 @@ namespace Pogo
                 {
                     OnEnter?.Invoke();
                 }
+                else
+                {
+                    OnExit?.Invoke();
+                }
 
                 PogoGameManager.PogoInstance.OnDifficultyChanged.AddListener(onDifficultyChanged);
             }

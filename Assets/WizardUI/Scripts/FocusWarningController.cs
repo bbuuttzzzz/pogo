@@ -18,6 +18,7 @@ namespace WizardUtils
             SetOpen(GameManager.GameInstanceIsValid() && GameManager.GameInstance.InGameScene && !focus);
 #else
             if (Debug) SetOpen(GameManager.GameInstanceIsValid() && GameManager.GameInstance.InGameScene && !focus);
+            else SetOpen(false);
 #endif
         }
     }
