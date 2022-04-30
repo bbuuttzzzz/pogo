@@ -42,8 +42,7 @@ public class PopupController : MonoBehaviour
     public void Close()
     {
         if (isClosed) return;
-        Debug.Log("Closing");
-        isClosed = false;
+        isClosed = true;
         OnClosed?.Invoke();
         if (DestroyOnClosed)
         {

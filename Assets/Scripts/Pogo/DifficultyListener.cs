@@ -1,41 +1,42 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Pogo
 {
     public class DifficultyListener : MonoBehaviour
     {
-        public UnityEvent OnNormalMode;
-        public UnityEvent OnHardMode;
-        public UnityEvent OnExpertMode;
-        public UnityEvent OnFreeplayMode;
-        public UnityEvent OnChallengeMode;
+        public PogoGameManager.Difficulty TargetDifficulty;
 
+        public UnityEvent OnEnter;
+        public UnityEvent OnExit;
+        
         private void Start()
         {
             if (PogoGameManager.GameInstanceIsValid())
             {
                 var difficulty = PogoGameManager.PogoInstance.CurrentDifficulty;
-                switch (difficulty)
+                if (difficulty == TargetDifficulty)
                 {
-                    case PogoGameManager.Difficulty.Normal:
-                        OnNormalMode?.Invoke();
-                        break;
-                    case PogoGameManager.Difficulty.Hard:
-                        OnHardMode?.Invoke();
-                        break;
-                    case PogoGameManager.Difficulty.Freeplay:
-                        OnFreeplayMode?.Invoke();
-                        break;
-                    case PogoGameManager.Difficulty.Expert:
-                        OnExpertMode?.Invoke();
-                        break;
-                    case PogoGameManager.Difficulty.Challenge:
-                        OnChallengeMode?.Invoke();
-                        break;
+                    OnEnter?.Invoke();
                 }
+
+                PogoGameManager.PogoInstance.OnDifficultyChanged.AddListener(onDifficultyChanged);
             }
             
+        }
+
+        private void onDifficultyChanged(DifficultyChangedEventArgs e)
+        {
+            if (e.InitialDifficulty == TargetDifficulty)
+            {
+                OnExit?.Invoke();
+            }
+            
+            if(e.FinalDifficulty == TargetDifficulty)
+            {
+                OnEnter?.Invoke();
+            }
         }
     }
 }

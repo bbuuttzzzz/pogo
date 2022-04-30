@@ -355,15 +355,16 @@ namespace Pogo
             Expert,
             Challenge
         }
-        public EventHandler OnDifficultyChanged;
+        public UnityEvent<DifficultyChangedEventArgs> OnDifficultyChanged;
         private Difficulty currentDifficulty = Difficulty.Normal;
         public Difficulty CurrentDifficulty
         {
             get => currentDifficulty;
             set
             {
+                if (value == currentDifficulty) return;
                 Debug.Log($"Changing difficulty {currentDifficulty} -> {value}");
-                OnDifficultyChanged?.Invoke(this, EventArgs.Empty);
+                OnDifficultyChanged?.Invoke(new DifficultyChangedEventArgs(currentDifficulty, value));
                 currentDifficulty = value;
             }
         }
