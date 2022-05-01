@@ -21,7 +21,7 @@ namespace Pogo
             base.Awake();
             if (GameInstance != this) return;
 
-            RespawnPoint = InitialRespawnPoint;
+            RespawnPoint = CachedRespawnPoint;
             levelManager = GetComponent<PogoLevelManager>();
 
 #if UNITY_EDITOR
@@ -332,9 +332,21 @@ namespace Pogo
 
         public EventHandler OnCustomCheckpointChanged;
 
-        public Transform InitialRespawnPoint;
-        [HideInInspector]
-        public Transform RespawnPoint;
+        public Transform CachedRespawnPoint;
+        private Transform respawnPoint;
+        public Transform RespawnPoint
+        {
+            get => respawnPoint; set
+            {
+                respawnPoint = value;
+                if (respawnPoint != null && CachedRespawnPoint != null)
+                {
+                    CachedRespawnPoint.transform.position = respawnPoint.transform.position;
+                    CachedRespawnPoint.transform.rotation = respawnPoint.transform.rotation;
+                }
+            }
+        }
+
         public CustomCheckpointController CustomCheckpoint;
         public bool CustomRespawnActive;
 
@@ -344,7 +356,8 @@ namespace Pogo
 
         public Transform GetRespawnTransform()
         {
-            return CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint;
+            var point = CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint;
+            return point == null ? CachedRespawnPoint : point;
         }
 
         public enum Difficulty
@@ -368,6 +381,7 @@ namespace Pogo
                 currentDifficulty = value;
             }
         }
+
 
         public bool RegisterCustomRespawnPoint(Vector3 point, Quaternion forward)
         {

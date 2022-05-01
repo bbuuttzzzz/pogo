@@ -65,19 +65,19 @@ public class PogoGameManagerEditor : GameManagerEditor
                     Undo.SetCurrentGroupName("Move Spawnpoint");
                     int undoGroup = Undo.GetCurrentGroup();
 
-                    self.RespawnPoint.position = itempath.item.transform.position;
-                    self.RespawnPoint.rotation = Quaternion.Euler(0, itempath.item.transform.rotation.eulerAngles.y, 0);
-                    Undo.RecordObject(self.RespawnPoint, "Move Player to Spawnpoint");
+                    self.CachedRespawnPoint.position = itempath.item.transform.position;
+                    self.CachedRespawnPoint.rotation = Quaternion.Euler(0, itempath.item.transform.rotation.eulerAngles.y, 0);
+                    Undo.RecordObject(self.CachedRespawnPoint, "Move Player to Spawnpoint");
 
                     var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
                     foreach (PlayerController player in results)
                     {
-                        player.transform.position = self.RespawnPoint.position;
-                        player.transform.rotation = Quaternion.Euler(0, self.RespawnPoint.rotation.eulerAngles.y, 0);
+                        player.transform.position = self.CachedRespawnPoint.position;
+                        player.transform.rotation = Quaternion.Euler(0, self.CachedRespawnPoint.rotation.eulerAngles.y, 0);
                         Undo.RecordObject(player, "Move Player to Spawnpoint");
                     }
 
-                    Selection.activeObject = self.RespawnPoint;
+                    Selection.activeObject = self.CachedRespawnPoint;
                     Undo.CollapseUndoOperations(undoGroup);
                 });
             }
