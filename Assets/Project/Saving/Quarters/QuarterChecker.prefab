@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6921171743214843902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6921171743214843896}
+  - component: {fileID: 548311156040911799}
+  m_Layer: 0
+  m_Name: QuarterChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6921171743214843896
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6921171743214843902}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &548311156040911799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6921171743214843902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2649ff0fc3252df4fab18dc3f6e016e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Saves:
+  - {fileID: 11400000, guid: 473b9882faa18c34c8cb9a22433fbe1b, type: 2}
+  - {fileID: 11400000, guid: ac87af6db51dd4f468ffb980f8d52eb5, type: 2}
+  - {fileID: 11400000, guid: d112e5e886d15334495ef2762e17f317, type: 2}
+  - {fileID: 11400000, guid: 6da0e602133be8146ac15fa85e8b8380, type: 2}
+  - {fileID: 11400000, guid: 86724573c42557a47bfc6a8b103b43ec, type: 2}
+  CheckOnAwake: 0
+  OnChecked:
+    m_PersistentCalls:
+      m_Calls: []
