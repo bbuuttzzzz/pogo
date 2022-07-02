@@ -9791,6 +9791,42 @@ PrefabInstance:
       propertyPath: Save
       value: 
       objectReference: {fileID: 11400000, guid: d70c700bdc7bce642b8d62bdf8054bd8, type: 2}
+    - target: {fileID: 3833102154047965394, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: TargetDifficulty
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3833102154047965394, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3833102154047965394, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3833102154047965394, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3103870065730880033}
+    - target: {fileID: 3833102154047965394, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5789498525675059992}
+    - target: {fileID: 3833102154047965394, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_IsToggledOn
+      objectReference: {fileID: 0}
+    - target: {fileID: 3833102154047965394, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TriggerCheck
+      objectReference: {fileID: 0}
+    - target: {fileID: 3833102154047965394, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Logic.Toggler, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3833102154047965394, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Pogo.UnlockChecker, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 5208925393910696039, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
       propertyPath: Save
       value: 
@@ -9802,3 +9838,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5214207706069293917, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
   m_PrefabInstance: {fileID: 7026886090090442802}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3103870065730880033 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5374952464919491091, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+  m_PrefabInstance: {fileID: 7026886090090442802}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1006273154574149a3f5c7f2a6a9703, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5789498525675059992 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3593007835907820330, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+  m_PrefabInstance: {fileID: 7026886090090442802}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa3d799733878d14c9df44c6fd8b8cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
