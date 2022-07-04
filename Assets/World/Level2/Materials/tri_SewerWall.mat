@@ -21,8 +21,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: tri_SewerWall
-  m_Shader: {fileID: -6465566751694194690, guid: 7db7d1ed041fcba4b93ce472093abf05, type: 3}
-  m_ShaderKeywords: 
+  m_Shader: {fileID: -6465566751694194690, guid: 1fbb4d125de1cd54a9fc00dcf3912e01, type: 3}
+  m_ShaderKeywords: _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -92,6 +92,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Specular:
+        m_Texture: {fileID: 2800000, guid: b323af22bbbf0b1479e8ab654df859d0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _UpTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -110,6 +114,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - HALF_LAMBERT: 0
     - NoiseScale: 1.84
     - Vector1_B0D2470D: 0.077
     - Vector1_D4F055D2: 0.268
@@ -124,6 +129,8 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _MAIN_LIGHT_SHADOWS: 1
+    - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _QueueControl: 0
@@ -143,4 +150,5 @@ Material:
     - _Color: {r: 0.068528086, g: 0.06161959, b: 0.10223728, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _SpecularTint: {r: 0.268, g: 0.268, b: 0.268, a: 0}
   m_BuildTextureStacks: []
