@@ -21,14 +21,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: uv_SwampWallTrim
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_ShaderKeywords: 
+  m_Shader: {fileID: -6465566751694194690, guid: ce8069650ed9012498aec7d712d0da07, type: 3}
+  m_ShaderKeywords: _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap:
-    RenderType: Opaque
+  m_CustomRenderQueue: 2012
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -42,7 +41,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_3344ACEE:
-        m_Texture: {fileID: 2800000, guid: bb6795e1a11ed5c479c703e32bfdb237, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8377d28be825d234fb9fdc02d673ecce, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BackTex:
@@ -127,6 +126,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - HALF_LAMBERT: 0
     - NoiseScale: 1.84
     - Vector1_B0D2470D: 0.12
     - Vector1_D4F055D2: 0
@@ -145,20 +145,25 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _MAIN_LIGHT_SHADOWS: 1
+    - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _QueueOffset: 0
+    - _QueueControl: 0
+    - _QueueOffset: 12
     - _ReceiveShadows: 1
+    - _Scale: 1
     - _Smoothness: 0.12
     - _SmoothnessTextureChannel: 0
+    - _Specular: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_B3A302B5: {r: 0.371, g: 0.682, b: 0.696, a: 0}
+    - Color_B3A302B5: {r: 0.23137255, g: 0.50980395, b: 0.5176471, a: 0}
     - Color_B3A302B5_1: {r: 0.16189036, g: 0.30459908, b: 0.3207547, a: 0}
     - _BaseColor: {r: 0.23202205, g: 0.50837356, b: 0.5188679, a: 0}
     - _Color: {r: 0.23202202, g: 0.5083735, b: 0.51886785, a: 0}

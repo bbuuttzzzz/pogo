@@ -113,19 +113,19 @@ public class PlayerController : MonoBehaviour
             MeshRenderer renderer;
             if (hitInfo.collider == surfaceCache.Collider)
             {
-                if (surfaceCache.TriangleIndex == hitInfo.triangleIndex)
+                if (surfaceCache.MeshTriangleIndex == hitInfo.triangleIndex)
                 {
                     return surfaceCache.SurfaceConfig;
                 }
-                renderer = surfaceCache.Renderer as MeshRenderer;
-                surfaceCache.TriangleIndex = hitInfo.triangleIndex;
+                renderer = surfaceCache.MeshRenderer as MeshRenderer;
+                surfaceCache.MeshTriangleIndex = hitInfo.triangleIndex;
             }
             else
             {
                 renderer = hitInfo.collider.GetComponent<MeshRenderer>();
                 surfaceCache.Collider = hitInfo.collider;
-                surfaceCache.Renderer = renderer;
-                surfaceCache.TriangleIndex = hitInfo.triangleIndex;
+                surfaceCache.MeshRenderer = renderer;
+                surfaceCache.MeshTriangleIndex = hitInfo.triangleIndex;
             }
             if (renderer != null)
             {
@@ -139,16 +139,16 @@ public class PlayerController : MonoBehaviour
             {
                 return surfaceCache.SurfaceConfig;
             }
+            else if (hitInfo.collider is TerrainCollider)
+            {
+                var terrain = hitInfo.collider.GetComponent<Terrain>();
+                material = terrain.materialTemplate;
+                surfaceCache.MeshTriangleIndex = -1;
+            }
             else
             {
                 renderer = hitInfo.collider.GetComponent<Renderer>();
                 surfaceCache.Collider = hitInfo.collider;
-                surfaceCache.Renderer = renderer;
-                surfaceCache.TriangleIndex = -1;
-            }
-
-            if (renderer != null)
-            {
                 material = renderer.sharedMaterial;
             }
         }

@@ -82,19 +82,19 @@ namespace Pogo
                 MeshRenderer renderer;
                 if (hitInfo.collider == surfaceCache.Collider)
                 {
-                    if (surfaceCache.TriangleIndex == hitInfo.triangleIndex)
+                    if (surfaceCache.MeshTriangleIndex == hitInfo.triangleIndex)
                     {
                         return surfaceCache.SurfaceConfig;
                     }
-                    renderer = surfaceCache.Renderer as MeshRenderer;
-                    surfaceCache.TriangleIndex = hitInfo.triangleIndex;
+                    renderer = surfaceCache.MeshRenderer as MeshRenderer;
+                    surfaceCache.MeshTriangleIndex = hitInfo.triangleIndex;
                 }
                 else
                 {
                     renderer = hitInfo.collider.GetComponent<MeshRenderer>();
                     surfaceCache.Collider = hitInfo.collider;
-                    surfaceCache.Renderer = renderer;
-                    surfaceCache.TriangleIndex = hitInfo.triangleIndex;
+                    surfaceCache.MeshRenderer = renderer;
+                    surfaceCache.MeshTriangleIndex = hitInfo.triangleIndex;
                 }
                 if (renderer != null)
                 {
@@ -112,8 +112,8 @@ namespace Pogo
                 {
                     renderer = hitInfo.collider.GetComponent<Renderer>();
                     surfaceCache.Collider = hitInfo.collider;
-                    surfaceCache.Renderer = renderer;
-                    surfaceCache.TriangleIndex = -1;
+                    surfaceCache.MeshRenderer = renderer;
+                    surfaceCache.MeshTriangleIndex = -1;
                 }
 
                 if (renderer != null)
