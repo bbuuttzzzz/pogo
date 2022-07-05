@@ -10,13 +10,13 @@ namespace WizardUtils
 {
     public class IntegerFormatter : MonoBehaviour
     {
-        public string Format = "D";
+        public string Format = "{0}";
 
         public UnityStringEvent ReceiveFormat;
 
         public void FormatInt(int value)
         {
-            string result = value.ToString(Format);
+            string result =string.Format(Format,value.ToString());
             ReceiveFormat?.Invoke(result);
         }
     }
