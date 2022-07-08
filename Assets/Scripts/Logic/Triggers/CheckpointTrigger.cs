@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(BoxCollider))]
 public class CheckpointTrigger : Trigger
 {
     public Transform RespawnPoint;
