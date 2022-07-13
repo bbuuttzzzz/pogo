@@ -8,9 +8,20 @@ public class Rotater : MonoBehaviour
     [Tooltip("Degrees Per Second")]
     public float RotationSpeed = 120;
 
+    public bool RotateOnAwake = true;
+    public bool Rotating { get; set; }
+
+    private void Awake()
+    {
+        if (RotateOnAwake) Rotating = true;
+    }
+
     private void Update()
     {
-        transform.localRotation *= Quaternion.AngleAxis(RotationSpeed * Time.deltaTime, localAxis);
+        if (Rotating)
+        {
+            transform.localRotation *= Quaternion.AngleAxis(RotationSpeed * Time.deltaTime, localAxis);
+        }
     }
 
     private void OnDrawGizmosSelected()

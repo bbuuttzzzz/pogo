@@ -14,10 +14,14 @@ namespace Logic
         [SerializeField]
         private bool isToggledOn;
 
+        public float Cooldown = 0;
+
         public bool CallEventsOnInitialStateSet;
 
+        float lastActivation;
         private void Awake()
         {
+            lastActivation = Time.time - Cooldown;
             if (CallEventsOnInitialStateSet)
             {
                 isToggledOn = !initalState;
@@ -34,11 +38,21 @@ namespace Logic
             get => isToggledOn; set
             {
                 if (isToggledOn == value) return;
+                if (Time.time < lastActivation + Cooldown)
+                {
+                    return;
+                }
+                lastActivation = Time.time;
                 isToggledOn = value;
 
                 if (value) OnToggledOn?.Invoke();
                 else OnToggledOff?.Invoke();
             }
+        }
+
+        public void Toggle()
+        {
+            IsToggledOn = !IsToggledOn;
         }
 
         public UnityEvent OnToggledOn;

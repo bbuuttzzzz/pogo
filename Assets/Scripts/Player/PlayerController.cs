@@ -147,6 +147,14 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                var specifier = hitInfo.collider.GetComponent<SurfaceConfigSpecifier>();
+                if (specifier != null)
+                {
+                    surfaceCache.Collider = hitInfo.collider;
+                    surfaceCache.SurfaceConfig = specifier.SurfaceConfig;
+                    return specifier.SurfaceConfig;
+                }
+
                 renderer = hitInfo.collider.GetComponent<Renderer>();
                 surfaceCache.Collider = hitInfo.collider;
                 material = renderer.sharedMaterial;
