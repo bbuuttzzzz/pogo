@@ -281,9 +281,9 @@ My Best Time: {1:N3} seconds"
             return 0;
         }
 
-        private LevelDescriptor GetLevelFromIndex(int shareIndex)
+        public static LevelDescriptor GetLevelFromIndex(int shareIndex, LevelManifest manifest)
         {
-            foreach (LevelDescriptor validLevel in ValidLevels.Levels)
+            foreach (LevelDescriptor validLevel in manifest.Levels)
             {
                 if (validLevel.ShareIndex == shareIndex)
                 {
@@ -291,7 +291,7 @@ My Best Time: {1:N3} seconds"
                 }
             }
 
-            Debug.LogError(($"shareIndex \'{shareIndex}\' was not valid for Manifest \'{ValidLevels}\'"));
+            Debug.LogError(($"shareIndex \'{shareIndex}\' was not valid for Manifest \'{manifest}\'"));
             return null;
         }
 
@@ -343,7 +343,7 @@ My Best Time: {1:N3} seconds"
             array[offset] = value;
         }
 
-        byte getHash(byte[] array)
+        static byte getHash(byte[] array)
         {
             byte hash = 69;
             foreach(byte b in array)
@@ -368,7 +368,7 @@ My Best Time: {1:N3} seconds"
         public UnityEvent<DecodeFailReason> OnDecodeFailed;
         public void DecodeCurrentCode()
         {
-            var challenge = DecodeChallenge(CurrentCode, out DecodeFailReason failReason);
+            var challenge = DecodeChallenge(CurrentCode,ValidLevels, out DecodeFailReason failReason);
 
             if (challenge == null)
             {
@@ -380,7 +380,7 @@ My Best Time: {1:N3} seconds"
             LoadChallenge();
         }
 
-        public Challenge DecodeChallenge(string encodedPayload, out DecodeFailReason failReason)
+        public static Challenge DecodeChallenge(string encodedPayload, LevelManifest manifest, out DecodeFailReason failReason)
         {
             if (encodedPayload.Length != PayloadLength)
             {
@@ -416,7 +416,7 @@ My Best Time: {1:N3} seconds"
 
 
             byte levelIndex = getByte(rawPayload, offset);
-            challenge.Level = GetLevelFromIndex(levelIndex);
+            challenge.Level = GetLevelFromIndex(levelIndex, manifest);
             offset++;
 
 
