@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1339896057939057063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c9d0684a5d03e84da7722e61a89de97, type: 3}
+  m_Name: sv_Challenge_1_2
+  m_EditorClassIdentifier: 
+  Key: time_Challenge_1_2
+  DefaultValue: 60000
+  HideIfDefault: 1
+  DeveloperNote: Best time in milliseconds
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cd0e14ee8ba4554d8170159ec27f343, type: 3}
+  m_Name: Challenge_1_2
+  m_EditorClassIdentifier: 
+  DisplayName: 2 - Careful Climb
+  Challenge:
+    ChallengeType: 2
+    Level: {fileID: 11400000, guid: ad9dd217ac4e76c4ead61e34322ec8ee, type: 2}
+    DeveloperChallenge: {fileID: 11400000}
+    StartPointCm:
+      x: 2825
+      y: 337
+      z: 3764
+    startYaw: 180
+    EndPointCm:
+      x: 2825
+      y: 745
+      z: -244
+    LastAttemptTimeMS: 65535
+    BestTimeMS: 8974
+    PersonalBestTimeMS: 65535
+    AttemptStartTime: 0
+  PlayerTimeSaveValue: {fileID: -1339896057939057063}

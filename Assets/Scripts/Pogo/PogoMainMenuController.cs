@@ -11,6 +11,8 @@ namespace Pogo
         public UnityEvent OnOpenGamemodeScreen;
         public UnityEvent OnOpenHomeScreen;
         public UnityEvent OnOpenChallengeScreen;
+        public UnityEvent OnOpenCustomChallengeScreen;
+        public UnityEvent OnHideCustomChallengeScreen;
 
         public EquipmentSelectorController PogoSelector;
         public PogoChapterSelectorController ChapterSelector;
@@ -34,7 +36,25 @@ namespace Pogo
         {
             var builder = PogoGameManager.PogoInstance.GetComponent<ChallengeBuilder>();
             builder.SetCode(CurrentCode == null || CurrentCode == "" ? DefaultCode : CurrentCode, true);
-            builder.DecodeCurrentCode();
+            builder.DecodeAndLoadCurrentCode();
+        }
+
+        public void LoadDeveloperChallenge(DeveloperChallenge developerChallenge)
+        {
+            var builder = PogoGameManager.PogoInstance.GetComponent<ChallengeBuilder>();
+            var clonedChallenge = new Challenge()
+            {
+                Level = developerChallenge.Challenge.Level,
+                BestTimeMS = developerChallenge.Challenge.BestTimeMS,
+                PersonalBestTimeMS = (ushort)developerChallenge.BestTimeMS,
+                StartPointCm = developerChallenge.Challenge.StartPointCm,
+                EndPointCm = developerChallenge.Challenge.EndPointCm,
+                StartYaw = developerChallenge.Challenge.StartYaw,
+                DeveloperChallenge = developerChallenge,
+                ChallengeType = Challenge.ChallengeTypes.PlayDeveloper
+            };
+            builder.CurrentChallenge = clonedChallenge;
+            builder.LoadChallenge();
         }
 
         public void OpenGamemodeScreen()
@@ -50,6 +70,16 @@ namespace Pogo
         public void OpenChallengeScreen()
         {
             OnOpenChallengeScreen?.Invoke();
+        }
+
+        public void OpenCustomChallengeScreen()
+        {
+            OnOpenCustomChallengeScreen?.Invoke();
+        }
+
+        public void HideCustomChallengeScreen()
+        {
+            OnHideCustomChallengeScreen?.Invoke();
         }
 
         public void StartGame()

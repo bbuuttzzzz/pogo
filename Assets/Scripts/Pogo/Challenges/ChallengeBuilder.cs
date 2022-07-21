@@ -366,7 +366,7 @@ My Best Time: {1:N3} seconds"
         }
 
         public UnityEvent<DecodeFailReason> OnDecodeFailed;
-        public void DecodeCurrentCode()
+        public void DecodeAndLoadCurrentCode()
         {
             var challenge = DecodeChallenge(CurrentCode,ValidLevels, out DecodeFailReason failReason);
 
@@ -424,6 +424,7 @@ My Best Time: {1:N3} seconds"
             //offset += sizeof(short); don't need this because it's the last entry we're reading
 
             failReason = DecodeFailReason._none;
+            challenge.ChallengeType = Challenge.ChallengeTypes.PlayCustom;
             return challenge;
         }
 

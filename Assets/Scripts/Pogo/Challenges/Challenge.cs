@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using WizardUtils.Math;
+using WizardUtils.Saving;
 
 namespace Pogo.Challenges
 {
@@ -15,15 +16,20 @@ namespace Pogo.Challenges
         public enum ChallengeTypes
         {
             Create,
-            Play
+            PlayCustom,
+            PlayDeveloper
         }
+
+        public const int WORST_TIME = 60_000;
         public ChallengeTypes ChallengeType;
 
         public LevelDescriptor Level;
+        public DeveloperChallenge DeveloperChallenge;
 
         public Vector3 StartPoint => StartPointCm.ToVector3() / 100;
         public Vector3Short StartPointCm;
 
+        [SerializeField]
         int startYaw;
         public int StartYaw
         {
@@ -60,7 +66,7 @@ namespace Pogo.Challenges
 
         public Challenge()
         {
-            BestTimeMS = 60_000;
+            BestTimeMS = WORST_TIME;
             PersonalBestTimeMS = ushort.MaxValue;
             LastAttemptTimeMS = ushort.MaxValue;
         }
@@ -78,7 +84,16 @@ namespace Pogo.Challenges
         {
             float time = Time.time - AttemptStartTime;
             LastAttemptTimeMS = (ushort)Mathf.RoundToInt((time * 1000));
-            PersonalBestTimeMS = Math.Min(PersonalBestTimeMS, LastAttemptTimeMS);
+
+            if (LastAttemptTimeMS < PersonalBestTimeMS)
+            {
+                PersonalBestTimeMS = LastAttemptTimeMS;
+                if (ChallengeType == ChallengeTypes.PlayDeveloper)
+                {
+                    DeveloperChallenge.BestTimeMS = LastAttemptTimeMS;
+                }
+            }
+
             BestTimeMS = Math.Min(BestTimeMS, LastAttemptTimeMS);
         }
     }
