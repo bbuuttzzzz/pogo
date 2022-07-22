@@ -165,7 +165,7 @@ public class PlayerController : MonoBehaviour
             surfaceCache.SurfaceConfig = surfacePropertiesDict.ContainsKey(material) ? (surfacePropertiesDict[material] ?? DefaultSurfaceConfig)
                 : DefaultSurfaceConfig;
         }
-        catch(ArgumentNullException e)
+        catch(ArgumentNullException)
         {
             Debug.LogError($"Missing surfaceConfig for material {material}", material);
         }

@@ -142,7 +142,11 @@ namespace Pogo
                     {
                         surfacePropertiesDict.Add(material, config);
                     }
-                    catch (ArgumentException e)
+                    catch (ArgumentNullException)
+                    {
+                        Debug.LogError($"NULL Material for surface definition: {config.name}", config);
+                    }
+                    catch (ArgumentException)
                     {
                         // throw a pretty error for duplicate materials
                         var existingSurfaceConfigName = surfacePropertiesDict[material].name;
