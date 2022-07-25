@@ -237,6 +237,11 @@ My Best Time: {1:N3} seconds"
 
         public string EncodeChallenge(Challenge challenge)
         {
+            return EncodeChallenge(challenge, ValidLevels);
+        }
+
+        public static string EncodeChallenge(Challenge challenge, LevelManifest manifest)
+        {
             // todo WRAP THIS cuz maybe I use it later... i guess. this just feels so ugly being in here
             byte[] completeChallenge = new byte[PayloadLength];
             int offset = 0;
@@ -251,7 +256,7 @@ My Best Time: {1:N3} seconds"
             addByte(ref completeChallenge, offset, yaw);
             offset++;
 
-            int rawIndex = GetLevelIndex(challenge.Level);
+            int rawIndex = GetLevelIndex(challenge.Level, manifest);
             byte levelIndex = Convert.ToByte(rawIndex);
             addByte(ref completeChallenge, offset, levelIndex);
             offset++;
@@ -267,9 +272,9 @@ My Best Time: {1:N3} seconds"
             return result;
         }
 
-        private int GetLevelIndex(LevelDescriptor level)
+        private static int GetLevelIndex(LevelDescriptor level, LevelManifest manifest)
         {
-            foreach (LevelDescriptor validLevel in ValidLevels.Levels)
+            foreach (LevelDescriptor validLevel in manifest.Levels)
             {
                 if (validLevel == level)
                 {
@@ -277,7 +282,7 @@ My Best Time: {1:N3} seconds"
                 }
             }
 
-            Debug.LogError(($"level \'{level}\' was not valid for Manifest \'{ValidLevels}\'"));
+            Debug.LogError(($"level \'{level}\' was not valid for Manifest \'{manifest}\'"));
             return 0;
         }
 
