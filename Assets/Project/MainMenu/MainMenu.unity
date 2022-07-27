@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589246, b: 0.29782626, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3500,6 +3500,7 @@ GameObject:
   - component: {fileID: 378007918}
   - component: {fileID: 378007920}
   - component: {fileID: 378007921}
+  - component: {fileID: 378007922}
   m_Layer: 5
   m_Name: Main Menu
   m_TagString: Untagged
@@ -3643,6 +3644,20 @@ MonoBehaviour:
   ChapterSelector: {fileID: 1315110602}
   DefaultCode: "\u017E\xDB0\u016E\u0165\xD9\u017DG1X\u015C\xC0\xF71O\u0161a"
   ChallengeInputField: {fileID: 0}
+--- !u!114 &378007922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378007917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a8dfa013fe96ca4f89b4be4e57b1b98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SetOnAwake: 1
+  PostProcessingPrefab: {fileID: 1944912322581135567, guid: b0c70e77537db1040b9e3838a607618a, type: 3}
 --- !u!1 &389342671
 GameObject:
   m_ObjectHideFlags: 0
