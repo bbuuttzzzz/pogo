@@ -167,7 +167,7 @@ namespace Pogo.Challenges
                 Debug.Log("Finished loading challenge");
             };
             pogoInstance.OnLevelLoaded.AddListener(finishLoading);
-            pogoInstance.LoadLevel(CurrentChallenge.Level, new LevelLoadingSettings() { ForceReload = true });
+            pogoInstance.LoadLevel(CurrentChallenge.Level, new LevelLoadingSettings() { ForceReload = true, InstantChangeAtmosphere = true });
         }
 
         private void resetChallenge()

@@ -144,8 +144,6 @@ namespace Pogo
             }
             Debug.Log(sceneNames);
 
-            TransitionAtmosphere(newLevel, false);
-
             if (callback != null) callback(new LevelLoadingData(loadTasks, unloadTasks));
             return true;
         }
@@ -208,7 +206,7 @@ namespace Pogo
             return AtmosphereParent.GetComponentsInChildren<Atmosphere>();
         }
 
-        void TransitionAtmosphere(LevelDescriptor newLevel, bool instant)
+        public void TransitionAtmosphere(LevelDescriptor newLevel, bool instant)
         {
             TransitionAtmosphere(newLevel.PostProcessingPrefab, instant);
         }

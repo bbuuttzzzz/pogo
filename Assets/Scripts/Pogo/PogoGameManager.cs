@@ -94,6 +94,10 @@ namespace Pogo
                 queuedLevel = newLevel;
                 return;
             }
+
+            UnityAction call = null;
+            call = () => OnLoadLevelFinished(call, settings);
+            OnLevelLoaded.AddListener(call);
             isLoadingLevel = true;
 
             settings.LoadingFromMenu = settings.LoadingFromMenu || CurrentControlScene != null;
@@ -105,6 +109,12 @@ namespace Pogo
             {
                 isLoadingLevel = false;
             }
+        }
+
+        void OnLoadLevelFinished(UnityAction call, LevelLoadingSettings settings)
+        {
+            LevelManager.TransitionAtmosphere(LevelManager.CurrentLevel, settings.InstantChangeAtmosphere);
+            OnLevelLoaded.RemoveListener(call);
         }
 
         IEnumerator loadLevelsSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings)

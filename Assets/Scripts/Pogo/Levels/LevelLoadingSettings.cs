@@ -10,6 +10,7 @@ namespace Pogo
     {
         public bool ForceReload;
         public bool LoadingFromMenu;
+        public bool InstantChangeAtmosphere;
 
         public static LevelLoadingSettings Default => new LevelLoadingSettings() { ForceReload = false };
     }
