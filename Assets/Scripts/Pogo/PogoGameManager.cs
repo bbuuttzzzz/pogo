@@ -242,6 +242,11 @@ namespace Pogo
                 LoadLevel(RealTargetRespawnLevel);
             }
         }
+
+        public void ForceAtmosphere(GameObject postProcessingPrefab, bool instant)
+        {
+            levelManager.TransitionAtmosphere(postProcessingPrefab, instant);
+        }
 #endregion
 
 #region Chapters

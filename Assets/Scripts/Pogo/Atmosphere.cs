@@ -29,6 +29,7 @@ public class Atmosphere : MonoBehaviour
         if (instant)
         {
             setWeight(1);
+            RenderSettings.ambientLight = AmbientLightColor;
         }
         else
         {

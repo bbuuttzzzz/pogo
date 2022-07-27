@@ -213,7 +213,7 @@ namespace Pogo
             TransitionAtmosphere(newLevel.PostProcessingPrefab, instant);
         }
 
-        void TransitionAtmosphere(GameObject Prefab, bool instant)
+        public void TransitionAtmosphere(GameObject Prefab, bool instant)
         {
             // remove existing atmospheres
             var atmospheres = getExistingAtmospheres();
