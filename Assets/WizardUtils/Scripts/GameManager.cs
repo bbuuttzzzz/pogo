@@ -94,7 +94,6 @@ namespace WizardUtils
         public static readonly int[] ignoredScenes =
         {
             0, // this is GameScene
-            7, // this is MainMenu
         };
 
         public EventHandler<ControlSceneEventArgs> OnControlSceneChanged;
