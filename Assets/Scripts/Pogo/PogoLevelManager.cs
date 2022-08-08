@@ -154,7 +154,11 @@ namespace Pogo
         }
 
         #region Scenes
-
+        public static readonly int[] ignoredScenes =
+        {
+            7, // Main Menu
+            10 // Credits
+        };
         static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) getSceneDifference(LevelDescriptor newLevel)
         {
             List<LevelDescriptor> scenesToLoad = new List<LevelDescriptor>(newLevel.LoadLevels);
@@ -164,7 +168,8 @@ namespace Pogo
             for (int n = 0; n < SceneManager.sceneCount; n++)
             {
                 Scene scene = SceneManager.GetSceneAt(n);
-                if (GameManager.ignoredScenes.Contains(scene.buildIndex)) continue;
+                if (GameManager.ignoredScenes.Contains(scene.buildIndex)
+                    || ignoredScenes.Contains(scene.buildIndex)) continue;
 
                 LevelDescriptor matchingLevel = null;
 

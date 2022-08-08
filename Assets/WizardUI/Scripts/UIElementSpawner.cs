@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace WizardUI
 {
-    public class PopupSpawner : MonoBehaviour
+    public class UIElementSpawner : MonoBehaviour
     {
         public GameObject Prefab;
 

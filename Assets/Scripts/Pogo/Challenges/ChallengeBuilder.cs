@@ -36,7 +36,7 @@ namespace Pogo.Challenges
 
         public ToggleableUIElement StartChallengeMenu;
 
-        public PopupSpawner PopupSpawner;
+        public UIElementSpawner PopupSpawner;
 
         public void Start()
         {

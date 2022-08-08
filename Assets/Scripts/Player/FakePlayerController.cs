@@ -33,12 +33,14 @@ namespace Pogo
             collisionGroup.Move(Velocity * Time.deltaTime);
         }
 
+        int lastJumpSoundIndex = -1;
         public void Jump(CollisionEventArgs args)
         {
             SurfaceConfig surfaceConfig = GetSurfacePropertyFromCollision(args.HitInfo);
 
             // play sound
-            AudioClip sound = surfaceConfig.RandomSound;
+            AudioClip sound;
+            (sound, lastJumpSoundIndex) = surfaceConfig.NextRandomSound(lastJumpSoundIndex);
             if (sound != null) AudioController.PlayOneShot(sound);
 
             // jump up

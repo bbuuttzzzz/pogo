@@ -286,10 +286,12 @@ public class PlayerController : MonoBehaviour
         ApplyForce(Physics.gravity * Time.deltaTime);
     }
 
+    int lastJumpSoundIndex = -1;
     public void Jump(CollisionEventArgs args)
     {
         SurfaceConfig surfaceConfig = GetSurfacePropertyFromCollision(args.HitInfo);
-        AudioClip sound = surfaceConfig.RandomSound;
+        AudioClip sound;
+        (sound, lastJumpSoundIndex) = surfaceConfig.NextRandomSound(lastJumpSoundIndex);
         if (sound != null) AudioController.PlayOneShot(sound);
 
         // jump away from the surface
