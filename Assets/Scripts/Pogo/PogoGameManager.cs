@@ -141,7 +141,7 @@ namespace Pogo
                 progress /= levelLoadingData.LoadingSceneTasks.Count;
                 Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
 
-                yield return new WaitForSeconds(0.02f);
+                yield return new WaitForSecondsRealtime(0.02f);
             }
 
             foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
@@ -165,7 +165,7 @@ namespace Pogo
                 progress /= levelLoadingData.LoadingSceneTasks.Count;
                 Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
 
-                yield return new WaitForSeconds(0.02f);
+                yield return new WaitForSecondsRealtime(0.02f);
             }
 
             if (settings.LoadingFromMenu)
@@ -270,7 +270,11 @@ namespace Pogo
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
             OnLevelLoaded.AddListener(finishLoading);
-            LoadLevel(newChapter.Level);
+            LoadLevel(newChapter.Level, new LevelLoadingSettings
+            {
+                InstantChangeAtmosphere = true,
+                ForceReload = false
+            });
         }
 
         private void finishLoadingChapter(ChapterDescriptor newChapter)
