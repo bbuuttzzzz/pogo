@@ -33,6 +33,7 @@ namespace Pogo
             RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
             RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
             RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 0f));
+            RegisterGameSetting(new GameSettingFloat(KEY_TIMER, 0f));
 
             OnPlayerDeath.AddListener(() => NumberOfDeaths++);
             OnPlayerDeath.AddListener(() => ResetLoadedLevel());
@@ -273,7 +274,8 @@ namespace Pogo
             LoadLevel(newChapter.Level, new LevelLoadingSettings
             {
                 InstantChangeAtmosphere = true,
-                ForceReload = false
+                ForceReload = false,
+                LoadingFromMenu = true
             });
         }
 
@@ -477,19 +479,22 @@ namespace Pogo
         public static string KEY_FIELD_OF_VIEW = "FieldOfView";
         public static string KEY_SENSITIVITY = "Sensitivity";
         public static string KEY_INVERT = "InvertY";
-#endregion
+        public static string KEY_TIMER = "ShowTimer";
+        #endregion
 
-#region Stats
+        #region Stats
         public int SecretsFoundCount;
         public int NumberOfDeaths;
         public float GameStartTime;
         public ChapterDescriptor StartingChapter;
 
+        public UnityEvent OnStatsReset;
         public void ResetStats()
         {
             SecretsFoundCount = 0;
             NumberOfDeaths = 0;
             GameStartTime = Time.time;
+            OnStatsReset?.Invoke();
         }
 #endregion
     }
