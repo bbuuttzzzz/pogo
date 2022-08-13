@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using WizardUtils.Saving;
 
 namespace Pogo
 {
@@ -17,6 +18,14 @@ namespace Pogo
         public EquipmentSelectorController PogoSelector;
         public PogoChapterSelectorController ChapterSelector;
 
+        public Animator ChallengeButtonAnimator;
+        private void Start()
+        {
+            UnlockChecker unlockChecker = GetComponent<UnlockChecker>();
+            bool value = unlockChecker.Check();
+            ChallengeButtonAnimator.SetBool("Flash", value);
+        }
+
         public void SetGamemodeOrStart()
         {
             if (PogoSelector.UnlockedEquipment.Length <= 1
@@ -29,6 +38,7 @@ namespace Pogo
                 OpenGamemodeScreen();
             }
         }
+
 
         public string DefaultCode;
         public string CurrentCode { get; set; }
@@ -64,11 +74,16 @@ namespace Pogo
 
         public void OpenHomeScreen()
         {
+            Animator animator = GetComponent<Animator>();
+            UnlockChecker unlockChecker = GetComponent<UnlockChecker>();
+            bool value = unlockChecker.Check();
+            animator.SetBool("ChallengeModeFlash", value);
             OnOpenHomeScreen?.Invoke();
         }
 
         public void OpenChallengeScreen()
         {
+            GetComponent<SaveEditor>().SetUnlocked(false);
             OnOpenChallengeScreen?.Invoke();
         }
 

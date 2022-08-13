@@ -5140,6 +5140,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 7326333008448693888}
+    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: SetUnlocked
+      objectReference: {fileID: 0}
+    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
+      value: WizardUtils.Saving.SaveEditor, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 961724374500061025, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 961724374500061026, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
       propertyPath: Prefab
       value: 
@@ -5154,6 +5186,27 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: dfbba398bd681a64fad9e2fe8b7810ef, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+--- !u!1 &3967430976608800921 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 541985538549685584, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}
+  m_PrefabInstance: {fileID: 3497785675304996297}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7326333008448693888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3967430976608800921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 873c0edc27dab24418f8256b876a8b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Save: {fileID: 11400000, guid: 16bc889cfb4f53c48ac5a37a26af7d0b, type: 2}
+  OnUnlocked:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &8707208238017042068 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5214207706069293917, guid: 009e71d00079d7a49860d59ca2b51797, type: 3}

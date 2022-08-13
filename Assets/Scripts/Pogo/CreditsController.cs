@@ -1,7 +1,9 @@
 ﻿using Inputter;
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using WizardUtils;
+using WizardUtils.Saving;
 using WizardUtils.SceneManagement;
 
 namespace Assets.Scripts.Pogo
@@ -12,6 +14,7 @@ namespace Assets.Scripts.Pogo
         AudioSource audioSource;
         public float CreditsSpeedupMultiplier = 2;
         public float CreditsSpeedupMusicPitch = 1.5f;
+        public UnityEvent OnBeforeReturnToMainMenu;
 
         bool ReturnToMainMenuMode = false;
 
@@ -42,6 +45,7 @@ namespace Assets.Scripts.Pogo
 
         private void ReturnToMainMenu()
         {
+            OnBeforeReturnToMainMenu?.Invoke();
             GameManager.GameInstance.LoadControlScene(MainMenuScene);
         }
 

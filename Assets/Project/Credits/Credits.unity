@@ -278,6 +278,7 @@ GameObject:
   - component: {fileID: 777451315}
   - component: {fileID: 777451316}
   - component: {fileID: 777451317}
+  - component: {fileID: 777451318}
   m_Layer: 5
   m_Name: Credits
   m_TagString: Untagged
@@ -402,6 +403,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CreditsSpeedupMultiplier: 4
   CreditsSpeedupMusicPitch: 4
+  OnBeforeReturnToMainMenu:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 777451318}
+        m_TargetAssemblyTypeName: WizardUtils.Saving.SaveEditor, Assembly-CSharp
+        m_MethodName: SetUnlocked
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   MainMenuScene: {fileID: 11400000, guid: 1789605e5fbbc9d439528ae48addc3a3, type: 2}
 --- !u!82 &777451317
 AudioSource:
@@ -499,6 +515,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &777451318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 777451310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 873c0edc27dab24418f8256b876a8b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Save: {fileID: 11400000, guid: 16bc889cfb4f53c48ac5a37a26af7d0b, type: 2}
+  OnUnlocked:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &820207563
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,7 +566,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -1515}
+  m_AnchoredPosition: {x: 0, y: -1615}
   m_SizeDelta: {x: 820, y: 180}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &820207565
@@ -750,7 +782,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 500, y: -1800}
+  m_AnchoredPosition: {x: 500, y: -1900}
   m_SizeDelta: {x: 1180, y: 150}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1098399377
@@ -784,8 +816,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4291480266
-  m_fontColor: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+    rgba: 4292135805
+  m_fontColor: {r: 0.48949805, g: 0.7954078, b: 0.8301887, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1128,13 +1160,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: '<size=2em>Special Thanks</size>
 
+
     The Boys, especially Raul for keeping
     me motivated
 
+
     Mom for being my biggest fan
 
-    /AGDG/ for Playtesting &
-    Advice'
+
+    /AGDG/ for Playtesting
+    & Advice'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 79ff8ee2354088b4e8a1e20f49b44e2c, type: 2}
   m_sharedMaterial: {fileID: -4467922441271842428, guid: 79ff8ee2354088b4e8a1e20f49b44e2c, type: 2}
@@ -1246,7 +1281,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -1100}
+  m_AnchoredPosition: {x: 0, y: -1200}
   m_SizeDelta: {x: 1180, y: 150}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1477100932
@@ -1430,7 +1465,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -2000}
+  m_AnchoredPosition: {x: 0, y: -2100}
   m_SizeDelta: {x: 1180, y: 150}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1884792350
@@ -1455,11 +1490,13 @@ MonoBehaviour:
       m_Calls: []
   m_text: '<size=1.5em>Thanks For Playing</size>
 
-    If you liked the game, please
-    share it!
+    <color=#AAA>If you liked the
+    game, please share it!
 
-    If it gets enough attention, I''ll do steam release with achievements,
-    leaderboards, and more levels'
+    If it gets enough attention, I''ll do <color=#FFF>a
+    steam release</color>
+
+    with achievements, leaderboards, and more levels</color>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 79ff8ee2354088b4e8a1e20f49b44e2c, type: 2}
   m_sharedMaterial: {fileID: -4467922441271842428, guid: 79ff8ee2354088b4e8a1e20f49b44e2c, type: 2}
