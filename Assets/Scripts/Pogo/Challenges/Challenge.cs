@@ -91,7 +91,7 @@ namespace Pogo.Challenges
                 data.NewTimeBetter = true;
                 if (ChallengeType == ChallengeTypes.PlayDeveloper)
                 {
-                    if (PersonalBestTimeMS < BestTimeMS && DeveloperChallenge.BestTimeMS >= BestTimeMS)
+                    if (LastAttemptTimeMS < BestTimeMS && DeveloperChallenge.BestTimeMS > BestTimeMS)
                     {
                         data.GoldMedalEarned = true;
                     }
@@ -99,7 +99,7 @@ namespace Pogo.Challenges
                     DeveloperChallenge.BestTimeMS = LastAttemptTimeMS;
                 }
 
-                else if (PersonalBestTimeMS == WORST_TIME)
+                if (PersonalBestTimeMS == WORST_TIME)
                 {
                     data.FirstClear = true;
                 }

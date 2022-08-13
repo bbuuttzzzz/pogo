@@ -116,9 +116,21 @@ namespace Pogo.Challenges
             {
                 if (CurrentChallenge.BestTimeMS < 60_000)
                 {
-                    if (data.OldTimeMS >= 60_000)
+
+                    if (data.GoldMedalEarned)
                     {
-                        PopupSpawner.Spawn();
+                        PopupSpawner.SpawnPrefab(GoldMedalPrefab);
+                    }
+                    else if (data.FirstClear)
+                    {
+                        if (CurrentChallenge.ChallengeType == Challenge.ChallengeTypes.Create)
+                        {
+                            PopupSpawner.SpawnPrefab(ClearCheckPrefab);
+                        }
+                        else if (CurrentChallenge.ChallengeType == Challenge.ChallengeTypes.PlayDeveloper)
+                        {
+                            PopupSpawner.SpawnPrefab(SilverMedalPrefab);
+                        }
                     }
                     CurrentCode = EncodeChallenge(CurrentChallenge);
                     codeIsValid = true;
