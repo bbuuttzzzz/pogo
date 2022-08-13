@@ -80,21 +80,51 @@ namespace Pogo.Challenges
         /// Finish counting the run's time
         /// </summary>
         /// <returns>True if the new time is faster</returns>
-        public void FinishAttempt()
+        public ChallengeAttemptData FinishAttempt()
         {
+            var data = new ChallengeAttemptData(PersonalBestTimeMS);
             float time = Time.time - AttemptStartTime;
             LastAttemptTimeMS = (ushort)Mathf.RoundToInt((time * 1000));
 
             if (LastAttemptTimeMS < PersonalBestTimeMS)
             {
-                PersonalBestTimeMS = LastAttemptTimeMS;
+                data.NewTimeBetter = true;
                 if (ChallengeType == ChallengeTypes.PlayDeveloper)
                 {
+                    if (PersonalBestTimeMS < BestTimeMS && DeveloperChallenge.BestTimeMS >= BestTimeMS)
+                    {
+                        data.GoldMedalEarned = true;
+                    }
+
                     DeveloperChallenge.BestTimeMS = LastAttemptTimeMS;
                 }
+
+                else if (PersonalBestTimeMS == WORST_TIME)
+                {
+                    data.FirstClear = true;
+                }
+                PersonalBestTimeMS = LastAttemptTimeMS;
+                
             }
 
             BestTimeMS = Math.Min(BestTimeMS, LastAttemptTimeMS);
+            data.NewTimeMS = BestTimeMS;
+
+            return data;
+        }
+
+        public struct ChallengeAttemptData
+        {
+            public ushort OldTimeMS;
+            public ushort NewTimeMS;
+            public bool FirstClear;
+            public bool GoldMedalEarned;
+            public bool NewTimeBetter;
+
+            public ChallengeAttemptData(ushort oldTimeMS) : this()
+            {
+                OldTimeMS = oldTimeMS;
+            }
         }
     }
 }

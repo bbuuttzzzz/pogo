@@ -38,6 +38,10 @@ namespace Pogo.Challenges
 
         public UIElementSpawner PopupSpawner;
 
+        public GameObject ClearCheckPrefab;
+        public GameObject SilverMedalPrefab;
+        public GameObject GoldMedalPrefab;
+
         public void Start()
         {
             GameManager.GameInstance.OnSoftQuit += OnReturnToMainMenu;
@@ -107,14 +111,12 @@ namespace Pogo.Challenges
 
         public void CompleteChallenge()
         {
-            ushort oldTimeMS = CurrentChallenge.BestTimeMS;
-            CurrentChallenge.FinishAttempt();
-            float newTimeMS = CurrentChallenge.LastAttemptTimeMS;
-            if (newTimeMS != oldTimeMS)
+            var data = CurrentChallenge.FinishAttempt();
+            if (data.NewTimeBetter)
             {
                 if (CurrentChallenge.BestTimeMS < 60_000)
                 {
-                    if (oldTimeMS >= 60_000)
+                    if (data.OldTimeMS >= 60_000)
                     {
                         PopupSpawner.Spawn();
                     }
