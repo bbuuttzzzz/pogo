@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class KillTrigger : MonoBehaviour
 {
     public UnityEvent OnTriggered;
-    public KillType Type;
+    public KillTypeDescriptor Type;
 
     private void OnTriggerEnter(Collider other)
     {

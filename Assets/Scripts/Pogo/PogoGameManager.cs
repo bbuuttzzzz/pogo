@@ -330,7 +330,7 @@ namespace Pogo
             PogoInstance.player = player;
         }
 
-        public void KillPlayer(KillType killType = null)
+        public void KillPlayer(IKillType killType = null)
         {
             if (GameInstanceIsValid() && PogoInstance.player != null)
             {
@@ -347,6 +347,7 @@ namespace Pogo
         }
 
         public UnityEvent OnPlayerDeath;
+        public UnityEvent OnPlayerSpawn;
         #endregion
 
         #region Respawn Point

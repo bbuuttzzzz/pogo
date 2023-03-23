@@ -1479,18 +1479,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1635823290390997066}
-        m_TargetAssemblyTypeName: AudioController, Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   OnCollisionExit:
     m_PersistentCalls:
       m_Calls: []
@@ -1931,18 +1919,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: DieFromSurface
         m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1635823290390997066}
-        m_TargetAssemblyTypeName: AudioController, Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2469,7 +2445,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8049285594771530898}
-  m_LocalRotation: {x: 0, y: 0.59753054, z: 0, w: 0.80184615}
+  m_LocalRotation: {x: -0, y: -0.5975273, z: 0, w: -0.8018486}
   m_LocalPosition: {x: 15.256989, y: 31.485542, z: -118.29515}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2480,7 +2456,7 @@ Transform:
   - {fileID: 550794381}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -166.613, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -286.614, z: 0}
 --- !u!114 &8049285594771530900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2494,10 +2470,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AudioController: {fileID: 8049285594200099665}
+  CurrentState: 0
   OnDie:
     m_PersistentCalls:
       m_Calls: []
   DefaultSurfaceConfig: {fileID: 11400000, guid: 967206ddeef8bce4f87c8785969fba9e, type: 2}
+  CollisionKillType: {fileID: 11400000, guid: 3d006eab1f2074f48becc37428838df4, type: 2}
   Model: {fileID: 8049285594818247008}
   Camera: {fileID: 0}
   PitchFrac: 0
@@ -2950,18 +2928,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
         m_MethodName: DieFromSurface
         m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1635823290390997066}
-        m_TargetAssemblyTypeName: AudioController, Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

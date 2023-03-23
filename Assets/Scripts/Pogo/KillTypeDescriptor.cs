@@ -4,11 +4,10 @@ using UnityEngine;
 namespace Pogo
 {
     [CreateAssetMenu(fileName = "KillType", menuName = "ScriptableObjects/KillType", order = 1)]
-    public class KillType : ScriptableObject
+    public class KillTypeDescriptor : ScriptableObject, IKillType
     {
         public AudioClip[] Sounds;
 
-        public AudioClip RandomSound => Sounds == null ? null
-            : Sounds[Random.Range(0, Sounds.Length)];
+        AudioClip[] IKillType.Sounds => Sounds;
     }
 }

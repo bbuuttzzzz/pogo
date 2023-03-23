@@ -72,15 +72,41 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         DoLook();
-        UpdateDesiredModelPitch();
-        ApplyForces();
-        RotateAndMove();
+
+        if (CurrentState == States.Alive)
+        {
+            UpdateDesiredModelPitch();
+            ApplyForces();
+            RotateAndMove();
+        }
+        else
+        {
+            CheckForRespawn();
+        }
+    }
+
+    private void CheckForRespawn()
+    {
+        if (GameManager.GameInstance.Paused) return;
+
+        if (InputManager.CheckKeyDown(KeyName.UIAdvance))
+        {
+            Spawn();
+        }
     }
 
     #region Game Logic
+    public enum States
+    {
+        Alive,
+        Dead
+    }
+    public States CurrentState;
+    
     public UnityEvent OnDie;
 
     public SurfaceConfig DefaultSurfaceConfig;
+    public KillTypeDescriptor CollisionKillType;
     Dictionary<Material, SurfaceConfig> surfacePropertiesDict;
     void loadSurfaceProperties()
     {
@@ -174,23 +200,36 @@ public class PlayerController : MonoBehaviour
 
     public void DieFromSurface(CollisionEventArgs collision)
     {
-        WizardEffects.EffectManager.CreateEffect("DeathMark", new WizardEffects.EffectData()
+        if (Die(CollisionKillType))
         {
-            position = collision.HitInfo.point,
-            normal = collision.HitInfo.normal
-        });
-        Die();
+            WizardEffects.EffectManager.CreateEffect("DeathMark", new WizardEffects.EffectData()
+            {
+                position = collision.HitInfo.point,
+                normal = collision.HitInfo.normal
+            });
+        }
     }
-    public void Die(KillType killType = null)
-    {
-        Reset();
 
+    public bool Die(IKillType killType = null)
+    {
+        if (CurrentState == States.Dead) return false;
+
+        CurrentState = States.Dead;
         OnDie.Invoke();
         PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
         if (killType != null)
         {
             AudioController.PlayOneShot(killType.RandomSound);
         }
+
+        return true;
+    }
+
+    public void Spawn()
+    {
+        CurrentState = States.Alive;
+        PogoGameManager.PogoInstance?.OnPlayerSpawn.Invoke();
+        Reset();
     }
 
     public void Reset()
@@ -263,7 +302,7 @@ public class PlayerController : MonoBehaviour
 
 #endregion
 
-#region Movement
+    #region Movement
 
     public Vector3 Velocity;
 
@@ -327,7 +366,7 @@ public class PlayerController : MonoBehaviour
     {
         OnDisjoint?.Invoke();
     }
-#endregion
+    #endregion
 
 #region Physics
     /// <summary>
