@@ -1,3 +1,4 @@
+using Assets.Scripts.Player;
 using Inputter;
 using Pogo;
 using System;
@@ -73,7 +74,7 @@ public class PlayerController : MonoBehaviour
     {
         DoLook();
 
-        if (CurrentState == States.Alive)
+        if (CurrentState == PlayerStates.Alive)
         {
             UpdateDesiredModelPitch();
             ApplyForces();
@@ -96,14 +97,19 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Game Logic
-    public enum States
+    private PlayerStates currentState;
+    public PlayerStates CurrentState
     {
-        Alive,
-        Dead
+        get => currentState;
+        set
+        {
+            PlayerStateChangeEventArgs args = new PlayerStateChangeEventArgs(currentState, value);
+            currentState = value;
+            OnStateChanged?.Invoke(args);
+        }
     }
-    public States CurrentState;
-    
-    public UnityEvent OnDie;
+
+    public UnityEvent<PlayerStateChangeEventArgs> OnStateChanged;
 
     public SurfaceConfig DefaultSurfaceConfig;
     public KillTypeDescriptor CollisionKillType;
@@ -212,10 +218,9 @@ public class PlayerController : MonoBehaviour
 
     public bool Die(IKillType killType = null)
     {
-        if (CurrentState == States.Dead) return false;
+        if (CurrentState == PlayerStates.Dead) return false;
 
-        CurrentState = States.Dead;
-        OnDie.Invoke();
+        CurrentState = PlayerStates.Dead;
         PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
         if (killType != null)
         {
@@ -227,7 +232,7 @@ public class PlayerController : MonoBehaviour
 
     public void Spawn()
     {
-        CurrentState = States.Alive;
+        CurrentState = PlayerStates.Alive;
         PogoGameManager.PogoInstance?.OnPlayerSpawn.Invoke();
         Reset();
     }

@@ -35,6 +35,7 @@ namespace Pogo
             RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 0f));
             RegisterGameSetting(new GameSettingFloat(KEY_TIMER, 0f));
 
+            OnPauseStateChanged += ((_, _) => UpdateTimeFreeze());
             OnPlayerDeath.AddListener(() => NumberOfDeaths++);
             OnPlayerDeath.AddListener(() => ResetLoadedLevel());
             OnSoftQuit += onSoftQuit;
@@ -258,9 +259,24 @@ namespace Pogo
         {
             levelManager.TransitionAtmosphere(postProcessingPrefab, instant);
         }
-#endregion
+        #endregion
 
-#region Chapters
+        #region Time Freezing
+        private bool TimeFrozen
+        {
+            get
+            {
+                return Paused || Player.CurrentState == PlayerStates.Dead;
+            }
+        }
+
+        private void UpdateTimeFreeze()
+        {
+            Time.timeScale = TimeFrozen? 0f : 1f;
+        }
+        #endregion
+
+        #region Chapters
         public void LoadChapter(ChapterDescriptor newChapter)
         {
             StartingChapter = newChapter;
@@ -328,6 +344,7 @@ namespace Pogo
         public static void RegisterPlayer(PlayerController player)
         {
             PogoInstance.player = player;
+            player.OnStateChanged.AddListener((_) => PogoInstance.UpdateTimeFreeze());
         }
 
         public void KillPlayer(IKillType killType = null)

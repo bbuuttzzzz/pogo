@@ -63,31 +63,11 @@ namespace WizardUtils
 
                 if (paused == value || GameInstance.LockPauseState) return;
                 paused = value;
-                if (value)
-                {
-                    pause();
-                }
-                else
-                {
-                    resume();
-                }
+                if (value && GameInstance.BreakOnPause) Debug.Break();
                 GameInstance.OnPauseStateChanged?.Invoke(null, value);
             }
         }
         public EventHandler<bool> OnPauseStateChanged;
-
-        private static void pause()
-        {
-#if UNITY_EDITOR
-            if (GameInstance.BreakOnPause) Debug.Break();
-#endif
-            Time.timeScale = 0;
-        }
-
-        private static void resume()
-        {
-            Time.timeScale = 1;
-        }
         #endregion
 
         #region Scenes
