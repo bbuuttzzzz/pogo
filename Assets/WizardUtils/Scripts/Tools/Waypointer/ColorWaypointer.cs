@@ -6,7 +6,7 @@ namespace WizardUtils
 {
     public class ColorWaypointer : Waypointer<Color>
     {
-        public Renderer renderer;
+        new public Renderer renderer;
 
         protected override Color GetCurrentValue()
         {

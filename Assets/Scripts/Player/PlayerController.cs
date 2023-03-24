@@ -16,12 +16,12 @@ public class PlayerController : MonoBehaviour
 {
     public AudioController AudioController;
     CollisionGroup collisionGroup;
+    public float RespawnDelay;
 
     private void Awake()
     {
         collisionGroup = GetComponent<CollisionGroup>();    
     }
-
 
     void Start()
     {
@@ -57,6 +57,11 @@ public class PlayerController : MonoBehaviour
     {
         PogoGameManager.GameInstance.OnPauseStateChanged -= onPauseStateChanged;
         PogoGameManager.GameInstance.OnControlSceneChanged -= onControlSceneChanged;
+    }
+
+    private void onRespawnDelayChanged(object sender, GameSettingChangedEventArgs e)
+    {
+        RespawnDelay = e.FinalValue;
     }
 
     private void onInvertYChanged(object sender, GameSettingChangedEventArgs e)
@@ -222,13 +227,18 @@ public class PlayerController : MonoBehaviour
             AudioController.PlayOneShot(data.KillType.RandomSound);
         }
 
-        if (data.Position.HasValue && data.Normal.HasValue && !string.IsNullOrEmpty(data.KillType.EffectName))
+        if (data.Position.HasValue && data.Normal.HasValue)
         {
-            WizardEffects.EffectManager.CreateEffect(data.KillType.EffectName, new WizardEffects.EffectData()
+            WizardEffects.EffectData effectData = new WizardEffects.EffectData()
             {
                 position = data.Position.Value,
                 normal = data.Normal.Value
-            });
+            };
+
+            if (!string.IsNullOrEmpty(data.KillType.EffectName))
+            {
+                WizardEffects.EffectManager.CreateEffect(data.KillType.EffectName, effectData);
+            }
         }
     }
 
