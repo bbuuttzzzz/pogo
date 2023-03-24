@@ -10,6 +10,7 @@ namespace Pogo
     public interface IKillType
     {
         public AudioClip[] Sounds { get; }
+        public string EffectName { get; }
 
         public AudioClip RandomSound => Sounds == null ? null
             : Sounds[UnityEngine.Random.Range(0, Sounds.Length)];

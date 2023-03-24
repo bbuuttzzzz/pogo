@@ -6,5 +6,7 @@ namespace Pogo
     public class ExplicitKillType : IKillType
     {
         public AudioClip[] Sounds { get; set; }
+
+        public string EffectName {get; set;}
     }
 }

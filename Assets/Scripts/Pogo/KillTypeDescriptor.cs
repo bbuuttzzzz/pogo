@@ -7,7 +7,10 @@ namespace Pogo
     public class KillTypeDescriptor : ScriptableObject, IKillType
     {
         public AudioClip[] Sounds;
+        public string EffectName;
 
         AudioClip[] IKillType.Sounds => Sounds;
+
+        string IKillType.EffectName => EffectName;
     }
 }

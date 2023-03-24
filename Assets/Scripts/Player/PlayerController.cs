@@ -206,28 +206,30 @@ public class PlayerController : MonoBehaviour
 
     public void DieFromSurface(CollisionEventArgs collision)
     {
-        if (Die(CollisionKillType))
-        {
-            WizardEffects.EffectManager.CreateEffect("DeathMark", new WizardEffects.EffectData()
-            {
-                position = collision.HitInfo.point,
-                normal = collision.HitInfo.normal
-            });
-        }
+        Die(new PlayerDeathData(CollisionKillType, collision.HitInfo.point, collision.HitInfo.normal));
     }
 
-    public bool Die(IKillType killType = null)
+    public void Die() => Die(new PlayerDeathData(CollisionKillType));
+
+    public void Die(PlayerDeathData data)
     {
-        if (CurrentState == PlayerStates.Dead) return false;
+        if (CurrentState == PlayerStates.Dead) return;
 
         CurrentState = PlayerStates.Dead;
         PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
-        if (killType != null)
+        if (data.KillType != null)
         {
-            AudioController.PlayOneShot(killType.RandomSound);
+            AudioController.PlayOneShot(data.KillType.RandomSound);
         }
 
-        return true;
+        if (data.Position.HasValue && data.Normal.HasValue && !string.IsNullOrEmpty(data.KillType.EffectName))
+        {
+            WizardEffects.EffectManager.CreateEffect(data.KillType.EffectName, new WizardEffects.EffectData()
+            {
+                position = data.Position.Value,
+                normal = data.Normal.Value
+            });
+        }
     }
 
     public void Spawn()

@@ -1,4 +1,5 @@
-﻿using Inputter;
+﻿using Assets.Scripts.Player;
+using Inputter;
 using Pogo.Challenges;
 using System;
 using System.Collections;
@@ -347,11 +348,19 @@ namespace Pogo
             player.OnStateChanged.AddListener((_) => PogoInstance.UpdateTimeFreeze());
         }
 
-        public void KillPlayer(IKillType killType = null)
+        public void KillPlayer(PlayerDeathData data)
         {
             if (GameInstanceIsValid() && PogoInstance.player != null)
             {
-                PogoInstance.player.Die(killType);
+                PogoInstance.player.Die(data);
+            }
+        }
+
+        public void KillPlayer()
+        {
+            if (GameInstanceIsValid() && PogoInstance.player != null)
+            {
+                PogoInstance.player.Die();
             }
         }
 
