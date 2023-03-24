@@ -267,7 +267,7 @@ namespace Pogo
         {
             get
             {
-                return Paused || Player.CurrentState == PlayerStates.Dead;
+                return Paused; // || Player.CurrentState == PlayerStates.Dead;
             }
         }
 
