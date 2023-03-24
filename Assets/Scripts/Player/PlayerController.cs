@@ -16,7 +16,8 @@ public class PlayerController : MonoBehaviour
 {
     public AudioController AudioController;
     CollisionGroup collisionGroup;
-    public float RespawnDelay;
+    public float AutoRespawnDelay;
+    public PlayerJostler Jostler;
 
     private void Awake()
     {
@@ -59,9 +60,9 @@ public class PlayerController : MonoBehaviour
         PogoGameManager.GameInstance.OnControlSceneChanged -= onControlSceneChanged;
     }
 
-    private void onRespawnDelayChanged(object sender, GameSettingChangedEventArgs e)
+    private void onAutoRespawnDelayChanged(object sender, GameSettingChangedEventArgs e)
     {
-        RespawnDelay = e.FinalValue;
+        AutoRespawnDelay = e.FinalValue;
     }
 
     private void onInvertYChanged(object sender, GameSettingChangedEventArgs e)
@@ -209,6 +210,17 @@ public class PlayerController : MonoBehaviour
         return surfaceCache.SurfaceConfig;
     }
 
+    public void Respawn()
+    {
+        if (CurrentState != PlayerStates.Dead)
+        {
+            CurrentState = PlayerStates.Dead;
+            PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
+        }
+
+        Spawn();
+    }
+
     public void DieFromSurface(CollisionEventArgs collision)
     {
         Die(new PlayerDeathData(CollisionKillType, collision.HitInfo.point, collision.HitInfo.normal));
@@ -240,10 +252,12 @@ public class PlayerController : MonoBehaviour
                 WizardEffects.EffectManager.CreateEffect(data.KillType.EffectName, effectData);
             }
         }
+        Jostler.Play();
     }
 
     public void Spawn()
     {
+        Jostler.Stop();
         CurrentState = PlayerStates.Alive;
         PogoGameManager.PogoInstance?.OnPlayerSpawn.Invoke();
         Reset();

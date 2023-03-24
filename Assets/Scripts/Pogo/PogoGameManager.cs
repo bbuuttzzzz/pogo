@@ -356,19 +356,19 @@ namespace Pogo
             }
         }
 
+        public void ResetPlayer()
+        {
+            if (GameInstanceIsValid() && PogoInstance.player != null)
+            {
+                PogoInstance.player.Respawn();
+            }
+        }
+
         public void KillPlayer()
         {
             if (GameInstanceIsValid() && PogoInstance.player != null)
             {
                 PogoInstance.player.Die();
-            }
-        }
-
-        public static void ResetPlayer()
-        {
-            if (GameInstanceIsValid() && PogoInstance.player != null)
-            {
-                PogoInstance.player.Reset();
             }
         }
 

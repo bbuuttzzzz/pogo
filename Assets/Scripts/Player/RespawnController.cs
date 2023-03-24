@@ -19,7 +19,7 @@ namespace Pogo
         {
             if (InputManager.CheckKeyDown(KeyName.Reset))
             {
-                killPlayer();
+                ResetPlayer();
             }
             CheckRespawnButton();
         }
@@ -57,9 +57,9 @@ namespace Pogo
 
         }
 
-        private void killPlayer()
+        private void ResetPlayer()
         {
-            PogoGameManager.PogoInstance.KillPlayer();
+            PogoGameManager.PogoInstance.ResetPlayer();
         }
 
         private void setRespawn()
