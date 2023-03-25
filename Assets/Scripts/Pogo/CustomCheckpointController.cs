@@ -17,10 +17,9 @@ namespace Pogo
 
         public float HeightOffset;
 
-        public bool Place(Vector3 targetPosition, Quaternion forward, bool force = false)
+        public bool Place(Vector3 targetPosition, Quaternion forward)
         {
-            Vector3 finalPosition = targetPosition;
-            if (force || CanPlace(targetPosition, out finalPosition))
+            if (CanPlace(targetPosition, out Vector3 finalPosition))
             {
                 transform.position = finalPosition;
                 transform.rotation = forward;
