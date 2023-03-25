@@ -38,7 +38,7 @@ namespace Pogo
 
             OnPauseStateChanged += ((_, _) => UpdateTimeFreeze());
             OnPlayerDeath.AddListener(() => NumberOfDeaths++);
-            OnPlayerDeath.AddListener(() => ResetLoadedLevel());
+            OnPlayerSpawn.AddListener(() => ResetLoadedLevel());
             OnSoftQuit += onSoftQuit;
             CustomCheckpoint.OnPlaced.AddListener(() => OnCustomCheckpointChanged?.Invoke(this, EventArgs.Empty));
 #if UNITY_EDITOR
