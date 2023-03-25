@@ -32,8 +32,7 @@ namespace Pogo
         {
             startTime = Time.unscaledTime;
             Vector3 normal = Camera.main.transform.forward;
-            Vector3 direction = Vector3.Cross(normal, Vector3.up);
-            Debug.DrawRay(transform.position, direction, Color.red,3);
+            Vector3 direction = transform.InverseTransformDirection(Vector3.Cross(normal, Vector3.up));
 
             WaitForSecondsRealtime wait = new WaitForSecondsRealtime(Interval);
 

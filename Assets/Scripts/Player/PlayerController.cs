@@ -78,10 +78,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DoLook();
-
         if (CurrentState == PlayerStates.Alive)
         {
+            DoLook();
             UpdateDesiredModelPitch();
             ApplyForces();
             RotateAndMove();
@@ -234,6 +233,7 @@ public class PlayerController : MonoBehaviour
 
         CurrentState = PlayerStates.Dead;
         PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
+        DelayedRespawnRoutine = StartCoroutine(DelayedRespawn(AutoRespawnDelay));
         if (data.KillType != null)
         {
             AudioController.PlayOneShot(data.KillType.RandomSound);
@@ -257,6 +257,7 @@ public class PlayerController : MonoBehaviour
 
     public void Spawn()
     {
+        if (DelayedRespawnRoutine != null) StopCoroutine(DelayedRespawnRoutine);
         Jostler.Stop();
         CurrentState = PlayerStates.Alive;
         PogoGameManager.PogoInstance?.OnPlayerSpawn.Invoke();
@@ -311,6 +312,13 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = isPaused;
         Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
 #endif
+    }
+
+    public Coroutine DelayedRespawnRoutine;
+    public IEnumerator DelayedRespawn(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        Spawn();
     }
     #endregion
 
