@@ -39,6 +39,11 @@ namespace WizardUtils.Math
                 z = (short)Mathf.RoundToInt(vec.z)
             };
         }
+
+        public override string ToString()
+        {
+            return $"({x}, {y}, {z})";
+        }
     }
 
     public static class Vector3ShortExtensions
