@@ -142,7 +142,6 @@ namespace Pogo
                 Debug.Log($"Unloading scene {scene.name}");
                 if (task != null) unloadTasks.Add(task);
             }
-            Debug.Log(sceneNames);
 
             if (callback != null) callback(new LevelLoadingData(loadTasks, unloadTasks));
             return true;

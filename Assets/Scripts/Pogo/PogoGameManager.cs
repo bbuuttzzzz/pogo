@@ -98,29 +98,30 @@ namespace Pogo
                 return;
             }
 
-            UnityAction call = null;
-            call = () => OnLoadLevelFinished(call, settings);
-            OnLevelLoaded.AddListener(call);
+            Action callBack = () =>
+            {
+                OnLoadLevelFinished(settings);
+                OnLevelLoaded?.Invoke();
+            };
             isLoadingLevel = true;
 
             settings.LoadingFromMenu = settings.LoadingFromMenu || CurrentControlScene != null;
 #if UNITY_WEBGL
-            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelsInOrder(levelLoadingData, settings))))
+            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelScenesInOrder(levelLoadingData, settings, callBack))))
 #else
-            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelsSimultaneous(levelLoadingData, settings))))
+            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelScenesSimultaneous(levelLoadingData, settings, callBack))))
 #endif
             {
                 isLoadingLevel = false;
             }
         }
 
-        void OnLoadLevelFinished(UnityAction call, LevelLoadingSettings settings)
+        void OnLoadLevelFinished(LevelLoadingSettings settings)
         {
             LevelManager.TransitionAtmosphere(LevelManager.CurrentLevel, settings.InstantChangeAtmosphere);
-            OnLevelLoaded.RemoveListener(call);
         }
 
-        IEnumerator loadLevelsSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings)
+        IEnumerator loadLevelScenesSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
         {
             foreach(AsyncOperation task in levelLoadingData.LoadingSceneTasks)
             {
@@ -178,10 +179,10 @@ namespace Pogo
             }
 
             isLoadingLevel = false;
-            OnLevelLoaded?.Invoke();
+            callback?.Invoke();
         }
 
-        IEnumerator loadLevelsInOrder(LevelLoadingData levelLoadingData, LevelLoadingSettings settings)
+        IEnumerator loadLevelScenesInOrder(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
         {
             foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
             {
@@ -245,7 +246,7 @@ namespace Pogo
             }
 
             isLoadingLevel = false;
-            OnLevelLoaded?.Invoke();
+            callback?.Invoke();
         }
 
         void ResetLoadedLevel()
