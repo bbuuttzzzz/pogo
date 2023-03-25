@@ -222,7 +222,7 @@ public class PlayerController : MonoBehaviour
 
     public void DieFromSurface(CollisionEventArgs collision)
     {
-        Die(new PlayerDeathData(CollisionKillType, collision.HitInfo.point, collision.HitInfo.normal));
+        Die(new PlayerDeathData(CollisionKillType, collision.HitInfo.collider.transform, collision.HitInfo.point, collision.HitInfo.normal));
     }
 
     public void Die() => Die(new PlayerDeathData(CollisionKillType));
@@ -243,6 +243,7 @@ public class PlayerController : MonoBehaviour
         {
             WizardEffects.EffectData effectData = new WizardEffects.EffectData()
             {
+                parent = data.Parent,
                 position = data.Position.Value,
                 normal = data.Normal.Value
             };

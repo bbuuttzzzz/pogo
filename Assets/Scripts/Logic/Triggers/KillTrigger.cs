@@ -15,6 +15,6 @@ public class KillTrigger : MonoBehaviour
         Vector3 origin = GetComponent<Collider>().ClosestPointOnBounds(other.bounds.center);
         Vector3 normal = (other.bounds.center - origin).normalized;
 
-        PogoGameManager.PogoInstance.KillPlayer(new PlayerDeathData(Type, origin, normal));
+        PogoGameManager.PogoInstance.KillPlayer(new PlayerDeathData(Type, transform, origin, normal));
     }
 }

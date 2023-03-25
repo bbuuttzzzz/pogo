@@ -11,6 +11,7 @@ namespace Pogo
     public struct PlayerDeathData
     {
         public IKillType KillType;
+        public Transform Parent;
         public Vector3? Position;
         public Vector3? Normal;
 
@@ -19,8 +20,9 @@ namespace Pogo
             KillType = killType;
         }
 
-        public PlayerDeathData(IKillType killType, Vector3 position, Vector3 normal) : this(killType)
+        public PlayerDeathData(IKillType killType, Transform parent, Vector3 position, Vector3 normal) : this(killType)
         {
+            Parent = parent;
             Position = position;
             Normal = normal;
         }
