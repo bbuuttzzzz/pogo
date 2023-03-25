@@ -63,7 +63,10 @@ namespace WizardUtils
 
                 if (paused == value || GameInstance.LockPauseState) return;
                 paused = value;
+
+#if UNITY_EDITOR
                 if (value && GameInstance.BreakOnPause) Debug.Break();
+#endif
                 GameInstance.OnPauseStateChanged?.Invoke(null, value);
             }
         }
