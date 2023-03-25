@@ -171,7 +171,7 @@ namespace Pogo.Challenges
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
-                pogoInstance.CustomCheckpoint.Place(CurrentChallenge.StartPoint, CurrentChallenge.StartRotation);
+                pogoInstance.CustomCheckpoint.Place(CurrentChallenge.StartPoint, CurrentChallenge.StartRotation, true);
                 pogoInstance.RegisterRespawnPoint(pogoInstance.CustomCheckpoint.transform);
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
