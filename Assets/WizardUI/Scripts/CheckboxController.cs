@@ -15,6 +15,9 @@ namespace WizardUtils
         public UnityFloatEvent OnToggleChangedFloat;
         public UnityBoolEvent OnToggleChanged;
 
+        public float EnabledValue = 1;
+        public float DisabledValue = 0;
+
         bool toggle;
         public bool Toggled
         {
@@ -28,7 +31,7 @@ namespace WizardUtils
             }
         }
 
-        public float ToggleAsFloat => Toggled ? 1 : 0;
+        public float ToggleAsFloat => Toggled ? EnabledValue : DisabledValue;
 
         public void Toggle()
         {
@@ -37,7 +40,7 @@ namespace WizardUtils
 
         public void SetToggledFromFloat(float toggledFloat)
         {
-            Toggled = toggledFloat == 1;
+            Toggled = toggledFloat == EnabledValue;
         }
     }
 }

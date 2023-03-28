@@ -31,10 +31,11 @@ namespace Pogo
                 levelManager.SetCurrentLevelInEditor(InitialLevel);
             }
 #endif
-            RegisterGameSetting(new GameSettingFloat(KEY_FIELD_OF_VIEW, 90));
-            RegisterGameSetting(new GameSettingFloat(KEY_SENSITIVITY, 0.1f));
-            RegisterGameSetting(new GameSettingFloat(KEY_INVERT, 0f));
-            RegisterGameSetting(new GameSettingFloat(KEY_TIMER, 0f));
+            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_FIELD_OF_VIEW, 90));
+            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_SENSITIVITY, 0.1f));
+            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_INVERT, 0f));
+            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_TIMER, 0f));
+            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_RESPAWNDELAY, 0.5f));
 
             OnPauseStateChanged += ((_, _) => UpdateTimeFreeze());
             OnPlayerDeath.AddListener(() => NumberOfDeaths++);
@@ -504,10 +505,11 @@ namespace Pogo
 #endregion
 
 #region Settings
-        public static string KEY_FIELD_OF_VIEW = "FieldOfView";
-        public static string KEY_SENSITIVITY = "Sensitivity";
-        public static string KEY_INVERT = "InvertY";
-        public static string KEY_TIMER = "ShowTimer";
+        public static string SETTINGKEY_FIELD_OF_VIEW = "FieldOfView";
+        public static string SETTINGKEY_SENSITIVITY = "Sensitivity";
+        public static string SETTINGKEY_INVERT = "InvertY";
+        public static string SETTINGKEY_TIMER = "ShowTimer";
+        public static string SETTINGKEY_RESPAWNDELAY = "RespawnDelay";
         #endregion
 
         #region Stats

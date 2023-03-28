@@ -15,7 +15,7 @@ namespace Pogo.Logic
         private void Start()
         {
             animator = GetComponent<Animator>();
-            var showTimerSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_TIMER);
+            var showTimerSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.SETTINGKEY_TIMER);
             showTimerSetting.OnChanged += onShowTimerChanged;
             ShouldShowStopwatch = showTimerSetting.Value == 1;
 
