@@ -502,9 +502,14 @@ namespace Pogo
             base.LoadControlScene(newScene, callback);
         }
 
-#endregion
+        #endregion
 
-#region Settings
+        #region Final Score
+        public UnityEvent OnStoreFinalStats;
+        public static float FinalTime;
+        #endregion
+
+        #region Settings
         public static string SETTINGKEY_FIELD_OF_VIEW = "FieldOfView";
         public static string SETTINGKEY_SENSITIVITY = "Sensitivity";
         public static string SETTINGKEY_INVERT = "InvertY";
