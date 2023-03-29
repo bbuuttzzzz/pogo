@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace Assets.Scripts.Pogo
             yield return new WaitForSecondsRealtime(levelChangeDelay);
 
             GameManager.GameInstance.LoadControlScene(CreditsScene);
+            PogoGameManager.PogoInstance.OnStoreFinalStats.Invoke();
         }
     }
 }

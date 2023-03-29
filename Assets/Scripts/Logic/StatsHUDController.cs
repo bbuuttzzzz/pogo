@@ -15,13 +15,14 @@ namespace Pogo.Logic
         private void Start()
         {
             animator = GetComponent<Animator>();
-            var showTimerSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_TIMER);
+            var showTimerSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.SETTINGKEY_TIMER);
             showTimerSetting.OnChanged += onShowTimerChanged;
             ShouldShowStopwatch = showTimerSetting.Value == 1;
 
             PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(onDeath);
             PogoGameManager.PogoInstance.OnPauseStateChanged += onPauseStateChanged;
             PogoGameManager.PogoInstance.OnStatsReset.AddListener(onStatsReset);
+            PogoGameManager.PogoInstance.OnStoreFinalStats.AddListener(onStoreFinalStats);
         }
 
         private void onShowTimerChanged(object sender, WizardUtils.GameSettingChangedEventArgs e)
@@ -64,6 +65,12 @@ namespace Pogo.Logic
             animator.SetBool("DisplayTimer", isPaused && ShouldShowStopwatch);
             UpdateStopwatchTimerText();
         }
+
+        private void onStoreFinalStats()
+        {
+            PogoGameManager.FinalTime = Time.time - SessionStartTime;
+        }
+
 
         private void onDeath()
         {

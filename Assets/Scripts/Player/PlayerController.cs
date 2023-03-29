@@ -31,13 +31,17 @@ public class PlayerController : MonoBehaviour
         PogoGameManager.GameInstance.OnControlSceneChanged += onControlSceneChanged;
         loadSurfaceProperties();
 
-        var sensitivitySetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_SENSITIVITY);
+        var sensitivitySetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.SETTINGKEY_SENSITIVITY);
         sensitivitySetting.OnChanged += onSensitivityChanged;
         SENSITIVITY = sensitivitySetting.Value;
 
-        var invertYSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.KEY_INVERT);
+        var invertYSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.SETTINGKEY_INVERT);
         invertYSetting.OnChanged += onInvertYChanged;
         SENS_PITCH_SCALE = 0.8f * convertInvertYSetting(invertYSetting.Value);
+
+        var respawnDelaySetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.SETTINGKEY_RESPAWNDELAY);
+        respawnDelaySetting.OnChanged += onAutoRespawnDelayChanged;
+        AutoRespawnDelay = respawnDelaySetting.Value;
 
         UpdateCursorLock(PogoGameManager.GameInstance.Paused);
         internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
