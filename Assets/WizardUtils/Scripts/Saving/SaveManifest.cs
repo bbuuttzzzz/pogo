@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace WizardUtils.Saving
@@ -8,7 +9,7 @@ namespace WizardUtils.Saving
     public class SaveManifest : ScriptableObject
     {
         public string FileName;
-        public string DefaultPath => $"{Application.persistentDataPath}/{FileName}.sav";
+        public string DefaultPath => $"{Application.persistentDataPath}{Path.DirectorySeparatorChar}{FileName}.sav";
         public SaveValueDescriptor[] SaveValueDescriptors;
 
         public bool ContainsDescriptor(SaveValueDescriptor descriptor)
