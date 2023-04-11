@@ -499,7 +499,7 @@ namespace Pogo
             {
                 levelManager.ResetLoadedLevel();
             }
-            Player.CurrentState = PlayerStates.Alive;
+            if (Player != null) Player.CurrentState = PlayerStates.Alive;
             base.LoadControlScene(newScene, callback);
         }
 
