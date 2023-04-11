@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WizardUtils;
@@ -10,6 +11,7 @@ namespace Pogo
     public class ChapterDescriptor : ScriptableObject
     {
         public LevelDescriptor Level;
+        public Sprite Icon;
 
         public int Number;
         public string Title;
@@ -19,7 +21,7 @@ namespace Pogo
         public ChapterStartPoint FindStartPoint()
         {
             var startPoints = FindObjectsOfType(typeof(ChapterStartPoint)) as ChapterStartPoint[];
-            foreach(var startPoint in startPoints)
+            foreach (var startPoint in startPoints)
             {
                 if (startPoint.Chapter == this)
                 {
