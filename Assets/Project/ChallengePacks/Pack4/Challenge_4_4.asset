@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8766660635318434160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c9d0684a5d03e84da7722e61a89de97, type: 3}
+  m_Name: sv_Challenge_4_4
+  m_EditorClassIdentifier: 
+  Key: time_Challenge_4_4
+  DefaultValue: 60000
+  HideIfDefault: 1
+  DeveloperNote: Best time in milliseconds
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cd0e14ee8ba4554d8170159ec27f343, type: 3}
+  m_Name: Challenge_4_4
+  m_EditorClassIdentifier: 
+  DisplayName: 4 - Your Challenge Here
+  Challenge:
+    ChallengeType: 2
+    Level: {fileID: 11400000, guid: ed8e7c0e04a8c054280ab2454b8047df, type: 2}
+    DeveloperChallenge: {fileID: 11400000}
+    StartPointCm:
+      x: 1980
+      y: 3455
+      z: 7364
+    startYaw: 160
+    EndPointCm:
+      x: 4050
+      y: 2997
+      z: 3694
+    LastAttemptTimeMS: 65535
+    BestTimeMS: 5393
+    PersonalBestTimeMS: 65535
+    AttemptStartTime: 0
+  PlayerTimeSaveValue: {fileID: -8766660635318434160}
