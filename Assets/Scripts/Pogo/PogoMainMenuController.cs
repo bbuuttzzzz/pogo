@@ -9,6 +9,7 @@ namespace Pogo
 {
     public class PogoMainMenuController : MonoBehaviour
     {
+        public UnityEvent OnOpenWorldScreen;
         public UnityEvent OnOpenGamemodeScreen;
         public UnityEvent OnOpenHomeScreen;
         public UnityEvent OnOpenChallengeScreen;
