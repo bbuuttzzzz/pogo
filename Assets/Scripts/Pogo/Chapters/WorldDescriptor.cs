@@ -12,17 +12,17 @@ namespace Pogo
     [CreateAssetMenu(fileName = "WorldDescriptor", menuName = "ScriptableObjects/WorldDescriptor", order = 1)]
     public class WorldDescriptor : ScriptableObject
     {
-        
-        public LevelDescriptor[] Levels = new LevelDescriptor[4];
+        private const int ChapterCount = 12;
+        public WorldChapter[] Chapters = new WorldChapter[ChapterCount];
 
         public string DisplayName;
 
         void OnValidate()
         {
-            if (Levels.Length != 4)
+            if (Chapters.Length != ChapterCount)
             {
                 Debug.LogWarning("Don't change the 'Levels' field's array size!");
-                Array.Resize(ref Levels, 4);
+                Array.Resize(ref Chapters, ChapterCount);
             }
         }
     }

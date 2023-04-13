@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Pogo.Challenges;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -17,6 +20,7 @@ namespace Pogo
         public ChapterDescriptor[] DisplayChapters;
         private int ActiveWorldIndex = 0;
         private WorldDescriptor ActiveWorld => Worlds[ActiveWorldIndex];
+        public ChapterButtonController[] ChapterButtons;
 
         public UnityEvent OnActiveWorldChanged;
         public UnityEvent<string> OnWorldNameChanged;
@@ -34,6 +38,7 @@ namespace Pogo
         {
             UpdateWorldName();
             UpdateButtonInteractableStates();
+            UpdateChapterButtons();
         }
 
         void UpdateWorldName()
@@ -64,6 +69,14 @@ namespace Pogo
         {
             DecrementButton.interactable = (ActiveWorldIndex > 0);
             IncrementButton.interactable = (ActiveWorldIndex < DisplayChapters.Length - 1);
+        }
+
+        private void UpdateChapterButtons()
+        {
+            for (int n = 0; n < ChapterButtons.Length; n++)
+            {
+                ChapterButtons[n].WorldChapter = ActiveWorld.Chapters[n];
+            }
         }
     }
 }

@@ -12,18 +12,19 @@ namespace Pogo.Challenges
         public TextMeshProUGUI TitleText;
         public Image IconImage;
 
-        public Sprite NotIncludedSprite;
+        public Sprite SteamOnlySprite;
+        public Sprite ComingSoonSprite;
         public Sprite LockedSprite;
         public PogoMainMenuController MainMenuController;
 
         [SerializeField]
-        ChapterDescriptor chapter;
-        public ChapterDescriptor Chapter
+        WorldChapter worldChapter;
+        public WorldChapter WorldChapter
         {
-            get => chapter;
+            get => worldChapter;
             set
             {
-                chapter = value;
+                worldChapter = value;
                 OnChapterChanged();
             }
         }
@@ -36,26 +37,46 @@ namespace Pogo.Challenges
 
         private void onButtonPressed()
         {
-            MainMenuController.LoadChapter(Chapter);
+            MainMenuController.LoadChapter(WorldChapter.Chapter);
         }
 
         [ContextMenu("Chapter Changed")]
         public void OnChapterChanged()
         {
-            if (Chapter == null)
+            switch (WorldChapter.Type)
             {
-                TitleText.text = "Steam Version Only";
-                IconImage.sprite = NotIncludedSprite;
+                case WorldChapter.Types.Level:
+                    SetLevelWorldChapter();
+                    break;
+                case WorldChapter.Types.ComingSoon:
+                    TitleText.text = "Coming SOon";
+                    IconImage.sprite = ComingSoonSprite;
+                    break;
+                case WorldChapter.Types.SteamOnly:
+                    TitleText.text = "Steam Version Only";
+                    IconImage.sprite = ComingSoonSprite;
+                    break;
             }
-            else if (!Chapter.IsUnlocked)
+        }
+
+        private void SetLevelWorldChapter()
+        {
+#if DEBUG
+            if (WorldChapter.Chapter == null)
             {
-                TitleText.text = "Locked";
-                IconImage.sprite = LockedSprite;
+                Debug.LogError($"Missing Chapter for WorldChapter @ {gameObject.name}");
+            }
+#endif
+
+            if (WorldChapter.Chapter.IsUnlocked)
+            {
+                TitleText.text = WorldChapter.Chapter.Title;
+                IconImage.sprite = WorldChapter.Chapter.Icon;
             }
             else
             {
-                TitleText.text = Chapter.Title;
-                IconImage.sprite = Chapter.Icon;
+                TitleText.text = "Locked";
+                IconImage.sprite = LockedSprite;
             }
         }
     }

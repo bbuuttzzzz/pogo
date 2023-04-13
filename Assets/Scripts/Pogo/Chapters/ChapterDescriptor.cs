@@ -11,7 +11,6 @@ namespace Pogo
     public class ChapterDescriptor : ScriptableObject
     {
         public LevelDescriptor Level;
-        public Sprite Icon;
 
         public int Number;
         public string Title;
