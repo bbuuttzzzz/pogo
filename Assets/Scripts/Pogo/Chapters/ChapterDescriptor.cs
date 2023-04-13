@@ -13,7 +13,7 @@ namespace Pogo
 
         public int Number;
         public string Title;
-
+        public Sprite Icon;
         public string LongTitle => $"Part {Number} - {Title}";
 
         public ChapterStartPoint FindStartPoint()

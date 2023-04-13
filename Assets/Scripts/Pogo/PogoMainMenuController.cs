@@ -26,20 +26,20 @@ namespace Pogo
             ChallengeButtonAnimator.SetBool("Flash", value);
         }
 
-        public void SetGamemodeOrStart()
+        public void AdventureTapped()
         {
-            if (PogoSelector.UnlockedEquipment.Length <= 1
-                && ChapterSelector.UnlockedChapters.Length <= 1)
-            {
-                StartGame();
-            }
-            else
-            {
-                OpenGamemodeScreen();
-            }
+            OpenWorldScreen();
         }
 
 
+        #region Chapter Loading
+        public void LoadChapter(ChapterDescriptor chapter)
+        {
+            PogoGameManager.PogoInstance.LoadChapter(chapter);
+        }
+        #endregion
+
+        #region Challenge Loading
         public string DefaultCode;
         public string CurrentCode { get; set; }
         public void LoadChallenge()
@@ -65,6 +65,11 @@ namespace Pogo
             };
             builder.CurrentChallenge = clonedChallenge;
             builder.LoadChallenge();
+        }
+        #endregion
+        public void OpenWorldScreen()
+        {
+            OnOpenWorldScreen?.Invoke();
         }
 
         public void OpenGamemodeScreen()
