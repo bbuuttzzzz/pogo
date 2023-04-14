@@ -37,7 +37,7 @@ namespace Pogo.Challenges
 
         private void onButtonPressed()
         {
-            MainMenuController.LoadChapter(WorldChapter.Chapter);
+            MainMenuController.SelectChapter(WorldChapter.Chapter);
         }
 
         [ContextMenu("Chapter Changed")]

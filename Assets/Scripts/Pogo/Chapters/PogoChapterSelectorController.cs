@@ -46,11 +46,6 @@ namespace Pogo
             OnWorldNameChanged.Invoke(ActiveWorld.DisplayName);
         }
 
-        public void LoadActiveChapter()
-        {
-            PogoGameManager.PogoInstance.LoadChapter(DisplayChapters[ActiveWorldIndex]);
-        }
-
         public Button IncrementButton; 
         public void Increment()
         {

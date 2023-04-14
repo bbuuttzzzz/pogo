@@ -34,9 +34,17 @@ namespace Pogo
 
 
         #region Chapter Loading
-        public void LoadChapter(ChapterDescriptor chapter)
+        private ChapterDescriptor SelectedChapter;
+
+        public void SelectChapter(ChapterDescriptor chapter)
         {
-            PogoGameManager.PogoInstance.LoadChapter(chapter);
+            SelectedChapter = chapter;
+            OpenGamemodeScreen();
+        }
+
+        public void LoadSelectedChapter()
+        {
+            PogoGameManager.PogoInstance.LoadChapter(SelectedChapter);
         }
         #endregion
 
@@ -105,7 +113,7 @@ namespace Pogo
 
         public void StartGame()
         {
-            ChapterSelector.LoadActiveChapter();
+            LoadSelectedChapter();
         }
 
         public InputField ChallengeInputField;
