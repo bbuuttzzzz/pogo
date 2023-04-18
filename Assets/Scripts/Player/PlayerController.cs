@@ -15,13 +15,13 @@ using WizardUtils.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     public AudioController AudioController;
-    CollisionGroup collisionGroup;
+    public CollisionGroup CollisionGroup;
     public float AutoRespawnDelay;
     public PlayerJostler Jostler;
 
     private void Awake()
     {
-        collisionGroup = GetComponent<CollisionGroup>();    
+        CollisionGroup = GetComponent<CollisionGroup>();    
     }
 
     void Start()
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
         internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
         transform.rotation = Quaternion.identity;
 
-        collisionGroup.OnCollide.AddListener(onCollide);
+        CollisionGroup.OnCollide.AddListener(onCollide);
 
         gameObject.SetActive(PogoGameManager.GameInstance.InControlScene);
         setControlSceneBehavior(PogoGameManager.GameInstance.InControlScene);
@@ -391,8 +391,8 @@ public class PlayerController : MonoBehaviour
     public void RotateAndMove()
     {
         if (Time.deltaTime == 0) return;
-        collisionGroup.RotateTo(DesiredModelRotation);
-        collisionGroup.Move(Velocity * Time.deltaTime);
+        CollisionGroup.RotateTo(DesiredModelRotation);
+        CollisionGroup.Move(Velocity * Time.deltaTime);
     }
 
     private void onCollide(CollisionEventArgs e)
