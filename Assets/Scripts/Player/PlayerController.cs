@@ -384,8 +384,17 @@ public class PlayerController : MonoBehaviour
             // jump up based on the player's rotation
             Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
         }
-        // apply a speedcap on tangent velocity
-        //Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
+
+        // check if this object has special collision behavior
+        CheckSpecialCollisionBehavior(args);
+    }
+
+    private void CheckSpecialCollisionBehavior(CollisionEventArgs args)
+    {
+        if (args.HitInfo.collider == null
+            || !args.HitInfo.collider.TryGetComponent<ISpecialPlayerCollisionBehavior>(out var behavior)) return;
+        
+        behavior.Perform(this, args);
     }
 
     public void RotateAndMove()

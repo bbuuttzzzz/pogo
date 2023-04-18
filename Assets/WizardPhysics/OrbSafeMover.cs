@@ -6,10 +6,11 @@ using WizardUtils;
 namespace WizardPhysics
 {
     [RequireComponent(typeof(Collider))]
-    public class OrbSafeMover : MonoBehaviour
+    public class OrbSafeMover : MonoBehaviour, ISpecialPlayerCollisionBehavior
     {
         private List<CollisionGroup> Subscribers = new List<CollisionGroup>();
         Collider self;
+        private Vector3 lastVelocity;
         
         private void Awake()
         {
@@ -26,8 +27,11 @@ namespace WizardPhysics
             Subscribers.Remove(group);
         }
 
-        public void MoveTo(Vector3 finalPosition)
+        public void MoveTo(Vector3 finalPosition, float interval = -1)
         {
+            if (interval == -1) interval = Time.deltaTime;
+            lastVelocity = (finalPosition - transform.position) / interval;
+
             if (transform.position == finalPosition) { return; }
 
             foreach(var collisionGroup in Subscribers)
@@ -36,6 +40,11 @@ namespace WizardPhysics
             }
 
             transform.position = finalPosition;
+        }
+
+        void ISpecialPlayerCollisionBehavior.Perform(PlayerController target, CollisionEventArgs args)
+        {
+            target.Velocity += lastVelocity;
         }
     }
 }
