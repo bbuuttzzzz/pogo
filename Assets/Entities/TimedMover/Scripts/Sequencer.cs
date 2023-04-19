@@ -61,6 +61,7 @@ public class Sequencer : MonoBehaviour
             initialState = (CurrentState + 1) % States.Length;
         }
 
+        CurrentState = initialState;
         BeginState(offset);
     }
 
