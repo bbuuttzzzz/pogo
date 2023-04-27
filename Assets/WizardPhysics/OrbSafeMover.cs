@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using WizardUtils;
 
@@ -12,12 +11,9 @@ namespace WizardPhysics
         private List<CollisionGroup> Subscribers = new List<CollisionGroup>();
         Collider self;
         private Vector3 lastVelocity;
-
-        public Vector3 CurrentPosition
-        {
-            get => transform.position;
-            set=> SafeMoveTo(value);
-        }
+        public bool ShouldFollowTargetPosition;
+        public bool TargetPositionIsLocal;
+        public Vector3 TargetPosition;
 
         [System.Serializable]
         public enum PlayerCollisionBehavior
@@ -32,6 +28,27 @@ namespace WizardPhysics
             self = GetComponent<Collider>();    
         }
 
+        private void Update()
+        {
+            if (ShouldFollowTargetPosition)
+            {
+                FollowTargetPosition();
+            }
+        }
+
+        public void FollowTargetPosition()
+        {
+            Vector3 targetPosition = TargetPositionIsLocal ? transform.parent.TransformPoint(TargetPosition) : TargetPosition;
+#if UNITY_EDITOR
+            if (UnityEditor.EditorApplication.isPlaying)
+            {
+                transform.position = targetPosition;
+                return;
+            }
+#endif
+            MoveTo(targetPosition);
+        }
+
         public void Subscribe(CollisionGroup group)
         {
             Subscribers.Add(group);
@@ -42,21 +59,11 @@ namespace WizardPhysics
             Subscribers.Remove(group);
         }
 
-        private void SafeMoveTo(Vector3 finalPosition, float interval = -1)
-        {
-#if UNITY_EDITOR
-            if (!EditorApplication.isPlaying)
-            {
-                transform.position = finalPosition;
-                return;
-            }
-#endif
-            MoveTo(finalPosition, interval);
-        }
+        public void MoveTo(Vector3 finalPosition) => MoveTo(finalPosition, -1);
 
-        public void MoveTo(Vector3 finalPosition, float interval = -1)
+        public void MoveTo(Vector3 finalPosition, float interval)
         {
-            if (interval == -1) interval = Time.deltaTime;
+            if (interval <= 0) interval = Time.deltaTime;
             lastVelocity = (finalPosition - transform.position) / interval;
 
             if (transform.position == finalPosition) { return; }
@@ -80,6 +87,11 @@ namespace WizardPhysics
                     // noop
                     break;
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            
         }
     }
 }

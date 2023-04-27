@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589246, b: 0.29782626, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2568,6 +2568,34 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1177378121}
     m_Modifications:
+    - target: {fileID: 1204909948880572430, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.999962
+      objectReference: {fileID: 0}
+    - target: {fileID: 1204909948880572430, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.000058650956
+      objectReference: {fileID: 0}
+    - target: {fileID: 1204909948880572430, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.0015202061
+      objectReference: {fileID: 0}
+    - target: {fileID: 1204909948880572430, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.008594159
+      objectReference: {fileID: 0}
+    - target: {fileID: 1204909948880572430, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -0.008
+      objectReference: {fileID: 0}
+    - target: {fileID: 1204909948880572430, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0.174
+      objectReference: {fileID: 0}
+    - target: {fileID: 1204909948880572430, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0.985
+      objectReference: {fileID: 0}
     - target: {fileID: 3097131127063244137, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -2763,6 +2791,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78577a7eea7aeb545be0bf15b4b99cca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShouldFollowTargetPosition: 0
+  TargetPositionIsLocal: 0
+  TargetPosition: {x: 0, y: 0, z: 0}
+  CollisionBehavior: 0
 --- !u!114 &634202884977780269
 MonoBehaviour:
   m_ObjectHideFlags: 0
