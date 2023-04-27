@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using WizardUtils;
 
@@ -11,7 +12,21 @@ namespace WizardPhysics
         private List<CollisionGroup> Subscribers = new List<CollisionGroup>();
         Collider self;
         private Vector3 lastVelocity;
-        
+
+        public Vector3 CurrentPosition
+        {
+            get => transform.position;
+            set=> SafeMoveTo(value);
+        }
+
+        [System.Serializable]
+        public enum PlayerCollisionBehavior
+        {
+            AlwaysInheritVelocity,
+            NeverInheritVelocity
+        }
+        public PlayerCollisionBehavior CollisionBehavior;
+
         private void Awake()
         {
             self = GetComponent<Collider>();    
@@ -25,6 +40,18 @@ namespace WizardPhysics
         public void Unsubscribe(CollisionGroup group)
         {
             Subscribers.Remove(group);
+        }
+
+        private void SafeMoveTo(Vector3 finalPosition, float interval = -1)
+        {
+#if UNITY_EDITOR
+            if (!EditorApplication.isPlaying)
+            {
+                transform.position = finalPosition;
+                return;
+            }
+#endif
+            MoveTo(finalPosition, interval);
         }
 
         public void MoveTo(Vector3 finalPosition, float interval = -1)
@@ -44,7 +71,15 @@ namespace WizardPhysics
 
         void ISpecialPlayerCollisionBehavior.Perform(PlayerController target, CollisionEventArgs args)
         {
-            target.Velocity += lastVelocity;
+            switch(CollisionBehavior)
+            {
+                case PlayerCollisionBehavior.AlwaysInheritVelocity:
+                    target.Velocity += lastVelocity;
+                    break;
+                case PlayerCollisionBehavior.NeverInheritVelocity:
+                    // noop
+                    break;
+            }
         }
     }
 }
