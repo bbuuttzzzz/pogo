@@ -2,5 +2,5 @@
 
 public interface ISpecialPlayerCollisionBehavior
 {
-    public void Perform(PlayerController target, CollisionEventArgs args);
+    public bool TryOverrideCollisionBehavior(PlayerController target, CollisionEventArgs args, SurfaceConfig surfaceConfig);
 }

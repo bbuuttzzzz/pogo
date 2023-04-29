@@ -351,9 +351,9 @@ public class PlayerController : MonoBehaviour
     public Vector3 Velocity;
 
     const float JumpMaxSideSpeed = 6f;
-    const float JumpForce = 6f;
+    public const float JumpForce = 6f;
     const float AIR_ACCELERATE = 0;
-    const float AIR_SPEED_MAX = 1f; //max tangent air speed, the lower this value the slower the airstrafe
+    public const float AIR_SPEED_MAX = 1f; //max tangent air speed, the lower this value the slower the airstrafe
 
     public void ApplyForce(Vector3 force)
     {
@@ -377,24 +377,26 @@ public class PlayerController : MonoBehaviour
         (sound, lastJumpSoundIndex) = surfaceConfig.NextRandomSound(lastJumpSoundIndex);
         if (sound != null) AudioController.PlayOneShot(sound);
 
-        // jump away from the surface
-        Accelerate(args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
-        if (surfaceConfig.JumpForceMultiplier > 0)
+
+        if (args.HitInfo.collider != null
+            && args.HitInfo.collider.TryGetComponent<ISpecialPlayerCollisionBehavior>(out var behavior)
+            && behavior.TryOverrideCollisionBehavior(this, args, surfaceConfig))
         {
-            // jump up based on the player's rotation
-            Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
+            // override default collision behavior
+            return;
         }
+        else
+        {
+            // perform default collision behavior
 
-        // check if this object has special collision behavior
-        CheckSpecialCollisionBehavior(args);
-    }
-
-    private void CheckSpecialCollisionBehavior(CollisionEventArgs args)
-    {
-        if (args.HitInfo.collider == null
-            || !args.HitInfo.collider.TryGetComponent<ISpecialPlayerCollisionBehavior>(out var behavior)) return;
-        
-        behavior.Perform(this, args);
+            // jump away from the surface
+            Accelerate(args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
+            if (surfaceConfig.JumpForceMultiplier > 0)
+            {
+                // jump up based on the player's rotation
+                Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
+            }
+        }
     }
 
     public void RotateAndMove()

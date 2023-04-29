@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using WizardUtils;
 
 namespace WizardPhysics
@@ -19,7 +20,8 @@ namespace WizardPhysics
         public enum PlayerCollisionBehavior
         {
             AlwaysInheritVelocity,
-            NeverInheritVelocity
+            NeverInheritVelocity,
+            SmartAccelerate
         }
         public PlayerCollisionBehavior CollisionBehavior;
 
@@ -78,22 +80,53 @@ namespace WizardPhysics
             transform.position = finalPosition;
         }
 
-        void ISpecialPlayerCollisionBehavior.Perform(PlayerController target, CollisionEventArgs args)
+        /// <summary>
+        /// Check if this object has special player collision behavior given this data, and then perform that behavior
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="args"></param>
+        /// <returns>true if the behavior has been overridden</returns>
+        /// <param name="surfaceConfig"></param>
+        bool ISpecialPlayerCollisionBehavior.TryOverrideCollisionBehavior(PlayerController target, CollisionEventArgs args, SurfaceConfig surfaceConfig)
         {
-            switch(CollisionBehavior)
+            switch (CollisionBehavior)
             {
                 case PlayerCollisionBehavior.AlwaysInheritVelocity:
                     target.Velocity += lastVelocity;
-                    break;
+                    return false;
+                case PlayerCollisionBehavior.SmartAccelerate:
+                    SmartAccelerate(target, args, surfaceConfig);
+                    return true;
                 case PlayerCollisionBehavior.NeverInheritVelocity:
-                    // noop
-                    break;
+                    return false;
+                default:
+                    throw new ArgumentException();
             }
         }
 
-        private void OnDrawGizmos()
+        private void SmartAccelerate(PlayerController target, CollisionEventArgs args, SurfaceConfig surfaceConfig)
         {
-            
+            // jump away from the surface
+            RelationalAccelerate(target, args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
+            if (surfaceConfig.JumpForceMultiplier > 0)
+            {
+                // jump up based on the player's rotation
+                target.Accelerate(target.DesiredModelRotation * Vector3.up, PlayerController.JumpForce * surfaceConfig.JumpForceMultiplier);
+            }
+        }
+
+        private void RelationalAccelerate(PlayerController target, Vector3 direction, float maxSpeed)
+        {
+            float curSpeed = Vector3.Dot(target.Velocity - lastVelocity, direction);
+            float addSpeed = maxSpeed - curSpeed;
+            if (addSpeed <= 0)
+            {
+                //already going too fast, so who cares
+                return;
+            }
+
+            //since I'm not going too fast, make me go just the right speed in that direction
+            target.Velocity += addSpeed * direction;
         }
     }
 }
