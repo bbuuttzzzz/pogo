@@ -146,7 +146,7 @@ namespace WizardPhysics
         public void TestAgainst(Collider other, Vector3 movement)
         {
             using var _ = new LayerChangeScope(other.gameObject, SafeLayer);
-            Vector3 remainingMovement = movement;
+            Vector3 remainingMovement = -1 * movement;
             Vector3 initialPosition = transform.position;
 
             while (remainingMovement.magnitude >= 1E-8f)
@@ -195,7 +195,7 @@ namespace WizardPhysics
             }
 
             // jump backwards the distance the object will move since the above is all calculated relatively
-            transform.position -= movement;
+            transform.position += movement;
         }
 
         #region Collision
