@@ -11,6 +11,7 @@ namespace Assets.WizardPhysics
 
         private void Update()
         {
+            if (UnityEditor.EditorApplication.isPlaying) return;
             if (Target == null) return;
 
             if (Target.ShouldFollowTargetPosition)

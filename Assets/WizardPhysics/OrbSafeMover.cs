@@ -40,12 +40,13 @@ namespace WizardPhysics
         {
             Vector3 targetPosition = TargetPositionIsLocal ? transform.parent.TransformPoint(TargetPosition) : TargetPosition;
 #if UNITY_EDITOR
-            if (UnityEditor.EditorApplication.isPlaying)
+            if (!UnityEditor.EditorApplication.isPlaying)
             {
                 transform.position = targetPosition;
                 return;
             }
 #endif
+
             MoveTo(targetPosition);
         }
 
@@ -64,6 +65,7 @@ namespace WizardPhysics
         public void MoveTo(Vector3 finalPosition, float interval)
         {
             if (interval <= 0) interval = Time.deltaTime;
+
             lastVelocity = (finalPosition - transform.position) / interval;
 
             if (transform.position == finalPosition) { return; }
