@@ -106,27 +106,33 @@ namespace WizardPhysics
 
         private void SmartAccelerate(PlayerController target, CollisionEventArgs args, SurfaceConfig surfaceConfig)
         {
+            // enter the frame of reference of the mover
+            Vector3 localVelocity = target.Velocity - lastVelocity;
+
+            // perform the "normal" jump behavior in this frame of reference
             // jump away from the surface
-            RelationalAccelerate(target, args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
+            Accelerate(ref localVelocity, args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
             if (surfaceConfig.JumpForceMultiplier > 0)
             {
                 // jump up based on the player's rotation
-                target.Accelerate(target.DesiredModelRotation * Vector3.up, PlayerController.JumpForce * surfaceConfig.JumpForceMultiplier);
+                Accelerate(ref localVelocity, target.DesiredModelRotation * Vector3.up, PlayerController.JumpForce * surfaceConfig.JumpForceMultiplier);
             }
+
+            // leave the frame of reference of the mover
+            target.Velocity = localVelocity + lastVelocity;
         }
 
-        private void RelationalAccelerate(PlayerController target, Vector3 direction, float maxSpeed)
+        private void Accelerate(ref Vector3 velocity, Vector3 direction, float maxSpeed)
         {
-            float curSpeed = Vector3.Dot(target.Velocity - lastVelocity, direction);
+            float curSpeed = Vector3.Dot(velocity, direction);
             float addSpeed = maxSpeed - curSpeed;
             if (addSpeed <= 0)
             {
-                //already going too fast, so who cares
                 return;
             }
 
             //since I'm not going too fast, make me go just the right speed in that direction
-            target.Velocity += addSpeed * direction;
+            velocity += addSpeed * direction;
         }
     }
 }
