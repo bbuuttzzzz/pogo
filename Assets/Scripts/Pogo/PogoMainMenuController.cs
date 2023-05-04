@@ -9,6 +9,7 @@ namespace Pogo
 {
     public class PogoMainMenuController : MonoBehaviour
     {
+        public UnityEvent OnOpenWorldScreen;
         public UnityEvent OnOpenGamemodeScreen;
         public UnityEvent OnOpenHomeScreen;
         public UnityEvent OnOpenChallengeScreen;
@@ -26,20 +27,28 @@ namespace Pogo
             ChallengeButtonAnimator.SetBool("Flash", value);
         }
 
-        public void SetGamemodeOrStart()
+        public void AdventureTapped()
         {
-            if (PogoSelector.UnlockedEquipment.Length <= 1
-                && ChapterSelector.UnlockedChapters.Length <= 1)
-            {
-                StartGame();
-            }
-            else
-            {
-                OpenGamemodeScreen();
-            }
+            OpenWorldScreen();
         }
 
 
+        #region Chapter Loading
+        private ChapterDescriptor SelectedChapter;
+
+        public void SelectChapter(ChapterDescriptor chapter)
+        {
+            SelectedChapter = chapter;
+            OpenGamemodeScreen();
+        }
+
+        public void LoadSelectedChapter()
+        {
+            PogoGameManager.PogoInstance.LoadChapter(SelectedChapter);
+        }
+        #endregion
+
+        #region Challenge Loading
         public string DefaultCode;
         public string CurrentCode { get; set; }
         public void LoadChallenge()
@@ -65,6 +74,11 @@ namespace Pogo
             };
             builder.CurrentChallenge = clonedChallenge;
             builder.LoadChallenge();
+        }
+        #endregion
+        public void OpenWorldScreen()
+        {
+            OnOpenWorldScreen?.Invoke();
         }
 
         public void OpenGamemodeScreen()
@@ -99,7 +113,7 @@ namespace Pogo
 
         public void StartGame()
         {
-            ChapterSelector.LoadActiveChapter();
+            LoadSelectedChapter();
         }
 
         public InputField ChallengeInputField;

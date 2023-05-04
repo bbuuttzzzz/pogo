@@ -44,7 +44,7 @@ namespace WizardUtils
             {
                 foreach (Vector3 worldOffset in Waypoints)
                 {
-                    Gizmos.DrawIcon(transform.localPosition + worldOffset, "sp_flag.tiff", false, Color.blue);
+                    Gizmos.DrawIcon(transform.position + worldOffset, "sp_flag.tiff", false, Color.blue);
                 }
             }
         }

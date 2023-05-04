@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WizardUtils;
@@ -13,13 +14,13 @@ namespace Pogo
 
         public int Number;
         public string Title;
-
+        public Sprite Icon;
         public string LongTitle => $"Part {Number} - {Title}";
 
         public ChapterStartPoint FindStartPoint()
         {
             var startPoints = FindObjectsOfType(typeof(ChapterStartPoint)) as ChapterStartPoint[];
-            foreach(var startPoint in startPoints)
+            foreach (var startPoint in startPoints)
             {
                 if (startPoint.Chapter == this)
                 {

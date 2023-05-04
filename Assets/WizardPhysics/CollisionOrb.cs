@@ -58,7 +58,7 @@ namespace WizardPhysics
             lastRecordedPosition = currentCenter;
         }
 
-        public bool TestPath(Vector3 start, Vector3 finish, out RaycastHit hitInfo)
+        public bool TestPath(Vector3 start, Vector3 finish, out RaycastHit hitInfo, int layermask = -1)
         {
             Vector3 direction = finish - start;
             float maxDistance = (finish - start).magnitude;
@@ -68,12 +68,12 @@ namespace WizardPhysics
                 radius: Radius * transform.lossyScale.x,
                 maxDistance: maxDistance,
                 hitInfo: out hitInfo,
-                layerMask: cachedLayerMask);
+                layerMask: layermask == -1 ? cachedLayerMask : layermask);
         }
 
-        public bool TestRay(Ray ray, float maxDistance, out RaycastHit hitInfo)
+        public bool TestRay(Ray ray, float maxDistance, out RaycastHit hitInfo, int layermask = -1)
         {
-            return TestPath(ray.origin, ray.origin + ray.direction * maxDistance, out hitInfo);
+            return TestPath(ray.origin, ray.origin + ray.direction * maxDistance, out hitInfo, layermask);
         }
 
         /// <summary>

@@ -15,13 +15,13 @@ using WizardUtils.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     public AudioController AudioController;
-    CollisionGroup collisionGroup;
+    public CollisionGroup CollisionGroup;
     public float AutoRespawnDelay;
     public PlayerJostler Jostler;
 
     private void Awake()
     {
-        collisionGroup = GetComponent<CollisionGroup>();    
+        CollisionGroup = GetComponent<CollisionGroup>();    
     }
 
     void Start()
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
         internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
         transform.rotation = Quaternion.identity;
 
-        collisionGroup.OnCollide.AddListener(onCollide);
+        CollisionGroup.OnCollide.AddListener(onCollide);
 
         gameObject.SetActive(PogoGameManager.GameInstance.InControlScene);
         setControlSceneBehavior(PogoGameManager.GameInstance.InControlScene);
@@ -351,9 +351,9 @@ public class PlayerController : MonoBehaviour
     public Vector3 Velocity;
 
     const float JumpMaxSideSpeed = 6f;
-    const float JumpForce = 6f;
+    public const float JumpForce = 6f;
     const float AIR_ACCELERATE = 0;
-    const float AIR_SPEED_MAX = 1f; //max tangent air speed, the lower this value the slower the airstrafe
+    public const float AIR_SPEED_MAX = 1f; //max tangent air speed, the lower this value the slower the airstrafe
 
     public void ApplyForce(Vector3 force)
     {
@@ -377,22 +377,33 @@ public class PlayerController : MonoBehaviour
         (sound, lastJumpSoundIndex) = surfaceConfig.NextRandomSound(lastJumpSoundIndex);
         if (sound != null) AudioController.PlayOneShot(sound);
 
-        // jump away from the surface
-        Accelerate(args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
-        if (surfaceConfig.JumpForceMultiplier > 0)
+
+        if (args.HitInfo.collider != null
+            && args.HitInfo.collider.TryGetComponent<ISpecialPlayerCollisionBehavior>(out var behavior)
+            && behavior.TryOverrideCollisionBehavior(this, args, surfaceConfig))
         {
-            // jump up based on the player's rotation
-            Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
+            // override default collision behavior
+            return;
         }
-        // apply a speedcap on tangent velocity
-        //Decelerate(ModelRotation * Vector3.up, JumpMaxSideSpeed, 1);
+        else
+        {
+            // perform default collision behavior
+
+            // jump away from the surface
+            Accelerate(args.HitInfo.normal, 2 * surfaceConfig.SurfaceRepelForceMultiplier);
+            if (surfaceConfig.JumpForceMultiplier > 0)
+            {
+                // jump up based on the player's rotation
+                Accelerate(DesiredModelRotation * Vector3.up, JumpForce * surfaceConfig.JumpForceMultiplier);
+            }
+        }
     }
 
     public void RotateAndMove()
     {
         if (Time.deltaTime == 0) return;
-        collisionGroup.RotateTo(DesiredModelRotation);
-        collisionGroup.Move(Velocity * Time.deltaTime);
+        CollisionGroup.RotateTo(DesiredModelRotation);
+        CollisionGroup.Move(Velocity * Time.deltaTime);
     }
 
     private void onCollide(CollisionEventArgs e)

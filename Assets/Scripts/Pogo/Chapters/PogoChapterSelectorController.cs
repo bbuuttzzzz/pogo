@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Pogo.Challenges;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -12,68 +15,63 @@ namespace Pogo
 {
     public class PogoChapterSelectorController : MonoBehaviour
     {
-        public ChapterDescriptor[] Chapters;
+        public WorldDescriptor[] Worlds;
         [HideInInspector]
-        public ChapterDescriptor[] UnlockedChapters;
-        private int ActiveChapterIndex = 0;
+        public ChapterDescriptor[] DisplayChapters;
+        private int ActiveWorldIndex = 0;
+        private WorldDescriptor ActiveWorld => Worlds[ActiveWorldIndex];
+        public ChapterButtonController[] ChapterButtons;
 
-        public UnityEvent OnActiveChapterChanged;
-        public UnityStringEvent OnChapterNameChanged;
+        public UnityEvent OnActiveWorldChanged;
+        public UnityEvent<string> OnWorldNameChanged;
 
         private void Start()
         {
-            SetupUnlockedChapters();
-
-            OnActiveChapterChanged?.AddListener(updateChapterName);
-            OnActiveChapterChanged?.AddListener(updateButtonInteractableStates);
-            OnActiveChapterChanged?.Invoke();
+            OnActiveWorldChanged?.AddListener(OnWorldChanged);
+            OnActiveWorldChanged?.Invoke();
 
             if (IncrementButton != null) IncrementButton.onClick.AddListener(Increment);
             if (DecrementButton != null) DecrementButton.onClick.AddListener(Decrement);
         }
 
-        private void SetupUnlockedChapters()
+        private void OnWorldChanged()
         {
-            List<ChapterDescriptor> unlockedChapterList = new List<ChapterDescriptor>();
-            foreach(ChapterDescriptor chapter in Chapters)
-            {
-                if (chapter.IsUnlocked)
-                {
-                    unlockedChapterList.Add(chapter);
-                }
-            }
-
-            UnlockedChapters = unlockedChapterList.ToArray();
+            UpdateWorldName();
+            UpdateButtonInteractableStates();
+            UpdateChapterButtons();
         }
 
-        void updateChapterName()
+        void UpdateWorldName()
         {
-            OnChapterNameChanged.Invoke(UnlockedChapters[ActiveChapterIndex].LongTitle);
-        }
-
-        public void LoadActiveChapter()
-        {
-            PogoGameManager.PogoInstance.LoadChapter(UnlockedChapters[ActiveChapterIndex]);
+            OnWorldNameChanged.Invoke(ActiveWorld.DisplayName);
         }
 
         public Button IncrementButton; 
         public void Increment()
         {
-            ActiveChapterIndex = Math.Min(UnlockedChapters.Length - 1, ActiveChapterIndex + 1);
-            OnActiveChapterChanged?.Invoke();
+            ActiveWorldIndex = Math.Min(DisplayChapters.Length - 1, ActiveWorldIndex + 1);
+            OnActiveWorldChanged?.Invoke();
         }
 
         public Button DecrementButton;
         public void Decrement()
         {
-            ActiveChapterIndex = Math.Max(0, ActiveChapterIndex - 1);
-            OnActiveChapterChanged?.Invoke();
+            ActiveWorldIndex = Math.Max(0, ActiveWorldIndex - 1);
+            OnActiveWorldChanged?.Invoke();
         }
 
-        private void updateButtonInteractableStates()
+        private void UpdateButtonInteractableStates()
         {
-            DecrementButton.interactable = (ActiveChapterIndex > 0);
-            IncrementButton.interactable = (ActiveChapterIndex < UnlockedChapters.Length - 1);
+            DecrementButton.interactable = (ActiveWorldIndex > 0);
+            IncrementButton.interactable = (ActiveWorldIndex < DisplayChapters.Length - 1);
+        }
+
+        private void UpdateChapterButtons()
+        {
+            for (int n = 0; n < ChapterButtons.Length; n++)
+            {
+                ChapterButtons[n].WorldChapter = ActiveWorld.Chapters[n];
+            }
         }
     }
 }

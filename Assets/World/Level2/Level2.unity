@@ -680,11 +680,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnEnteredNotActivated.m_PersistentCalls.m_Calls.Array.size
@@ -693,14 +693,14 @@ PrefabInstance:
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 964784850}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: EnterPortal
+      value: GoToWaypoint
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnEnteredNotActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -720,7 +720,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: Pogo.AreaPortal, Assembly-CSharp
+      value: WizardUtils.Waypointer`1[[System.Single, mscorlib
+      objectReference: {fileID: 0}
+    - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
+      propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_IntArgument
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnEnteredNotActivated.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -32937,6 +32941,160 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 857634825177116663, guid: 2078f52929b7b9e47bb613fec9b961f0, type: 3}
   m_PrefabInstance: {fileID: 951659684}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &964784848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 964784851}
+  - component: {fileID: 964784850}
+  - component: {fileID: 964784849}
+  m_Layer: 0
+  m_Name: MUSIC
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &964784849
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964784848}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 881450061749428492, guid: 4df3a00c9f161ad4ca137dada8aef10f, type: 2}
+  m_audioClip: {fileID: 8300000, guid: bec7503219174124295ecdc3f8e0ba70, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.25
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 30
+  MaxDistance: 50
+  Pan2D: 0
+  rolloffMode: 1
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &964784850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964784848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1d9f3aed71b09478d8da4daa93c711, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Waypoints:
+  - 0
+  InitialWaypointIndex: 0
+  TransitionDuration: 1
+  UseRealTime: 0
+  UseCustomCurve: 0
+  CustomCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  Target: {fileID: 964784849}
+--- !u!4 &964784851
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964784848}
+  m_LocalRotation: {x: -0.0000020862688, y: 0.7071068, z: 0.7071068, w: 0.0000020862688}
+  m_LocalPosition: {x: -51.390034, y: 5.399988, z: 30.51}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &968655528
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -75633,11 +75791,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnEnteredNotActivated.m_PersistentCalls.m_Calls.Array.size
@@ -75646,14 +75804,14 @@ PrefabInstance:
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 964784850}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: EnterPortal
+      value: GoToWaypoint
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnEnteredNotActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -75673,7 +75831,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnActivated.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: Pogo.AreaPortal, Assembly-CSharp
+      value: WizardUtils.Waypointer`1[[System.Single, mscorlib
       objectReference: {fileID: 0}
     - target: {fileID: 4606160469400104165, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: OnEnteredNotActivated.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

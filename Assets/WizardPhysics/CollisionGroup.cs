@@ -140,6 +140,64 @@ namespace WizardPhysics
             }
         }
 
+        private const int SafeLayer = 30;
+        private const int SafeLayerMask = (1 << SafeLayer);
+
+        public void TestAgainst(Collider other, Vector3 movement)
+        {
+            using var _ = new LayerChangeScope(other.gameObject, SafeLayer);
+            Vector3 remainingMovement = -1 * movement;
+            Vector3 initialPosition = transform.position;
+
+            while (remainingMovement.magnitude >= 1E-8f)
+            {
+                float distance = remainingMovement.magnitude;
+                TestResult firstCollision = null;
+
+                // test all orbs to find closest collision
+                for (int orbIndex = 0; orbIndex < CollisionOrbs.Length; orbIndex++)
+                {
+                    CollisionOrb orb = CollisionOrbs[orbIndex];
+                    Ray ray = new Ray(orb.transform.position, remainingMovement);
+                    if (orb.TestRay(ray, distance + skinWidth, out RaycastHit hit, SafeLayerMask))
+                    {
+                        if (firstCollision == null || hit.distance < firstCollision.MaxDistance)
+                        {
+                            firstCollision = new TestResult(hit, orb, ray, distance + skinWidth);
+                        }
+                    }
+                }
+
+                if (firstCollision != null)
+                {
+                    // move up to the object, minus a skin width from the surface
+                    float angleOfIncidence = Vector3.Angle(firstCollision.HitInfo.normal, remainingMovement) - 90;
+                    float skinDepth = skinWidth / Mathf.Sin(angleOfIncidence * Mathf.Deg2Rad);
+
+                    float moveDistance = firstCollision.HitInfo.distance - skinDepth;
+                    transform.position += moveDistance * remainingMovement.normalized;
+                    remainingMovement -= moveDistance * remainingMovement.normalized;
+
+                    // remove non-tangent component from remainingMovement
+                    remainingMovement = remainingMovement.GetTangentComponent(firstCollision.HitInfo.normal);
+
+                    // call collision events
+                    var args = new CollisionEventArgs(firstCollision.HitInfo);
+                    OnCollide.Invoke(args);
+                    firstCollision.CollidedOrb.OnCollisionEnter.Invoke(args);
+                }
+                else
+                {
+                    // move all the way up
+                    transform.position += remainingMovement;
+                    remainingMovement = Vector3.zero;
+                }
+            }
+
+            // jump backwards the distance the object will move since the above is all calculated relatively
+            transform.position += movement;
+        }
+
         #region Collision
         private void checkForTriggers(CollisionEventArgs args)
         {
@@ -272,6 +330,24 @@ namespace WizardPhysics
                 this.CollidedOrb = collidedOrb;
                 this.TestRay = testRay;
                 this.MaxDistance = maxDistance;
+            }
+        }
+
+        private class LayerChangeScope : IDisposable
+        {
+            private GameObject Parent;
+            private int OriginalLayer;
+
+            public LayerChangeScope(GameObject parent, int newLayer)
+            {
+                Parent = parent;
+                OriginalLayer = parent.layer;
+                parent.gameObject.layer = newLayer;
+            }
+
+            public void Dispose()
+            {
+                Parent.layer = OriginalLayer;
             }
         }
     }
