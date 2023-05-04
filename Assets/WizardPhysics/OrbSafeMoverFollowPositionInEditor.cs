@@ -9,6 +9,7 @@ namespace Assets.WizardPhysics
     {
         public OrbSafeMover Target;
 
+#if UNITY_EDITOR
         private void Update()
         {
             if (UnityEditor.EditorApplication.isPlaying) return;
@@ -19,5 +20,6 @@ namespace Assets.WizardPhysics
                 Target.FollowTargetPosition();
             }
         }
+#endif
     }
 }
