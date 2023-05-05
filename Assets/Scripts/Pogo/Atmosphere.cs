@@ -98,12 +98,19 @@ public class Atmosphere : MonoBehaviour
     {
         currentWeight = t;
         volume.weight = t;
+        SetLightWeight(t);
+    }
+
+    private void SetLightWeight(float t)
+    {
 #if UNITY_EDITOR
-        if (UnityEditor.EditorApplication.isPlaying && TargetLight != null)
+        if (!UnityEditor.EditorApplication.isPlaying) return;
+#endif
+
+
+        if (TargetLight != null)
         {
             TargetLight.intensity = DefaultLightIntensity * t;
         }
-#endif
-
     }
 }

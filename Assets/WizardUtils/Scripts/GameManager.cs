@@ -33,6 +33,7 @@ namespace WizardUtils
             RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_MASTER, 100));
             RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_EFFECTS, 80));
             RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_AMBIENCE, 80));
+            RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_MUSIC, 80));
         }
 
         protected virtual void Update()
@@ -253,6 +254,7 @@ namespace WizardUtils
         public static string KEY_VOLUME_MASTER = "Volume_Master";
         public static string KEY_VOLUME_EFFECTS = "Volume_Effects";
         public static string KEY_VOLUME_AMBIENCE = "Volume_Ambience";
+        public static string KEY_VOLUME_MUSIC = "Volume_Music";
         #endregion
 
         #region Saving
