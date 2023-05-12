@@ -15,7 +15,7 @@ namespace Pogo
         public Transform Flag1;
         public Transform Flag2;
 
-        public ParticleLine ParticleLine;
+        public ParticleLine[] ParticleLines;
         public BoxCollider Collider;
 
         private void OnValidate()
@@ -23,7 +23,10 @@ namespace Pogo
             if (Flag1 != null) Flag1.localPosition = Vector3.left * (Radius - FlagOffset);
             if (Flag2 != null) Flag2.localPosition = Vector3.right * (Radius - FlagOffset);
 
-            if (ParticleLine != null) ParticleLine.UpdateEffect();
+            foreach(var particleLine in ParticleLines)
+            {
+                if (particleLine != null) particleLine.UpdateEffect();
+            }
             if (Collider != null)
             {
                 Vector3 size = Collider.size;
