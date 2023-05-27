@@ -119,6 +119,8 @@ public class PlayerController : MonoBehaviour
     }
 
     public UnityEvent<PlayerStateChangeEventArgs> OnStateChanged;
+    [HideInInspector]
+    public UnityEvent OnSpawn;
 
     public SurfaceConfig DefaultSurfaceConfig;
     public KillTypeDescriptor CollisionKillType;
@@ -265,6 +267,7 @@ public class PlayerController : MonoBehaviour
         if (DelayedRespawnRoutine != null) StopCoroutine(DelayedRespawnRoutine);
         Jostler.Stop();
         CurrentState = PlayerStates.Alive;
+        OnSpawn?.Invoke();
         PogoGameManager.PogoInstance?.OnPlayerSpawn.Invoke();
         Reset();
     }
@@ -344,10 +347,12 @@ public class PlayerController : MonoBehaviour
         PitchFrac = Mathf.MoveTowards(PitchFrac, targetPitchFrac, PitchFracSpeed * Time.deltaTime);
     }
 
-#endregion
+    #endregion
 
     #region Movement
 
+    [HideInInspector]
+    public UnityEvent OnTouch;
     public Vector3 Velocity;
 
     const float JumpMaxSideSpeed = 6f;
@@ -376,6 +381,7 @@ public class PlayerController : MonoBehaviour
         AudioClip sound;
         (sound, lastJumpSoundIndex) = surfaceConfig.NextRandomSound(lastJumpSoundIndex);
         if (sound != null) AudioController.PlayOneShot(sound);
+        OnTouch?.Invoke();
 
 
         if (args.HitInfo.collider != null
