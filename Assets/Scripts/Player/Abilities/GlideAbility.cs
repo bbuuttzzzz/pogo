@@ -13,7 +13,6 @@ namespace Pogo.Abilities
 
         protected override void AppliedUpdate()
         {
-            Debug.Log(Owner.AngleOfAttack);
             ApplyLift();
             ApplyDrag();
             WingsTransform.rotation = Owner.DesiredModelRotation;
