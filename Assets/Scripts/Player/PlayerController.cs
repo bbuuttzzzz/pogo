@@ -346,12 +346,16 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 wind = -1 * Vector3.ProjectOnPlane(Velocity, DesiredModelRotation * Vector3.right);
             Vector3 windUp = Vector3.Cross(ModelRight, wind.normalized);
+
             Debug.DrawRay(transform.position, wind, Color.cyan);
             Debug.DrawRay(transform.position, ModelForward, Color.red);
             Debug.DrawRay(transform.position, windUp, Color.blue);
             Debug.DrawRay(transform.position, ModelRight, Color.yellow);
 
-            return Mathf.Acos(Vector3.Dot(windUp, ModelForward)) * Mathf.Rad2Deg;
+            float dot = Vector3.Dot(windUp, ModelForward);
+            float angleOfAttack = Mathf.Asin(dot) * Mathf.Rad2Deg;
+            Debug.Log(angleOfAttack + "\t" + dot);
+            return angleOfAttack;
         }
     }
 
