@@ -337,6 +337,23 @@ public class PlayerController : MonoBehaviour
     const float ModelPitchMul = 1.5f;
     const float PitchFracSpeed = 10;
 
+    public Vector3 ModelUp => DesiredModelRotation * Vector3.up;
+    public Vector3 ModelForward => DesiredModelRotation * Vector3.forward;
+    public Vector3 ModelRight => DesiredModelRotation * Vector3.right;
+    public float AngleOfAttack
+    {
+        get
+        {
+            Vector3 wind = -1 * Vector3.ProjectOnPlane(Velocity, DesiredModelRotation * Vector3.right);
+            Vector3 windUp = Vector3.Cross(ModelRight, wind.normalized);
+            Debug.DrawRay(transform.position, wind, Color.cyan);
+            Debug.DrawRay(transform.position, ModelForward, Color.red);
+            Debug.DrawRay(transform.position, windUp, Color.blue);
+            Debug.DrawRay(transform.position, ModelRight, Color.yellow);
+
+            return Mathf.Acos(Vector3.Dot(windUp, ModelForward)) * Mathf.Rad2Deg;
+        }
+    }
 
     public Quaternion DesiredModelRotation => Quaternion.Euler(PitchFrac * ModelPitchMul * EyeAngles.x, EyeAngles.y, EyeAngles.z);
     public Quaternion CameraRotation => Quaternion.Euler(PitchFrac * EyeAngles.x, EyeAngles.y, EyeAngles.z);

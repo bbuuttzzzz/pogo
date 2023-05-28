@@ -5,7 +5,9 @@ namespace Pogo.Abilities
 {
     public abstract class PlayerAbility : MonoBehaviour
     {
-        protected PlayerController Target;
+        protected PlayerController Owner;
+        private bool isApplied;
+        public bool IsApplied { get { return isApplied; } }
 
         public enum CleanseTypes
         {
@@ -16,9 +18,10 @@ namespace Pogo.Abilities
 
         public void Apply(PlayerController target)
         {
-            Target = target;
-            Target.OnTouch.AddListener(Target_OnTouch);
-            Target.OnSpawn.AddListener(Target_OnSpawn);
+            Owner = target;
+            Owner.OnTouch.AddListener(Target_OnTouch);
+            Owner.OnSpawn.AddListener(Target_OnSpawn);
+            isApplied = true;
             OnApply();
         }
 
@@ -37,13 +40,23 @@ namespace Pogo.Abilities
 
         public void Cleanse()
         {
+            isApplied = false;
             OnCleanse();
-            Target.OnTouch.RemoveListener(Target_OnTouch);
-            Target = null;
+            Owner.OnTouch.RemoveListener(Target_OnTouch);
+            Owner = null;
             Destroy(gameObject);
+        }
+
+        protected virtual void Update()
+        {
+            if (IsApplied)
+            {
+                AppliedUpdate();
+            }
         }
 
         protected abstract void OnApply();
         protected abstract void OnCleanse();
+        protected abstract void AppliedUpdate();
     }
 }
