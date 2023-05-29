@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Players.Visuals;
+using System;
 using UnityEngine;
 
 namespace Pogo.Abilities
@@ -10,6 +11,8 @@ namespace Pogo.Abilities
         public float DragScale = 1;
         public AnimationCurve DragCurve;
         public Transform WingsTransform;
+
+        public PlayerModelAttachment BackAttachment;
 
         protected override void AppliedUpdate()
         {
@@ -36,12 +39,12 @@ namespace Pogo.Abilities
 
         protected override void OnApply()
         {
-            Debug.Log("Applied");
+            Owner.AttachmentHandler.AddAttachment(BackAttachment);
         }
 
         protected override void OnCleanse()
         {
-            Debug.Log("Cleansed");
+            Owner.AttachmentHandler.RemoveAttachment(BackAttachment);
         }
 
         private float Square(float value) => value * value;

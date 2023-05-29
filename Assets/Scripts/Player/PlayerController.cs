@@ -18,10 +18,13 @@ public class PlayerController : MonoBehaviour
     public CollisionGroup CollisionGroup;
     public float AutoRespawnDelay;
     public PlayerJostler Jostler;
+    [NonSerialized]
+    public PlayerAttachmentHandler AttachmentHandler;
 
     private void Awake()
     {
-        CollisionGroup = GetComponent<CollisionGroup>();    
+        CollisionGroup = GetComponent<CollisionGroup>();
+        AttachmentHandler = GetComponent<PlayerAttachmentHandler>();
     }
 
     void Start()

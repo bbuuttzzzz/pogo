@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4271382824055749687}
+  - component: {fileID: 7961940709774909981}
   m_Layer: 7
   m_Name: Wings
   m_TagString: Untagged
@@ -32,6 +33,22 @@ Transform:
   m_Father: {fileID: 4458818893041782466}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7961940709774909981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121430388392190810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25293066efa1d394dbad9adaa6cd0ef6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttachPoint: 3
+  OnAttach:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1300320788351459940
 GameObject:
   m_ObjectHideFlags: 0
@@ -58,7 +75,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1300320788351459940}
   m_LocalRotation: {x: -0, y: 0.00000086426724, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.818, z: -0.297}
+  m_LocalPosition: {x: 0, y: 0, z: -0.297}
   m_LocalScale: {x: 1.6, y: 0.001, z: 0.48}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -293,3 +310,4 @@ MonoBehaviour:
     m_PostInfinity: 1
     m_RotationOrder: 4
   WingsTransform: {fileID: 4271382824055749687}
+  BackAttachment: {fileID: 7961940709774909981}
