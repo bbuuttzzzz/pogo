@@ -44,6 +44,7 @@ namespace Pogo.Abilities
 
         protected override void OnCleanse()
         {
+            transform.parent = null;
             Owner.AttachmentHandler.RemoveAttachment(BackAttachment);
         }
 

@@ -8,6 +8,7 @@ namespace Pogo.Abilities
         protected PlayerController Owner;
         private bool isApplied;
         public bool IsApplied { get { return isApplied; } }
+        public float DestroyDelay;
 
         public enum CleanseTypes
         {
@@ -43,8 +44,9 @@ namespace Pogo.Abilities
             isApplied = false;
             OnCleanse();
             Owner.OnTouch.RemoveListener(Target_OnTouch);
+            Owner.OnSpawn.RemoveListener(Target_OnSpawn);
             Owner = null;
-            Destroy(gameObject);
+            Destroy(gameObject, DestroyDelay);
         }
 
         protected virtual void Update()
