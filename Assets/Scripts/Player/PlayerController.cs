@@ -1,6 +1,7 @@
 using Assets.Scripts.Player;
 using Inputter;
 using Pogo;
+using Pogo.Abilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -124,6 +125,8 @@ public class PlayerController : MonoBehaviour
     public UnityEvent<PlayerStateChangeEventArgs> OnStateChanged;
     [HideInInspector]
     public UnityEvent OnSpawn;
+    [HideInInspector]
+    public UnityEvent<PlayerAbility> OnBeforeApplyAbility;
 
     public SurfaceConfig DefaultSurfaceConfig;
     public KillTypeDescriptor CollisionKillType;

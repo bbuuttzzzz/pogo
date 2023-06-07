@@ -6,7 +6,7 @@ namespace WizardUtils
     public class Sideshow : MonoBehaviour
     {
         public Collider Collider => collider; 
-        Collider collider;
+        new Collider collider;
 
         public Transform Target;
 
