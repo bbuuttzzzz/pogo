@@ -1,6 +1,7 @@
 ﻿using Players.Visuals;
 using System;
 using UnityEngine;
+using WizardUtils;
 
 namespace Pogo.Abilities
 {
@@ -11,13 +12,14 @@ namespace Pogo.Abilities
         public float DragScale = 1;
         public AnimationCurve DragCurve;
         public Transform WingsTransform;
+        public float RudderScale = 0.25f;
 
         public PlayerModelAttachment BackAttachment;
 
         protected override void AppliedUpdate()
         {
             ApplyLift();
-            ApplyDrag();
+            ApplyDragAndRudder();
             WingsTransform.rotation = Owner.DesiredModelRotation;
         }
 
@@ -29,12 +31,13 @@ namespace Pogo.Abilities
             Owner.ApplyForce(Owner.ModelUp * evaluatedLift * squareVelocityAlongForward * Time.deltaTime);
         }
 
-        private void ApplyDrag()
+        private void ApplyDragAndRudder()
         {
             float evaluatedDrag = DragCurve.Evaluate(Owner.AngleOfAttack) * DragScale;
             float squareSpeed = Owner.Velocity.sqrMagnitude;
 
             Owner.ApplyForce(Owner.Velocity.normalized * -1 * evaluatedDrag * squareSpeed * Time.deltaTime);
+            Owner.ApplyForce(Owner.ModelForward * evaluatedDrag * squareSpeed * Time.deltaTime * RudderScale);
         }
 
         protected override void OnApply()
