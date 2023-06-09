@@ -127,6 +127,8 @@ public class PlayerController : MonoBehaviour
     public UnityEvent OnSpawn;
     [HideInInspector]
     public UnityEvent<PlayerAbility> OnBeforeApplyAbility;
+    [HideInInspector]
+    public UnityEvent OnDie;
 
     public SurfaceConfig DefaultSurfaceConfig;
     public KillTypeDescriptor CollisionKillType;
@@ -266,6 +268,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         Jostler.Play();
+        OnDie?.Invoke();
     }
 
     public void Spawn()
@@ -346,6 +349,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 ModelUp => DesiredModelRotation * Vector3.up;
     public Vector3 ModelForward => DesiredModelRotation * Vector3.forward;
     public Vector3 ModelRight => DesiredModelRotation * Vector3.right;
+    public Vector3 FlatForward => Quaternion.Euler(0, EyeAngles.y, 0) * Vector3.forward;
     public float AngleOfAttack
     {
         get
