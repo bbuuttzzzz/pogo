@@ -10,6 +10,13 @@ public class KillTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+#if DEBUG
+        if (Type == null)
+        {
+            throw new MissingReferenceException(nameof(Type));
+        }
+#endif
+
         OnTriggered.Invoke();
 
         Vector3 origin = GetComponent<Collider>().ClosestPointOnBounds(other.bounds.center);
