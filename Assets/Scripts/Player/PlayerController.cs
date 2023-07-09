@@ -180,7 +180,14 @@ public class PlayerController : MonoBehaviour
             }
             if (renderer != null)
             {
-                material = (hitInfo.collider as MeshCollider).sharedMesh.GetMaterialAtTriangle(renderer, hitInfo.triangleIndex);
+                if (hitInfo.collider is MeshCollider meshCollider && meshCollider.convex)
+                {
+                    material = renderer.materials[0];
+                }
+                else
+                {
+                    material = (hitInfo.collider as MeshCollider).sharedMesh.GetMaterialAtTriangle(renderer, hitInfo.triangleIndex);
+                }
             }
         }
         else
