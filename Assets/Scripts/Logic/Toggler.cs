@@ -37,8 +37,9 @@ namespace Logic
         {
             get => isToggledOn; set
             {
-                if (isToggledOn == value) return;
-                if (Time.time < lastActivation + Cooldown)
+                if (!this.enabled
+                    || isToggledOn == value
+                    || Time.time < lastActivation + Cooldown)
                 {
                     return;
                 }
