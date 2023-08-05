@@ -20,9 +20,9 @@ namespace WizardUI
             Instance = this;
         }
 
-        public void SpawnUIElement(GameObject prefab)
+        public GameObject SpawnUIElement(GameObject prefab)
         {
-            Instantiate(prefab, UIParent);
+            return Instantiate(prefab, UIParent);
         }
     }
 }
