@@ -9,16 +9,10 @@ namespace Pogo
 {
     public class PogoMainMenuController : MonoBehaviour
     {
-        public UnityEvent OnOpenWorldScreen;
-        public UnityEvent OnOpenGamemodeScreen;
-        public UnityEvent OnOpenHomeScreen;
-        public UnityEvent OnOpenChallengeScreen;
-        public UnityEvent OnOpenCustomChallengeScreen;
-        public UnityEvent OnHideCustomChallengeScreen;
-
         public EquipmentSelectorController PogoSelector;
         public PogoChapterSelectorController ChapterSelector;
 
+        public Animator MainMenuAnimator;
         public Animator ChallengeButtonAnimator;
         private void Start()
         {
@@ -78,12 +72,12 @@ namespace Pogo
         #endregion
         public void OpenWorldScreen()
         {
-            OnOpenWorldScreen?.Invoke();
+            MainMenuAnimator.SetTrigger("ShowWorld");
         }
 
         public void OpenGamemodeScreen()
         {
-            OnOpenGamemodeScreen?.Invoke();
+            MainMenuAnimator.SetTrigger("ShowGamemode");
         }
 
         public void OpenHomeScreen()
@@ -92,23 +86,23 @@ namespace Pogo
             UnlockChecker unlockChecker = GetComponent<UnlockChecker>();
             bool value = unlockChecker.Check();
             animator.SetBool("ChallengeModeFlash", value);
-            OnOpenHomeScreen?.Invoke();
+            MainMenuAnimator.SetTrigger("ShowHome");
         }
 
         public void OpenChallengeScreen()
         {
             GetComponent<SaveEditor>().SetUnlocked(false);
-            OnOpenChallengeScreen?.Invoke();
+            MainMenuAnimator.SetTrigger("ShowChallenge");
         }
 
         public void OpenCustomChallengeScreen()
         {
-            OnOpenCustomChallengeScreen?.Invoke();
+            MainMenuAnimator.SetTrigger("ShowCustomChallenge");
         }
 
         public void HideCustomChallengeScreen()
         {
-            OnHideCustomChallengeScreen?.Invoke();
+            MainMenuAnimator.SetTrigger("HideCustomChallenge");
         }
 
         public void StartGame()
