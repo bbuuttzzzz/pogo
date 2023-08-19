@@ -26,7 +26,7 @@ namespace WizardUtils.Saving
                         file.WriteLine($"{saveValue.Descriptor.Key} = {saveValue.StringValue}");
                     }
                 }
-            }       
+            }
         }
 
         public override void Load()

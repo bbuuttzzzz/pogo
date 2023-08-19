@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Pogo.Saving
 {
+    [System.Serializable]
     public struct ChapterProgressData
     {
         public bool complete;
