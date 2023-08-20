@@ -16,8 +16,9 @@ namespace WizardUtils.Saving
 
         public override void Save()
         {
-            Debug.Log($"Writing to {Manifest.DefaultPath}");
-            using (StreamWriter file = new StreamWriter(Manifest.DefaultPath))
+            string path = Manifest.GetFilePath(GameManager.GameInstance.PersistentDataPath);
+            Debug.Log($"Writing to {path}");
+            using (StreamWriter file = new StreamWriter(path))
             {
                 foreach ((_, SaveValue saveValue) in LoadedValues.ToList())
                 {
@@ -32,9 +33,10 @@ namespace WizardUtils.Saving
         public override void Load()
         {
             LoadedValues = new Dictionary<SaveValueDescriptor, SaveValue>();
+            string path = Manifest.GetFilePath(GameManager.GameInstance.PersistentDataPath);
 
-            if (!File.Exists(Manifest.DefaultPath)) return;
-            using (StreamReader file = new StreamReader(Manifest.DefaultPath))
+            if (!File.Exists(path)) return;
+            using (StreamReader file = new StreamReader(path))
             {
                 string line;
                 while ((line = file.ReadLine()) != null)

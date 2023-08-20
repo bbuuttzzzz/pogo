@@ -1,4 +1,5 @@
 ﻿using Inputter;
+using Platforms;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +17,10 @@ namespace WizardUtils
     public abstract class GameManager : MonoBehaviour
     {
         public static GameManager GameInstance;
+        public IPlatformService PlatformService;
         public EventHandler OnSoftQuit;
+        public string PersistentDataPath => PlatformService.PersistentDataPath;
+
         protected virtual void Awake()
         {
             if (GameInstance != null)
@@ -27,6 +31,13 @@ namespace WizardUtils
 
             GameInstance = this;
             DontDestroyOnLoad(gameObject);
+
+#if STORE_STEAM
+            PlatformService = new Platforms.Steam.SteamPlatformService();
+#else
+            PlatformService = new Platforms.Portable.PortablePlatformService();
+#endif
+
             GameSettings = new List<GameSettingFloat>();
             SetupSaveData();
 
@@ -39,6 +50,16 @@ namespace WizardUtils
         protected virtual void Update()
         {
 
+        }
+
+        protected virtual void OnEnable()
+        {
+            PlatformService?.OnEnable();
+        }
+
+        protected virtual void OnDestroy()
+        {
+            PlatformService?.OnDestroy();
         }
 
         public static bool GameInstanceIsValid()

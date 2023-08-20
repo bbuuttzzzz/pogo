@@ -9,7 +9,11 @@ namespace WizardUtils.Saving
     public class SaveManifest : ScriptableObject
     {
         public string FileName;
-        public string DefaultPath => $"{Application.persistentDataPath}{Path.DirectorySeparatorChar}{FileName}.sav";
+        public string GetFilePath(string basePath)
+        {
+            return $"{basePath}{Path.DirectorySeparatorChar}{FileName}.sav");
+        }
+
         public SaveValueDescriptor[] SaveValueDescriptors;
 
         public bool ContainsDescriptor(SaveValueDescriptor descriptor)

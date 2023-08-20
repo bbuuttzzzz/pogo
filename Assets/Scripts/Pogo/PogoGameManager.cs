@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Player;
 using Inputter;
+using Platforms;
 using Pogo.Challenges;
 using System;
 using System.Collections;
@@ -15,7 +16,6 @@ namespace Pogo
     public class PogoGameManager : WizardUtils.GameManager
     {
         public static PogoGameManager PogoInstance => GameInstance as PogoGameManager;
-
 
         protected override void Awake()
         {
