@@ -313,7 +313,7 @@ namespace WizardUtils
             }
             else
             {
-                saveDataTracker = new SaveDataTrackerFile(MainSaveManifest);
+                saveDataTracker = new SaveDataTrackerFile(PlatformService, MainSaveManifest);
             }
 #else
             saveDataTracker = new SaveDataTrackerFile(MainSaveManifest);

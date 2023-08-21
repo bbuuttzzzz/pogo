@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Platforms;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,13 +11,16 @@ namespace WizardUtils.Saving
 {
     public class SaveDataTrackerFile : SaveDataTracker
     {
-        public SaveDataTrackerFile(SaveManifest manifest) : base(manifest)
+        private IPlatformService PlatformService;
+
+        public SaveDataTrackerFile(IPlatformService platformService, SaveManifest manifest) : base(manifest)
         {
+            PlatformService = platformService;
         }
 
         public override void Save()
         {
-            string path = Manifest.GetFilePath(GameManager.GameInstance.PersistentDataPath);
+            string path = Manifest.GetFilePath(PlatformService.PersistentDataPath);
             Debug.Log($"Writing to {path}");
             using (StreamWriter file = new StreamWriter(path))
             {
@@ -33,7 +37,7 @@ namespace WizardUtils.Saving
         public override void Load()
         {
             LoadedValues = new Dictionary<SaveValueDescriptor, SaveValue>();
-            string path = Manifest.GetFilePath(GameManager.GameInstance.PersistentDataPath);
+            string path = Manifest.GetFilePath(PlatformService.PersistentDataPath);
 
             if (!File.Exists(path)) return;
             using (StreamReader file = new StreamReader(path))

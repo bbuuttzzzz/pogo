@@ -7,19 +7,19 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using WizardUtils.Saving;
+using Platforms;
 
 namespace Pogo.Saving
 {
     public class SaveSlotDataTrackerFile : SaveSlotDataTracker
     {
-        private string FilePath => $"{RootPath}/{BaseName}{Index}";
-        private string RootPath;
+        private IPlatformService platformService;
+        private string FilePath => $"{platformService.PersistentDataPath}{Path.DirectorySeparatorChar}{BaseName}{Index}.sav";
         private string BaseName;
         private int Index;
 
-        public SaveSlotDataTrackerFile(string rootPath, string baseName, int index)
+        public SaveSlotDataTrackerFile(IPlatformService platformService, string baseName, int index)
         {
-            RootPath = rootPath;
             BaseName = baseName;
             Index = index;
         }

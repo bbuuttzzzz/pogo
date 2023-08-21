@@ -29,7 +29,6 @@ namespace WizardUtils
                 float currentValue = Value;
                 if (value != currentValue)
                 {
-                    PlayerPrefs.SetFloat(key, value);
                     OnChanged?.Invoke(this, new GameSettingChangedEventArgs(currentValue, value));
                 }
             }
