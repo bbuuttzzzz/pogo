@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using WizardUtils.GameSettings;
 using WizardUtils.Saving;
 using WizardUtils.SceneManagement;
 
@@ -37,14 +38,20 @@ namespace WizardUtils
 #else
             PlatformService = new Platforms.Portable.PortablePlatformService();
 #endif
+            GameSettingService = PlatformService.BuildGameSettingService(LoadGameSettings());
 
-            GameSettings = new List<GameSettingFloat>();
             SetupSaveData();
+        }
 
-            RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_MASTER, 100));
-            RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_EFFECTS, 80));
-            RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_AMBIENCE, 80));
-            RegisterGameSetting(new GameSettingFloat(KEY_VOLUME_MUSIC, 80));
+        protected virtual List<GameSettingFloat> LoadGameSettings()
+        {
+            return new List<GameSettingFloat>()
+            {
+                new GameSettingFloat(KEY_VOLUME_MASTER, 100),
+                new GameSettingFloat(KEY_VOLUME_EFFECTS, 80),
+                new GameSettingFloat(KEY_VOLUME_AMBIENCE, 80),
+                new GameSettingFloat(KEY_VOLUME_MUSIC, 80),
+            };
         }
 
         protected virtual void Update()
@@ -251,25 +258,13 @@ namespace WizardUtils
         #endregion
 
         #region GameSettings
-        List<GameSettingFloat> GameSettings;
+        IGameSettingService GameSettingService;
 
         public bool DontLoadScenesInEditor;
 
-        protected void RegisterGameSetting(GameSettingFloat setting)
-        {
-            GameSettings.Add(setting);
-        }
-
         public GameSettingFloat FindGameSetting(string key)
         {
-            foreach(GameSettingFloat setting in GameSettings)
-            {
-                if (setting.Key == key)
-                {
-                    return setting;
-                }
-            }
-            throw new KeyNotFoundException($"Missing GameSetting \"{key}\"");
+            return GameSettingService.GetSetting(key);
         }
 
         public static string KEY_VOLUME_MASTER = "Volume_Master";

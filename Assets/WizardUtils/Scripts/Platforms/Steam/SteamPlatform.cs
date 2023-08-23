@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using WizardUtils;
+using WizardUtils.GameSettings;
 
 namespace Platforms.Steam
 {
@@ -48,12 +49,9 @@ namespace Platforms.Steam
             SetupPersistentDataPath();
         }
 
-        private void SetupPersistentDataPath()
+        public IGameSettingService BuildGameSettingService(IEnumerable<GameSettingFloat> settings)
         {
-            AccountID_t steamId = SteamUser.GetSteamID().GetAccountID();
-
-            // %home%/steamsaves/steam64id
-            PersistentDataPath = $"{Application.persistentDataPath}{Path.DirectorySeparatorChar}steamsaves{Path.DirectorySeparatorChar}{steamId}";
+            return new ConfigFileGameSettingService(this, "settings", settings);
         }
 
         #region Messages
@@ -86,6 +84,13 @@ namespace Platforms.Steam
 
         #endregion
 
+        private void SetupPersistentDataPath()
+        {
+            AccountID_t steamId = SteamUser.GetSteamID().GetAccountID();
+
+            // %home%/steamsaves/steam64id
+            PersistentDataPath = $"{Application.persistentDataPath}{Path.DirectorySeparatorChar}steamsaves{Path.DirectorySeparatorChar}{steamId}";
+        }
         private void OnGameOverlayActivated(GameOverlayActivated_t callback)
         {
             if (callback.m_bActive != 0)
@@ -102,5 +107,6 @@ namespace Platforms.Steam
         {
             Debug.LogWarning(pchDebugText);
         }
+
     }
 }

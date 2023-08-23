@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using WizardUtils;
+using WizardUtils.GameSettings;
 
 namespace Platforms.Portable
 {
@@ -19,6 +21,11 @@ namespace Platforms.Portable
         public void OnDestroy()
         {
 
+        }
+
+        public IGameSettingService BuildGameSettingService(IEnumerable<GameSettingFloat> settings)
+        {
+            return new PlayerPrefsGameSettingService(settings);
         }
     }
 }

@@ -31,11 +31,6 @@ namespace Pogo
                 levelManager.SetCurrentLevelInEditor(InitialLevel);
             }
 #endif
-            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_FIELD_OF_VIEW, 90));
-            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_SENSITIVITY, 0.1f));
-            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_INVERT, 0f));
-            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_TIMER, 0f));
-            RegisterGameSetting(new GameSettingFloat(SETTINGKEY_RESPAWNDELAY, 0.5f));
 
             OnPauseStateChanged += ((_, _) => UpdateTimeFreeze());
             OnPlayerDeath.AddListener(() => NumberOfDeaths++);
@@ -46,6 +41,19 @@ namespace Pogo
 #else
             LoadControlScene(MainMenuControlScene);       
 #endif
+        }
+
+        protected override List<GameSettingFloat> LoadGameSettings()
+        {
+            var list = base.LoadGameSettings();
+
+            list.Add(new GameSettingFloat(SETTINGKEY_FIELD_OF_VIEW, 90));
+            list.Add(new GameSettingFloat(SETTINGKEY_SENSITIVITY, 0.1f));
+            list.Add(new GameSettingFloat(SETTINGKEY_INVERT, 0f));
+            list.Add(new GameSettingFloat(SETTINGKEY_TIMER, 0f));
+            list.Add(new GameSettingFloat(SETTINGKEY_RESPAWNDELAY, 0.5f));
+
+            return list;
         }
 
         protected override void Update()

@@ -35,6 +35,8 @@ namespace WizardUtils.GameSettings
         }
         public void Save()
         {
+            if (!IsDirty) return;
+
             Tuple<string, float>[] data = new Tuple<string, float>[GameSettings.Count];
             int offset = 0;
             foreach (var kv in GameSettings)
