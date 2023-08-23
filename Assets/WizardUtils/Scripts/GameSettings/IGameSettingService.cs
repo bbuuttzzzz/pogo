@@ -8,6 +8,7 @@ namespace WizardUtils.GameSettings
 {
     public interface IGameSettingService
     {
-        public void Initialize(IEnumerable<GameSettingFloat> settings);
+        public GameSettingFloat GetSetting(string key);
+        public void Save();
     }
 }

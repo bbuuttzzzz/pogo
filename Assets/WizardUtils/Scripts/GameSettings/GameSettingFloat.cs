@@ -12,6 +12,7 @@ namespace WizardUtils
         string key;
         public string Key => key;
         float defaultValue;
+        private float _value;
 
         public EventHandler<GameSettingChangedEventArgs> OnChanged;
 
@@ -19,18 +20,19 @@ namespace WizardUtils
         {
             this.key = key;
             this.defaultValue = defaultValue;
+            this._value = defaultValue;
         }
 
         public float Value
         {
-            get => PlayerPrefs.GetFloat(key, defaultValue);
+            get => _value;
             set
             {
-                float currentValue = Value;
-                if (value != currentValue)
+                if (value != _value)
                 {
-                    OnChanged?.Invoke(this, new GameSettingChangedEventArgs(currentValue, value));
+                    OnChanged?.Invoke(this, new GameSettingChangedEventArgs(_value, value));
                 }
+                _value = value;
             }
         }
     }

@@ -8,15 +8,23 @@ namespace WizardUtils.GameSettings
     {
         Dictionary<string, GameSettingFloat> GameSettings;
 
-        public PlayerPrefsGameSettingService()
+        public PlayerPrefsGameSettingService(IEnumerable<GameSettingFloat> settings)
         {
             GameSettings = new Dictionary<string, GameSettingFloat>();
+            foreach (GameSettingFloat newSetting in settings)
+            {
+                GameSettings.Add(newSetting.Key, newSetting);
+                newSetting.OnChanged += (sender, e) => OnGameSettingChanged(newSetting, e);
+            }
         }
 
-        public void RegisterGameSetting(GameSettingFloat newSetting)
+        public GameSettingFloat GetSetting(string key)
         {
-            GameSettings.Add(newSetting.Key, newSetting);
-            newSetting.OnChanged += (sender, e) => OnGameSettingChanged(newSetting, e);
+            return GameSettings[key];
+        }
+
+        public void Save()
+        {
         }
 
         private void OnGameSettingChanged(GameSettingFloat setting, GameSettingChangedEventArgs e)

@@ -14,7 +14,8 @@ namespace WizardUtils.GameSettings
         private IPlatformService PlatformService;
         private string FilePath => $"{PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}{FileName}.cfg";
         private string FileName;
-
+        private bool IsDirty;
+        private bool IsLoading;
 
         public ConfigFileGameSettingService(IPlatformService platformService, string fileName, IEnumerable<GameSettingFloat> settings)
         {
@@ -28,6 +29,40 @@ namespace WizardUtils.GameSettings
             Load();
         }
 
+        public GameSettingFloat GetSetting(string key)
+        {
+            return GameSettings[key];
+        }
+        public void Save()
+        {
+            Tuple<string, float>[] data = new Tuple<string, float>[GameSettings.Count];
+            int offset = 0;
+            foreach (var kv in GameSettings)
+            {
+                data[offset++] = new Tuple<string, float>(kv.Key, kv.Value.Value);
+            }
+
+            string rawBlob;
+            try
+            {
+                rawBlob = JsonConvert.SerializeObject(data);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogWarning($"Settings save ERROR Failed to serialize {FileName}.cfg: {e}");
+                return;
+            }
+
+            try
+            {
+                File.WriteAllText(FilePath, rawBlob);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogWarning($"Settings save ERROR Failed to write {FileName}.cfg: {e}");
+                return;
+            }
+        }
         private void RegisterGameSetting(GameSettingFloat newSetting)
         {
             GameSettings.Add(newSetting.Key, newSetting);
@@ -36,30 +71,40 @@ namespace WizardUtils.GameSettings
 
         private void OnGameSettingChanged(GameSettingFloat setting, GameSettingChangedEventArgs e)
         {
+            // we don't need to do any
+            if (IsLoading) return;
 
+            IsDirty = true;
         }
 
         private void Load()
         {
+            IsLoading = true;
             Tuple<string, float>[] data;
-            data = GetData();
+            data = ReadData();
 
             foreach(var pair in data)
             {
                 if (GameSettings.TryGetValue(pair.Item1, out var gameSetting))
                 {
                     gameSetting.Value = pair.Item2;
-                    throw new NotImplementedException(":( this is gonna call OnGameSettingChanged a bunch?");
+                }
+                else
+                {
+                    // register extra settings so they will get serialized when we re-save the config
+                    RegisterGameSetting(new GameSettingFloat(pair.Item1, pair.Item2));
                 }
             }
+            IsLoading = false;
         }
 
-        private Tuple<string, float>[] GetData()
+        private Tuple<string, float>[] ReadData()
         {
             Tuple<string, float>[] data;
             string rawBlob;
             if (!File.Exists(FilePath))
             {
+                IsDirty = true;
                 return new Tuple<string, float>[0];
             }
             
@@ -70,6 +115,7 @@ namespace WizardUtils.GameSettings
             catch (Exception e)
             {
                 UnityEngine.Debug.LogWarning($"Settings load ERROR Failed to open {FileName}.cfg: {e}");
+                IsDirty = true;
                 return new Tuple<string, float>[0];
             }
 
@@ -79,11 +125,13 @@ namespace WizardUtils.GameSettings
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogWarning($"Settings load ERROR Failed to parse {FileName}.cfg: {e}");
+                UnityEngine.Debug.LogWarning($"Settings load ERROR Failed to deserialize {FileName}.cfg: {e}");
                 return new Tuple<string, float>[0];
             }
 
             return data;
         }
+
+
     }
 }

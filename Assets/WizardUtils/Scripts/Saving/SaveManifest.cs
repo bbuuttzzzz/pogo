@@ -11,7 +11,7 @@ namespace WizardUtils.Saving
         public string FileName;
         public string GetFilePath(string basePath)
         {
-            return $"{basePath}{Path.DirectorySeparatorChar}{FileName}.sav");
+            return $"{basePath}{Path.DirectorySeparatorChar}{FileName}.sav";
         }
 
         public SaveValueDescriptor[] SaveValueDescriptors;
