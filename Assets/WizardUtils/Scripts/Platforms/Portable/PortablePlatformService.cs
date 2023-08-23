@@ -25,7 +25,7 @@ namespace Platforms.Portable
 
         public IGameSettingService BuildGameSettingService(IEnumerable<GameSettingFloat> settings)
         {
-            return new PlayerPrefsGameSettingService(settings);
+            return new ConfigFileGameSettingService(this, "settings", settings);
         }
     }
 }
