@@ -29,7 +29,7 @@ namespace Pogo.Saving
             string rawDataSerialized = JsonConvert.SerializeObject(RawData);
             try
             {
-                Directory.CreateDirectory(FilePath);
+                Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
                 File.WriteAllText(FilePath, rawDataSerialized);
             }
             catch (Exception e)
