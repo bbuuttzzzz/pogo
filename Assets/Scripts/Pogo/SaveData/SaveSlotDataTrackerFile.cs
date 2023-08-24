@@ -27,7 +27,16 @@ namespace Pogo.Saving
         public override void Save()
         {
             string rawDataSerialized = JsonConvert.SerializeObject(RawData);
-            File.WriteAllText(FilePath, rawDataSerialized);
+            try
+            {
+                Directory.CreateDirectory(FilePath);
+                File.WriteAllText(FilePath, rawDataSerialized);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to write {BaseName}.sav: {e}");
+                return;
+            }
         }
 
         public override void Load()

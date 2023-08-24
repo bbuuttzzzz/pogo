@@ -57,6 +57,7 @@ namespace WizardUtils.GameSettings
 
             try
             {
+                Directory.CreateDirectory(FilePath);
                 File.WriteAllText(FilePath, rawBlob);
             }
             catch (Exception e)
