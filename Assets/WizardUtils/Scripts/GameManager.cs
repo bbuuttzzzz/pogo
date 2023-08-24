@@ -19,7 +19,10 @@ namespace WizardUtils
     {
         public static GameManager GameInstance;
         public IPlatformService PlatformService;
-        public EventHandler OnSoftQuit;
+        [NonSerialized]
+        public UnityEvent OnQuitToMenu;
+        [NonSerialized]
+        public UnityEvent OnQuitToDesktop;
         public string PersistentDataPath => PlatformService.PersistentDataPath;
 
         protected virtual void Awake()
@@ -67,6 +70,11 @@ namespace WizardUtils
         protected virtual void OnDestroy()
         {
             PlatformService?.OnDestroy();
+        }
+
+        protected virtual void OnApplicationQuit()
+        {
+            OnQuitToDesktop?.Invoke();
         }
 
         public static bool GameInstanceIsValid()
@@ -234,10 +242,12 @@ namespace WizardUtils
             OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, null));
         }
 
-        public void Quit(bool hardQuit)
+        public void Quit(bool quitToDesktop)
         {
-            if (hardQuit)
+            if (quitToDesktop)
             {
+                OnQuitToDesktop?.Invoke();
+
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #elif UNITY_WEBGL
@@ -248,7 +258,7 @@ namespace WizardUtils
             }
             else
             {
-                OnSoftQuit?.Invoke(this, EventArgs.Empty);
+                OnQuitToMenu?.Invoke();
                 if (!InControlScene)
                 {
                     LoadControlScene(MainMenuControlScene);

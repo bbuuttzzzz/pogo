@@ -44,7 +44,7 @@ namespace Pogo.Challenges
 
         public void Start()
         {
-            GameManager.GameInstance.OnSoftQuit += OnReturnToMainMenu;
+            GameManager.GameInstance.OnQuitToMenu.AddListener(GameManager_OnQuitToMainMenu);
 
             OnDecodeFailed?.AddListener((reason) => Debug.LogWarning($"Failed to decode challenge: {reason}"));
         }
@@ -81,7 +81,7 @@ namespace Pogo.Challenges
             OnCodeChanged?.Invoke(CurrentCode);
         }
 
-        private void OnReturnToMainMenu(object sender, EventArgs e)
+        private void GameManager_OnQuitToMainMenu()
         {
             ExitChallenge();
         }
