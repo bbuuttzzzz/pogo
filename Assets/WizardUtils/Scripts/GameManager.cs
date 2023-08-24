@@ -74,6 +74,7 @@ namespace WizardUtils
 
         protected virtual void OnApplicationQuit()
         {
+            GameSettingService.Save();
             OnQuitToDesktop?.Invoke();
         }
 
@@ -246,6 +247,7 @@ namespace WizardUtils
         {
             if (quitToDesktop)
             {
+                GameSettingService.Save();
                 OnQuitToDesktop?.Invoke();
 
 #if UNITY_EDITOR
@@ -271,6 +273,11 @@ namespace WizardUtils
         IGameSettingService GameSettingService;
 
         public bool DontLoadScenesInEditor;
+
+        public void SaveSettingsChanges()
+        {
+            GameSettingService.Save();
+        }
 
         public GameSettingFloat FindGameSetting(string key)
         {
