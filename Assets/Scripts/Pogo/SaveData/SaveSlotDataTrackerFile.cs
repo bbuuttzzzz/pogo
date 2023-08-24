@@ -46,9 +46,31 @@ namespace Pogo.Saving
                 RawData = SaveSlotData.NewGameData();
                 return;
             }
-            
-            string rawDataSerialized = File.ReadAllText(FilePath);
-            RawData = JsonConvert.DeserializeObject<SaveSlotData>(rawDataSerialized);
+
+            string rawDataSerialized;
+            try
+            {
+                rawDataSerialized = File.ReadAllText(FilePath);
+            }
+
+            catch (Exception e)
+            {
+                RawData = SaveSlotData.NewGameData();
+                UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to read {BaseName}.sav: {e}");
+                return;
+            }
+
+
+            try
+            {
+                RawData = JsonConvert.DeserializeObject<SaveSlotData>(rawDataSerialized);
+            }
+            catch (Exception e)
+            {
+                RawData = SaveSlotData.NewGameData();
+                UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to deserialize {BaseName}.sav: {e}");
+            }
+
         }
 
     }
