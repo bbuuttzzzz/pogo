@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace WizardUtils.GameSettings
 {
@@ -44,21 +45,10 @@ namespace WizardUtils.GameSettings
                 data[offset++] = new Tuple<string, float>(kv.Key, kv.Value.Value);
             }
 
-            string rawBlob;
-            try
-            {
-                rawBlob = JsonConvert.SerializeObject(data);
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogWarning($"Settings save ERROR Failed to serialize {FileName}.cfg: {e}");
-                return;
-            }
-
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
-                File.WriteAllText(FilePath, rawBlob);
+                SettingsSerializationHelper.SerializeSettings(FilePath, GameSettings.Select(x => new Tuple<string, float>(x.Value.Key, x.Value.Value)));
             }
             catch (Exception e)
             {
@@ -83,8 +73,7 @@ namespace WizardUtils.GameSettings
         private void Load()
         {
             IsLoading = true;
-            Tuple<string, float>[] data;
-            data = ReadData();
+            IEnumerable<Tuple<string, float>> data = ReadData();
 
             foreach(var pair in data)
             {
@@ -101,10 +90,8 @@ namespace WizardUtils.GameSettings
             IsLoading = false;
         }
 
-        private Tuple<string, float>[] ReadData()
+        private IEnumerable<Tuple<string, float>> ReadData()
         {
-            Tuple<string, float>[] data;
-            string rawBlob;
             if (!File.Exists(FilePath))
             {
                 IsDirty = true;
@@ -113,28 +100,14 @@ namespace WizardUtils.GameSettings
             
             try
             {
-                rawBlob = File.ReadAllText(FilePath);
+                return SettingsSerializationHelper.DeserializeSettings(FilePath);
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogWarning($"Settings load ERROR Failed to open {FileName}.cfg: {e}");
+                UnityEngine.Debug.LogWarning($"Settings load ERROR Failed to read {FileName}.cfg: {e}");
                 IsDirty = true;
                 return new Tuple<string, float>[0];
             }
-
-            try
-            {
-                data = JsonConvert.DeserializeObject<Tuple<string, float>[]>(rawBlob);
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogWarning($"Settings load ERROR Failed to deserialize {FileName}.cfg: {e}");
-                return new Tuple<string, float>[0];
-            }
-
-            return data;
         }
-
-
     }
 }

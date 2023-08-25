@@ -11,14 +11,14 @@ using Platforms;
 
 namespace Pogo.Saving
 {
-    public class SaveSlotDataTrackerFile : SaveSlotDataTracker
+    public class FileSaveSlotDataTracker : SaveSlotDataTracker
     {
         private IPlatformService platformService;
         private string FilePath => $"{platformService.PersistentDataPath}{Path.DirectorySeparatorChar}{BaseName}{Index}.sav";
         private string BaseName;
         private int Index;
 
-        public SaveSlotDataTrackerFile(IPlatformService platformService, string baseName, int index)
+        public FileSaveSlotDataTracker(IPlatformService platformService, string baseName, int index)
         {
             BaseName = baseName;
             Index = index;
@@ -26,7 +26,7 @@ namespace Pogo.Saving
 
         public override void Save()
         {
-            string rawDataSerialized = JsonConvert.SerializeObject(RawData);
+            string rawDataSerialized = JsonConvert.SerializeObject(SlotData);
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
@@ -43,7 +43,7 @@ namespace Pogo.Saving
         {
             if (!File.Exists(FilePath))
             {
-                RawData = SaveSlotData.NewGameData();
+                SlotData = SaveSlotData.NewGameData();
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace Pogo.Saving
 
             catch (Exception e)
             {
-                RawData = SaveSlotData.NewGameData();
+                SlotData = SaveSlotData.NewGameData();
                 UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to read {BaseName}.sav: {e}");
                 return;
             }
@@ -63,11 +63,11 @@ namespace Pogo.Saving
 
             try
             {
-                RawData = JsonConvert.DeserializeObject<SaveSlotData>(rawDataSerialized);
+                SlotData = JsonConvert.DeserializeObject<SaveSlotData>(rawDataSerialized);
             }
             catch (Exception e)
             {
-                RawData = SaveSlotData.NewGameData();
+                SlotData = SaveSlotData.NewGameData();
                 UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to deserialize {BaseName}.sav: {e}");
             }
 

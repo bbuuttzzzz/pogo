@@ -9,6 +9,7 @@ namespace Pogo.Saving
     [System.Serializable]
     public struct SaveSlotData
     {
+        public SaveSlotPreviewData previewData;
         public QuickSaveData quickSaveData;
         public ChapterProgressData[] chapterProgressData;
 

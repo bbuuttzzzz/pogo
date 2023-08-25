@@ -20,9 +20,9 @@ namespace WizardUtils
         public static GameManager GameInstance;
         public IPlatformService PlatformService;
         [NonSerialized]
-        public UnityEvent OnQuitToMenu;
+        public UnityEvent OnQuitToMenu = new UnityEvent();
         [NonSerialized]
-        public UnityEvent OnQuitToDesktop;
+        public UnityEvent OnQuitToDesktop = new UnityEvent();
         public string PersistentDataPath => PlatformService.PersistentDataPath;
 
         protected virtual void Awake()
@@ -297,24 +297,7 @@ namespace WizardUtils
         SaveDataTracker saveDataTracker;
         private bool SaveDataOpen;
 
-        private int saveSlot;
-        public int SaveSlot
-        {
-            get => saveSlot;
-            set
-            {
-                if (saveSlot == value) return;
-
-                if (SaveDataOpen)
-                {
-                    saveDataTracker.Save();
-                }
-                saveSlot = value;
-                SetupSaveData();
-            }
-        }
-
-        private void SetupSaveData(int slot = 0)
+        private void SetupSaveData()
         {
             if (MainSaveManifest == null) return;
 

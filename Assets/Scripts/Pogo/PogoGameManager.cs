@@ -2,6 +2,7 @@
 using Inputter;
 using Platforms;
 using Pogo.Challenges;
+using Pogo.Saving;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -543,6 +544,72 @@ namespace Pogo
             GameStartTime = Time.time;
             OnStatsReset?.Invoke();
         }
-#endregion
+        #endregion
+
+        #region Saving
+        private SaveSlotDataTracker CurrentSlotDataTracker;
+        public ExplicitSaveSlotData EditorOverrideSlot3Data;
+
+        public enum SaveSlotIds
+        {
+            Slot1,
+            Slot2,
+            Slot3,
+        }
+
+        public SaveSlotPreviewData PreviewSlot(SaveSlotIds slotId)
+        {
+            var tracker = GetSaveSlotTracker(slotId);
+            tracker.Load();
+
+            return tracker.SlotData.previewData;
+        }
+
+        public void LoadSlot(SaveSlotIds slotId)
+        {
+            SaveSlotData();
+
+            CurrentSlotDataTracker = GetSaveSlotTracker(slotId);
+            CurrentSlotDataTracker.Load();
+        }
+
+        private SaveSlotDataTracker GetSaveSlotTracker(SaveSlotIds slotId)
+        {
+#if DEBUG
+            if (slotId == SaveSlotIds.Slot3
+                && EditorOverrideSlot3Data != null)
+            {
+                return new ExplicitSaveSlotDataTracker(EditorOverrideSlot3Data);
+            }
+#endif
+            int index = slotId switch
+            {
+                SaveSlotIds.Slot1 => 1,
+                SaveSlotIds.Slot2 => 2,
+                SaveSlotIds.Slot3 => 3,
+                _ => 3
+            };
+
+            return new FileSaveSlotDataTracker(PlatformService, "saveslot", index);
+        }
+
+        public QuickSaveData GetQuickSaveData()
+        {
+            return CurrentSlotDataTracker.SlotData.quickSaveData;
+        }
+
+        public void SetQuickSaveData(QuickSaveData data)
+        {
+            CurrentSlotDataTracker.SlotData.quickSaveData = data;
+        }
+
+        public void SaveSlotData()
+        {
+            if (CurrentSlotDataTracker == null) return;
+
+            CurrentSlotDataTracker.Save();
+        }
+
+        #endregion
     }
 }

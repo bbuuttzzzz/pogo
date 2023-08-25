@@ -2,18 +2,18 @@
 
 namespace Pogo.Saving
 {
-    internal class SaveSlotDataTrackerExplicit : SaveSlotDataTracker
+    public class ExplicitSaveSlotDataTracker : SaveSlotDataTracker
     {
         private ExplicitSaveSlotData ExplicitSaveData;
 
-        public SaveSlotDataTrackerExplicit(ExplicitSaveSlotData explicitSaveData)
+        public ExplicitSaveSlotDataTracker(ExplicitSaveSlotData explicitSaveData)
         {
             ExplicitSaveData = explicitSaveData;
         }
 
         public override void Load()
         {
-            RawData = ExplicitSaveData.Data;
+            SlotData = ExplicitSaveData.Data;
         }
 
         public override void Save()

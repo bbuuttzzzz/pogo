@@ -13,7 +13,6 @@ namespace Pogo
 
             if (player == null)
             {
-                Debug.LogWarning($"Missing Player for PlayerDisjointFollower {gameObject.name}", gameObject);
                 return;
             }
             player.OnDisjoint?.AddListener(() => OnPlayerDisjoint?.Invoke());
