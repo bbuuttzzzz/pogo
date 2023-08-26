@@ -1,11 +1,14 @@
 ﻿
 
+using Assets.Scripts.Pogo.Difficulty;
+
 namespace Pogo.Saving
 {
     [System.Serializable]
     public struct SaveSlotPreviewData
     {
-        public string Name;
+        public Difficulties difficulty;
+        public string name;
         public decimal Percentage;
         public decimal TotalTime;
         public int TotalDeaths;

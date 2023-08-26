@@ -419,6 +419,7 @@ namespace Pogo
             return point == null ? CachedRespawnPoint : point;
         }
 
+        public DifficultyManifest DifficultyManifest;
         public enum Difficulty
         {
             Normal,
