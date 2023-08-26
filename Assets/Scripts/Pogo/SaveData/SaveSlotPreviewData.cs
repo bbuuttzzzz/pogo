@@ -9,9 +9,9 @@ namespace Pogo.Saving
     {
         public Difficulties difficulty;
         public string name;
-        public decimal Percentage;
-        public decimal TotalTime;
+        public int CompletionPerMille;
+        public int TotalMilliseconds;
         public int TotalDeaths;
-        public int LastUnlockedChapter;
+        public int LastFinishedChapter;
     }
 }

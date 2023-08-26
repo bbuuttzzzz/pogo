@@ -1,5 +1,6 @@
 using Pogo;
 using Pogo.Saving;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,11 @@ public class SaveFileBoxController : MonoBehaviour
     public int SlotNumber;
     public TextMeshProUGUI TitleText;
     public TextMeshProUGUI DeathsText;
+    public TextMeshProUGUI TimeText;
     public TextMeshProUGUI DifficultyNameText;
     public MeshFilter SkullMesh;
     public Renderer SkullMeshRenderer;
+    public Transform ProgressBoxesParent;
 
     [SerializeField]
     private SaveSlotPreviewData previewData;
@@ -41,14 +44,33 @@ public class SaveFileBoxController : MonoBehaviour
                 .First();
         }
 #else
-
+        difficulty = PogoGameManager.PogoInstance.DifficultyManifest.GetDifficulty(previewData.difficulty);
 #endif
 
+        TimeText.text = FormatTime(previewData.TotalMilliseconds);
         TitleText.text = previewData.name;
         DeathsText.text = $"x<b>{previewData.TotalDeaths}</b>";
         DifficultyNameText.text = difficulty.DisplayName;
         SkullMesh.sharedMesh = difficulty.SkullMesh;
         SkullMeshRenderer.sharedMaterial = difficulty.SkullMaterial;
+    }
+
+    private string FormatTime(int totalMilliseconds)
+    {
+        var timespan = TimeSpan.FromMilliseconds(totalMilliseconds);
+
+        if (timespan.TotalHours >= 1)
+        {
+            return $"{(int)timespan.TotalHours}:{timespan:mm\\:ss\\.fff}";
+        }
+        else if (timespan.TotalMinutes >= 1)
+        {
+            return $"{(int)timespan.TotalMinutes}:{timespan:ss\\.fff}";
+        }
+        else
+        {
+            return $"0:{timespan:ss\\.fff}";
+        }
     }
 
     #region Editor
