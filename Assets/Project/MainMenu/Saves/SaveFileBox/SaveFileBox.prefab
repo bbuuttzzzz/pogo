@@ -344,16 +344,17 @@ MonoBehaviour:
   DeathsText: {fileID: 3801592806682264300}
   TimeText: {fileID: 6902241810488705731}
   DifficultyNameText: {fileID: 6332448410374833095}
+  PercentText: {fileID: 3875699944242492167}
   SkullMesh: {fileID: 786169195853043470}
   SkullMeshRenderer: {fileID: 3246532373029594052}
-  ProgressBoxesParent: {fileID: 0}
+  ProgressBoxesParent: {fileID: 3299902457985780567}
   previewData:
     difficulty: 1
     name: foobar
     CompletionPerMille: 0
     TotalMilliseconds: 1111111
     TotalDeaths: 12
-    LastFinishedChapter: 0
+    LastFinishedChapter: 4
 --- !u!1 &2406248342292062291
 GameObject:
   m_ObjectHideFlags: 0
@@ -871,7 +872,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: -236}
+  m_AnchoredPosition: {x: -0.000030517578, y: -218}
   m_SizeDelta: {x: 250, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &4333428421197647654
@@ -945,7 +946,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 75.5}
+  m_AnchoredPosition: {x: 0, y: 40.90002}
   m_SizeDelta: {x: 0, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5989953996874495762
@@ -982,7 +983,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 28.6}
+  m_AnchoredPosition: {x: 0, y: -156}
   m_SizeDelta: {x: 0, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6476856880920839149
@@ -1029,10 +1030,10 @@ RectTransform:
   m_Father: {fileID: 1173595036691126318}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -20.01271, y: -0.0000019073486}
-  m_SizeDelta: {x: 210, y: 0}
+  m_AnchoredPosition: {x: -12, y: -0.0000019073486}
+  m_SizeDelta: {x: -24, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &919421111661603753
 MonoBehaviour:
@@ -1051,7 +1052,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 3
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 18, y: 15}
@@ -1093,7 +1094,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: -300}
+  m_AnchoredPosition: {x: -0.000030517578, y: -282}
   m_SizeDelta: {x: 250, y: 40}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &6926322045057004264
@@ -1413,7 +1414,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 99.6%
+  m_text: 0%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 396788e101a482648aa0986b851c14d8, type: 2}
   m_sharedMaterial: {fileID: -4467922441271842428, guid: 396788e101a482648aa0986b851c14d8, type: 2}
@@ -1659,6 +1660,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SaveFileProgressBox (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
 --- !u!224 &4388892373248151201 stripped
@@ -1757,9 +1762,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851069138428601917, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (11)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
@@ -1859,9 +1884,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851069138428601917, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
@@ -1961,9 +2006,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851069138428601917, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
@@ -2195,9 +2260,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851069138428601917, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
@@ -2297,9 +2382,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851069138428601917, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
@@ -2399,9 +2504,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851069138428601917, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
@@ -2501,9 +2626,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851069138428601917, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
@@ -2607,6 +2752,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SaveFileProgressBox (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
 --- !u!224 &5511610736411616898 stripped
@@ -2705,9 +2854,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851069138428601917, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
@@ -2807,9 +2976,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 2369383670774100731, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7924528
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851069138428601917, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
@@ -2912,6 +3101,10 @@ PrefabInstance:
     - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
       propertyPath: m_Name
       value: SaveFileProgressBox (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7148396809992902828, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d47c4032d8ac84bbe02a712f77fe39, type: 3}

@@ -15,6 +15,7 @@ public class SaveFileBoxController : MonoBehaviour
     public TextMeshProUGUI DeathsText;
     public TextMeshProUGUI TimeText;
     public TextMeshProUGUI DifficultyNameText;
+    public TextMeshProUGUI PercentText;
     public MeshFilter SkullMesh;
     public Renderer SkullMeshRenderer;
     public Transform ProgressBoxesParent;
@@ -47,13 +48,26 @@ public class SaveFileBoxController : MonoBehaviour
         difficulty = PogoGameManager.PogoInstance.DifficultyManifest.GetDifficulty(previewData.difficulty);
 #endif
 
+        PercentText.text = FormatPercent(previewData.CompletionPerMille);
         TimeText.text = FormatTime(previewData.TotalMilliseconds);
         TitleText.text = previewData.name;
         DeathsText.text = $"x<b>{previewData.TotalDeaths}</b>";
+        SetProgressBoxes(previewData.LastFinishedChapter);
         DifficultyNameText.text = difficulty.DisplayName;
         SkullMesh.sharedMesh = difficulty.SkullMesh;
         SkullMeshRenderer.sharedMaterial = difficulty.SkullMaterial;
     }
+
+    private string FormatPercent(int completionPerMille)
+    {
+        if (completionPerMille % 10  == 0)
+        {
+            return $"{completionPerMille / 10}%";
+        }
+        decimal percent = completionPerMille * 0.1m;
+        return $"{percent}%";
+    }
+
 
     private string FormatTime(int totalMilliseconds)
     {
@@ -72,6 +86,19 @@ public class SaveFileBoxController : MonoBehaviour
             return $"0:{timespan:ss\\.fff}";
         }
     }
+
+    private void SetProgressBoxes(int completedChapters)
+    {
+        for (int n = 0; n < ProgressBoxesParent.childCount; n++)
+        {
+            SaveFileProgressBoxController.States state = n < completedChapters
+                ? SaveFileProgressBoxController.States.Finished
+                : SaveFileProgressBoxController.States.Unfinished;
+
+            ProgressBoxesParent.GetChild(n).GetComponent<SaveFileProgressBoxController>().SetState(state);
+        }
+    }
+
 
     #region Editor
 
