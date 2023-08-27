@@ -160,7 +160,7 @@ public class SaveFileLoadBoxController : MonoBehaviour
         }
 
         DeleteState = DeleteStates.Idle;
-        animator.SetTrigger("Delete_Initiate");
+        animator.SetTrigger("Delete_Cancel");
     }
 
     public void HardDelete()
