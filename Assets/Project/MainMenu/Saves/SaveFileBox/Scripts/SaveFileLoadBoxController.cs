@@ -1,3 +1,4 @@
+using Inputter;
 using Pogo;
 using Pogo.Saving;
 using System;
@@ -7,10 +8,19 @@ using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class SaveFileBoxController : MonoBehaviour
+public class SaveFileLoadBoxController : MonoBehaviour
 {
-    public int SlotNumber;
+    [HideInInspector]
+    public UnityEvent OnLoadTriggered;
+    [HideInInspector]
+    public UnityEvent OnDeleteTriggered;
+
+    private Animator animator;
+
+    public SaveSlotIds SlotId;
+    public Button MainButton;
     public TextMeshProUGUI TitleText;
     public TextMeshProUGUI DeathsText;
     public TextMeshProUGUI TimeText;
@@ -23,9 +33,20 @@ public class SaveFileBoxController : MonoBehaviour
     [SerializeField]
     private SaveSlotPreviewData previewData;
 
-    public void SetPreviewData(SaveSlotPreviewData data)
+    private void Awake()
     {
+        animator = GetComponent<Animator>();
+    }
 
+    public void Load()
+    {
+        OnLoadTriggered.Invoke();
+    }
+
+    public void SetData(SaveSlotIds slotId, SaveSlotPreviewData data)
+    {
+        SlotId = slotId;
+        previewData = data;
     }
 
     private void UpdateDisplay()
@@ -99,6 +120,68 @@ public class SaveFileBoxController : MonoBehaviour
         }
     }
 
+    #region Deletion
+
+    public float DeleteMenuButtonCooldownSeconds;
+    private float LastDeleteMenuTime;
+    private enum DeleteStates
+    {
+        Idle,
+        Confirmation
+    }
+    private DeleteStates DeleteState = DeleteStates.Idle;
+
+    public void SoftDelete()
+    {
+        if (DeleteState == DeleteStates.Idle)
+        {
+            StartDeleteConfirmation();
+        }
+        else if (DeleteState == DeleteStates.Confirmation)
+        {
+            DeleteState = DeleteStates.Confirmation;
+        }
+    }
+
+    public void StartDeleteConfirmation()
+    {
+        if (!TryNavigateDeleteMenu()) return;
+
+        DeleteState = DeleteStates.Confirmation;
+        animator.SetTrigger("Delete_Initiate");
+    }
+
+    public void CancelDeleteConfirmation()
+    {
+        if (!TryNavigateDeleteMenu()) return;
+        if (DeleteState != DeleteStates.Confirmation)
+        {
+            return;
+        }
+
+        DeleteState = DeleteStates.Idle;
+        animator.SetTrigger("Delete_Initiate");
+    }
+
+    public void HardDelete()
+    {
+        if (!TryNavigateDeleteMenu()) return;
+
+        OnDeleteTriggered.Invoke();
+    }
+
+    private bool TryNavigateDeleteMenu()
+    {
+        if (Time.unscaledTime < LastDeleteMenuTime + DeleteMenuButtonCooldownSeconds)
+        {
+            return false;
+        }
+
+        LastDeleteMenuTime = Time.unscaledTime;
+        return true;
+    }
+
+    #endregion
 
     #region Editor
 

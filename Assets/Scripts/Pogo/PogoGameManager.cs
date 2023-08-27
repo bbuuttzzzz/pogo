@@ -551,14 +551,7 @@ namespace Pogo
         private SaveSlotDataTracker CurrentSlotDataTracker;
         public ExplicitSaveSlotData EditorOverrideSlot3Data;
 
-        public enum SaveSlotIds
-        {
-            Slot1,
-            Slot2,
-            Slot3,
-        }
-
-        public SaveSlotPreviewData PreviewSlot(SaveSlotIds slotId)
+        public SaveSlotPreviewData? PreviewSlot(SaveSlotIds slotId)
         {
             var tracker = GetSaveSlotTracker(slotId);
             tracker.Load();
