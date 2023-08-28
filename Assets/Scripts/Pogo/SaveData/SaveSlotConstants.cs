@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pogo.Saving
 {
-    public static class Constants
+    public static class SaveSlotConstants
     {
         public const int SaveSlotCount = 3;
 
@@ -28,6 +28,17 @@ namespace Pogo.Saving
                 0 => SaveSlotIds.Slot1,
                 1 => SaveSlotIds.Slot2,
                 2 => SaveSlotIds.Slot3,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        public static string SaveSlotPath(SaveSlotIds id)
+        {
+            return id switch
+            {
+                SaveSlotIds.Slot1 => "1",
+                SaveSlotIds.Slot2 => "2",
+                SaveSlotIds.Slot3 => "3",
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

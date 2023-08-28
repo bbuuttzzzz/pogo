@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace WizardUtils.GameSettings
 
             foreach (var setting in settings)
             {
-                byte[] bytes = encoding.GetBytes($"{setting.Item1}: {setting.Item2}\n");
+                byte[] bytes = encoding.GetBytes($"{setting.Item1}: {setting.Item2.ToString(CultureInfo.InvariantCulture)}\n");
                 fs.Write(bytes);
             }
         }
@@ -28,7 +29,7 @@ namespace WizardUtils.GameSettings
 
             IEnumerable<string> lines = File.ReadLines(filePath);
             int lineIndex = 0;
-            Regex pattern = new Regex("(.+): (.+)", RegexOptions.Compiled);
+            Regex pattern = new Regex("(.+): ([0-9.]+)", RegexOptions.Compiled);
             foreach(var line in lines)
             {
                 lineIndex++;
@@ -38,12 +39,12 @@ namespace WizardUtils.GameSettings
                     throw new FormatException($"Badly formatted line {lineIndex}: \"{line}\"");
                 }
 
-                if (!float.TryParse(match.Captures[1].Value, out float item2))
+                if (!float.TryParse(match.Groups[2].Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float item2))
                 {
-                    throw new FormatException($"Failed to convert line {lineIndex} value to float: {match.Captures[2].Value}");
+                    throw new FormatException($"Failed to convert line {lineIndex} value to float: \"{match.Groups[2].Value}\"");
                 }
 
-                result.Add(new Tuple<string, float>(match.Captures[0].Value, item2));
+                result.Add(new Tuple<string, float>(match.Groups[1].Value, item2));
             }
 
             return result;

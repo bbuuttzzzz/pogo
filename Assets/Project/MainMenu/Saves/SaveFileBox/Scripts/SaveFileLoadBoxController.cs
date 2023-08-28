@@ -1,6 +1,5 @@
 using Inputter;
 using Pogo;
-using Pogo.Saving;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,188 +9,180 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class SaveFileLoadBoxController : MonoBehaviour
+namespace Pogo.Saving
 {
-    [HideInInspector]
-    public UnityEvent OnLoadTriggered;
-    [HideInInspector]
-    public UnityEvent OnDeleteTriggered;
-
-    private Animator animator;
-
-    public SaveSlotIds SlotId;
-    public Button MainButton;
-    public TextMeshProUGUI TitleText;
-    public TextMeshProUGUI DeathsText;
-    public TextMeshProUGUI TimeText;
-    public TextMeshProUGUI DifficultyNameText;
-    public TextMeshProUGUI PercentText;
-    public MeshFilter SkullMesh;
-    public Renderer SkullMeshRenderer;
-    public Transform ProgressBoxesParent;
-
-    [SerializeField]
-    private SaveSlotPreviewData previewData;
-
-    private void Awake()
+    public class SaveFileLoadBoxController : MonoBehaviour
     {
-        animator = GetComponent<Animator>();
-    }
+        [HideInInspector]
+        public UnityEvent<SaveSlotIds> OnLoadTriggered;
+        [HideInInspector]
+        public UnityEvent<SaveSlotIds> OnDeleteTriggered;
 
-    public void Load()
-    {
-        OnLoadTriggered.Invoke();
-    }
+        private Animator animator;
 
-    public void SetData(SaveSlotIds slotId, SaveSlotPreviewData data)
-    {
-        SlotId = slotId;
-        previewData = data;
-    }
+        public SaveSlotIds SlotId;
+        public Button MainButton;
+        public TextMeshProUGUI TitleText;
+        public TextMeshProUGUI DeathsText;
+        public TextMeshProUGUI TimeText;
+        public TextMeshProUGUI DifficultyNameText;
+        public TextMeshProUGUI PercentText;
+        public MeshFilter SkullMesh;
+        public Renderer SkullMeshRenderer;
+        public Transform ProgressBoxesParent;
 
-    private void UpdateDisplay()
-    {
-        DifficultyDescriptor difficulty;
+        [SerializeField]
+        private SaveSlotPreviewData previewData;
+
+        private void Awake()
+        {
+            animator = GetComponent<Animator>();
+        }
+
+        public void Load()
+        {
+            OnLoadTriggered.Invoke(SlotId);
+        }
+
+        public void SetData(SaveSlotIds slotId, SaveSlotPreviewData data)
+        {
+            SlotId = slotId;
+            previewData = data;
+        }
+
+        [ContextMenu("Update Display")]
+        private void UpdateDisplay()
+        {
+            DifficultyDescriptor difficulty;
 #if UNITY_EDITOR
-        if (Application.isPlaying)
-        {
-            difficulty = PogoGameManager.PogoInstance.DifficultyManifest.GetDifficulty(previewData.difficulty);
-        }
-        else
-        {
-            var difficulties = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(DifficultyDescriptor)}")
-                    .Select(id => AssetDatabase.LoadAssetAtPath<DifficultyDescriptor>(AssetDatabase.GUIDToAssetPath(id)));
+            if (Application.isPlaying)
+            {
+                difficulty = PogoGameManager.PogoInstance.DifficultyManifest.GetDifficulty(previewData.difficulty);
+            }
+            else
+            {
+                var difficulties = AssetDatabase.FindAssets($"t:{nameof(DifficultyDescriptor)}")
+                        .Select(id => AssetDatabase.LoadAssetAtPath<DifficultyDescriptor>(AssetDatabase.GUIDToAssetPath(id)));
 
-            difficulty = difficulties.Where(d => d.DifficultyEnum == previewData.difficulty)
-                .First();
-        }
+                difficulty = difficulties.Where(d => d.DifficultyEnum == previewData.difficulty)
+                    .First();
+            }
 #else
         difficulty = PogoGameManager.PogoInstance.DifficultyManifest.GetDifficulty(previewData.difficulty);
 #endif
 
-        PercentText.text = FormatPercent(previewData.CompletionPerMille);
-        TimeText.text = FormatTime(previewData.TotalMilliseconds);
-        TitleText.text = previewData.name;
-        DeathsText.text = $"x<b>{previewData.TotalDeaths}</b>";
-        SetProgressBoxes(previewData.LastFinishedChapter);
-        DifficultyNameText.text = difficulty.DisplayName;
-        SkullMesh.sharedMesh = difficulty.SkullMesh;
-        SkullMeshRenderer.sharedMaterial = difficulty.SkullMaterial;
-    }
-
-    private string FormatPercent(int completionPerMille)
-    {
-        if (completionPerMille % 10  == 0)
-        {
-            return $"{completionPerMille / 10}%";
+            PercentText.text = FormatPercent(previewData.CompletionPerMille);
+            TimeText.text = FormatTime(previewData.TotalMilliseconds);
+            TitleText.text = previewData.name;
+            DeathsText.text = $"x<b>{previewData.TotalDeaths}</b>";
+            SetProgressBoxes(previewData.LastFinishedChapter);
+            DifficultyNameText.text = difficulty.DisplayName;
+            SkullMesh.sharedMesh = difficulty.SkullMesh;
+            SkullMeshRenderer.sharedMaterial = difficulty.SkullMaterial;
         }
-        decimal percent = completionPerMille * 0.1m;
-        return $"{percent}%";
-    }
 
-
-    private string FormatTime(int totalMilliseconds)
-    {
-        var timespan = TimeSpan.FromMilliseconds(totalMilliseconds);
-
-        if (timespan.TotalHours >= 1)
+        private string FormatPercent(int completionPerMille)
         {
-            return $"{(int)timespan.TotalHours}:{timespan:mm\\:ss\\.fff}";
+            if (completionPerMille % 10 == 0)
+            {
+                return $"{completionPerMille / 10}%";
+            }
+            decimal percent = completionPerMille * 0.1m;
+            return $"{percent}%";
         }
-        else if (timespan.TotalMinutes >= 1)
+
+
+        private string FormatTime(int totalMilliseconds)
         {
-            return $"{(int)timespan.TotalMinutes}:{timespan:ss\\.fff}";
+            var timespan = TimeSpan.FromMilliseconds(totalMilliseconds);
+
+            if (timespan.TotalHours >= 1)
+            {
+                return $"{(int)timespan.TotalHours}:{timespan:mm\\:ss\\.fff}";
+            }
+            else if (timespan.TotalMinutes >= 1)
+            {
+                return $"{(int)timespan.TotalMinutes}:{timespan:ss\\.fff}";
+            }
+            else
+            {
+                return $"0:{timespan:ss\\.fff}";
+            }
         }
-        else
+
+        private void SetProgressBoxes(int completedChapters)
         {
-            return $"0:{timespan:ss\\.fff}";
+            for (int n = 0; n < ProgressBoxesParent.childCount; n++)
+            {
+                SaveFileProgressBoxController.States state = n < completedChapters
+                    ? SaveFileProgressBoxController.States.Finished
+                    : SaveFileProgressBoxController.States.Unfinished;
+
+                ProgressBoxesParent.GetChild(n).GetComponent<SaveFileProgressBoxController>().SetState(state);
+            }
         }
-    }
 
-    private void SetProgressBoxes(int completedChapters)
-    {
-        for (int n = 0; n < ProgressBoxesParent.childCount; n++)
+        #region Deletion
+
+        public float DeleteMenuButtonCooldownSeconds;
+        private float LastDeleteMenuTime;
+        private enum DeleteStates
         {
-            SaveFileProgressBoxController.States state = n < completedChapters
-                ? SaveFileProgressBoxController.States.Finished
-                : SaveFileProgressBoxController.States.Unfinished;
-
-            ProgressBoxesParent.GetChild(n).GetComponent<SaveFileProgressBoxController>().SetState(state);
+            Idle,
+            Confirmation
         }
-    }
+        private DeleteStates DeleteState = DeleteStates.Idle;
 
-    #region Deletion
-
-    public float DeleteMenuButtonCooldownSeconds;
-    private float LastDeleteMenuTime;
-    private enum DeleteStates
-    {
-        Idle,
-        Confirmation
-    }
-    private DeleteStates DeleteState = DeleteStates.Idle;
-
-    public void SoftDelete()
-    {
-        if (DeleteState == DeleteStates.Idle)
+        public void SoftDelete()
         {
-            StartDeleteConfirmation();
+            if (DeleteState == DeleteStates.Idle)
+            {
+                StartDeleteConfirmation();
+            }
+            else if (DeleteState == DeleteStates.Confirmation)
+            {
+                HardDelete();
+            }
         }
-        else if (DeleteState == DeleteStates.Confirmation)
+
+        public void StartDeleteConfirmation()
         {
+            if (!TryNavigateDeleteMenu()) return;
+
             DeleteState = DeleteStates.Confirmation;
+            animator.SetTrigger("Delete_Initiate");
         }
-    }
 
-    public void StartDeleteConfirmation()
-    {
-        if (!TryNavigateDeleteMenu()) return;
-
-        DeleteState = DeleteStates.Confirmation;
-        animator.SetTrigger("Delete_Initiate");
-    }
-
-    public void CancelDeleteConfirmation()
-    {
-        if (!TryNavigateDeleteMenu()) return;
-        if (DeleteState != DeleteStates.Confirmation)
+        public void CancelDeleteConfirmation()
         {
-            return;
+            if (!TryNavigateDeleteMenu()) return;
+            if (DeleteState != DeleteStates.Confirmation)
+            {
+                return;
+            }
+
+            DeleteState = DeleteStates.Idle;
+            animator.SetTrigger("Delete_Cancel");
         }
 
-        DeleteState = DeleteStates.Idle;
-        animator.SetTrigger("Delete_Cancel");
-    }
-
-    public void HardDelete()
-    {
-        if (!TryNavigateDeleteMenu()) return;
-
-        OnDeleteTriggered.Invoke();
-    }
-
-    private bool TryNavigateDeleteMenu()
-    {
-        if (Time.unscaledTime < LastDeleteMenuTime + DeleteMenuButtonCooldownSeconds)
+        public void HardDelete()
         {
-            return false;
+            if (!TryNavigateDeleteMenu()) return;
+
+            OnDeleteTriggered.Invoke(SlotId);
         }
 
-        LastDeleteMenuTime = Time.unscaledTime;
-        return true;
-    }
-
-    #endregion
-
-    #region Editor
-
-    private void OnValidate()
-    {
-        if (!Application.isPlaying)
+        private bool TryNavigateDeleteMenu()
         {
-            UpdateDisplay();
-        }
-    }
+            if (Time.unscaledTime < LastDeleteMenuTime + DeleteMenuButtonCooldownSeconds)
+            {
+                return false;
+            }
 
-    #endregion
+            LastDeleteMenuTime = Time.unscaledTime;
+            return true;
+        }
+
+        #endregion
+    }
 }

@@ -13,15 +13,16 @@ namespace Pogo.Saving
 {
     public class FileSaveSlotDataTracker : SaveSlotDataTracker
     {
-        private IPlatformService platformService;
-        private string FilePath => $"{platformService.PersistentDataPath}{Path.DirectorySeparatorChar}{BaseName}{Index}.sav";
+        private IPlatformService PlatformService;
+        private string FilePath => $"{PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}{BaseName}{SaveSlotConstants.SaveSlotPath(slotId)}.sav";
         private string BaseName;
-        private int Index;
+        private SaveSlotIds slotId;
 
-        public FileSaveSlotDataTracker(IPlatformService platformService, string baseName, int index)
+        public FileSaveSlotDataTracker(IPlatformService platformService, string baseName, SaveSlotIds slotId)
         {
+            PlatformService = platformService;
             BaseName = baseName;
-            Index = index;
+            this.slotId = slotId;
         }
 
         public override void Save()
@@ -43,7 +44,7 @@ namespace Pogo.Saving
         {
             if (!File.Exists(FilePath))
             {
-                SlotData = SaveSlotData.NewGameData();
+                DataLoaded = false;
                 return;
             }
 
@@ -55,7 +56,7 @@ namespace Pogo.Saving
 
             catch (Exception e)
             {
-                SlotData = SaveSlotData.NewGameData();
+                DataLoaded = false;
                 UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to read {BaseName}.sav: {e}");
                 return;
             }
@@ -67,10 +68,25 @@ namespace Pogo.Saving
             }
             catch (Exception e)
             {
-                SlotData = SaveSlotData.NewGameData();
+                DataLoaded = false;
                 UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to deserialize {BaseName}.sav: {e}");
             }
 
+            DataLoaded = true;
+        }
+
+        public override void Delete()
+        {
+            if (!File.Exists(FilePath)) return;
+            try
+            {
+                File.Delete(FilePath);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to delete {BaseName}.sav: {e}");
+                return;
+            }
         }
 
     }

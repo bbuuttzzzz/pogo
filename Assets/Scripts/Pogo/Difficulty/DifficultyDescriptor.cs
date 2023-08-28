@@ -15,5 +15,7 @@ namespace Pogo
         public string DisplayName;
         public Mesh SkullMesh;
         public Material SkullMaterial;
+        [TextArea(4,10)]
+        public string Description;
     }
 }

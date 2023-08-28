@@ -556,12 +556,25 @@ namespace Pogo
             var tracker = GetSaveSlotTracker(slotId);
             tracker.Load();
 
-            return tracker.SlotData.previewData;
+            if (!tracker.DataLoaded)
+            {
+                return null;
+            }
+            else
+            {
+                return tracker.SlotData.previewData;
+            }
+        }
+
+        public void DeleteSlot(SaveSlotIds slotId)
+        {
+            var tracker = GetSaveSlotTracker(slotId);
+            tracker.Delete();
         }
 
         public void LoadSlot(SaveSlotIds slotId)
         {
-            SaveSlotData();
+            SaveSlot();
 
             CurrentSlotDataTracker = GetSaveSlotTracker(slotId);
             CurrentSlotDataTracker.Load();
@@ -576,15 +589,8 @@ namespace Pogo
                 return new ExplicitSaveSlotDataTracker(EditorOverrideSlot3Data);
             }
 #endif
-            int index = slotId switch
-            {
-                SaveSlotIds.Slot1 => 1,
-                SaveSlotIds.Slot2 => 2,
-                SaveSlotIds.Slot3 => 3,
-                _ => 3
-            };
 
-            return new FileSaveSlotDataTracker(PlatformService, "saveslot", index);
+            return new FileSaveSlotDataTracker(PlatformService, "saveslot", slotId);
         }
 
         public QuickSaveData GetQuickSaveData()
@@ -597,7 +603,7 @@ namespace Pogo
             CurrentSlotDataTracker.SlotData.quickSaveData = data;
         }
 
-        public void SaveSlotData()
+        public void SaveSlot()
         {
             if (CurrentSlotDataTracker == null) return;
 

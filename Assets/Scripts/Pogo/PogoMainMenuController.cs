@@ -74,38 +74,7 @@ namespace Pogo
         }
         #endregion
 
-        #region Saves
-        public Transform SaveFilesParent;
-        public GameObject LoadFilePrefab;
-        public GameObject NewFilePrefab;
 
-        public void SetupSaveFiles()
-        {
-            // destroy existing things
-            for (int n = 0; n < SaveFilesParent.childCount; n++)
-            {
-                Destroy(SaveFilesParent.GetChild(n).gameObject);
-            }
-
-            for (int n = 0; n < Saving.Constants.SaveSlotCount; n++)
-            {
-                SaveSlotIds slotId = Saving.Constants.SaveSlotIdFromIndex(n);
-                var previewData = PogoGameManager.PogoInstance.PreviewSlot(slotId);
-                GameObject newObject;
-                if (previewData.HasValue)
-                {
-                    newObject = Instantiate(LoadFilePrefab, SaveFilesParent);
-                    newObject.GetComponent<SaveFileLoadBoxController>().SetData(slotId, previewData.Value);
-                }
-                else
-                {
-                    newObject = Instantiate(NewFilePrefab, SaveFilesParent);
-                }
-            }
-
-        }
-
-        #endregion
 
         public void OpenWorldScreen()
         {
