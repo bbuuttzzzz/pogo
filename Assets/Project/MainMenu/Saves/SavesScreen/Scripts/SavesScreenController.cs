@@ -84,6 +84,8 @@ namespace Pogo.Saving
         {
             PogoGameManager.PogoInstance.DeleteSlot(slotId);
 
+            var oldSaveFileElement = SaveFilesParent.GetChild(SaveSlotConstants.SaveSlotIdToIndex(slotId));
+            Destroy(oldSaveFileElement.gameObject);
             var newObject = CreateSaveFileBox(slotId);
             newObject.transform.SetSiblingIndex(SaveSlotConstants.SaveSlotIdToIndex(slotId));
         }

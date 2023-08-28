@@ -48,6 +48,7 @@ namespace Pogo.Saving
         {
             SlotId = slotId;
             previewData = data;
+            UpdateDisplay();
         }
 
         [ContextMenu("Update Display")]
