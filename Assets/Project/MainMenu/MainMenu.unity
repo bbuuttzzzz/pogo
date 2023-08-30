@@ -964,6 +964,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 212129015}
     m_Modifications:
+    - target: {fileID: 4592694162213805046, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5965210753865823889, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -1151,6 +1155,14 @@ PrefabInstance:
     - target: {fileID: 5965210754208147052, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Name
       value: Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 6450863173809531522, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835359849204924943, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
@@ -3413,6 +3425,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 292505831}
   m_CullTransparentMesh: 1
+--- !u!1 &311209963 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5318903181589719773, guid: 5e2c1de8e15a7ea4f8d85b0db39b7a79, type: 3}
+  m_PrefabInstance: {fileID: 5318903181630539502}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &311209970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311209963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 468bb88a5f0e2c94d99a368dae3b960c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Sound: {fileID: 0}
+--- !u!114 &311209971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311209963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 311209970}
+          m_TargetAssemblyTypeName: Pogo.GlobalSoundPlayer, Assembly-CSharp
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 79bcb9eda2622c94d96bb71de9cc6362, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Pogo.GlobalSoundDescriptor, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 311209970}
+          m_TargetAssemblyTypeName: Pogo.GlobalSoundPlayer, Assembly-CSharp
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 92045bdbb021c3541aa48b11d46c9a4d, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Pogo.GlobalSoundDescriptor, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &328709013
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5606,6 +5681,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1090386043}
     m_Modifications:
+    - target: {fileID: 4592694162213805046, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5965210753865823889, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -5805,6 +5884,14 @@ PrefabInstance:
     - target: {fileID: 5965210754208147052, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Name
       value: Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 6450863173809531522, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835359849204924943, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
@@ -24195,6 +24282,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1090386043}
     m_Modifications:
+    - target: {fileID: 4592694162213805046, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5965210753865823889, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -24394,6 +24485,14 @@ PrefabInstance:
     - target: {fileID: 5965210754208147052, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Name
       value: Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 6450863173809531522, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835359849204924943, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
@@ -26818,6 +26917,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 62188223}
     m_Modifications:
+    - target: {fileID: 4592694162213805046, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5965210753865823889, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -27017,6 +27120,14 @@ PrefabInstance:
     - target: {fileID: 5965210754208147052, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Name
       value: Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 6450863173809531522, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835359849204924943, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
@@ -31052,6 +31163,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 822596628}
     m_Modifications:
+    - target: {fileID: 4592694162213805046, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5965210753865823889, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -31235,6 +31350,14 @@ PrefabInstance:
     - target: {fileID: 5965210754208147052, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Name
       value: Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 6450863173809531522, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6835359849204924943, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
@@ -32042,6 +32165,69 @@ Transform:
   m_Father: {fileID: 1399012000}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -359.999}
+--- !u!1 &1851019190 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5869649269708198008, guid: 5e2c1de8e15a7ea4f8d85b0db39b7a79, type: 3}
+  m_PrefabInstance: {fileID: 5318903181630539502}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1851019196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1851019190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 468bb88a5f0e2c94d99a368dae3b960c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Sound: {fileID: 0}
+--- !u!114 &1851019197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1851019190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1851019196}
+          m_TargetAssemblyTypeName: Pogo.GlobalSoundPlayer, Assembly-CSharp
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 79bcb9eda2622c94d96bb71de9cc6362, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Pogo.GlobalSoundDescriptor, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1851019196}
+          m_TargetAssemblyTypeName: Pogo.GlobalSoundPlayer, Assembly-CSharp
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 92045bdbb021c3541aa48b11d46c9a4d, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Pogo.GlobalSoundDescriptor, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &1856244602
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39398,6 +39584,8 @@ GameObject:
   - component: {fileID: 7310462949956220823}
   - component: {fileID: 7310462949956220820}
   - component: {fileID: 7310462949956220843}
+  - component: {fileID: 7310462949956220844}
+  - component: {fileID: 7310462949956220845}
   m_Layer: 5
   m_Name: Challenge
   m_TagString: Untagged
@@ -39426,6 +39614,64 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7310462949956220844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7310462949956220842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7310462949956220845}
+          m_TargetAssemblyTypeName: Pogo.GlobalSoundPlayer, Assembly-CSharp
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 79bcb9eda2622c94d96bb71de9cc6362, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Pogo.GlobalSoundDescriptor, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7310462949956220845}
+          m_TargetAssemblyTypeName: Pogo.GlobalSoundPlayer, Assembly-CSharp
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 92045bdbb021c3541aa48b11d46c9a4d, type: 2}
+            m_ObjectArgumentAssemblyTypeName: Pogo.GlobalSoundDescriptor, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &7310462949956220845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7310462949956220842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 468bb88a5f0e2c94d99a368dae3b960c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Sound: {fileID: 0}
 --- !u!114 &7467665248153184773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39470,7 +39716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &7981076236382526277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39593,9 +39839,9 @@ RectTransform:
   m_Father: {fileID: 1085944649}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -30}
   m_SizeDelta: {x: 71, y: 60}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!95 &7981076236382526332

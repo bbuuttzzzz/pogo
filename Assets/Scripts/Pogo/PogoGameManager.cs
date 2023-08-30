@@ -613,5 +613,14 @@ namespace Pogo
         }
 
         #endregion
+
+        #region SoundManager
+        public GlobalSoundManager SoundManager;
+
+        public void PlayGlobalSound(GlobalSoundDescriptor sound)
+        {
+            SoundManager.Play(sound);
+        }
+        #endregion
     }
 }
