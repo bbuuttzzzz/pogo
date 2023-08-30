@@ -550,20 +550,12 @@ namespace Pogo
         #region Saving
         private SaveSlotDataTracker CurrentSlotDataTracker;
         public ExplicitSaveSlotData EditorOverrideSlot3Data;
-
-        public SaveSlotPreviewData? PreviewSlot(SaveSlotIds slotId)
+        
+        public SaveSlotDataTracker PreviewSlot(SaveSlotIds slotId)
         {
-            var tracker = GetSaveSlotTracker(slotId);
+            SaveSlotDataTracker tracker = GetSaveSlotTracker(slotId);
             tracker.Load();
-
-            if (!tracker.DataLoaded)
-            {
-                return null;
-            }
-            else
-            {
-                return tracker.SlotData.previewData;
-            }
+            return tracker;
         }
 
         public void DeleteSlot(SaveSlotIds slotId)

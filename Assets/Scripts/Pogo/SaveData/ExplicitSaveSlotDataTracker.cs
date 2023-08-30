@@ -15,7 +15,7 @@ namespace Pogo.Saving
         public override void Load()
         {
             SlotData = ExplicitSaveData.Data;
-            DataLoaded = true;
+            DataState = DataStates.Loaded;
         }
 
         public override void InitializeNew(string name, Difficulties difficulty)

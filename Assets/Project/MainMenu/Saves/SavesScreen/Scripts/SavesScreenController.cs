@@ -2,6 +2,7 @@ using Pogo;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -121,6 +122,7 @@ namespace Pogo.Saving
         public Transform SaveFilesParent;
         public GameObject LoadFilePrefab;
         public GameObject NewFilePrefab;
+        public GameObject CorruptFilePrefab;
         private bool FilesLoaded = false;
 
         public void RefreshFileSelect()
@@ -144,23 +146,34 @@ namespace Pogo.Saving
 
         private GameObject CreateSaveFileBox(SaveSlotIds slotId)
         {
-            var previewData = PogoGameManager.PogoInstance.PreviewSlot(slotId);
+            var tracker = PogoGameManager.PogoInstance.PreviewSlot(slotId);
 
             GameObject newObject;
-            if (previewData.HasValue)
+            if (tracker.DataState == SaveSlotDataTracker.DataStates.Loaded)
             {
                 newObject = Instantiate(LoadFilePrefab, SaveFilesParent);
                 var controller = newObject.GetComponent<SaveFileLoadBoxController>();
-                controller.SetData(slotId, previewData.Value);
+                controller.SetData(slotId, tracker.GetPreviewData());
                 controller.OnLoadTriggered.AddListener(LoadFile);
                 controller.OnDeleteTriggered.AddListener(DeleteFile);
             }
-            else
+            else if (tracker.DataState == SaveSlotDataTracker.DataStates.Empty)
             {
                 newObject = Instantiate(NewFilePrefab, SaveFilesParent);
                 var controller = newObject.GetComponent<SaveFileNewBoxController>();
                 controller.SlotId = slotId;
                 controller.OnNewGameTriggered.AddListener(NewGame);
+            }
+            else if (tracker.DataState == SaveSlotDataTracker.DataStates.Corrupt)
+            {
+                newObject = Instantiate(CorruptFilePrefab, SaveFilesParent);
+                var controller = newObject.GetComponent<SaveFileGenericBoxController>();
+                controller.SlotId = slotId;
+                controller.OnDeleteTriggered.AddListener(DeleteFile);
+            }
+            else
+            {
+                throw new IOException("Failed to load save slot data somehow mysteriously");
             }
 
             return newObject;

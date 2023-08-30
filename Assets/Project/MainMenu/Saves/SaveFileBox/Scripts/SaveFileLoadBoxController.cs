@@ -11,16 +11,11 @@ using UnityEngine.Events;
 
 namespace Pogo.Saving
 {
-    public class SaveFileLoadBoxController : MonoBehaviour
+    public class SaveFileLoadBoxController : SaveFileGenericBoxController
     {
         [HideInInspector]
         public UnityEvent<SaveSlotIds> OnLoadTriggered;
-        [HideInInspector]
-        public UnityEvent<SaveSlotIds> OnDeleteTriggered;
 
-        private Animator animator;
-
-        public SaveSlotIds SlotId;
         public Button MainButton;
         public TextMeshProUGUI TitleText;
         public TextMeshProUGUI DeathsText;
@@ -33,11 +28,6 @@ namespace Pogo.Saving
 
         [SerializeField]
         private SaveSlotPreviewData previewData;
-
-        private void Awake()
-        {
-            animator = GetComponent<Animator>();
-        }
 
         public void Load()
         {
@@ -122,68 +112,5 @@ namespace Pogo.Saving
                 ProgressBoxesParent.GetChild(n).GetComponent<SaveFileProgressBoxController>().SetState(state);
             }
         }
-
-        #region Deletion
-
-        public float DeleteMenuButtonCooldownSeconds;
-        private float LastDeleteMenuTime;
-        private enum DeleteStates
-        {
-            Idle,
-            Confirmation
-        }
-        private DeleteStates DeleteState = DeleteStates.Idle;
-
-        public void SoftDelete()
-        {
-            if (DeleteState == DeleteStates.Idle)
-            {
-                StartDeleteConfirmation();
-            }
-            else if (DeleteState == DeleteStates.Confirmation)
-            {
-                HardDelete();
-            }
-        }
-
-        public void StartDeleteConfirmation()
-        {
-            if (!TryNavigateDeleteMenu()) return;
-
-            DeleteState = DeleteStates.Confirmation;
-            animator.SetTrigger("Delete_Initiate");
-        }
-
-        public void CancelDeleteConfirmation()
-        {
-            if (!TryNavigateDeleteMenu()) return;
-            if (DeleteState != DeleteStates.Confirmation)
-            {
-                return;
-            }
-
-            DeleteState = DeleteStates.Idle;
-            animator.SetTrigger("Delete_Cancel");
-        }
-
-        public void HardDelete()
-        {
-            if (!TryNavigateDeleteMenu()) return;
-
-            OnDeleteTriggered.Invoke(SlotId);
-        }
-
-        private bool TryNavigateDeleteMenu()
-        {
-            if (Time.unscaledTime < LastDeleteMenuTime + DeleteMenuButtonCooldownSeconds)
-            {
-                return false;
-            }
-
-            LastDeleteMenuTime = Time.unscaledTime;
-            return true;
-        }
-
-        #endregion
     }
 }

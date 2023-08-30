@@ -14,6 +14,7 @@ namespace Pogo.Saving
 {
     public class FileSaveSlotDataTracker : SaveSlotDataTracker
     {
+        private const int CurrentSaveDataVersion = 0;
         private IPlatformService PlatformService;
         private string FilePath => $"{PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}{BaseName}{SaveSlotConstants.SaveSlotPath(slotId)}.sav";
         private string BaseName;
@@ -32,7 +33,11 @@ namespace Pogo.Saving
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
-                File.WriteAllText(FilePath, rawDataSerialized);
+                using (StreamWriter writer = new StreamWriter(FilePath))
+                {
+                    writer.WriteLine(CurrentSaveDataVersion);
+                    writer.WriteLine(rawDataSerialized);
+                }
             }
             catch (Exception e)
             {
@@ -45,19 +50,24 @@ namespace Pogo.Saving
         {
             if (!File.Exists(FilePath))
             {
-                DataLoaded = false;
+                DataState = DataStates.Empty;
                 return;
             }
 
             string rawDataSerialized;
             try
             {
-                rawDataSerialized = File.ReadAllText(FilePath);
+                using (StreamReader reader = new StreamReader(FilePath))
+                {
+                    // read off the CurrentSaveDataVersion this was written from
+                    _ = reader.ReadLine();
+                    rawDataSerialized = reader.ReadToEnd();
+                }
             }
 
             catch (Exception e)
             {
-                DataLoaded = false;
+                DataState = DataStates.Corrupt;
                 UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to read {BaseName}.sav: {e}");
                 return;
             }
@@ -69,17 +79,18 @@ namespace Pogo.Saving
             }
             catch (Exception e)
             {
-                DataLoaded = false;
+                DataState = DataStates.Corrupt;
                 UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to deserialize {BaseName}.sav: {e}");
+                return;
             }
 
-            DataLoaded = true;
+            DataState = DataStates.Loaded;
         }
 
         public override void InitializeNew(string name, Difficulties difficulty)
         {
             SlotData = SaveSlotData.NewGameData(name, difficulty);
-            DataLoaded = true;
+            DataState = DataStates.Loaded;
         }
 
         public override void Delete()
