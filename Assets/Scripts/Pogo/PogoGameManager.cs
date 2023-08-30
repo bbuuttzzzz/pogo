@@ -580,6 +580,16 @@ namespace Pogo
             CurrentSlotDataTracker.Load();
         }
 
+        public void NewGameSlot(
+            SaveSlotIds slotId,
+            DifficultyDescriptor difficulty,
+            string Name)
+        {
+            var tracker = GetSaveSlotTracker(slotId);
+            tracker.InitializeNew(Name, difficulty.DifficultyEnum);
+            tracker.Save();
+        }
+
         private SaveSlotDataTracker GetSaveSlotTracker(SaveSlotIds slotId)
         {
 #if DEBUG

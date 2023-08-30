@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Pogo.Difficulty;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,15 @@ namespace Pogo.Saving
         public QuickSaveData quickSaveData;
         public ChapterProgressData[] chapterProgressData;
 
-        public static SaveSlotData NewGameData()
+        public static SaveSlotData NewGameData(string name, Difficulties difficulty)
         {
             return new SaveSlotData()
             {
+                previewData = new SaveSlotPreviewData()
+                {
+                    difficulty = difficulty,
+                    name = name
+                },
                 quickSaveData = new QuickSaveData() { },
                 chapterProgressData = new ChapterProgressData[] { },
             };

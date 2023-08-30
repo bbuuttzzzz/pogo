@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using WizardUtils.Saving;
 using Platforms;
+using Assets.Scripts.Pogo.Difficulty;
 
 namespace Pogo.Saving
 {
@@ -75,6 +76,12 @@ namespace Pogo.Saving
             DataLoaded = true;
         }
 
+        public override void InitializeNew(string name, Difficulties difficulty)
+        {
+            SlotData = SaveSlotData.NewGameData(name, difficulty);
+            DataLoaded = true;
+        }
+
         public override void Delete()
         {
             if (!File.Exists(FilePath)) return;
@@ -88,6 +95,5 @@ namespace Pogo.Saving
                 return;
             }
         }
-
     }
 }

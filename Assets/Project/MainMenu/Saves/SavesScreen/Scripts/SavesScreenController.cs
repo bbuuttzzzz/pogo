@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Pogo.Saving
 {
@@ -13,12 +14,14 @@ namespace Pogo.Saving
         private Animator animator;
 
         private SaveSlotIds SelectedSlot;
-        private DifficultyDescriptor SelectedDifficulty;
+        public DifficultyDescriptor SelectedDifficulty;
+        private string DisplayName;
 
         public enum States
         {
             FileSelect,
-            DifficultySelect
+            DifficultySelect,
+            NewGameFinalize
         }
 
         private States currentState = States.FileSelect;
@@ -27,14 +30,21 @@ namespace Pogo.Saving
             get => currentState;
             set
             {
+                if (CurrentState == value) return;
                 currentState = value;
                 switch(value)
                 {
                     case States.FileSelect:
+                        RefreshFileSelect();
                         animator.SetTrigger("OpenFileSelect");
                         break;
                     case States.DifficultySelect:
+                        RefreshDifficultySelect();
                         animator.SetTrigger("OpenDifficultySelect");
+                        break;
+                    case States.NewGameFinalize:
+                        RefreshNewGameFinalize();
+                        animator.SetTrigger("OpenNewGameFinalize");
                         break;
                 }
             }
@@ -46,12 +56,26 @@ namespace Pogo.Saving
         private void Awake()
         {
             animator = GetComponent<Animator>();
+            ChangeDifficultyButton.OnPressed.AddListener(OpenDifficultySelect);
         }
 
-        private bool setup = false;
         private void OnEnable()
         {
-            if (!setup) SetupSaveFiles();
+            RefreshFileSelect();
+        }
+
+        private void OnDisable()
+        {
+            CurrentState = States.FileSelect;
+            FilesLoaded = false;
+        }
+
+        private void OnValidate()
+        {
+            if (SelectedDifficulty == null)
+            {
+                Debug.LogError("SelectedDifficulty should be the default difficulty (probably normal)", this);
+            }
         }
 
         public void Back()
@@ -62,6 +86,10 @@ namespace Pogo.Saving
             }
             else if (CurrentState == States.DifficultySelect)
             {
+                CurrentState = States.NewGameFinalize;
+            }
+            else if (currentState == States.NewGameFinalize)
+            {
                 CurrentState = States.FileSelect;
             }
         }
@@ -69,15 +97,14 @@ namespace Pogo.Saving
         public void NewGame(SaveSlotIds slotId)
         {
             SelectedSlot = slotId;
-
-            SetupDifficulties();
-            CurrentState = States.DifficultySelect;
+            CurrentState = States.NewGameFinalize;
+            DisplayName = "";
         }
 
         public void LoadFile(SaveSlotIds slotId)
         {
             PogoGameManager.PogoInstance.LoadSlot(slotId);
-            throw new NotImplementedException();
+            parent.OpenWorldScreen();
         }
 
         public void DeleteFile(SaveSlotIds slotId)
@@ -94,9 +121,13 @@ namespace Pogo.Saving
         public Transform SaveFilesParent;
         public GameObject LoadFilePrefab;
         public GameObject NewFilePrefab;
+        private bool FilesLoaded = false;
 
-        public void SetupSaveFiles()
+        public void RefreshFileSelect()
         {
+            if (FilesLoaded) return;
+            FilesLoaded = true;
+
             // destroy existing things
             int childCount = SaveFilesParent.childCount;
             for (int n = 0; n < childCount; n++)
@@ -142,7 +173,7 @@ namespace Pogo.Saving
         public GameObject DifficultyButtonPrefab;
 
         private bool difficultiesSetUp = false;
-        private void SetupDifficulties()
+        private void RefreshDifficultySelect()
         {
             if (difficultiesSetUp) return;
             difficultiesSetUp = true;
@@ -167,14 +198,48 @@ namespace Pogo.Saving
         public void SelectDifficulty(DifficultyDescriptor difficulty)
         {
             SelectedDifficulty = difficulty;
-            throw new NotImplementedException();
+            Back();
         }
         #endregion
 
-        #region NewGame
-        TextMeshProUGUI PlaceholderText;
+        #region NewGameFinalize
+        public TextMeshProUGUI NewGameNamePlaceholderText;
+        public TMP_InputField NewGameNameInputField;
 
+        public Button FinishButton;
+        public ChangeDifficultyButtonController ChangeDifficultyButton;
 
+        private bool NewGameFinalizeInitialized;
+        public void RefreshNewGameFinalize()
+        {
+            NewGameNamePlaceholderText.text = SaveSlotConstants.SaveSlotName(SelectedSlot);
+            ChangeDifficultyButton.SetDifficulty(SelectedDifficulty);
+            NewGameNameInputField.text = DisplayName;
+
+            if (NewGameFinalizeInitialized) return;
+            NewGameFinalizeInitialized = true;
+
+            NewGameNameInputField.onValueChanged.AddListener(OnNameChanged);
+        }
+
+        private void OnNameChanged(string arg0)
+        {
+            DisplayName = arg0;
+        }
+
+        private void OpenDifficultySelect()
+        {
+            CurrentState = States.DifficultySelect;
+        }
+
+        public void FinishNewGame()
+        {
+            string finalName = string.IsNullOrEmpty(DisplayName) ? SaveSlotConstants.SaveSlotName(SelectedSlot) : DisplayName;
+
+            PogoGameManager.PogoInstance.NewGameSlot(SelectedSlot, SelectedDifficulty, finalName);
+            LoadFile(SelectedSlot);
+
+        }
         #endregion
     }
 }

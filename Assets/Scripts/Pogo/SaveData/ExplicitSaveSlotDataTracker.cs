@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Pogo.Difficulty;
+using UnityEngine;
 
 namespace Pogo.Saving
 {
@@ -15,6 +16,11 @@ namespace Pogo.Saving
         {
             SlotData = ExplicitSaveData.Data;
             DataLoaded = true;
+        }
+
+        public override void InitializeNew(string name, Difficulties difficulty)
+        {
+            throw new System.InvalidOperationException();
         }
 
         public override void Save()

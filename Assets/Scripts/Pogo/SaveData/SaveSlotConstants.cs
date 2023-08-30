@@ -12,42 +12,29 @@ namespace Pogo.Saving
 
         public static int SaveSlotIdToIndex(SaveSlotIds id)
         {
-            return id switch
-            {
-                SaveSlotIds.Slot1 => 0,
-                SaveSlotIds.Slot2 => 1,
-                SaveSlotIds.Slot3 => 2,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+            return (int)id;
         }
 
         public static SaveSlotIds SaveSlotIdFromIndex(int index)
         {
-            return index switch
-            {
-                0 => SaveSlotIds.Slot1,
-                1 => SaveSlotIds.Slot2,
-                2 => SaveSlotIds.Slot3,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+            return (SaveSlotIds)index;
         }
 
         public static string SaveSlotPath(SaveSlotIds id)
         {
-            return id switch
-            {
-                SaveSlotIds.Slot1 => "1",
-                SaveSlotIds.Slot2 => "2",
-                SaveSlotIds.Slot3 => "3",
-                _ => throw new ArgumentOutOfRangeException()
-            };
+            return (SaveSlotIdToIndex(id) + 1).ToString();
+        }
+
+        public static string SaveSlotName(SaveSlotIds selectedSlot)
+        {
+            return $"Slot {SaveSlotPath(selectedSlot)}";
         }
     }
 
     public enum SaveSlotIds
     {
-        Slot1,
-        Slot2,
-        Slot3,
+        Slot1 = 0,
+        Slot2 = 1,
+        Slot3 = 2,
     }
 }
