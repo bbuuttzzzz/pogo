@@ -24,7 +24,13 @@ namespace Pogo.Saving
                     name = name
                 },
                 quickSaveData = new QuickSaveData() { },
-                chapterProgressData = new ChapterProgressData[] { },
+                chapterProgressData = new ChapterProgressData[]
+                {
+                    new ChapterProgressData()
+                    {
+                        unlocked = true
+                    }
+                },
             };
         }
     }

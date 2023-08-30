@@ -11,7 +11,6 @@ namespace Pogo
 {
     public class PogoMainMenuController : MonoBehaviour
     {
-        public EquipmentSelectorController PogoSelector;
         public PogoChapterSelectorController ChapterSelector;
 
         public Animator MainMenuAnimator;
@@ -26,7 +25,7 @@ namespace Pogo
 
         public void AdventureTapped()
         {
-            OpenWorldScreen();
+            OpenSavesScreen();
         }
 
 
@@ -36,7 +35,7 @@ namespace Pogo
         public void SelectChapter(ChapterDescriptor chapter)
         {
             SelectedChapter = chapter;
-            OpenGamemodeScreen();
+            OpenSavesScreen();
         }
 
         public void LoadSelectedChapter()
@@ -81,9 +80,9 @@ namespace Pogo
             MainMenuAnimator.SetTrigger("ShowWorld");
         }
 
-        public void OpenGamemodeScreen()
+        public void OpenSavesScreen()
         {
-            MainMenuAnimator.SetTrigger("ShowGamemode");
+            MainMenuAnimator.SetTrigger("ShowSaves");
         }
 
         public void OpenHomeScreen()

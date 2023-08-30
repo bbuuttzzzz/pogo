@@ -7,6 +7,7 @@ namespace Pogo.Saving
     [System.Serializable]
     public struct ChapterProgressData
     {
+        public bool unlocked;
         public bool complete;
         public int millisecondsElapsed;
         public int deathsTracked;
