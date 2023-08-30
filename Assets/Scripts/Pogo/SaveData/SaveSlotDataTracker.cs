@@ -2,6 +2,7 @@ using Assets.Scripts.Pogo.Difficulty;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WizardUtils;
 
 namespace Pogo.Saving
 {
@@ -13,6 +14,11 @@ namespace Pogo.Saving
         public abstract void Load();
         public abstract void Delete();
         public abstract void InitializeNew(string name, Difficulties difficulty);
+
+        public ChapterProgressData GetChapterData(ChapterId id)
+        {
+            return SlotData.chapterProgressDatas[id.WorldNumber, id.ChapterNumber];
+        }
 
     }
 }
