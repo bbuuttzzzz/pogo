@@ -37,6 +37,8 @@ namespace Pogo.Logic
 
         private void Update()
         {
+            if (PogoGameManager.PogoInstance.CurrentGameState != PogoGameManager.GameStates.InGame) return;
+
             if (ShouldShowStopwatch && Time.timeScale > 0)
             {
                 UpdateStopwatchTimerText();
