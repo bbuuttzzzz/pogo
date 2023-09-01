@@ -87,7 +87,7 @@ namespace Pogo.Saving
             DataState = DataStates.Loaded;
         }
 
-        public override void InitializeNew(string name, Difficulties difficulty)
+        public override void InitializeNew(string name, DifficultyId difficulty)
         {
             SlotData = SaveSlotData.NewGameData(name, difficulty);
             DataState = DataStates.Loaded;

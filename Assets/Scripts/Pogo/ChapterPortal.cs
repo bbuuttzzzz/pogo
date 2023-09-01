@@ -12,7 +12,6 @@ namespace Pogo
     {
         public ChapterDescriptor PreviousChapter;
         public ChapterDescriptor NextChapter;
-        public GameObject TitleCardPrefab;
 
         public void EnterPortal()
         {
@@ -22,33 +21,7 @@ namespace Pogo
                 return;
             }
 
-            if (PreviousChapter != null)
-            {
-                FinishPreviousChapter();
-            }
-
-            if (!NextChapter.IsUnlocked)
-            {
-                UnlockChapter();
-            }
-            ShowTitle();
-        }
-
-        private void FinishPreviousChapter()
-        {
-            if (PreviousChapter == null) return;
-            PogoGameManager.PogoInstance.FinishChapter(PreviousChapter);
-        }
-
-        private void ShowTitle()
-        {
-            var titleInstance = UIManager.Instance.SpawnUIElement(TitleCardPrefab);
-            titleInstance.GetComponent<TitleCardController>().DisplayTitle(NextChapter.Title);
-        }
-
-        private void UnlockChapter()
-        {
-            NextChapter.IsUnlocked = true;
+            PogoGameManager.PogoInstance.StartChapter(NextChapter);
         }
     }
 }

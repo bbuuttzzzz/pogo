@@ -108,6 +108,12 @@ namespace Pogo.Saving
             parent.OpenWorldScreen();
         }
 
+        public void LoadFileAndPlay(SaveSlotIds slotId)
+        {
+            PogoGameManager.PogoInstance.LoadSlot(slotId);
+            PogoGameManager.PogoInstance.LoadChapter(PogoGameManager.PogoInstance.World.Chapters[0].Chapter);
+        }
+
         public void DeleteFile(SaveSlotIds slotId)
         {
             PogoGameManager.PogoInstance.DeleteSlot(slotId);
@@ -250,8 +256,7 @@ namespace Pogo.Saving
             string finalName = string.IsNullOrEmpty(DisplayName) ? SaveSlotConstants.SaveSlotName(SelectedSlot) : DisplayName;
 
             PogoGameManager.PogoInstance.NewGameSlot(SelectedSlot, SelectedDifficulty, finalName);
-            LoadFile(SelectedSlot);
-
+            LoadFileAndPlay(SelectedSlot);
         }
         #endregion
     }

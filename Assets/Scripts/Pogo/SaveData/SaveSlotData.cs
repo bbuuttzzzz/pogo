@@ -14,7 +14,7 @@ namespace Pogo.Saving
         public QuickSaveData quickSaveData;
         public ChapterSaveData[,] chapterProgressDatas;
 
-        public static SaveSlotData NewGameData(string name, Difficulties difficulty)
+        public static SaveSlotData NewGameData(string name, DifficultyId difficulty)
         {
             var data = new SaveSlotData()
             {

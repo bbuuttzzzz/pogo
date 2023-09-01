@@ -21,7 +21,7 @@ namespace Pogo.Saving
         public abstract void Save();
         public abstract void Load();
         public abstract void Delete();
-        public abstract void InitializeNew(string name, Difficulties difficulty);
+        public abstract void InitializeNew(string name, DifficultyId difficulty);
 
         public SaveSlotPreviewData GetPreviewData()
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Pogo.Difficulty
 {
-    public enum Difficulties
+    public enum DifficultyId
     {
         Normal,
         Assist,

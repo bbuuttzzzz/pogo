@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using WizardUI;
 using WizardUtils;
 using WizardUtils.Equipment;
 using WizardUtils.SceneManagement;
@@ -29,6 +30,7 @@ namespace Pogo
 #if UNITY_EDITOR
             if (InitialLevel != null)
             {
+                LoadSlot(SaveSlotIds.Slot3);
                 levelManager.SetCurrentLevelInEditor(InitialLevel);
             }
 #endif
@@ -73,6 +75,13 @@ namespace Pogo
 
 
         #region Level Management
+        public enum GameStates
+        {
+            InMenu,
+            InGame
+        }
+        public GameStates CurrentGameState { get; private set; }
+
         public PogoLevelManager LevelManager => levelManager;
         PogoLevelManager levelManager;
         public LevelDescriptor InitialLevel;
@@ -292,6 +301,7 @@ namespace Pogo
         public WorldDescriptor World;
         private ChapterDescriptor currentChapter;
         private GameProgressTracker currentChapterProgressTracker;
+        public GameObject ChapterTitleCardPrefab;
         public ChapterDescriptor CurrentChapter
         {
             get => currentChapter;
@@ -308,6 +318,17 @@ namespace Pogo
 
             CurrentChapter = chapter;
             currentChapterProgressTracker = new GameProgressTracker(this);
+            ChapterSaveData saveData = GetChapterSaveData(chapter);
+            if (!saveData.unlocked)
+            {
+                saveData.unlocked = true;
+                SetChapterSaveData(chapter, saveData);
+            }
+
+            if (CurrentGameState == GameStates.InGame)
+            {
+                ShowChapterTitle(0.5f);
+            }
         }
 
         public void FinishChapter(ChapterDescriptor chapter)
@@ -355,10 +376,18 @@ namespace Pogo
             });
         }
 
+        private void ShowChapterTitle(float delay = 0)
+        {
+
+            var titleInstance = UIManager.Instance.SpawnUIElement(ChapterTitleCardPrefab);
+            titleInstance.GetComponent<TitleCardController>().DisplayTitle(CurrentChapter.Title, delay);
+        }
+
         private void finishLoadingChapter(ChapterDescriptor newChapter)
         {
             ChapterStartPoint respawnPoint = newChapter.FindStartPoint();
             respawnPoint.OnLoaded?.Invoke();
+            CurrentGameState = GameStates.InGame;
             RegisterRespawnPoint(respawnPoint.transform);
             ResetPlayer();
         }
@@ -562,6 +591,7 @@ namespace Pogo
                 Player.CurrentState = PlayerStates.Alive;
             }
             base.LoadControlScene(newScene, callback);
+            CurrentGameState = GameStates.InMenu;
         }
 
         #endregion
@@ -620,6 +650,10 @@ namespace Pogo
             CurrentSlotDataTracker = GetSaveSlotTracker(slotId);
             CurrentSlotDataTracker.Load();
             OnSaveSlotChanged?.Invoke();
+
+            var difficultyId = CurrentSlotDataTracker.GetPreviewData().difficulty;
+            var difficulty = DifficultyManifest.FindByKey(difficultyId);
+            Equip(difficulty.PogoEquipment);
         }
 
         public void NewGameSlot(

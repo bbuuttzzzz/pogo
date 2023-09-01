@@ -48,7 +48,7 @@ namespace Pogo.Saving
 #if UNITY_EDITOR
             if (Application.isPlaying)
             {
-                difficulty = PogoGameManager.PogoInstance.DifficultyManifest.GetDifficulty(previewData.difficulty);
+                difficulty = PogoGameManager.PogoInstance.DifficultyManifest.FindByKey(previewData.difficulty);
             }
             else
             {

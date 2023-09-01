@@ -13,19 +13,25 @@ public class TitleCardController : MonoBehaviour
     public float MinimumPitch = 1;
     public float MaximumPitch = 1;
 
-    public void DisplayTitle(string title)
+    public void DisplayTitle(string title, float delay = 0)
     {
         GetComponent<Animator>().SetTrigger("Display");
 
         var text = GetComponent<TextMeshProUGUI>();
         Vector2 desiredSize = text.GetPreferredValues(title);
         GetComponent<RectTransform>().sizeDelta = desiredSize;
-        StartCoroutine(SetTextAnimated(title));
+        StartCoroutine(SetTextAnimated(title, delay));
         Destroy(gameObject, DestroyDelaySeconds);
     }
 
-    private IEnumerator SetTextAnimated(string title)
+
+
+    private IEnumerator SetTextAnimated(string title, float delay)
     {
+        if (delay > 0)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+        }
         var text = GetComponent<TextMeshProUGUI>();
         for (int n = 0; n <= title.Length; n++)
         {

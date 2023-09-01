@@ -13,7 +13,7 @@ namespace Pogo
     {
         public DifficultyDescriptor[] Difficulties;
 
-        public DifficultyDescriptor GetDifficulty(Difficulties difficulty)
+        public DifficultyDescriptor FindByKey(DifficultyId difficulty)
         {
             foreach(var difficultyDescriptor in Difficulties)
             {

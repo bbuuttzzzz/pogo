@@ -7,7 +7,7 @@ namespace Pogo.Saving
     [System.Serializable]
     public struct SaveSlotPreviewData
     {
-        public Difficulties difficulty;
+        public DifficultyId difficulty;
         public string name;
         public int CompletionPerMille;
         public int TotalMilliseconds;

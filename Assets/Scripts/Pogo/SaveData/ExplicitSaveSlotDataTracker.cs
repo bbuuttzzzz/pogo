@@ -18,7 +18,7 @@ namespace Pogo.Saving
             DataState = DataStates.Loaded;
         }
 
-        public override void InitializeNew(string name, Difficulties difficulty)
+        public override void InitializeNew(string name, DifficultyId difficulty)
         {
             throw new System.InvalidOperationException();
         }
