@@ -261,10 +261,7 @@ namespace WizardUtils
             else
             {
                 OnQuitToMenu?.Invoke();
-                if (!InControlScene)
-                {
-                    LoadControlScene(MainMenuControlScene);
-                }
+                LoadControlScene(MainMenuControlScene);
             }
         }
         #endregion
