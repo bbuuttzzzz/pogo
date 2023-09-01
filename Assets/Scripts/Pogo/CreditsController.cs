@@ -60,7 +60,7 @@ namespace Assets.Scripts.Pogo
         private void ReturnToMainMenu()
         {
             OnBeforeReturnToMainMenu?.Invoke();
-            GameManager.GameInstance.LoadControlScene(MainMenuScene);
+            PogoGameManager.PogoInstance.Quit(false);
         }
 
         public void EnableReturnToMainMenu()

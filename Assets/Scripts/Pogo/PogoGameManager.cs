@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Experimental.GlobalIllumination;
 using WizardUI;
 using WizardUtils;
 using WizardUtils.Equipment;
@@ -39,6 +40,7 @@ namespace Pogo
             OnPlayerDeath.AddListener(() => NumberOfDeaths++);
             OnPlayerSpawn.AddListener(() => ResetLoadedLevel());
             OnQuitToMenu.AddListener(GameManager_OnQuitToMenu);
+            OnQuitToDesktop.AddListener(GameManager_OnQuitToDesktop);
             CustomCheckpoint.OnPlaced.AddListener(() => OnCustomCheckpointChanged?.Invoke(this, EventArgs.Empty));
 #if UNITY_EDITOR
 #else
@@ -70,7 +72,15 @@ namespace Pogo
 
         private void GameManager_OnQuitToMenu()
         {
+            FinishChapter(false);
+            SaveSlot();
             ResetCustomRespawnPoint(true);
+        }
+
+        private void GameManager_OnQuitToDesktop()
+        {
+            FinishChapter(false);
+            SaveSlot();
         }
 
 
@@ -300,7 +310,6 @@ namespace Pogo
         #region Chapters
         public WorldDescriptor World;
         private ChapterDescriptor currentChapter;
-        private GameProgressTracker currentChapterProgressTracker;
         public GameObject ChapterTitleCardPrefab;
         public ChapterDescriptor CurrentChapter
         {
@@ -313,7 +322,7 @@ namespace Pogo
         {
             if (CurrentChapter != null)
             {
-                FinishChapter(CurrentChapter);
+                FinishChapter();
             }
 
             CurrentChapter = chapter;
@@ -331,30 +340,31 @@ namespace Pogo
             }
         }
 
-        public void FinishChapter(ChapterDescriptor chapter)
+        public void FinishChapter(bool markComplete = true)
         {
-            if (CurrentChapter != chapter)
-            {
-                return;
-            }
-
-            ChapterSaveData saveData = GetChapterSaveData(chapter);
+            ChapterSaveData saveData = GetChapterSaveData(CurrentChapter);
+            var previewData = CurrentSlotDataTracker.PreviewData;
 
             saveData.deathsTracked += currentChapterProgressTracker.TrackedDeaths;
-            saveData.bestDeaths = !saveData.complete
-                ? currentChapterProgressTracker.TrackedDeaths
-                : Math.Min(saveData.bestDeaths, currentChapterProgressTracker.TrackedDeaths);
+            previewData.TotalDeaths += currentChapterProgressTracker.TrackedDeaths;
+            saveData.millisecondsElapsed += currentChapterProgressTracker.TrackedTimeMilliseconds;
+            previewData.TotalMilliseconds += currentChapterProgressTracker.TrackedTimeMilliseconds;
 
-            saveData.millisecondsElapsed += 
-            saveData.millisecondsBestTime = !saveData.complete
-                ? currentChapterProgressTracker.TrackedTimeMilliseconds
-                : Math.Min(saveData.millisecondsBestTime, currentChapterProgressTracker.TrackedTimeMilliseconds);
+            if (markComplete)
+            {
+                saveData.bestDeaths = !saveData.complete
+                    ? currentChapterProgressTracker.TrackedDeaths
+                    : Math.Min(saveData.bestDeaths, currentChapterProgressTracker.TrackedDeaths);
+                saveData.millisecondsBestTime = !saveData.complete
+                    ? currentChapterProgressTracker.TrackedTimeMilliseconds
+                    : Math.Min(saveData.millisecondsBestTime, currentChapterProgressTracker.TrackedTimeMilliseconds);
+                saveData.complete = true;
+            }
 
-            saveData.complete = true;
-            
-            SetChapterSaveData(chapter, saveData);
+            CurrentSlotDataTracker.PreviewData = previewData;
+            SetChapterSaveData(CurrentChapter, saveData);
 
-            CurrentChapter = null;
+            this.CurrentChapter = null;
             currentChapterProgressTracker = null;
         }
 
@@ -610,18 +620,18 @@ namespace Pogo
         #endregion
 
         #region Stats
-        public int SecretsFoundCount;
-        public int NumberOfDeaths;
-        public float GameStartTime;
+        private GameProgressTracker currentChapterProgressTracker;
+        private GameProgressTracker currentSessionProgressTracker;
 
         public UnityEvent OnStatsReset;
         public void ResetStats()
         {
-            SecretsFoundCount = 0;
-            NumberOfDeaths = 0;
-            GameStartTime = Time.time;
+            currentSessionProgressTracker = new GameProgressTracker(this);
             OnStatsReset?.Invoke();
         }
+
+        public int TrackedSessionDeaths => currentSessionProgressTracker.TrackedDeaths;
+        public TimeSpan TrackedSessionTime => currentSessionProgressTracker.TrackedTime;
         #endregion
 
         #region Saving
@@ -651,7 +661,7 @@ namespace Pogo
             CurrentSlotDataTracker.Load();
             OnSaveSlotChanged?.Invoke();
 
-            var difficultyId = CurrentSlotDataTracker.GetPreviewData().difficulty;
+            var difficultyId = CurrentSlotDataTracker.PreviewData.difficulty;
             var difficulty = DifficultyManifest.FindByKey(difficultyId);
             Equip(difficulty.PogoEquipment);
         }

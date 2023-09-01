@@ -159,7 +159,7 @@ namespace Pogo.Saving
             {
                 newObject = Instantiate(LoadFilePrefab, SaveFilesParent);
                 var controller = newObject.GetComponent<SaveFileLoadBoxController>();
-                controller.SetData(slotId, tracker.GetPreviewData());
+                controller.SetData(slotId, tracker.PreviewData);
                 controller.OnLoadTriggered.AddListener(LoadFile);
                 controller.OnDeleteTriggered.AddListener(DeleteFile);
             }

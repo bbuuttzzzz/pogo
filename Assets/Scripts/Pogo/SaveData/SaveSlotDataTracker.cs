@@ -23,15 +23,23 @@ namespace Pogo.Saving
         public abstract void Delete();
         public abstract void InitializeNew(string name, DifficultyId difficulty);
 
-        public SaveSlotPreviewData GetPreviewData()
+        public SaveSlotPreviewData PreviewData
         {
-            if (DataState != DataStates.Loaded)
+            get
             {
-                throw new InvalidOperationException();
-            }
+                if (DataState != DataStates.Loaded)
+                {
+                    throw new InvalidOperationException();
+                }
 
-            return SlotData.previewData;
+                return SlotData.previewData;
+            }
+            set
+            {
+                SlotData.previewData = value;
+            }
         }
+
         public ChapterSaveData GetChapterProgressData(ChapterId id)
         {
             return SlotData.chapterProgressDatas[id.WorldNumber, id.ChapterNumber];

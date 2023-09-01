@@ -22,7 +22,6 @@ namespace Pogo.Logic
             PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(onDeath);
             PogoGameManager.PogoInstance.OnPauseStateChanged += onPauseStateChanged;
             PogoGameManager.PogoInstance.OnStatsReset.AddListener(onStatsReset);
-            PogoGameManager.PogoInstance.OnStoreFinalStats.AddListener(onStoreFinalStats);
         }
 
         private void onShowTimerChanged(object sender, WizardUtils.GameSettingChangedEventArgs e)
@@ -33,9 +32,7 @@ namespace Pogo.Logic
 
         private void onStatsReset()
         {
-            DeathCount = 0;
-            OnDeathCountChanged?.Invoke(DeathCount);
-            SessionStartTime = PogoGameManager.PogoInstance.GameStartTime;
+            OnDeathCountChanged?.Invoke(0);
         }
 
         private void Update()
@@ -48,7 +45,7 @@ namespace Pogo.Logic
 
         private void UpdateStopwatchTimerText()
         {
-            var time = TimeSpan.FromSeconds(Time.time - SessionStartTime);
+            var time = PogoGameManager.PogoInstance.TrackedSessionTime;
             StopwatchTimerText.text = $"{Math.Floor(time.TotalMinutes)}:{time.Seconds:00}.{time.Milliseconds:000}";
         }
 
@@ -66,27 +63,19 @@ namespace Pogo.Logic
             UpdateStopwatchTimerText();
         }
 
-        private void onStoreFinalStats()
-        {
-            PogoGameManager.FinalTime = Time.time - SessionStartTime;
-        }
-
-
         private void onDeath()
         {
-            DeathCount = PogoGameManager.PogoInstance.NumberOfDeaths;
-            OnDeathCountChanged?.Invoke(DeathCount);
-            if (DeathCount % QuickDisplayInterval == 0)
+            int deathCount = PogoGameManager.PogoInstance.TrackedSessionDeaths;
+            OnDeathCountChanged?.Invoke(deathCount);
+            if (deathCount % QuickDisplayInterval == 0)
             {
                 OnDeathCountChangedLargeInterval?.Invoke();
             }
         }
 
-        public int DeathCount;
         public UnityEvent<int> OnDeathCountChanged;
         public UnityEvent OnDeathCountChangedLargeInterval;
 
-        public float SessionStartTime;
         public GameObject StopwatchObject;
         public Text StopwatchTimerText;
     }

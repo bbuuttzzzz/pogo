@@ -14,8 +14,8 @@ namespace Pogo
         private float startTime;
 
         public int TrackedDeaths { get => trackedDeaths; set => trackedDeaths = value; }
-        public float TrackedTime => Time.time - startTime;
-        public int TrackedTimeMilliseconds => (int)(TrackedTime * 1000);
+        public TimeSpan TrackedTime => TimeSpan.FromSeconds(Time.time - startTime);
+        public int TrackedTimeMilliseconds => (int)TrackedTime.TotalMilliseconds;
 
         public GameProgressTracker(PogoGameManager _gameManager)
         {

@@ -9,6 +9,8 @@ namespace Pogo.Challenges
 {
     public class ChapterButtonController : MonoBehaviour
     {
+        public UnityEvent OnFailedToLoad;
+
         public Button button;
         public TextMeshProUGUI TitleText;
         public Image IconImage;
@@ -40,7 +42,14 @@ namespace Pogo.Challenges
 
         private void onButtonPressed()
         {
-            MainMenuController.SelectChapter(WorldChapter.Chapter);
+            if (worldChapter.Type != WorldChapter.Types.Level
+                || !saveData.unlocked)
+            {
+                OnFailedToLoad?.Invoke();
+                return;
+            }
+
+            MainMenuController.LoadChapter(WorldChapter.Chapter);
         }
 
         [ContextMenu("Chapter Changed")]

@@ -32,10 +32,10 @@ namespace Pogo
         #region Chapter Loading
         private ChapterDescriptor SelectedChapter;
 
-        public void SelectChapter(ChapterDescriptor chapter)
+        public void LoadChapter(ChapterDescriptor chapter)
         {
             SelectedChapter = chapter;
-            OpenSavesScreen();
+            LoadSelectedChapter();
         }
 
         public void LoadSelectedChapter()
