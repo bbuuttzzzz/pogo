@@ -5,6 +5,34 @@ namespace Pogo.Saving
     [CreateAssetMenu(fileName = "saveSlotData_", menuName = "Pogo/SaveSlotDataExplicit", order = 1)]
     public class ExplicitSaveSlotData : ScriptableObject
     {
-        public SaveSlotData Data;
+        public SaveSlotPreviewData previewData;
+        public QuickSaveData quickSaveData;
+
+        public SaveSlotData Data
+        {
+            get
+            {
+                SaveSlotData data = new SaveSlotData()
+                {
+                    quickSaveData = this.quickSaveData,
+                    previewData = this.previewData,
+                    chapterProgressDatas = new ChapterSaveData[1, 12]
+                };
+                for(int n = 0; n < 12; n++)
+                {
+                    data.chapterProgressDatas[0, n] = new ChapterSaveData()
+                    {
+                        unlocked = n <= previewData.LastFinishedChapter + 1,
+                        complete = n <= previewData.LastFinishedChapter,
+                        bestDeaths = Random.Range(0, 100),
+                        millisecondsBestTime = Random.Range(1000, 600000),
+                        deathsTracked = Random.Range(0, 1000),
+                        millisecondsElapsed = Random.Range(1000, 6000000)
+                    };
+                }
+
+                return data;
+            }
+        }
     }
 }

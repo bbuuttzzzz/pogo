@@ -105,7 +105,7 @@ namespace Pogo.Saving
         {
             for (int n = 0; n < ProgressBoxesParent.childCount; n++)
             {
-                SaveFileProgressBoxController.States state = n < completedChapters
+                SaveFileProgressBoxController.States state = n <= completedChapters
                     ? SaveFileProgressBoxController.States.Finished
                     : SaveFileProgressBoxController.States.Unfinished;
 

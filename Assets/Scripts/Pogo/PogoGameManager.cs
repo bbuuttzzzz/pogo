@@ -595,6 +595,8 @@ namespace Pogo
         #endregion
 
         #region Saving
+        [HideInInspector]
+        public UnityEvent OnSaveSlotChanged;
         private SaveSlotDataTracker CurrentSlotDataTracker;
         public ExplicitSaveSlotData EditorOverrideSlot3Data;
         
@@ -617,6 +619,7 @@ namespace Pogo
 
             CurrentSlotDataTracker = GetSaveSlotTracker(slotId);
             CurrentSlotDataTracker.Load();
+            OnSaveSlotChanged?.Invoke();
         }
 
         public void NewGameSlot(

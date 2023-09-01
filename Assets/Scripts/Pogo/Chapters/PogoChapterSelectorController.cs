@@ -20,45 +20,14 @@ namespace Pogo
         private WorldDescriptor ActiveWorld => PogoGameManager.PogoInstance.World;
         public ChapterButtonController[] ChapterButtons;
 
-        public UnityEvent OnActiveWorldChanged;
-        public UnityEvent<string> OnWorldNameChanged;
-
         private void Start()
         {
-            if (IncrementButton != null) IncrementButton.onClick.AddListener(Increment);
-            if (DecrementButton != null) DecrementButton.onClick.AddListener(Decrement);
+            PogoGameManager.PogoInstance.OnSaveSlotChanged.AddListener(GM_OnSaveSlotChanged);
         }
 
-        private void OnWorldChanged()
+        private void GM_OnSaveSlotChanged()
         {
-            UpdateWorldName();
-            UpdateButtonInteractableStates();
             UpdateChapterButtons();
-        }
-
-        void UpdateWorldName()
-        {
-            OnWorldNameChanged.Invoke(ActiveWorld.DisplayName);
-        }
-
-        public Button IncrementButton; 
-        public void Increment()
-        {
-            ActiveWorldIndex = Math.Min(DisplayChapters.Length - 1, ActiveWorldIndex + 1);
-            OnActiveWorldChanged?.Invoke();
-        }
-
-        public Button DecrementButton;
-        public void Decrement()
-        {
-            ActiveWorldIndex = Math.Max(0, ActiveWorldIndex - 1);
-            OnActiveWorldChanged?.Invoke();
-        }
-
-        private void UpdateButtonInteractableStates()
-        {
-            DecrementButton.interactable = (ActiveWorldIndex > 0);
-            IncrementButton.interactable = (ActiveWorldIndex < DisplayChapters.Length - 1);
         }
 
         private void UpdateChapterButtons()
