@@ -59,7 +59,7 @@ namespace Pogo.Saving
                     .First();
             }
 #else
-        difficulty = PogoGameManager.PogoInstance.DifficultyManifest.GetDifficulty(previewData.difficulty);
+        difficulty = PogoGameManager.PogoInstance.DifficultyManifest.FindByKey(previewData.difficulty);
 #endif
 
             PercentText.text = FormatPercent(previewData.CompletionPerMille);

@@ -311,7 +311,7 @@ namespace WizardUtils
                 saveDataTracker = new SaveDataTrackerFile(PlatformService, MainSaveManifest);
             }
 #else
-            saveDataTracker = new SaveDataTrackerFile(MainSaveManifest);
+            saveDataTracker = new SaveDataTrackerFile(PlatformService, MainSaveManifest);
 #endif
             saveDataTracker.Load();
             SaveDataOpen = true;
