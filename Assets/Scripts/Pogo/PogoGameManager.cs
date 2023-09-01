@@ -33,6 +33,7 @@ namespace Pogo
             {
                 LoadSlot(SaveSlotIds.Slot3);
                 levelManager.SetCurrentLevelInEditor(InitialLevel);
+                currentSessionProgressTracker = new GameProgressTracker(this);
             }
 #endif
 
