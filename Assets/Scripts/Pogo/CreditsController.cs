@@ -27,7 +27,7 @@ namespace Assets.Scripts.Pogo
             animator = GetComponent<Animator>();
             audioSource = GetComponent<AudioSource>();
             UpdateStopwatchTimerText();
-            DeathCountText.text = PogoGameManager.PogoInstance.NumberOfDeaths.ToString();
+            DeathCountText.text = PogoGameManager.PogoInstance.TrackedSessionDeaths.ToString();
         }
 
         private void Update()
@@ -53,7 +53,7 @@ namespace Assets.Scripts.Pogo
 
         private void UpdateStopwatchTimerText()
         {
-            var time = TimeSpan.FromSeconds(PogoGameManager.FinalTime);
+            var time = PogoGameManager.PogoInstance.TrackedSessionTime;
             StopwatchTimerText.text = $"{Math.Floor(time.TotalMinutes)}:{time.Seconds:00}.{time.Milliseconds:000}";
         }
 

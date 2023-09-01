@@ -37,7 +37,6 @@ namespace Pogo
 #endif
 
             OnPauseStateChanged += ((_, _) => UpdateTimeFreeze());
-            OnPlayerDeath.AddListener(() => NumberOfDeaths++);
             OnPlayerSpawn.AddListener(() => ResetLoadedLevel());
             OnQuitToMenu.AddListener(GameManager_OnQuitToMenu);
             OnQuitToDesktop.AddListener(GameManager_OnQuitToDesktop);
@@ -342,6 +341,8 @@ namespace Pogo
 
         public void FinishChapter(bool markComplete = true)
         {
+            if (CurrentChapter == null) return;
+
             ChapterSaveData saveData = GetChapterSaveData(CurrentChapter);
             var previewData = CurrentSlotDataTracker.PreviewData;
 
