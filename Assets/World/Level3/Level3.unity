@@ -4823,6 +4823,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gold UnlockPickup Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 7350164119747456354, guid: aab591831fbf12946900e96877d5f74c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7350164119747456356, guid: aab591831fbf12946900e96877d5f74c, type: 3}
       propertyPath: m_Size.x
       value: 1
@@ -13910,6 +13914,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Silver UnlockPickup Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 7343184277085384138, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7343184277085384140, guid: 735e9a3ad8e21714ab040b924f50bd4d, type: 3}
       propertyPath: m_Size.x
       value: 1
@@ -14322,7 +14330,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1314077061}
-  - component: {fileID: 1314077062}
   m_Layer: 0
   m_Name: End Credits
   m_TagString: Untagged
@@ -14346,49 +14353,6 @@ Transform:
   m_Father: {fileID: 849268749}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1314077062
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1314077060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f19d5fa03ab421e4588f1e98e8653f9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TargetDifficulty: 4
-  OnEnter:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1576859541}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnExit:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1576859541}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
 --- !u!4 &1317955106 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5052681812089165140, guid: 8a6cba71032c29d418719d1000454e08, type: 3}

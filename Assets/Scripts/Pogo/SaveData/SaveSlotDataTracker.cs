@@ -40,6 +40,33 @@ namespace Pogo.Saving
             }
         }
 
+        const float TotalCompletionFromChapters = 1f;
+
+        public void UpdatePreviewData()
+        {
+            SaveSlotPreviewData updatedPreviewData = PreviewData;
+            updatedPreviewData.TotalDeaths = 0;
+            updatedPreviewData.TotalMilliseconds = 0;
+
+            for (int n = 0; n < 12; n++)
+            {
+                if (SlotData.chapterProgressDatas[0,n].complete)
+                {
+                    updatedPreviewData.LastFinishedChapter = n;
+                }
+                if (!SlotData.chapterProgressDatas[0,n].unlocked) break;
+                updatedPreviewData.TotalDeaths += SlotData.chapterProgressDatas[0, n].deathsTracked;
+                updatedPreviewData.TotalMilliseconds += SlotData.chapterProgressDatas[0, n].millisecondsElapsed;
+            }
+
+            updatedPreviewData.CompletionPerMille = (int)
+                (
+                    (updatedPreviewData.LastFinishedChapter / 12f) * 1000 * TotalCompletionFromChapters
+                );
+
+            PreviewData = updatedPreviewData;
+        }
+
         public ChapterSaveData GetChapterProgressData(ChapterId id)
         {
             return SlotData.chapterProgressDatas[id.WorldNumber, id.ChapterNumber];

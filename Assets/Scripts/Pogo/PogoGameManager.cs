@@ -344,12 +344,9 @@ namespace Pogo
             if (CurrentChapter == null) return;
 
             ChapterSaveData saveData = GetChapterSaveData(CurrentChapter);
-            var previewData = CurrentSlotDataTracker.PreviewData;
 
             saveData.deathsTracked += currentChapterProgressTracker.TrackedDeaths;
-            previewData.TotalDeaths += currentChapterProgressTracker.TrackedDeaths;
             saveData.millisecondsElapsed += currentChapterProgressTracker.TrackedTimeMilliseconds;
-            previewData.TotalMilliseconds += currentChapterProgressTracker.TrackedTimeMilliseconds;
 
             if (markComplete)
             {
@@ -362,7 +359,6 @@ namespace Pogo
                 saveData.complete = true;
             }
 
-            CurrentSlotDataTracker.PreviewData = previewData;
             SetChapterSaveData(CurrentChapter, saveData);
 
             this.CurrentChapter = null;
@@ -738,6 +734,7 @@ namespace Pogo
         {
             if (CurrentSlotDataTracker == null) return;
 
+            CurrentSlotDataTracker.UpdatePreviewData();
             CurrentSlotDataTracker.Save();
         }
 

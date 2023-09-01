@@ -10,7 +10,7 @@ namespace Pogo.Saving
         public DifficultyId difficulty;
         public string name;
         public int CompletionPerMille;
-        public int TotalMilliseconds;
+        public long TotalMilliseconds;
         public int TotalDeaths;
         public int LastFinishedChapter;
     }

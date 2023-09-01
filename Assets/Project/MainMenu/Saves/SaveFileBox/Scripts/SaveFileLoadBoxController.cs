@@ -83,7 +83,7 @@ namespace Pogo.Saving
         }
 
 
-        private string FormatTime(int totalMilliseconds)
+        private string FormatTime(long totalMilliseconds)
         {
             var timespan = TimeSpan.FromMilliseconds(totalMilliseconds);
 
