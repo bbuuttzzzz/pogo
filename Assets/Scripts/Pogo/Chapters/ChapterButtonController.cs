@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Saving;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,6 +29,8 @@ namespace Pogo.Challenges
                 OnChapterChanged();
             }
         }
+        private ChapterSaveData saveData;
+
 
         private void Awake()
         {
@@ -46,10 +49,11 @@ namespace Pogo.Challenges
             switch (WorldChapter.Type)
             {
                 case WorldChapter.Types.Level:
-                    SetLevelWorldChapter();
+                    LoadSaveData();
+                    UpdateLevelSelectDisplay();
                     break;
                 case WorldChapter.Types.ComingSoon:
-                    TitleText.text = "Coming SOon";
+                    TitleText.text = "Coming Soon";
                     IconImage.sprite = ComingSoonSprite;
                     break;
                 case WorldChapter.Types.SteamOnly:
@@ -59,7 +63,12 @@ namespace Pogo.Challenges
             }
         }
 
-        private void SetLevelWorldChapter()
+        private void LoadSaveData()
+        {
+            saveData = PogoGameManager.PogoInstance.GetChapterSaveData(WorldChapter.Chapter);
+        }
+
+        private void UpdateLevelSelectDisplay()
         {
 #if DEBUG
             if (WorldChapter.Chapter == null)
@@ -68,7 +77,7 @@ namespace Pogo.Challenges
             }
 #endif
 
-            if (WorldChapter.Chapter.IsUnlocked)
+            if (saveData.unlocked)
             {
                 TitleText.text = WorldChapter.Chapter.Title;
                 IconImage.sprite = WorldChapter.Chapter.Icon;

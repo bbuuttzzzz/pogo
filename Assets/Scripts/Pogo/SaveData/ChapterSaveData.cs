@@ -5,11 +5,11 @@ using UnityEngine;
 namespace Pogo.Saving
 {
     [System.Serializable]
-    public struct ChapterProgressData
+    public struct ChapterSaveData
     {
         public bool unlocked;
         public bool complete;
-        public int millisecondsElapsed;
+        public long millisecondsElapsed;
         public int deathsTracked;
         public int millisecondsBestTime;
         public int bestDeaths;

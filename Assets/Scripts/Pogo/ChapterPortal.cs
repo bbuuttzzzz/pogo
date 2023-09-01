@@ -10,28 +10,45 @@ namespace Pogo
 {
     public class ChapterPortal : MonoBehaviour
     {
-        public ChapterDescriptor Chapter;
+        public ChapterDescriptor PreviousChapter;
+        public ChapterDescriptor NextChapter;
         public GameObject TitleCardPrefab;
 
         public void EnterPortal()
         {
-            if (!Chapter.IsUnlocked)
+            if (!PogoGameManager.PogoInstance.CanSwitchChapters
+                || PogoGameManager.PogoInstance.CurrentChapter == NextChapter)
+            {
+                return;
+            }
+
+            if (PreviousChapter != null)
+            {
+                FinishPreviousChapter();
+            }
+
+            if (!NextChapter.IsUnlocked)
             {
                 UnlockChapter();
             }
             ShowTitle();
         }
 
+        private void FinishPreviousChapter()
+        {
+            if (PreviousChapter == null) return;
+            PogoGameManager.PogoInstance.FinishChapter(PreviousChapter);
+        }
+
         private void ShowTitle()
         {
             var titleInstance = UIManager.Instance.SpawnUIElement(TitleCardPrefab);
-            titleInstance.GetComponent<TitleCardController>().DisplayTitle(Chapter.Title);
+            titleInstance.GetComponent<TitleCardController>().DisplayTitle(NextChapter.Title);
         }
 
         private void UnlockChapter()
         {
-            if (Chapter.UnlockedSaveValue == null) throw new MissingFieldException();
-            Chapter.UnlockedSaveValue.CurrentValue = "1";
+            NextChapter.IsUnlocked = true;
         }
     }
 }

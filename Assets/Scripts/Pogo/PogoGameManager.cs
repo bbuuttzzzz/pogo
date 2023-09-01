@@ -289,13 +289,61 @@ namespace Pogo
         #endregion
 
         #region Chapters
+        public WorldDescriptor World;
+        private ChapterDescriptor currentChapter;
+        private GameProgressTracker currentChapterProgressTracker;
+        public ChapterDescriptor CurrentChapter
+        {
+            get => currentChapter;
+            private set => currentChapter = value;
+        }
+        public bool CanSwitchChapters => true;
+
+        public void StartChapter(ChapterDescriptor chapter)
+        {
+            if (CurrentChapter != null)
+            {
+                FinishChapter(CurrentChapter);
+            }
+
+            CurrentChapter = chapter;
+            currentChapterProgressTracker = new GameProgressTracker(this);
+        }
+
+        public void FinishChapter(ChapterDescriptor chapter)
+        {
+            if (CurrentChapter != chapter)
+            {
+                return;
+            }
+
+            ChapterSaveData saveData = GetChapterSaveData(chapter);
+
+            saveData.deathsTracked += currentChapterProgressTracker.TrackedDeaths;
+            saveData.bestDeaths = !saveData.complete
+                ? currentChapterProgressTracker.TrackedDeaths
+                : Math.Min(saveData.bestDeaths, currentChapterProgressTracker.TrackedDeaths);
+
+            saveData.millisecondsElapsed += 
+            saveData.millisecondsBestTime = !saveData.complete
+                ? currentChapterProgressTracker.TrackedTimeMilliseconds
+                : Math.Min(saveData.millisecondsBestTime, currentChapterProgressTracker.TrackedTimeMilliseconds);
+
+            saveData.complete = true;
+            
+            SetChapterSaveData(chapter, saveData);
+
+            CurrentChapter = null;
+            currentChapterProgressTracker = null;
+        }
+
         public void LoadChapter(ChapterDescriptor newChapter)
         {
-            StartingChapter = newChapter;
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
                 finishLoadingChapter(newChapter);
+                StartChapter(newChapter);
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
             OnLevelLoaded.AddListener(finishLoading);
@@ -317,7 +365,7 @@ namespace Pogo
 
 #endregion
 
-#region Equipment
+        #region Equipment
 
         public NonInstancedEquipmentSlot[] Loadout;
 
@@ -348,9 +396,9 @@ namespace Pogo
 
             return null;
         }
-#endregion
+        #endregion
 
-#region Player
+        #region Player
         private PlayerController player;
         public PlayerController Player => player;
         public static void RegisterPlayer(PlayerController player)
@@ -535,7 +583,6 @@ namespace Pogo
         public int SecretsFoundCount;
         public int NumberOfDeaths;
         public float GameStartTime;
-        public ChapterDescriptor StartingChapter;
 
         public UnityEvent OnStatsReset;
         public void ResetStats()
@@ -598,6 +645,40 @@ namespace Pogo
         public QuickSaveData GetQuickSaveData()
         {
             return CurrentSlotDataTracker.SlotData.quickSaveData;
+        }
+
+        public ChapterSaveData GetChapterSaveData(ChapterDescriptor chapter)
+        {
+            int index = World.IndexOf(chapter);
+            if (index == -1) throw new KeyNotFoundException($"Couldn't find chapter {chapter} in world {World}");
+
+            ChapterId id = new ChapterId(0, index);
+            
+            return CurrentSlotDataTracker.GetChapterProgressData(id);
+        }
+
+        public void SetChapterSaveData(ChapterDescriptor chapter, ChapterSaveData data)
+        {
+            int index = World.IndexOf(chapter);
+
+            if (index == -1) throw new KeyNotFoundException($"Couldn't find chapter {chapter} in world {World}");
+
+            ChapterId id = new ChapterId(0, index);
+
+            CurrentSlotDataTracker.SetChapterProgressData(id, data);
+        }
+
+        public void UnlockChapter(ChapterDescriptor chapter)
+        {
+            int index = World.IndexOf(chapter);
+            if (index == -1) throw new KeyNotFoundException($"Couldn't find chapter {chapter} in world {World}");
+
+            ChapterId id = new ChapterId(0, index);
+
+            ChapterSaveData data = CurrentSlotDataTracker.GetChapterProgressData(id);
+            data.unlocked = true;
+
+            CurrentSlotDataTracker.SetChapterProgressData(id, data);
         }
 
         public void SetQuickSaveData(QuickSaveData data)

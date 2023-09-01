@@ -14,11 +14,10 @@ namespace Pogo
 {
     public class PogoChapterSelectorController : MonoBehaviour
     {
-        public WorldDescriptor[] Worlds;
         [HideInInspector]
         public ChapterDescriptor[] DisplayChapters;
         private int ActiveWorldIndex = 0;
-        private WorldDescriptor ActiveWorld => Worlds[ActiveWorldIndex];
+        private WorldDescriptor ActiveWorld => PogoGameManager.PogoInstance.World;
         public ChapterButtonController[] ChapterButtons;
 
         public UnityEvent OnActiveWorldChanged;
@@ -26,9 +25,6 @@ namespace Pogo
 
         private void Start()
         {
-            OnActiveWorldChanged?.AddListener(OnWorldChanged);
-            OnActiveWorldChanged?.Invoke();
-
             if (IncrementButton != null) IncrementButton.onClick.AddListener(Increment);
             if (DecrementButton != null) DecrementButton.onClick.AddListener(Decrement);
         }

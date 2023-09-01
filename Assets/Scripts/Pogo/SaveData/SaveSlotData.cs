@@ -12,7 +12,7 @@ namespace Pogo.Saving
     {
         public SaveSlotPreviewData previewData;
         public QuickSaveData quickSaveData;
-        public ChapterProgressData[,] chapterProgressDatas;
+        public ChapterSaveData[,] chapterProgressDatas;
 
         public static SaveSlotData NewGameData(string name, Difficulties difficulty)
         {
@@ -24,12 +24,12 @@ namespace Pogo.Saving
                     name = name
                 },
                 quickSaveData = new QuickSaveData() { },
-                chapterProgressDatas = new ChapterProgressData[1,12]
+                chapterProgressDatas = new ChapterSaveData[1,12]
             };
 
             for (int n = 0; n < 12; n++)
             {
-                data.chapterProgressDatas[0,n] = new ChapterProgressData()
+                data.chapterProgressDatas[0,n] = new ChapterSaveData()
                 {
                     unlocked = n == 0
                 };

@@ -12,6 +12,12 @@ namespace Pogo.Saving
         public int WorldNumber;
         public int ChapterNumber;
 
+        public ChapterId(int worldNumber, int chapterNumber)
+        {
+            WorldNumber = worldNumber;
+            ChapterNumber = chapterNumber;
+        }
+
         public override bool Equals(object obj)
         {
             return obj is ChapterId other && Equals(other);

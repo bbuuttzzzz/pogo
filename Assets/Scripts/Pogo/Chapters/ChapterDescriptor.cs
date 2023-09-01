@@ -32,17 +32,17 @@ namespace Pogo
         }
 
         #region Unlocking
-        public SaveValueDescriptor UnlockedSaveValue;
+        public bool AlwaysUnlocked;
         public bool IsUnlocked
         {
             get
             {
-                return UnlockedSaveValue == null
-                    || GameManager.GameInstance?.GetMainSaveValue(UnlockedSaveValue) == "1";
+                return AlwaysUnlocked
+                    || PogoGameManager.PogoInstance.GetChapterSaveData(this).unlocked;
             }
             set
             {
-                GameManager.GameInstance?.SetMainSaveValue(UnlockedSaveValue, value ? "1" : "0");
+                PogoGameManager.PogoInstance.UnlockChapter(this);
             }
         }
 

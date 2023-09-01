@@ -32,9 +32,14 @@ namespace Pogo.Saving
 
             return SlotData.previewData;
         }
-        public ChapterProgressData GetChapterData(ChapterId id)
+        public ChapterSaveData GetChapterProgressData(ChapterId id)
         {
             return SlotData.chapterProgressDatas[id.WorldNumber, id.ChapterNumber];
+        }
+
+        public void SetChapterProgressData(ChapterId id, ChapterSaveData data)
+        {
+            SlotData.chapterProgressDatas[id.WorldNumber, id.ChapterNumber] = data;
         }
 
     }

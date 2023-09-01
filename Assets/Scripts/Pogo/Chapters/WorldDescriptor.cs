@@ -17,6 +17,20 @@ namespace Pogo
 
         public string DisplayName;
 
+        public int IndexOf(ChapterDescriptor chapterDescriptor)
+        {
+            for (int n = 0; n < ChapterCount; n++)
+            {
+                if (Chapters[n].Type == WorldChapter.Types.Level
+                    && Chapters[n].Chapter == chapterDescriptor)
+                {
+                    return n;
+                }
+            }
+
+            return -1;
+        }
+
         void OnValidate()
         {
             if (Chapters.Length != ChapterCount)
