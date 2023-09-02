@@ -57,6 +57,7 @@ namespace Pogo
             {
                 if (MainPathCheckpoints[n] == null) continue;
 
+                MainPathCheckpoints[n].Chapter = this;
                 MainPathCheckpoints[n].CheckpointId = new CheckpointId(CheckpointTypes.MainPath, n + 1);
             }
 
@@ -64,6 +65,7 @@ namespace Pogo
             {
                 if (SidePathCheckpoints[n] == null) continue;
 
+                SidePathCheckpoints[n].Chapter = this;
                 SidePathCheckpoints[n].CheckpointId = new CheckpointId(CheckpointTypes.SidePath, n + 1);
             }
         }

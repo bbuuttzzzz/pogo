@@ -394,7 +394,7 @@ namespace Pogo
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
-                LoadCheckpoint(newChapter, checkpoint);
+                LoadCheckpoint(checkpoint);
                 StartChapter(newChapter);
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
@@ -414,17 +414,15 @@ namespace Pogo
             titleInstance.GetComponent<TitleCardController>().DisplayTitle(CurrentChapter.Title, delay);
         }
 
-        private void LoadCheckpoint(ChapterDescriptor chapter, CheckpointDescriptor checkpointDescriptor)
+        private void LoadCheckpoint(CheckpointDescriptor checkpointDescriptor)
         {
-            CheckpointLoadEventArgs checkpointLoadArgs = new(chapter, checkpointDescriptor);
             bool checkpointFound = false;
-
             var checkpointTriggers = FindObjectsOfType(typeof(CheckpointTrigger)) as CheckpointTrigger[];
 
 
             foreach (var checkpointTrigger in checkpointTriggers)
             {
-                checkpointTrigger.NotifyCheckpointLoaded(checkpointLoadArgs);
+                checkpointTrigger.NotifyCheckpointLoad(checkpointDescriptor);
                 if (!checkpointFound && checkpointTrigger.Descriptor == checkpointDescriptor)
                 {
                     checkpointFound = true;

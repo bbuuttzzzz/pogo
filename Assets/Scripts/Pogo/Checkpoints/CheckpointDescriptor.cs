@@ -16,6 +16,8 @@ namespace Pogo.Checkpoints
 
         #region Cached Data
         [Tooltip("Controlled by ChapterDescriptor!!! do not touch!!!")]
+        public ChapterDescriptor Chapter;
+        [Tooltip("Controlled by ChapterDescriptor!!! do not touch!!!")]
         public CheckpointId CheckpointId;
         #endregion
     }
