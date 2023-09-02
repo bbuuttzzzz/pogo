@@ -19,7 +19,7 @@ namespace Pogo
         public Sprite Icon;
         public string LongTitle => $"Part {Number} - {Title}";
 
-        public CheckpointDescriptor GetCheckpoint(CheckpointId checkpointId)
+        public CheckpointDescriptor GetCheckpointDescriptor(CheckpointId checkpointId)
         {
             if (checkpointId.CheckpointType == CheckpointTypes.MainPath)
             {

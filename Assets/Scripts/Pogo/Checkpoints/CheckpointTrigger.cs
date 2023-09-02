@@ -1,5 +1,6 @@
 ﻿using Pogo;
 using Pogo.Checkpoints;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,6 +9,11 @@ public class CheckpointTrigger : Trigger
     public CheckpointDescriptor Descriptor;
     public Transform RespawnPoint;
     public UnityEvent OnEnteredNotActivated;
+
+    public void NotifyCheckpointLoaded(CheckpointLoadEventArgs args)
+    {
+        throw new NotImplementedException();
+    }
 
     public override bool ColliderCanTrigger(Collider other)
     {

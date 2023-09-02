@@ -7,9 +7,11 @@ using Pogo.Saving;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.InputSystem.iOS;
 using WizardUI;
 using WizardUtils;
 using WizardUtils.Equipment;
@@ -373,7 +375,7 @@ namespace Pogo
         }
         public void LoadChapter(ChapterDescriptor newChapter, CheckpointId checkpointId)
         {
-            var checkpoint = newChapter.GetCheckpoint(checkpointId);
+            var checkpoint = newChapter.GetCheckpointDescriptor(checkpointId);
             if (checkpoint == null)
             {
                 if (checkpointId.CheckpointType == CheckpointTypes.MainPath
@@ -392,7 +394,7 @@ namespace Pogo
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
-                finishLoadingChapter(newChapter);
+                LoadCheckpoint(newChapter, checkpoint);
                 StartChapter(newChapter);
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
@@ -412,16 +414,34 @@ namespace Pogo
             titleInstance.GetComponent<TitleCardController>().DisplayTitle(CurrentChapter.Title, delay);
         }
 
-        private void finishLoadingChapter(ChapterDescriptor newChapter)
+        private void LoadCheckpoint(ChapterDescriptor chapter, CheckpointDescriptor checkpointDescriptor)
         {
-            ChapterStartPoint respawnPoint = newChapter.FindStartPoint();
-            respawnPoint.OnLoaded?.Invoke();
+            CheckpointLoadEventArgs checkpointLoadArgs = new(chapter, checkpointDescriptor);
+            bool checkpointFound = false;
+
+            var checkpointTriggers = FindObjectsOfType(typeof(CheckpointTrigger)) as CheckpointTrigger[];
+
+
+            foreach (var checkpointTrigger in checkpointTriggers)
+            {
+                checkpointTrigger.NotifyCheckpointLoaded(checkpointLoadArgs);
+                if (!checkpointFound && checkpointTrigger.Descriptor == checkpointDescriptor)
+                {
+                    checkpointFound = true;
+                    RegisterRespawnPoint(checkpointTrigger.RespawnPoint);
+                }
+            }
+
+            if (!checkpointFound)
+            {
+                throw new MissingReferenceException($"Failed to find Checkpoint trigger for {checkpointDescriptor}. did we load the right levels?");
+            }
+
             CurrentGameState = GameStates.InGame;
-            RegisterRespawnPoint(respawnPoint.transform);
             ResetPlayer();
         }
 
-#endregion
+        #endregion
 
         #region Equipment
 
