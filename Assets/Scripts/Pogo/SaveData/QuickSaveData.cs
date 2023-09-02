@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Checkpoints;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,9 @@ namespace Pogo.Saving
             NoData,
             InProgress
         }
-        public int ShareIndex;
-        public int CheckpointNumber;
-        public int Deaths;
-        public int Time;
+        public int ChapterIndex;
+        public CheckpointId checkpointId;
+        public int TrackedDeaths;
+        public int ElapsedMilliseconds;
     }
 }

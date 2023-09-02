@@ -235,7 +235,7 @@ My Best Time: {1:N3} seconds"
             + sizeof(short) * 3
             // Yaw
             + 1
-            // Level Index
+            // Legacy_Level Index
             + 1
             // Best Time
             + sizeof(short)

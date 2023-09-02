@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+
+namespace Pogo.Checkpoints
+{
+    [CreateAssetMenu(fileName = "ck_", menuName = "Pogo/CheckpointDescriptor")]
+    public class CheckpointDescriptor : ScriptableObject
+    {
+        public LevelDescriptor Level;
+        public int Par;
+        public string[] Hints;
+
+        #region Cached Data
+        [Tooltip("Controlled by ChapterDescriptor!!! do not touch!!!")]
+        public CheckpointId CheckpointId;
+        #endregion
+    }
+}

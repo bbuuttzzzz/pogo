@@ -2,6 +2,7 @@
 using Inputter;
 using Platforms;
 using Pogo.Challenges;
+using Pogo.Checkpoints;
 using Pogo.Saving;
 using System;
 using System.Collections;
@@ -368,6 +369,26 @@ namespace Pogo
 
         public void LoadChapter(ChapterDescriptor newChapter)
         {
+            LoadChapter(newChapter, new CheckpointId(CheckpointTypes.MainPath, 1));
+        }
+        public void LoadChapter(ChapterDescriptor newChapter, CheckpointId checkpointId)
+        {
+            var checkpoint = newChapter.GetCheckpoint(checkpointId);
+            if (checkpoint == null)
+            {
+                if (checkpointId.CheckpointType == CheckpointTypes.MainPath
+                    && checkpointId.CheckpointNumber == 1)
+                {
+                    throw new NullReferenceException($"Chapter {newChapter} Defines no checkpoints");
+                }
+                else
+                {
+                    Debug.LogError($"Failed to find checkpoint {checkpointId}. Defaulting to first checkpoint.");
+                    LoadChapter(newChapter);
+                    return;
+                }
+            }
+
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
@@ -376,7 +397,7 @@ namespace Pogo
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
             OnLevelLoaded.AddListener(finishLoading);
-            LoadLevel(newChapter.Level, new LevelLoadingSettings
+            LoadLevel(checkpoint.Level, new LevelLoadingSettings
             {
                 InstantChangeAtmosphere = true,
                 ForceReload = false,
