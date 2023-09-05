@@ -375,7 +375,8 @@ namespace Pogo
         }
         public void LoadChapter(ChapterDescriptor newChapter, CheckpointId checkpointId)
         {
-            var checkpoint = newChapter.GetCheckpointDescriptor(checkpointId);
+            LoadCheckpointManifest = new CheckpointManifest();
+            CheckpointDescriptor checkpoint = newChapter.GetCheckpointDescriptor(checkpointId);
             if (checkpoint == null)
             {
                 if (checkpointId.CheckpointType == CheckpointTypes.MainPath
@@ -417,10 +418,8 @@ namespace Pogo
         private void LoadCheckpoint(CheckpointDescriptor checkpointDescriptor)
         {
             bool checkpointFound = false;
-            var checkpointTriggers = FindObjectsOfType(typeof(CheckpointTrigger)) as CheckpointTrigger[];
 
-
-            foreach (var checkpointTrigger in checkpointTriggers)
+            foreach (var checkpointTrigger in LoadCheckpointManifest.CheckpointTriggers)
             {
                 checkpointTrigger.NotifyCheckpointLoad(checkpointDescriptor);
                 if (!checkpointFound && checkpointTrigger.Descriptor == checkpointDescriptor)
@@ -437,6 +436,21 @@ namespace Pogo
 
             CurrentGameState = GameStates.InGame;
             ResetPlayer();
+            LoadCheckpointManifest = null;
+        }
+
+        #endregion
+
+        #region Checkpoint Shit
+        private CheckpointManifest LoadCheckpointManifest;
+
+        public static void RegisterCheckpoint(CheckpointTrigger trigger)
+        {
+            if (PogoInstance == null) return;
+            if (PogoInstance.LoadCheckpointManifest == null) return;
+
+            PogoInstance.LoadCheckpointManifest.Add(trigger);
+
         }
 
         #endregion

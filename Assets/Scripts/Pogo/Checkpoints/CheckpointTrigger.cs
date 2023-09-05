@@ -1,6 +1,7 @@
 ﻿using Pogo;
 using Pogo.Checkpoints;
 using System;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,8 +13,21 @@ public class CheckpointTrigger : Trigger
 
     public UnityEvent OnAheadCheckpointLoaded;
 
+    public void Awake()
+    {
+        PogoGameManager.RegisterCheckpoint(this);
+    }
+
     public void NotifyCheckpointLoad(CheckpointDescriptor loadedCheckpoint)
     {
+        if (Descriptor == null)
+        {
+#if UNITY_EDITOR
+            Debug.LogWarning($"Missing CheckpointDescriptor for {AnimationUtility.CalculateTransformPath(transform, null)} in scene {gameObject.scene.name}");
+#endif
+            return;
+        }
+
         if (PlayerPassedThisCheckpoint(loadedCheckpoint))
         {
             OnAheadCheckpointLoaded?.Invoke();
