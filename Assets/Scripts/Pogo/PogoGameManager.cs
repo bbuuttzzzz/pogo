@@ -780,7 +780,7 @@ namespace Pogo
                 if (data.ChapterId.WorldNumber != 0) throw new IndexOutOfRangeException();
 
                 WorldChapter worldChapter = World.FindChapter(data.ChapterId.ChapterNumber);
-                if (worldChapter.Type == WorldChapter.Types.Level)
+                if (worldChapter.Type != WorldChapter.Types.Level)
                 {
                     return false;
                 }
