@@ -42,6 +42,12 @@ namespace Pogo
         {
             PogoGameManager.PogoInstance.LoadChapter(SelectedChapter);
         }
+
+        public void LoadQuickSave()
+        {
+            PogoGameManager.PogoInstance.LoadQuickSave();
+        }
+
         #endregion
 
         #region Challenge Loading
@@ -72,7 +78,6 @@ namespace Pogo
             builder.LoadChallenge();
         }
         #endregion
-
 
 
         public void OpenWorldScreen()

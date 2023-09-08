@@ -76,6 +76,25 @@ namespace Pogo.Saving
         {
             SlotData.chapterProgressDatas[id.WorldNumber, id.ChapterNumber] = data;
         }
+        
+        public void RollbackQuicksaveProgress()
+        {
+            var newPreviewData = SlotData.previewData;
+            var newChapterData = GetChapterProgressData(SlotData.quickSaveData.ChapterId);
 
+            newPreviewData.TotalMilliseconds -= SlotData.quickSaveData.ElapsedMilliseconds;
+            newPreviewData.TotalDeaths -= SlotData.quickSaveData.TrackedDeaths;
+
+            newChapterData.millisecondsElapsed -= SlotData.quickSaveData.ElapsedMilliseconds;
+            newChapterData.deathsTracked -= SlotData.quickSaveData.TrackedDeaths;
+
+            SlotData.previewData = newPreviewData;
+            SetChapterProgressData(SlotData.quickSaveData.ChapterId, newChapterData);
+
+            SlotData.quickSaveData = new QuickSaveData()
+            {
+                CurrentState = QuickSaveData.States.NoData
+            };
+        }
     }
 }

@@ -22,7 +22,8 @@ namespace Pogo.Saving
         {
             FileSelect,
             DifficultySelect,
-            NewGameFinalize
+            NewGameFinalize,
+            QuickLoadPrompt
         }
 
         private States currentState = States.FileSelect;
@@ -46,6 +47,10 @@ namespace Pogo.Saving
                     case States.NewGameFinalize:
                         RefreshNewGameFinalize();
                         animator.SetTrigger("OpenNewGameFinalize");
+                        break;
+                    case States.QuickLoadPrompt:
+                        RefreshQuickLoadPrompt();
+                        animator.SetTrigger("OpenQuickLoadPrompt");
                         break;
                 }
             }
@@ -93,6 +98,10 @@ namespace Pogo.Saving
             {
                 CurrentState = States.FileSelect;
             }
+            else if (currentState == States.QuickLoadPrompt)
+            {
+                CurrentState = States.FileSelect;
+            }
         }
 
         public void NewGame(SaveSlotIds slotId)
@@ -105,7 +114,15 @@ namespace Pogo.Saving
         public void LoadFile(SaveSlotIds slotId)
         {
             PogoGameManager.PogoInstance.LoadSlot(slotId);
-            parent.OpenWorldScreen();
+
+            if (PogoGameManager.PogoInstance.CurrentSlotHasValidQuicksaveData())
+            {
+                CurrentState = States.QuickLoadPrompt;
+            }
+            else
+            {
+                parent.OpenWorldScreen();
+            }
         }
 
         public void LoadFileAndPlay(SaveSlotIds slotId)
@@ -257,6 +274,35 @@ namespace Pogo.Saving
 
             PogoGameManager.PogoInstance.NewGameSlot(SelectedSlot, SelectedDifficulty, finalName);
             LoadFileAndPlay(SelectedSlot);
+        }
+        #endregion
+
+        #region QuickLoadPrompt
+        public QuickLoadBoxController QuickLoadBox;
+        public Button QuickLoadSkipButton;
+        private bool quickLoadPromptSetUp;
+
+        private void RefreshQuickLoadPrompt()
+        {
+            var chapterId = PogoGameManager.PogoInstance.CurrentSlotDataTracker.SlotData.quickSaveData.ChapterId;
+            var worldChapter = PogoGameManager.PogoInstance.FindChapter(chapterId);
+            QuickLoadBox.SetData(worldChapter.Chapter);
+
+            if (quickLoadPromptSetUp) return;
+            quickLoadPromptSetUp = true;
+
+            QuickLoadBox.Button.onClick.AddListener(QuickLoadLoadButton_Clicked);
+            QuickLoadSkipButton.onClick.AddListener(QuickLoadSkipButton_Clicked);
+        }
+
+        private void QuickLoadLoadButton_Clicked()
+        {
+            parent.LoadQuickSave();
+        }
+
+        private void QuickLoadSkipButton_Clicked()
+        {
+            parent.OpenWorldScreen();
         }
         #endregion
     }

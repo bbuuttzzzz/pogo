@@ -31,6 +31,11 @@ namespace Pogo
             return -1;
         }
 
+        public WorldChapter FindChapter(int index)
+        {
+            return Chapters[index];
+        }
+
         void OnValidate()
         {
             if (Chapters.Length != ChapterCount)

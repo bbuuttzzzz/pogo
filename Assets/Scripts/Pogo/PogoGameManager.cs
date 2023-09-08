@@ -274,7 +274,7 @@ namespace Pogo
             if (settings.LoadingFromMenu)
             {
                 UnloadControlScene();
-                ResetStats();
+                ResetStats(settings.QuickSaveData);
             }
 
             isLoadingLevel = false;
@@ -321,7 +321,7 @@ namespace Pogo
         }
         public bool CanSwitchChapters => true;
 
-        public void StartChapter(ChapterDescriptor chapter)
+        public void StartChapter(ChapterDescriptor chapter, QuickSaveData? quickSaveData = null)
         {
             if (CurrentChapter != null)
             {
@@ -329,7 +329,10 @@ namespace Pogo
             }
 
             CurrentChapter = chapter;
-            currentChapterProgressTracker = new GameProgressTracker(this);
+            currentChapterProgressTracker = quickSaveData.HasValue
+                ? new GameProgressTracker(this, quickSaveData.Value)
+                : new GameProgressTracker(this);
+
             ChapterSaveData saveData = GetChapterSaveData(chapter);
             if (!saveData.unlocked)
             {
@@ -369,11 +372,21 @@ namespace Pogo
             currentChapterProgressTracker = null;
         }
 
+        public WorldChapter FindChapter(ChapterId id)
+        {
+            if (id.WorldNumber != 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            return World.FindChapter(id.WorldNumber);
+        }
+
         public void LoadChapter(ChapterDescriptor newChapter)
         {
-            LoadChapter(newChapter, new CheckpointId(CheckpointTypes.MainPath, 1));
+            LoadChapter(newChapter, new CheckpointId(CheckpointTypes.MainPath, 1), null);
         }
-        public void LoadChapter(ChapterDescriptor newChapter, CheckpointId checkpointId)
+        public void LoadChapter(ChapterDescriptor newChapter, CheckpointId checkpointId, QuickSaveData? quickSaveData)
         {
             LoadCheckpointManifest = new CheckpointManifest();
             CheckpointDescriptor checkpoint = newChapter.GetCheckpointDescriptor(checkpointId);
@@ -396,7 +409,7 @@ namespace Pogo
             finishLoading = () =>
             {
                 LoadCheckpoint(checkpoint);
-                StartChapter(newChapter);
+                StartChapter(newChapter, quickSaveData);
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
             OnLevelLoaded.AddListener(finishLoading);
@@ -404,8 +417,16 @@ namespace Pogo
             {
                 InstantChangeAtmosphere = true,
                 ForceReload = false,
-                LoadingFromMenu = true
+                LoadingFromMenu = true,
+                QuickSaveData = quickSaveData
             });
+        }
+
+        public void LoadQuickSave()
+        {
+            var chapter = FindChapter(CurrentSlotDataTracker.SlotData.quickSaveData.ChapterId);
+            LoadChapter(chapter.Chapter, CurrentSlotDataTracker.SlotData.quickSaveData.checkpointId, CurrentSlotDataTracker.SlotData.quickSaveData);
+            CurrentSlotDataTracker.RollbackQuicksaveProgress();
         }
 
         private void ShowChapterTitle(float delay = 0)
@@ -677,7 +698,13 @@ namespace Pogo
         public UnityEvent OnStatsReset;
         public void ResetStats()
         {
-            currentSessionProgressTracker = new GameProgressTracker(this);
+            ResetStats(null);
+        }
+        private void ResetStats(QuickSaveData? quickSaveData)
+        {
+            currentSessionProgressTracker = quickSaveData.HasValue
+                ? new GameProgressTracker(this, quickSaveData.Value)
+                : new GameProgressTracker(this);
             OnStatsReset?.Invoke();
         }
 
@@ -688,7 +715,7 @@ namespace Pogo
         #region Saving
         [HideInInspector]
         public UnityEvent OnSaveSlotChanged;
-        private SaveSlotDataTracker CurrentSlotDataTracker;
+        public SaveSlotDataTracker CurrentSlotDataTracker { get; private set; }
         public ExplicitSaveSlotData EditorOverrideSlot3Data;
         
         public SaveSlotDataTracker PreviewSlot(SaveSlotIds slotId)
@@ -740,9 +767,37 @@ namespace Pogo
             return new FileSaveSlotDataTracker(PlatformService, "saveslot", slotId);
         }
 
-        public QuickSaveData GetQuickSaveData()
+        public bool CurrentSlotHasValidQuicksaveData()
         {
-            return CurrentSlotDataTracker.SlotData.quickSaveData;
+            var data = CurrentSlotDataTracker.SlotData.quickSaveData;
+            if (data.CurrentState == QuickSaveData.States.NoData)
+            {
+                return false;
+            }
+
+            try
+            {
+                if (data.ChapterId.WorldNumber != 0) throw new IndexOutOfRangeException();
+
+                WorldChapter worldChapter = World.FindChapter(data.ChapterId.ChapterNumber);
+                if (worldChapter.Type == WorldChapter.Types.Level)
+                {
+                    return false;
+                }
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                Debug.LogError($"Failed to parse Quicksave data. {e}");
+                return false;
+            }
+
+            var progressData = CurrentSlotDataTracker.GetChapterProgressData(data.ChapterId);
+            if (!progressData.unlocked)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public ChapterSaveData GetChapterSaveData(ChapterDescriptor chapter)
@@ -779,10 +834,6 @@ namespace Pogo
             CurrentSlotDataTracker.SetChapterProgressData(id, data);
         }
 
-        public void SetQuickSaveData(QuickSaveData data)
-        {
-            CurrentSlotDataTracker.SlotData.quickSaveData = data;
-        }
 
         public void SaveSlot()
         {

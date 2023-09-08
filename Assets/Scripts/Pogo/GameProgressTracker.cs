@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Saving;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,12 @@ namespace Pogo
             startTime = Time.time;
 
             gameManager.OnPlayerDeath.AddListener(GameManager_OnPlayerDeath);
+        }
+
+        public GameProgressTracker(PogoGameManager _gameManager, QuickSaveData quickSaveData) : this(_gameManager)
+        {
+            startTime = Time.time - quickSaveData.ElapsedMilliseconds / 1000;
+            trackedDeaths = quickSaveData.TrackedDeaths;
         }
 
         private void GameManager_OnPlayerDeath()
