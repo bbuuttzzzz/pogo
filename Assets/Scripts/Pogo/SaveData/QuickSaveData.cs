@@ -19,7 +19,9 @@ namespace Pogo.Saving
         public States CurrentState;
         public ChapterId ChapterId;
         public CheckpointId checkpointId;
-        public int TrackedDeaths;
-        public int ElapsedMilliseconds;
+        public int ChapterProgressDeaths;
+        public int SessionProgressDeaths;
+        public int ChapterProgressTimeMilliseconds;
+        public int SessionProgressTimeMilliseconds;
     }
 }

@@ -330,7 +330,7 @@ namespace Pogo
 
             CurrentChapter = chapter;
             currentChapterProgressTracker = quickSaveData.HasValue
-                ? new GameProgressTracker(this, quickSaveData.Value)
+                ? new GameProgressTracker(this, quickSaveData.Value.ChapterProgressTimeMilliseconds, quickSaveData.Value.ChapterProgressDeaths)
                 : new GameProgressTracker(this);
 
             ChapterSaveData saveData = GetChapterSaveData(chapter);
@@ -365,6 +365,21 @@ namespace Pogo
                     : Math.Min(saveData.millisecondsBestTime, currentChapterProgressTracker.TrackedTimeMilliseconds);
                 saveData.complete = true;
             }
+            else
+            {
+                QuickSaveData quickSaveData = new QuickSaveData()
+                {
+                    ChapterId = ChapterToId(CurrentChapter),
+                    checkpointId = new CheckpointId(CheckpointTypes.MainPath, 0),
+                    CurrentState = QuickSaveData.States.InProgress,
+                    ChapterProgressDeaths = currentChapterProgressTracker.TrackedDeaths,
+                    SessionProgressDeaths = currentSessionProgressTracker.TrackedDeaths,
+                    ChapterProgressTimeMilliseconds = currentChapterProgressTracker.TrackedTimeMilliseconds,
+                    SessionProgressTimeMilliseconds = currentSessionProgressTracker.TrackedTimeMilliseconds
+                };
+
+                CurrentSlotDataTracker.SlotData.quickSaveData = quickSaveData;
+            }
 
             SetChapterSaveData(CurrentChapter, saveData);
 
@@ -380,6 +395,14 @@ namespace Pogo
             }
 
             return World.FindChapter(id.WorldNumber);
+        }
+
+        public ChapterId ChapterToId(ChapterDescriptor chapter)
+        {
+            int index = World.IndexOf(chapter);
+            if (index == -1) throw new KeyNotFoundException();
+
+            return new ChapterId(0, index);
         }
 
         public void LoadChapter(ChapterDescriptor newChapter)
@@ -703,7 +726,7 @@ namespace Pogo
         private void ResetStats(QuickSaveData? quickSaveData)
         {
             currentSessionProgressTracker = quickSaveData.HasValue
-                ? new GameProgressTracker(this, quickSaveData.Value)
+                ? new GameProgressTracker(this, quickSaveData.Value.SessionProgressTimeMilliseconds, quickSaveData.Value.SessionProgressDeaths)
                 : new GameProgressTracker(this);
             OnStatsReset?.Invoke();
         }

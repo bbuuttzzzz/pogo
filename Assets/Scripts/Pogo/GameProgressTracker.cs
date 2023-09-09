@@ -26,10 +26,10 @@ namespace Pogo
             gameManager.OnPlayerDeath.AddListener(GameManager_OnPlayerDeath);
         }
 
-        public GameProgressTracker(PogoGameManager _gameManager, QuickSaveData quickSaveData) : this(_gameManager)
+        public GameProgressTracker(PogoGameManager _gameManager, long milliseconds, int deaths) : this(_gameManager)
         {
-            startTime = Time.time - quickSaveData.ElapsedMilliseconds / 1000;
-            trackedDeaths = quickSaveData.TrackedDeaths;
+            startTime = Time.time - (milliseconds / 1000);
+            trackedDeaths = deaths;
         }
 
         private void GameManager_OnPlayerDeath()
