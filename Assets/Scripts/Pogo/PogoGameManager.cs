@@ -513,7 +513,7 @@ namespace Pogo
             }
 
             CurrentGameState = GameStates.InGame;
-            ResetPlayer();
+            SpawnPlayer();
             LoadCheckpointManifest = null;
         }
 
@@ -597,6 +597,12 @@ namespace Pogo
             {
                 PogoInstance.player.Die();
             }
+        }
+
+        public void SpawnPlayer()
+        {
+            OnPlayerSpawn?.Invoke();
+            Player.TeleportToSpawnpoint();
         }
 
         public UnityEvent OnPlayerDeath;

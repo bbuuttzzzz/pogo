@@ -285,10 +285,10 @@ public class PlayerController : MonoBehaviour
         CurrentState = PlayerStates.Alive;
         OnSpawn?.Invoke();
         PogoGameManager.PogoInstance?.OnPlayerSpawn.Invoke();
-        Reset();
+        TeleportToSpawnpoint();
     }
 
-    public void Reset()
+    public void TeleportToSpawnpoint()
     {
         TeleportTo(PogoGameManager.PogoInstance.GetRespawnTransform());
     }
