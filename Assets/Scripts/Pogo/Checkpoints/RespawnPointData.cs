@@ -9,13 +9,29 @@ namespace Pogo.Checkpoints
 {
     public struct RespawnPointData
     {
-        public Transform Point;
+        public Transform transform;
         public CheckpointTrigger Trigger;
+        public CustomCheckpointController CustomCheckpoint;
 
-        public RespawnPointData(Transform point, CheckpointTrigger trigger)
+        public RespawnPointData(Transform transform)
         {
-            Point = point;
+            this.transform = transform;
+            Trigger = null;
+            CustomCheckpoint = null;
+        }
+
+        public RespawnPointData(CheckpointTrigger trigger)
+        {
+            transform = trigger.RespawnPoint;
             Trigger = trigger;
+            CustomCheckpoint = null;
+        }
+
+        public RespawnPointData(CustomCheckpointController customCheckpoint)
+        {
+            transform = customCheckpoint.transform;
+            Trigger = null;
+            CustomCheckpoint = customCheckpoint;
         }
     }
 }

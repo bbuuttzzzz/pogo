@@ -1,4 +1,5 @@
 ﻿using Inputter;
+using Pogo.Checkpoints;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -172,7 +173,7 @@ namespace Pogo.Challenges
             finishLoading = () =>
             {
                 pogoInstance.CustomCheckpoint.Place(CurrentChallenge.StartPoint, CurrentChallenge.StartRotation);
-                pogoInstance.RegisterRespawnPoint(pogoInstance.CustomCheckpoint.transform);
+                pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint));
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
                 PogoGameManager.PogoInstance.ResetPlayer();

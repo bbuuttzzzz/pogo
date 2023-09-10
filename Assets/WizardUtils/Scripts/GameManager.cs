@@ -292,7 +292,6 @@ namespace WizardUtils
         public ExplicitSaveData EditorOverrideSaveData;
         public bool DontSaveInEditor;
         SaveDataTracker saveDataTracker;
-        private bool SaveDataOpen;
 
         private void SetupSaveData()
         {
@@ -311,7 +310,6 @@ namespace WizardUtils
             saveDataTracker = new SaveDataTrackerFile(PlatformService, MainSaveManifest);
 #endif
             saveDataTracker.Load();
-            SaveDataOpen = true;
         }
 
         public string GetMainSaveValue(SaveValueDescriptor descriptor)

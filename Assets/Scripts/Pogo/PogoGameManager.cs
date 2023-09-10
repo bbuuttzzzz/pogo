@@ -28,7 +28,7 @@ namespace Pogo
             base.Awake();
             if (GameInstance != this) return;
 
-            RespawnPoint = CachedRespawnPoint;
+            RespawnPoint = new RespawnPointData(CachedRespawnPoint);
             levelManager = GetComponent<PogoLevelManager>();
 
 #if UNITY_EDITOR
@@ -365,26 +365,60 @@ namespace Pogo
                     : Math.Min(saveData.millisecondsBestTime, currentChapterProgressTracker.TrackedTimeMilliseconds);
                 saveData.complete = true;
             }
-            else
-            {
-                QuickSaveData quickSaveData = new QuickSaveData()
-                {
-                    ChapterId = ChapterToId(CurrentChapter),
-                    checkpointId = new CheckpointId(CheckpointTypes.MainPath, 0),
-                    CurrentState = QuickSaveData.States.InProgress,
-                    ChapterProgressDeaths = currentChapterProgressTracker.TrackedDeaths,
-                    SessionProgressDeaths = currentSessionProgressTracker.TrackedDeaths,
-                    ChapterProgressTimeMilliseconds = currentChapterProgressTracker.TrackedTimeMilliseconds,
-                    SessionProgressTimeMilliseconds = currentSessionProgressTracker.TrackedTimeMilliseconds
-                };
 
-                CurrentSlotDataTracker.SlotData.quickSaveData = quickSaveData;
+            if (TrySerializeQuicksaveData(out QuickSaveData newData))
+            {
+                CurrentSlotDataTracker.SlotData.quickSaveData = newData;
             }
 
             SetChapterSaveData(CurrentChapter, saveData);
 
             this.CurrentChapter = null;
             currentChapterProgressTracker = null;
+        }
+
+        private bool TrySerializeQuicksaveData(out QuickSaveData newData)
+        {
+            if (CurrentCheckpoint == null)
+            {
+                Debug.LogWarning("Failed to quicksave. CurrentCheckpoint is missing!!!");
+                newData = new QuickSaveData();
+                return false;
+            }
+
+            if (CurrentCheckpoint.Descriptor == null)
+            {
+                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} no descriptor!!!", CurrentCheckpoint);
+                newData = new QuickSaveData();
+                return false;
+            }
+
+            if (CurrentCheckpoint.Descriptor.Chapter == null)
+            {
+                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Chapter!!!", CurrentCheckpoint);
+                newData = new QuickSaveData();
+                return false;
+            }
+
+            if (CurrentCheckpoint.Descriptor.Level == null)
+            {
+                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Level!!!", CurrentCheckpoint);
+                newData = new QuickSaveData();
+                return false;
+            }
+
+            newData = new QuickSaveData()
+            {
+                ChapterId = ChapterToId(CurrentCheckpoint.Descriptor.Chapter),
+                checkpointId = CurrentCheckpoint.Descriptor.CheckpointId,
+                CurrentState = QuickSaveData.States.InProgress,
+                ChapterProgressDeaths = currentChapterProgressTracker.TrackedDeaths,
+                SessionProgressDeaths = currentSessionProgressTracker.TrackedDeaths,
+                ChapterProgressTimeMilliseconds = currentChapterProgressTracker.TrackedTimeMilliseconds,
+                SessionProgressTimeMilliseconds = currentSessionProgressTracker.TrackedTimeMilliseconds
+            };
+
+            return true;
         }
 
         public WorldChapter FindChapter(ChapterId id)
@@ -469,7 +503,7 @@ namespace Pogo
                 if (!checkpointFound && checkpointTrigger.Descriptor == checkpointDescriptor)
                 {
                     checkpointFound = true;
-                    RegisterRespawnPoint(checkpointTrigger.RespawnPoint);
+                    RegisterRespawnPoint(new RespawnPointData(checkpointTrigger));
                 }
             }
 
@@ -574,19 +608,24 @@ namespace Pogo
         public EventHandler OnCustomCheckpointChanged;
 
         public Transform CachedRespawnPoint;
-        private Transform respawnPoint;
-        public Transform RespawnPoint
+        private RespawnPointData respawnPoint;
+        public RespawnPointData RespawnPoint
         {
             get => respawnPoint; set
             {
                 respawnPoint = value;
-                if (respawnPoint != null && CachedRespawnPoint != null)
+                if (respawnPoint.transform != null && CachedRespawnPoint.transform != null)
                 {
-                    CachedRespawnPoint.transform.position = respawnPoint.transform.position;
-                    CachedRespawnPoint.transform.rotation = respawnPoint.transform.rotation;
+                    CachedRespawnPoint.position = respawnPoint.transform.position;
+                    CachedRespawnPoint.rotation = respawnPoint.transform.rotation;
+                }
+                if (respawnPoint.Trigger != null)
+                {
+                    CurrentCheckpoint = respawnPoint.Trigger;
                 }
             }
         }
+        public CheckpointTrigger CurrentCheckpoint;
 
         public CustomCheckpointController CustomCheckpoint;
         public bool CustomRespawnActive;
@@ -597,8 +636,8 @@ namespace Pogo
 
         public Transform GetRespawnTransform()
         {
-            var point = CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint;
-            return point == null ? CachedRespawnPoint : point;
+            var point = CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint.transform;
+            return point == null ? CachedRespawnPoint.transform : point;
         }
 
         public DifficultyManifest DifficultyManifest;
@@ -650,7 +689,7 @@ namespace Pogo
             return false;
         }
 
-        public bool TryRegisterRespawnPoint(Transform newRespawnPointTransform)
+        public bool TryRegisterRespawnPoint(CheckpointTrigger trigger)
         {
             if (PogoInstance == null)
             {
@@ -658,21 +697,21 @@ namespace Pogo
                 return false;
             }
 
-            if (!CanRegisterRespawnPoint(newRespawnPointTransform)) return false;
+            if (!CanRegisterRespawnPoint(trigger.transform)) return false;
 
-            RegisterRespawnPoint(newRespawnPointTransform);
+            RegisterRespawnPoint(new RespawnPointData(trigger));
             return true;
         }
 
-        public void RegisterRespawnPoint(Transform newRespawnPointTransform)
+        public void RegisterRespawnPoint(RespawnPointData data)
         {
             RespawnLevel = levelManager.CurrentLevel;
-            PogoInstance.RespawnPoint = newRespawnPointTransform;
+            PogoInstance.RespawnPoint = data;
         }
 
         public bool CanRegisterRespawnPoint(Transform newRespawnPointTransform)
         {
-            if (newRespawnPointTransform == PogoInstance.RespawnPoint || CurrentDifficulty == Difficulty.Expert) return false;
+            if (newRespawnPointTransform == PogoInstance.RespawnPoint.transform || CurrentDifficulty == Difficulty.Expert) return false;
 
             if (CurrentDifficulty == Difficulty.Normal || CurrentDifficulty == Difficulty.Freeplay)
             {

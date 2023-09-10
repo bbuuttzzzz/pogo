@@ -65,19 +65,19 @@ public class PogoGameManagerEditor : GameManagerEditor
                     Undo.SetCurrentGroupName("Move Spawnpoint");
                     int undoGroup = Undo.GetCurrentGroup();
 
-                    self.CachedRespawnPoint.position = itempath.item.transform.position;
-                    self.CachedRespawnPoint.rotation = Quaternion.Euler(0, itempath.item.transform.rotation.eulerAngles.y, 0);
-                    Undo.RecordObject(self.CachedRespawnPoint, "Move Player to Spawnpoint");
+                    self.CachedRespawnPoint.transform.position = itempath.item.transform.position;
+                    self.CachedRespawnPoint.transform.rotation = Quaternion.Euler(0, itempath.item.transform.rotation.eulerAngles.y, 0);
+                    Undo.RecordObject(self.CachedRespawnPoint.transform, "Move Player to Spawnpoint");
 
                     var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
                     foreach (PlayerController player in results)
                     {
-                        player.transform.position = self.CachedRespawnPoint.position;
-                        player.transform.rotation = Quaternion.Euler(0, self.CachedRespawnPoint.rotation.eulerAngles.y, 0);
+                        player.transform.position = self.CachedRespawnPoint.transform.position;
+                        player.transform.rotation = Quaternion.Euler(0, self.CachedRespawnPoint.transform.rotation.eulerAngles.y, 0);
                         Undo.RecordObject(player, "Move Player to Spawnpoint");
                     }
 
-                    Selection.activeObject = self.CachedRespawnPoint;
+                    Selection.activeObject = self.CachedRespawnPoint.transform;
                     Undo.CollapseUndoOperations(undoGroup);
                 });
             }
@@ -89,8 +89,8 @@ public class PogoGameManagerEditor : GameManagerEditor
             var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
             foreach (PlayerController player in results)
             {
-                player.transform.position = self.RespawnPoint.position;
-                player.transform.rotation = Quaternion.Euler(0, self.RespawnPoint.rotation.eulerAngles.y, 0);
+                player.transform.position = self.RespawnPoint.transform.position;
+                player.transform.rotation = Quaternion.Euler(0, self.RespawnPoint.transform.rotation.eulerAngles.y, 0);
                 Undo.RecordObject(player, "Move Player to Spawnpoint");
             }
         }

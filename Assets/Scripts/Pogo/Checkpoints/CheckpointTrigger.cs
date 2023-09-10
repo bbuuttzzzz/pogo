@@ -66,7 +66,7 @@ public class CheckpointTrigger : Trigger
     {
         if (WizardUtils.GameManager.GameInstanceIsValid())
         {
-            bool success = PogoGameManager.PogoInstance.TryRegisterRespawnPoint(RespawnPoint);
+            bool success = PogoGameManager.PogoInstance.TryRegisterRespawnPoint(this);
             if (!success) OnEnteredNotActivated?.Invoke();
             return success;
         }

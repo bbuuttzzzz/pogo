@@ -16,7 +16,6 @@ namespace Pogo
     {
         [HideInInspector]
         public ChapterDescriptor[] DisplayChapters;
-        private int ActiveWorldIndex = 0;
         private WorldDescriptor ActiveWorld => PogoGameManager.PogoInstance.World;
         public ChapterButtonController[] ChapterButtons;
 
