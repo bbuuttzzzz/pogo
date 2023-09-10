@@ -697,7 +697,7 @@ namespace Pogo
                 return false;
             }
 
-            if (!CanRegisterRespawnPoint(trigger.transform)) return false;
+            if (!CanRegisterRespawnPoint(trigger.RespawnPoint)) return false;
 
             RegisterRespawnPoint(new RespawnPointData(trigger));
             return true;
