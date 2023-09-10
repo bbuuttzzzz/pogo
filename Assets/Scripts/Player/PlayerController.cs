@@ -235,7 +235,7 @@ public class PlayerController : MonoBehaviour
         if (CurrentState != PlayerStates.Dead)
         {
             CurrentState = PlayerStates.Dead;
-            PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
+            PogoGameManager.PogoInstance?.TrackDeath();
         }
 
         Spawn();
@@ -253,7 +253,7 @@ public class PlayerController : MonoBehaviour
         if (CurrentState == PlayerStates.Dead) return;
 
         CurrentState = PlayerStates.Dead;
-        PogoGameManager.PogoInstance?.OnPlayerDeath.Invoke();
+        PogoGameManager.PogoInstance?.TrackDeath();
         DelayedRespawnRoutine = StartCoroutine(DelayedRespawn(AutoRespawnDelay));
         if (data.KillType != null)
         {

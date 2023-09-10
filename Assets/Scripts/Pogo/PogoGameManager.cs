@@ -605,6 +605,13 @@ namespace Pogo
             Player.TeleportToSpawnpoint();
         }
 
+        public void TrackDeath()
+        {
+            currentChapterProgressTracker?.TrackDeath();
+            currentSessionProgressTracker?.TrackDeath();
+            OnPlayerDeath?.Invoke();
+        }
+
         public UnityEvent OnPlayerDeath;
         public UnityEvent OnPlayerSpawn;
         #endregion

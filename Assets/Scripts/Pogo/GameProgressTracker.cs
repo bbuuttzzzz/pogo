@@ -22,8 +22,6 @@ namespace Pogo
         {
             gameManager = _gameManager;
             startTime = Time.time;
-
-            gameManager.OnPlayerDeath.AddListener(GameManager_OnPlayerDeath);
         }
 
         public GameProgressTracker(PogoGameManager _gameManager, long milliseconds, int deaths) : this(_gameManager)
@@ -32,7 +30,7 @@ namespace Pogo
             trackedDeaths = deaths;
         }
 
-        private void GameManager_OnPlayerDeath()
+        public void TrackDeath()
         {
             TrackedDeaths++;
         }
