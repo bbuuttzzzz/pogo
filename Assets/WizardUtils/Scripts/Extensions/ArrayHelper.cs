@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace WizardUtils
@@ -42,6 +43,26 @@ namespace WizardUtils
                 }
                 newArray[newIndex++] = array[oldIndex];
             }
+
+            array = newArray;
+        }
+
+
+        public static void InsertAndResize<T>(ref T[] array, T newMember)
+        {
+            T[] newArray = new T[array.Length + 1];
+            Array.Copy(array, newArray, array.Length);
+            newArray[array.Length] = newMember;
+
+            array = newArray;
+        }
+
+        public static void InsertAndResize<T>(ref T[] array, T newMember, int insertIndex)
+        {
+            T[] newArray = new T[array.Length + 1];
+            Array.Copy(array, 0, newArray, 0, insertIndex);
+            Array.Copy(array, insertIndex, newArray, insertIndex + 1, array.Length - insertIndex);
+            newArray[insertIndex] = newMember;
 
             array = newArray;
         }
