@@ -66,10 +66,10 @@ namespace Pogo
             }
             int index = int.Parse(match.Groups[2].Value);
 
-            string newName = $"{match.Groups[1]}{index+1}";
+            string newName = $"{match.Groups[1]}{index+1}.asset";
 
             var path = AssetDatabase.GetAssetPath(original);
-            var newPath = $"{Directory.GetParent(path)}{Path.DirectorySeparatorChar}{newName}";
+            var newPath = $"{Path.GetDirectoryName(path)}{Path.DirectorySeparatorChar}{newName}";
 
             AssetDatabase.CopyAsset(path, newPath);
             CheckpointDescriptor newAsset = AssetDatabase.LoadAssetAtPath(newPath, typeof(CheckpointDescriptor)) as CheckpointDescriptor;

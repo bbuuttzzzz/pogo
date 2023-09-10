@@ -365,8 +365,7 @@ namespace Pogo
                     : Math.Min(saveData.millisecondsBestTime, currentChapterProgressTracker.TrackedTimeMilliseconds);
                 saveData.complete = true;
             }
-
-            if (TrySerializeQuicksaveData(out QuickSaveData newData))
+            else if (TrySerializeQuicksaveData(out QuickSaveData newData))
             {
                 CurrentSlotDataTracker.SlotData.quickSaveData = newData;
             }
@@ -428,7 +427,7 @@ namespace Pogo
                 throw new ArgumentOutOfRangeException();
             }
 
-            return World.FindChapter(id.WorldNumber);
+            return World.FindChapter(id.ChapterNumber);
         }
 
         public ChapterId ChapterToId(ChapterDescriptor chapter)

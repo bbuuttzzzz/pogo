@@ -82,11 +82,11 @@ namespace Pogo.Saving
             var newPreviewData = SlotData.previewData;
             var newChapterData = GetChapterProgressData(SlotData.quickSaveData.ChapterId);
 
-            newPreviewData.TotalMilliseconds -= SlotData.quickSaveData.ChapterProgressTimeMilliseconds;
-            newPreviewData.TotalDeaths -= SlotData.quickSaveData.ChapterProgressDeaths;
+            newPreviewData.TotalMilliseconds -= SlotData.quickSaveData.SessionProgressTimeMilliseconds;
+            newPreviewData.TotalDeaths -= SlotData.quickSaveData.SessionProgressDeaths;
 
-            newChapterData.millisecondsElapsed -= SlotData.quickSaveData.SessionProgressTimeMilliseconds;
-            newChapterData.deathsTracked -= SlotData.quickSaveData.SessionProgressDeaths;
+            newChapterData.millisecondsElapsed -= SlotData.quickSaveData.ChapterProgressTimeMilliseconds;
+            newChapterData.deathsTracked -= SlotData.quickSaveData.ChapterProgressDeaths;
 
             SlotData.previewData = newPreviewData;
             SetChapterProgressData(SlotData.quickSaveData.ChapterId, newChapterData);
