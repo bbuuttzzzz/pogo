@@ -55,18 +55,30 @@ namespace Pogo
 
             for (int n = 0; n < MainPathCheckpoints.Length; n++)
             {
-                if (MainPathCheckpoints[n] == null) continue;
-
-                MainPathCheckpoints[n].Chapter = this;
-                MainPathCheckpoints[n].CheckpointId = new CheckpointId(CheckpointTypes.MainPath, n + 1);
+                UpdateMainCheckpoint(n);
             }
 
             for (int n = 0; (n < SidePathCheckpoints.Length); n++)
             {
-                if (SidePathCheckpoints[n] == null) continue;
+                UpdateSideCheckpoint(n);
+            }
+        }
 
+        public void UpdateSideCheckpoint(int n)
+        {
+            if (SidePathCheckpoints[n] != null)
+            {
                 SidePathCheckpoints[n].Chapter = this;
                 SidePathCheckpoints[n].CheckpointId = new CheckpointId(CheckpointTypes.SidePath, n + 1);
+            }
+        }
+
+        public void UpdateMainCheckpoint(int n)
+        {
+            if (MainPathCheckpoints[n] != null)
+            {
+                MainPathCheckpoints[n].Chapter = this;
+                MainPathCheckpoints[n].CheckpointId = new CheckpointId(CheckpointTypes.MainPath, n + 1);
             }
         }
 
