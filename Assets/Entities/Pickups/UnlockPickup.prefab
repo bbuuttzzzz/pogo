@@ -128,6 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initalState: 1
   isToggledOn: 0
+  Cooldown: 0
   CallEventsOnInitialStateSet: 1
   OnToggledOn:
     m_PersistentCalls:
@@ -388,7 +389,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 541985538549685584}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f19d5fa03ab421e4588f1e98e8653f9c, type: 3}
+  m_Script: {fileID: 11500000, guid: 542cb5756b3abb144a6c417ce9fbc8c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   TargetDifficulty: 4
@@ -457,7 +458,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &541985539247545651
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -474,7 +475,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5969895586063855553
 GameObject:
   m_ObjectHideFlags: 0
