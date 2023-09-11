@@ -47,7 +47,11 @@ namespace WizardEffects
             {
                 Effect oldestEffect = FinishedLastingEffects[0];
                 FinishedLastingEffects.RemoveAt(0);
-                Destroy(oldestEffect.gameObject);
+
+                if (oldestEffect != null)
+                {
+                    Destroy(oldestEffect.gameObject);
+                }
             }
         }
 
@@ -60,7 +64,11 @@ namespace WizardEffects
             {
                 Effect oldestEffect = FinishedEffects[0];
                 FinishedEffects.RemoveAt(0);
-                Destroy(oldestEffect.gameObject);
+
+                if (oldestEffect != null)
+                {
+                    Destroy(oldestEffect.gameObject);
+                }
             }
         }
         /// <summary>
