@@ -703,7 +703,7 @@ namespace Pogo
 
         public bool TryRegisterRespawnPoint(CheckpointTrigger trigger)
         {
-            if (PogoInstance == null)
+            if (PogoInstance == null || PogoInstance.levelManager == null)
             {
                 Debug.LogWarning("Tried to register a RespawnPoint with no CheckpointManager");
                 return false;
