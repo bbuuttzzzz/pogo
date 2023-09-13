@@ -19,6 +19,15 @@ namespace Pogo.Collectibles
         }
         public UnlockTypes UnlockType;
 
+        [System.Serializable]
+        public enum CollectibleTypes
+        {
+            None,
+            Key
+        }
+
+        public CollectibleTypes CollectibleType;
+
         public string Key => name;
     }
 }
