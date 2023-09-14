@@ -1,8 +1,5 @@
 using Assets.Scripts.Pogo.Difficulty;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using WizardUtils;
 
 namespace Pogo.Saving
@@ -95,6 +92,50 @@ namespace Pogo.Saving
             {
                 CurrentState = QuickSaveData.States.NoData
             };
+        }
+
+        public int IndexOfCollectible(string collectibleId)
+        {
+            for (int n = 0; n < SlotData.collectibleUnlockDatas.Length; n++)
+            {
+                if (SlotData.collectibleUnlockDatas[n].key == collectibleId)
+                {
+                    return n;
+                }
+            }
+
+            return -1;
+        }
+
+        public CollectibleUnlockData GetCollectible(string collectibleId)
+        {
+            int id = IndexOfCollectible(collectibleId);
+            if (id == -1)
+            {
+                CollectibleUnlockData newCollectible = new CollectibleUnlockData()
+                {
+                    key = collectibleId,
+                    isUnlocked = false
+                };
+                return newCollectible;
+            }
+            else
+            {
+                return SlotData.collectibleUnlockDatas[id];
+            }
+        }
+
+        public void SetCollectible(CollectibleUnlockData data)
+        {
+            int id = IndexOfCollectible(data.key);
+            if (id == -1)
+            {
+                ArrayHelper.InsertAndResize(ref SlotData.collectibleUnlockDatas, data);
+            }
+            else
+            {
+                SlotData.collectibleUnlockDatas[id] = data;
+            }
         }
     }
 }

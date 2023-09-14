@@ -6,6 +6,8 @@ namespace Pogo.Collectibles
 {
     public class CollectibleController : MonoBehaviour
     {
+        public CollectibleDescriptor Descriptor;
+
         public AudioVolumeWaypointer AmbienceWaypointer;
         public GameObject RendererRoot;
 
@@ -42,6 +44,29 @@ namespace Pogo.Collectibles
             currentState = CollectibleStates.Collected;
             SetAmbienceWaypointer(false);
             RendererRoot.SetActive(!isCollected);
+        }
+
+        private CollectibleStates CheckState()
+        {
+            if (CollectedInSlot)
+            {
+                return CollectibleStates.Collected;
+            }
+            else return CollectibleStates.Uncollected;
+        }
+
+        private bool CollectedInSlot
+        {
+            get
+            {
+                if (PogoGameManager.PogoInstance.CurrentSlotDataTracker == null)
+                {
+                    return false;
+                }
+
+                var data = PogoGameManager.PogoInstance.CurrentSlotDataTracker.GetCollectible(Descriptor.Key);
+                return data.isUnlocked;
+            }
         }
 
         private void SetAmbienceWaypointer(bool instant)
