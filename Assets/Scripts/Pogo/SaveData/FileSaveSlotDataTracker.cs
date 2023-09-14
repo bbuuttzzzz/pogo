@@ -60,7 +60,13 @@ namespace Pogo.Saving
                 using (StreamReader reader = new StreamReader(FilePath))
                 {
                     // read off the CurrentSaveDataVersion this was written from
-                    _ = reader.ReadLine();
+                    string versionLine = reader.ReadLine();
+                    int version = int.Parse(versionLine);
+                    if (version > CurrentSaveDataVersion)
+                    {
+                        throw new InvalidOperationException($"Incompatible save data of version {version} (expected {CurrentSaveDataVersion})");
+                    }
+
                     rawDataSerialized = reader.ReadToEnd();
                 }
             }
