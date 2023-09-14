@@ -29,5 +29,6 @@ namespace Pogo.Collectibles
         public CollectibleTypes CollectibleType;
 
         public string Key => name;
+        public GameObject NotificationPrefab;
     }
 }

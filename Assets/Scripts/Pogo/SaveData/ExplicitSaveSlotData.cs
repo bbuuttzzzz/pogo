@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Pogo.Collectibles;
+using UnityEngine;
 
 namespace Pogo.Saving
 {
@@ -7,6 +8,7 @@ namespace Pogo.Saving
     {
         public SaveSlotPreviewData previewData;
         public QuickSaveData quickSaveData;
+        public CollectibleDescriptor[] unlockedCollectibles;
 
         public SaveSlotData Data
         {
@@ -16,7 +18,8 @@ namespace Pogo.Saving
                 {
                     quickSaveData = this.quickSaveData,
                     previewData = this.previewData,
-                    chapterProgressDatas = new ChapterSaveData[1, 12]
+                    chapterProgressDatas = new ChapterSaveData[1, 12],
+                    collectibleUnlockDatas = new CollectibleUnlockData[unlockedCollectibles.Length],
                 };
                 for(int n = 0; n < 12; n++)
                 {
@@ -28,6 +31,14 @@ namespace Pogo.Saving
                         millisecondsBestTime = Random.Range(1000, 600000),
                         deathsTracked = Random.Range(0, 1000),
                         millisecondsElapsed = Random.Range(1000, 6000000)
+                    };
+                }
+                for (int n = 0; n < unlockedCollectibles.Length; n++)
+                {
+                    data.collectibleUnlockDatas[n] = new CollectibleUnlockData()
+                    {
+                        key = unlockedCollectibles[n].Key,
+                        isUnlocked = true
                     };
                 }
 

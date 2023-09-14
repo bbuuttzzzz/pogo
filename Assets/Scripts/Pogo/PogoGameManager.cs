@@ -3,6 +3,7 @@ using Inputter;
 using Platforms;
 using Pogo.Challenges;
 using Pogo.Checkpoints;
+using Pogo.Collectibles;
 using Pogo.Saving;
 using System;
 using System.Collections;
@@ -925,6 +926,24 @@ namespace Pogo
         public void PlayGlobalSound(GlobalSoundDescriptor sound)
         {
             SoundManager.Play(sound);
+        }
+        #endregion
+
+        #region Collectibles
+        public void UnlockCollectible(CollectibleDescriptor collectible)
+        {
+            var data = CurrentSlotDataTracker.GetCollectible(collectible.Key);
+            if (data.isUnlocked)
+            {
+                return;
+            }
+            data.isUnlocked = true;
+            CurrentSlotDataTracker.SetCollectible(data);
+
+            if (collectible.NotificationPrefab != null)
+            {
+                _ = UIManager.Instance.SpawnUIElement(collectible.NotificationPrefab);
+            }
         }
         #endregion
     }

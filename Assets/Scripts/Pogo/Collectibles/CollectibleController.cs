@@ -1,15 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 using WizardUtils;
 
 namespace Pogo.Collectibles
 {
+    [RequireComponent(typeof(Trigger))]
     public class CollectibleController : MonoBehaviour
     {
         public CollectibleDescriptor Descriptor;
 
         public AudioVolumeWaypointer AmbienceWaypointer;
         public GameObject RendererRoot;
+        public float RendererHideDelay;
 
         public UnityEvent OnInitializedUnCollected;
         public UnityEvent OnInitializedHalfCollected;
@@ -18,6 +22,28 @@ namespace Pogo.Collectibles
 
         private CollectibleStates currentState;
         private bool isCollected => currentState == CollectibleStates.Collected;
+
+        private void Start()
+        {
+            GetComponent<Trigger>().OnActivated.AddListener(Trigger_OnActivated);
+
+            // hide all collectibles in challenge mode
+            if (PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Challenge)
+            {
+                Initialize(CollectibleStates.Collected);
+            }
+            else
+            {
+                var state = CheckState();
+                Initialize(state);
+            }
+        }
+
+        private void Trigger_OnActivated()
+        {
+            if (isCollected) return;
+            Collect();
+        }
 
         private void Initialize(CollectibleStates state)
         {
@@ -43,7 +69,15 @@ namespace Pogo.Collectibles
         {
             currentState = CollectibleStates.Collected;
             SetAmbienceWaypointer(false);
-            RendererRoot.SetActive(!isCollected);
+            StartCoroutine(DelayedHideRendererRoot(RendererHideDelay));
+            OnCollected?.Invoke();
+            PogoGameManager.PogoInstance.UnlockCollectible(Descriptor);
+        }
+
+        private IEnumerator DelayedHideRendererRoot(float delay)
+        {
+            if (delay > 0) yield return new WaitForSeconds(delay);
+            RendererRoot.SetActive(false);
         }
 
         private CollectibleStates CheckState()
