@@ -1383,7 +1383,7 @@ MonoBehaviour:
   OnActivated:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2013796553}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Pogo.UnlockChecker, Assembly-CSharp
         m_MethodName: TriggerCheck
         m_Mode: 1
@@ -9304,7 +9304,8 @@ GameObject:
   - component: {fileID: 2013796552}
   - component: {fileID: 2013796551}
   - component: {fileID: 2013796550}
-  - component: {fileID: 2013796553}
+  - component: {fileID: 2013796555}
+  - component: {fileID: 2013796554}
   m_Layer: 0
   m_Name: skatepark_gate
   m_TagString: Untagged
@@ -9395,7 +9396,139 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2013796548}
   m_Mesh: {fileID: -46564308282976370, guid: 244ddba572aade84490d05e4d937e5c2, type: 3}
---- !u!114 &2013796553
+--- !u!82 &2013796554
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013796548}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 5865845817369542399, guid: 4df3a00c9f161ad4ca137dada8aef10f, type: 2}
+  m_audioClip: {fileID: 8300000, guid: e3f951df0c1ec204e9784ae435599f0e, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 22.601503
+  Pan2D: 0
+  rolloffMode: 1
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.044244844
+      value: 1
+      inSlope: -22.61054
+      outSlope: -22.61054
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.08848969
+      value: 0.5
+      inSlope: -5.652635
+      outSlope: -5.652635
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.17447694
+      value: 0.20953369
+      inSlope: -1.4131588
+      outSlope: -1.4131588
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.34895387
+      value: 0.08453369
+      inSlope: -0.3532897
+      outSlope: -0.3532897
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.7079175
+      value: 0.014678955
+      inSlope: -0.08832242
+      outSlope: -0.08832242
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -0.044262502
+      outSlope: -0.044262502
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &2013796555
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9404,15 +9537,56 @@ MonoBehaviour:
   m_GameObject: {fileID: 2013796548}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa3d799733878d14c9df44c6fd8b8cd8, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d28630b079cf59469636778f84b829b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Save: {fileID: 11400000, guid: eb0a1f4e4b8c45b4585e36a5c43a241f, type: 2}
-  CheckOnAwake: 1
-  OnCheckedLocked:
+  Collectible: {fileID: 11400000, guid: b2950c2de19657745b7bac7a582d01c7, type: 2}
+  CheckGlobalFile: 0
+  OnInitialized_UnCollected:
     m_PersistentCalls:
       m_Calls: []
-  OnCheckedUnlocked:
+  OnInitialized_Collected:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 290983511}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1908890051}
+        m_TargetAssemblyTypeName: WizardUtils.Waypointer`1[[UnityEngine.Vector3,
+          UnityEngine
+        m_MethodName: SnapToWaypoint
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1023003628}
+        m_TargetAssemblyTypeName: WizardUtils.Waypointer`1[[UnityEngine.Vector3,
+          UnityEngine
+        m_MethodName: SnapToWaypoint
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnCollected:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 290983511}
@@ -9445,6 +9619,18 @@ MonoBehaviour:
           UnityEngine
         m_MethodName: GoToWaypoint
         m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2013796554}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -15144,7 +15330,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4090568509303199044, guid: 12d76722aeaedf84fb27b155c798f5da, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.54
+      value: 4.13
       objectReference: {fileID: 0}
     - target: {fileID: 4090568509303199044, guid: 12d76722aeaedf84fb27b155c798f5da, type: 3}
       propertyPath: m_LocalPosition.y
@@ -15152,7 +15338,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4090568509303199044, guid: 12d76722aeaedf84fb27b155c798f5da, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 27.99
+      value: 41.38
       objectReference: {fileID: 0}
     - target: {fileID: 4090568509303199044, guid: 12d76722aeaedf84fb27b155c798f5da, type: 3}
       propertyPath: m_LocalRotation.w

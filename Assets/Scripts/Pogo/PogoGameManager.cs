@@ -960,16 +960,28 @@ namespace Pogo
         #endregion
 
         #region Collectibles
+        public UnityEvent<CollectibleUnlockedEventArgs> OnCollectibleUnlocked;
         public void UnlockCollectible(CollectibleDescriptor collectible)
         {
-            var data = CurrentSlotDataTracker.GetCollectible(collectible.Key);
-            if (data.isUnlocked)
+            bool onlyUnlockedInFile = true;
+            CollectibleUnlockData globalData = CurrentGlobalDataTracker.GetCollectible(collectible.Key);
+            if (!globalData.isUnlocked)
+            {
+                onlyUnlockedInFile = false;
+                globalData.isUnlocked = true;
+                CurrentGlobalDataTracker.SetCollectible(globalData);
+            }
+
+            CollectibleUnlockData slotData = CurrentSlotDataTracker.GetCollectible(collectible.Key);
+            if (slotData.isUnlocked)
             {
                 return;
             }
-            data.isUnlocked = true;
-            CurrentSlotDataTracker.SetCollectible(data);
 
+            slotData.isUnlocked = true;
+            CurrentSlotDataTracker.SetCollectible(slotData);
+
+            OnCollectibleUnlocked?.Invoke(new CollectibleUnlockedEventArgs(collectible, onlyUnlockedInFile));
             if (collectible.NotificationPrefab != null)
             {
                 _ = UIManager.Instance.SpawnUIElement(collectible.NotificationPrefab);
