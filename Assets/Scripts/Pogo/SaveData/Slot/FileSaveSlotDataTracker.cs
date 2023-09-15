@@ -46,12 +46,21 @@ namespace Pogo.Saving
             }
         }
 
-        public override void Load()
+        public override void Load(bool createIfEmpty = false)
         {
             if (!File.Exists(FilePath))
             {
-                DataState = DataStates.Empty;
-                return;
+                if (createIfEmpty)
+                {
+                    InitializeNew(SaveSlotConstants.SaveSlotName(slotId), DifficultyId.Normal);
+                    return;
+                }
+                else
+                {
+                    Debug.LogWarning($"SaveSlot load ERROR File not found {BaseName}.sav");
+                    DataState = DataStates.Empty;
+                    return;
+                }
             }
 
             string rawDataSerialized;
@@ -74,7 +83,7 @@ namespace Pogo.Saving
             catch (Exception e)
             {
                 DataState = DataStates.Corrupt;
-                UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to read {BaseName}.sav: {e}");
+                UnityEngine.Debug.LogWarning($"SaveSlot load ERROR Failed to read {BaseName}.sav: {e}");
                 return;
             }
 
@@ -86,7 +95,7 @@ namespace Pogo.Saving
             catch (Exception e)
             {
                 DataState = DataStates.Corrupt;
-                UnityEngine.Debug.LogWarning($"SaveSlot save ERROR Failed to deserialize {BaseName}.sav: {e}");
+                UnityEngine.Debug.LogWarning($"SaveSlot load ERROR Failed to deserialize {BaseName}.sav: {e}");
                 return;
             }
 

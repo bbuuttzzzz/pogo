@@ -10,7 +10,7 @@ using WizardUtils.Saving;
 
 namespace Pogo.Saving
 {
-    [CreateAssetMenu(fileName = "ExplicitGlobalSaveData", menuName = "Pogo/Saving/ExplicitSaveData", order = 1)]
+    [CreateAssetMenu(fileName = "ExplicitGlobalSaveData", menuName = "Pogo/Saving/ExplicitGlobalSaveData", order = 1)]
 
     public class ExplicitGlobalSaveData : ScriptableObject
     {

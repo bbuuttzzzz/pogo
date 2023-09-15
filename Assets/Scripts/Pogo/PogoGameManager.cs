@@ -29,6 +29,7 @@ namespace Pogo
             base.Awake();
             if (GameInstance != this) return;
 
+            LoadGlobalSave();
             RespawnPoint = new RespawnPointData(CachedRespawnPoint);
             levelManager = GetComponent<PogoLevelManager>();
 
@@ -78,6 +79,7 @@ namespace Pogo
         {
             FinishChapter(false);
             SaveSlot();
+            SaveGlobalSave();
             ResetCustomRespawnPoint(true);
         }
 
@@ -85,6 +87,7 @@ namespace Pogo
         {
             FinishChapter(false);
             SaveSlot();
+            SaveGlobalSave();
         }
 
 
@@ -791,7 +794,9 @@ namespace Pogo
         [HideInInspector]
         public UnityEvent OnSaveSlotChanged;
         public SaveSlotDataTracker CurrentSlotDataTracker { get; private set; }
+        public GlobalSaveDataTracker CurrentGlobalDataTracker { get; private set; }
         public ExplicitSaveSlotData EditorOverrideSlot3Data;
+        public ExplicitGlobalSaveData EditorOverrideGlobalSaveData;
         
         public SaveSlotDataTracker PreviewSlot(SaveSlotIds slotId)
         {
@@ -917,6 +922,31 @@ namespace Pogo
             CurrentSlotDataTracker.UpdatePreviewData();
             CurrentSlotDataTracker.Save();
         }
+
+        public void LoadGlobalSave()
+        {
+            CurrentGlobalDataTracker = GetGlobalDataTracker();
+            CurrentGlobalDataTracker.Load();
+        }
+
+        public void SaveGlobalSave()
+        {
+            if (CurrentGlobalDataTracker == null) return;
+
+            CurrentGlobalDataTracker.Save();
+        }
+
+        private GlobalSaveDataTracker GetGlobalDataTracker()
+        {
+#if DEBUG
+            if (EditorOverrideGlobalSaveData != null)
+            {
+                return new ExplicitGlobalSaveDataTracker(EditorOverrideGlobalSaveData);
+            }
+#endif
+            return new FileGlobalSaveDataTracker(PlatformService);
+        }
+
 
         #endregion
 

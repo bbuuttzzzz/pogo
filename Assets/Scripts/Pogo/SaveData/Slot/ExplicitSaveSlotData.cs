@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pogo.Saving
 {
-    [CreateAssetMenu(fileName = "saveSlotData_", menuName = "Pogo/Saving/SaveSlotDataExplicit", order = 1)]
+    [CreateAssetMenu(fileName = "saveSlotData_", menuName = "Pogo/Saving/ExplicitSlotSaveData", order = 1)]
     public class ExplicitSaveSlotData : ScriptableObject
     {
         public SaveSlotPreviewData previewData;

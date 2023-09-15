@@ -82,14 +82,21 @@ namespace Pogo.Collectibles
 
         private CollectibleStates CheckState()
         {
-            if (CollectedInSlot)
+            if (CollectedInSlotSave)
             {
                 return CollectibleStates.Collected;
             }
-            else return CollectibleStates.Uncollected;
+            else if (CollectedInGlobalSave)
+            {
+                return CollectibleStates.HalfCollected;
+            }
+            else
+            {
+                return CollectibleStates.Uncollected;
+            }
         }
 
-        private bool CollectedInSlot
+        private bool CollectedInSlotSave
         {
             get
             {
@@ -99,6 +106,20 @@ namespace Pogo.Collectibles
                 }
 
                 var data = PogoGameManager.PogoInstance.CurrentSlotDataTracker.GetCollectible(Descriptor.Key);
+                return data.isUnlocked;
+            }
+        }
+
+        private bool CollectedInGlobalSave
+        {
+            get
+            {
+                if (PogoGameManager.PogoInstance.CurrentGlobalDataTracker == null)
+                {
+                    return false;
+                }
+
+                var data = PogoGameManager.PogoInstance.CurrentGlobalDataTracker.GetCollectible(Descriptor.Key);
                 return data.isUnlocked;
             }
         }
