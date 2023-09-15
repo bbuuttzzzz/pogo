@@ -1,0 +1,25 @@
+using Assets.Scripts.Pogo.Difficulty;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Pogo.Saving
+{
+    [System.Serializable]
+    public struct GlobalSaveData
+    {
+        public CollectibleUnlockData[] collectibleUnlockDatas;
+
+        public static GlobalSaveData NewData()
+        {
+            var data = new GlobalSaveData()
+            {
+                collectibleUnlockDatas = new CollectibleUnlockData[0]
+            };
+
+            return data;
+        }
+    }
+}

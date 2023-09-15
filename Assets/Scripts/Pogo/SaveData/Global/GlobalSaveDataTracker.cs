@@ -1,0 +1,74 @@
+﻿using Pogo.Saving;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+using WizardUtils;
+
+namespace Pogo.Saving
+{
+    public abstract class GlobalSaveDataTracker
+    {
+        public GlobalSaveData SaveData;
+        public enum DataStates
+        {
+            Unloaded,
+            Loaded,
+            Empty,
+            Corrupt
+        }
+        public DataStates DataState;
+
+        public abstract void Save();
+
+        public abstract void Load();
+        public abstract void Delete();
+        public abstract void InitializeNew();
+
+        public int IndexOfCollectible(string collectibleId)
+        {
+            for (int n = 0; n < SaveData.collectibleUnlockDatas.Length; n++)
+            {
+                if (SaveData.collectibleUnlockDatas[n].key == collectibleId)
+                {
+                    return n;
+                }
+            }
+
+            return -1;
+        }
+        public CollectibleUnlockData GetCollectible(string collectibleId)
+        {
+            int id = IndexOfCollectible(collectibleId);
+            if (id == -1)
+            {
+                CollectibleUnlockData newCollectible = new CollectibleUnlockData()
+                {
+                    key = collectibleId,
+                    isUnlocked = false
+                };
+                return newCollectible;
+            }
+            else
+            {
+                return SaveData.collectibleUnlockDatas[id];
+            }
+        }
+
+        public void SetCollectible(CollectibleUnlockData data)
+        {
+            int id = IndexOfCollectible(data.key);
+            if (id == -1)
+            {
+                ArrayHelper.InsertAndResize(ref SaveData.collectibleUnlockDatas, data);
+            }
+            else
+            {
+                SaveData.collectibleUnlockDatas[id] = data;
+            }
+        }
+    }
+}

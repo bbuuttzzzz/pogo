@@ -17,7 +17,11 @@ namespace Pogo.Collectibles
             AccountOnly,
             AccountAndSlot
         }
-        public UnlockTypes UnlockType;
+        public UnlockTypes UnlockType => CollectibleType switch
+        {
+            CollectibleTypes.Key => UnlockTypes.SlotOnly,
+            _ => UnlockTypes.AccountAndSlot
+        };
 
         [System.Serializable]
         public enum CollectibleTypes
@@ -27,8 +31,8 @@ namespace Pogo.Collectibles
         }
 
         public CollectibleTypes CollectibleType;
+        public GameObject NotificationPrefab;
 
         public string Key => name;
-        public GameObject NotificationPrefab;
     }
 }

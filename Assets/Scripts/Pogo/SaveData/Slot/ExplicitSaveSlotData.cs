@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Pogo.Saving
 {
-    [CreateAssetMenu(fileName = "saveSlotData_", menuName = "Pogo/SaveSlotDataExplicit", order = 1)]
+    [CreateAssetMenu(fileName = "saveSlotData_", menuName = "Pogo/Saving/SaveSlotDataExplicit", order = 1)]
     public class ExplicitSaveSlotData : ScriptableObject
     {
         public SaveSlotPreviewData previewData;
@@ -21,7 +21,7 @@ namespace Pogo.Saving
                     chapterProgressDatas = new ChapterSaveData[1, 12],
                     collectibleUnlockDatas = new CollectibleUnlockData[unlockedCollectibles.Length],
                 };
-                for(int n = 0; n < 12; n++)
+                for (int n = 0; n < 12; n++)
                 {
                     data.chapterProgressDatas[0, n] = new ChapterSaveData()
                     {
