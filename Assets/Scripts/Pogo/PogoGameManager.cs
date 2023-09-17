@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.GlobalIllumination;
@@ -961,6 +962,8 @@ namespace Pogo
 
         #region Collectibles
         public UnityEvent<CollectibleUnlockedEventArgs> OnCollectibleUnlocked;
+        public GameObject GenericCollectibleNotificationPrefab;
+
         public void UnlockCollectible(CollectibleDescriptor collectible)
         {
             bool unlockedGlobally, unlockedInSlot;
@@ -986,9 +989,22 @@ namespace Pogo
 
 
             OnCollectibleUnlocked?.Invoke(new CollectibleUnlockedEventArgs(collectible, unlockedGlobally, unlockedInSlot));
-            if ((unlockedInSlot || unlockedGlobally) && collectible.NotificationPrefab != null)
+            if ((unlockedInSlot || unlockedGlobally))
             {
-                _ = UIManager.Instance.SpawnUIElement(collectible.NotificationPrefab);
+                SpawnCollectibleNotification(new CollectibleUnlockedEventArgs(collectible, unlockedGlobally, unlockedInSlot));
+            }
+        }
+
+        private void SpawnCollectibleNotification(CollectibleUnlockedEventArgs args)
+        {
+            if (args.Collectible.NotificationPrefab != null)
+            {
+                _ = UIManager.Instance.SpawnUIElement(args.Collectible.NotificationPrefab);
+            }
+            else if (args.Collectible.SpawnGenericNotification)
+            {
+                var newElement = UIManager.Instance.SpawnUIElement(GenericCollectibleNotificationPrefab);
+                newElement.GetComponent<GenericCollectibleNotificationController>().Initialize(args);
             }
         }
 

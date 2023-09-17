@@ -34,6 +34,13 @@ namespace Pogo.Collectibles
 
         public CollectibleTypes CollectibleType;
         public GameObject NotificationPrefab;
+        public bool SpawnGenericNotification;
+        public string GenericNotificationTitle;
+        public string GenericNotificationTitle_HalfUnlocked;
+        public string GenericNotificationBody;
+        public string GenericNotificationBody_HalfUnlocked;
+        public GameObject GenericNotification3DIcon;
+
 
         public CollectibleStates GetState()
         {
