@@ -13,7 +13,7 @@ public class ChallengePackDescriptor : ScriptableObject
     #region Unlocking
     public CollectibleDescriptor Collectible;
 
-    public bool IsUnlocked => Collectible.CollectedInGlobalSave;
+    public bool IsUnlocked => Collectible == null || Collectible.CollectedInGlobalSave;
 
     public SaveValueDescriptor UnlockedSaveValue_Legacy;
 
