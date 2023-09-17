@@ -11,12 +11,14 @@ namespace Pogo.Saving
     public struct GlobalSaveData
     {
         public CollectibleUnlockData[] collectibleUnlockDatas;
+        public ChallengeSaveData[] challengeSaveDatas;
 
         public static GlobalSaveData NewData()
         {
             var data = new GlobalSaveData()
             {
-                collectibleUnlockDatas = new CollectibleUnlockData[0]
+                collectibleUnlockDatas = new CollectibleUnlockData[0],
+                challengeSaveDatas = new ChallengeSaveData[0]
             };
 
             return data;

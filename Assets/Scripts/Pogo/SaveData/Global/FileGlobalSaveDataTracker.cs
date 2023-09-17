@@ -87,6 +87,15 @@ namespace Pogo.Saving
                 return;
             }
 
+            if (SaveData.collectibleUnlockDatas == null)
+            {
+                SaveData.collectibleUnlockDatas = new CollectibleUnlockData[0];
+            }
+            if (SaveData.challengeSaveDatas == null)
+            {
+                SaveData.challengeSaveDatas = new ChallengeSaveData[0];
+            }
+
             DataState = DataStates.Loaded;
         }
 

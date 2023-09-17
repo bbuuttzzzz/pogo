@@ -1,4 +1,5 @@
-﻿using Pogo.Saving;
+﻿using Pogo.Challenges;
+using Pogo.Saving;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -68,6 +69,50 @@ namespace Pogo.Saving
             else
             {
                 SaveData.collectibleUnlockDatas[id] = data;
+            }
+        }
+
+        public int IndexOfChallenge(string challengeId)
+        {
+            for (int n = 0; n < SaveData.challengeSaveDatas.Length; n++)
+            {
+                if (SaveData.challengeSaveDatas[n].key == challengeId)
+                {
+                    return n;
+                }
+            }
+
+            return -1;
+        }
+
+        public ChallengeSaveData GetChallenge(string challengeId)
+        {
+            int id = IndexOfChallenge(challengeId);
+            if (id == -1)
+            {
+                ChallengeSaveData newCollectible = new ChallengeSaveData()
+                {
+                    key = challengeId,
+                    bestTimeMS = Challenge.WORST_TIME
+                };
+                return newCollectible;
+            }
+            else
+            {
+                return SaveData.challengeSaveDatas[id];
+            }
+        }
+
+        public void SetChallenge(ChallengeSaveData data)
+        {
+            int id = IndexOfChallenge(data.key);
+            if (id == -1)
+            {
+                ArrayHelper.InsertAndResize(ref SaveData.challengeSaveDatas, data);
+            }
+            else
+            {
+                SaveData.challengeSaveDatas[id] = data;
             }
         }
     }

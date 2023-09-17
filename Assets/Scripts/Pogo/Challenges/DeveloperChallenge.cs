@@ -1,4 +1,5 @@
-﻿using Pogo.Challenges;
+﻿using Pogo;
+using Pogo.Challenges;
 using System.Collections;
 using UnityEngine;
 using WizardUtils;
@@ -10,7 +11,20 @@ public class DeveloperChallenge : ScriptableObject
     public string DisplayName;
     public Challenge Challenge;
 
+    public string Key => name;
+
     public int BestTimeMS
+    {
+        get => PogoGameManager.PogoInstance.CurrentGlobalDataTracker.GetChallenge(Key).bestTimeMS;
+        set
+        {
+            var data = PogoGameManager.PogoInstance.CurrentGlobalDataTracker.GetChallenge(Key);
+            data.bestTimeMS = value;
+            PogoGameManager.PogoInstance.CurrentGlobalDataTracker.SetChallenge(data);
+        }
+    }
+
+    public int BestTimeMS_Legacy
     {
         get
         {
