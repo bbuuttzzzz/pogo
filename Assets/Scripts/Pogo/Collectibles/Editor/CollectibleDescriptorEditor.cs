@@ -4,7 +4,7 @@ using WizardUtils.ManifestPattern;
 
 namespace Pogo.Collectibles
 {
-    [CustomEditor(typeof(CollectibleDescriptor))]
+    [CustomEditor(typeof(CollectibleDescriptor)), CanEditMultipleObjects]
     public class CollectibleDescriptorEditor : Editor
     {
         CollectibleDescriptor self;
