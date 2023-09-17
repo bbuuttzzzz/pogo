@@ -48,7 +48,7 @@ namespace Pogo.Inspector
             }
 
             base.OnInspectorGUI();
-            if (self.PlayerTimeSaveValue == null)
+            if (self.PlayerTimeSaveValue_Legacy == null)
             {
                 EditorGUILayout.HelpBox("Missing Save Value!", MessageType.Error);
             }
@@ -68,7 +68,7 @@ namespace Pogo.Inspector
                 AssetDatabase.AddObjectToAsset(newSaveValue, parentPath);
                 Undo.RegisterCreatedObjectUndo(newSaveValue, "create");
 
-                self.PlayerTimeSaveValue = newSaveValue;
+                self.PlayerTimeSaveValue_Legacy = newSaveValue;
                 Undo.RecordObject(self, "set");
 
                 Undo.CollapseUndoOperations(undoGroup);

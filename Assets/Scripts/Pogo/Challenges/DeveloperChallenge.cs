@@ -14,7 +14,7 @@ public class DeveloperChallenge : ScriptableObject
     {
         get
         {
-            if (int.TryParse(PlayerTimeSaveValue.CurrentValue, out int result))
+            if (int.TryParse(PlayerTimeSaveValue_Legacy.CurrentValue, out int result))
             {
                 return result;
             }
@@ -22,12 +22,12 @@ public class DeveloperChallenge : ScriptableObject
         }
         set
         {
-            PlayerTimeSaveValue.CurrentValue = value.ToString();
+            PlayerTimeSaveValue_Legacy.CurrentValue = value.ToString();
             GameManager.GameInstance?.SaveData();
         }
     }
 
     public float BestTime => (float)BestTimeMS / 1000;
 
-    public SaveValueDescriptor PlayerTimeSaveValue;
+    public SaveValueDescriptor PlayerTimeSaveValue_Legacy;
 }
