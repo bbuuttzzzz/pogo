@@ -963,29 +963,59 @@ namespace Pogo
         public UnityEvent<CollectibleUnlockedEventArgs> OnCollectibleUnlocked;
         public void UnlockCollectible(CollectibleDescriptor collectible)
         {
-            bool onlyUnlockedInFile = true;
-            CollectibleUnlockData globalData = CurrentGlobalDataTracker.GetCollectible(collectible.Key);
-            if (!globalData.isUnlocked)
+            bool unlockedGlobally, unlockedInSlot;
+
+            if (collectible.UnlockType != CollectibleDescriptor.UnlockTypes.SlotOnly)
             {
-                onlyUnlockedInFile = false;
-                globalData.isUnlocked = true;
-                CurrentGlobalDataTracker.SetCollectible(globalData);
+                unlockedGlobally = TryUnlockCollectibleGlobally(collectible);
+            }
+            else
+            {
+                unlockedGlobally = false;
             }
 
+            if (collectible.UnlockType != CollectibleDescriptor.UnlockTypes.GlobalOnly)
+            {
+                unlockedInSlot = TryUnlockCollectibleInSlot(collectible);
+            }
+            else
+            {
+                unlockedInSlot = false;
+            }
+
+
+
+            OnCollectibleUnlocked?.Invoke(new CollectibleUnlockedEventArgs(collectible, unlockedGlobally, unlockedInSlot));
+            if ((unlockedInSlot || unlockedGlobally) && collectible.NotificationPrefab != null)
+            {
+                _ = UIManager.Instance.SpawnUIElement(collectible.NotificationPrefab);
+            }
+        }
+
+        private bool TryUnlockCollectibleGlobally(CollectibleDescriptor collectible)
+        {
+            CollectibleUnlockData slotData = CurrentGlobalDataTracker.GetCollectible(collectible.Key);
+            if (slotData.isUnlocked)
+            {
+                return false;
+            }
+
+            slotData.isUnlocked = true;
+            CurrentGlobalDataTracker.SetCollectible(slotData);
+            return true;
+        }
+
+        private bool TryUnlockCollectibleInSlot(CollectibleDescriptor collectible)
+        {
             CollectibleUnlockData slotData = CurrentSlotDataTracker.GetCollectible(collectible.Key);
             if (slotData.isUnlocked)
             {
-                return;
+                return false;
             }
 
             slotData.isUnlocked = true;
             CurrentSlotDataTracker.SetCollectible(slotData);
-
-            OnCollectibleUnlocked?.Invoke(new CollectibleUnlockedEventArgs(collectible, onlyUnlockedInFile));
-            if (collectible.NotificationPrefab != null)
-            {
-                _ = UIManager.Instance.SpawnUIElement(collectible.NotificationPrefab);
-            }
+            return true;
         }
         #endregion
     }

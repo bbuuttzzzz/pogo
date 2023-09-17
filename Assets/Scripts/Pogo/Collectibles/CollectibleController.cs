@@ -34,7 +34,7 @@ namespace Pogo.Collectibles
             }
             else
             {
-                var state = CheckState();
+                var state = Descriptor.GetState();
                 Initialize(state);
             }
         }
@@ -78,50 +78,6 @@ namespace Pogo.Collectibles
         {
             if (delay > 0) yield return new WaitForSeconds(delay);
             RendererRoot.SetActive(false);
-        }
-
-        private CollectibleStates CheckState()
-        {
-            if (CollectedInSlotSave)
-            {
-                return CollectibleStates.Collected;
-            }
-            else if (CollectedInGlobalSave)
-            {
-                return CollectibleStates.HalfCollected;
-            }
-            else
-            {
-                return CollectibleStates.Uncollected;
-            }
-        }
-
-        private bool CollectedInSlotSave
-        {
-            get
-            {
-                if (PogoGameManager.PogoInstance.CurrentSlotDataTracker == null)
-                {
-                    return false;
-                }
-
-                var data = PogoGameManager.PogoInstance.CurrentSlotDataTracker.GetCollectible(Descriptor.Key);
-                return data.isUnlocked;
-            }
-        }
-
-        private bool CollectedInGlobalSave
-        {
-            get
-            {
-                if (PogoGameManager.PogoInstance.CurrentGlobalDataTracker == null)
-                {
-                    return false;
-                }
-
-                var data = PogoGameManager.PogoInstance.CurrentGlobalDataTracker.GetCollectible(Descriptor.Key);
-                return data.isUnlocked;
-            }
         }
 
         private void SetAmbienceWaypointer(bool instant)

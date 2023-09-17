@@ -14,24 +14,70 @@ namespace Pogo.Collectibles
         public enum UnlockTypes
         {
             SlotOnly,
-            AccountOnly,
-            AccountAndSlot
+            GlobalOnly,
+            SlotAndGlobal
         }
         public UnlockTypes UnlockType => CollectibleType switch
         {
             CollectibleTypes.Key => UnlockTypes.SlotOnly,
-            _ => UnlockTypes.AccountAndSlot
+            CollectibleTypes.ChallengePack => UnlockTypes.SlotAndGlobal,
+            _ => UnlockTypes.SlotAndGlobal
         };
 
         [System.Serializable]
         public enum CollectibleTypes
         {
             None,
-            Key
+            Key,
+            ChallengePack
         }
 
         public CollectibleTypes CollectibleType;
         public GameObject NotificationPrefab;
+
+        public CollectibleStates GetState()
+        {
+            if (CollectedInSlotSave)
+            {
+                return CollectibleStates.Collected;
+            }
+            else if (CollectedInGlobalSave)
+            {
+                return CollectibleStates.HalfCollected;
+            }
+            else
+            {
+                return CollectibleStates.Uncollected;
+            }
+        }
+
+        public bool CollectedInSlotSave
+        {
+            get
+            {
+                if (PogoGameManager.PogoInstance.CurrentSlotDataTracker == null)
+                {
+                    return false;
+                }
+
+                var data = PogoGameManager.PogoInstance.CurrentSlotDataTracker.GetCollectible(Key);
+                return data.isUnlocked;
+            }
+        }
+
+        public bool CollectedInGlobalSave
+        {
+            get
+            {
+                if (PogoGameManager.PogoInstance.CurrentGlobalDataTracker == null)
+                {
+                    return false;
+                }
+
+                var data = PogoGameManager.PogoInstance.CurrentGlobalDataTracker.GetCollectible(Key);
+                return data.isUnlocked;
+            }
+        }
 
         public string Key => name;
     }

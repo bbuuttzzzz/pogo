@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Pogo.Collectibles;
+using System.Collections;
 using UnityEngine;
 using WizardUtils;
 using WizardUtils.Saving;
@@ -10,17 +11,22 @@ public class ChallengePackDescriptor : ScriptableObject
     public DeveloperChallenge[] Challenges;
 
     #region Unlocking
-    public SaveValueDescriptor UnlockedSaveValue;
-    public bool IsUnlocked
+    public CollectibleDescriptor Collectible;
+
+    public bool IsUnlocked => Collectible.CollectedInGlobalSave;
+
+    public SaveValueDescriptor UnlockedSaveValue_Legacy;
+
+    public bool IsUnlocked_Legacy
     {
         get
         {
-            return UnlockedSaveValue == null
-                || GameManager.GameInstance?.GetMainSaveValue(UnlockedSaveValue) == "1";
+            return UnlockedSaveValue_Legacy == null
+                || GameManager.GameInstance?.GetMainSaveValue(UnlockedSaveValue_Legacy) == "1";
         }
         set
         {
-            GameManager.GameInstance?.SetMainSaveValue(UnlockedSaveValue, value ? "1" : "0");
+            GameManager.GameInstance?.SetMainSaveValue(UnlockedSaveValue_Legacy, value ? "1" : "0");
         }
     }
 
