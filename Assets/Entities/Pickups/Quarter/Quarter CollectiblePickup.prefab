@@ -45,7 +45,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 5736269856515367849, guid: 4df3a00c9f161ad4ca137dada8aef10f, type: 2}
   m_audioClip: {fileID: 8300000, guid: d7af6082a467f194a855a379d3501a4a, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.2
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -56,7 +56,7 @@ AudioSource:
   MinDistance: 1.7211533
   MaxDistance: 10.7281685
   Pan2D: 0
-  rolloffMode: 1
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -64,10 +64,19 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.1604331
       value: 1
       inSlope: 0
       outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.48215783
+      value: 0.3044294
+      inSlope: -1.1910903
+      outSlope: -1.1910903
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
@@ -75,12 +84,12 @@ AudioSource:
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.24621522
+      outSlope: -0.24621522
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0.37220687
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -421,7 +430,7 @@ Transform:
   m_GameObject: {fileID: 6297446794919731413}
   m_LocalRotation: {x: -0.7071068, y: -0.000000029802322, z: 0.0000000016913068, w: 0.7071067}
   m_LocalPosition: {x: 0, y: 0.207, z: 0}
-  m_LocalScale: {x: 0.6374999, y: 0.6374999, z: 0.6375}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5242984044722409519}
@@ -505,7 +514,7 @@ Transform:
   m_GameObject: {fileID: 6529951300619776233}
   m_LocalRotation: {x: -0.7071068, y: -0.000000029802322, z: 0.0000000016913068, w: 0.7071067}
   m_LocalPosition: {x: 0, y: 0.20700026, z: 0}
-  m_LocalScale: {x: 0.6374999, y: 0.6374999, z: 0.6375}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8731337106977437617}
@@ -5394,7 +5403,7 @@ GameObject:
   - component: {fileID: 6374438833391220476}
   - component: {fileID: 7608987141808776374}
   m_Layer: 7
-  m_Name: QuarterSound
+  m_Name: PickupSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5425,9 +5434,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 5865845817369542399, guid: 4df3a00c9f161ad4ca137dada8aef10f, type: 2}
-  m_audioClip: {fileID: 8300000, guid: d086c496190f40541a97b81b03a8c8f8, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 25ec040b2d7df064db7a8eb31affb257, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.8
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -5436,9 +5445,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 10
+  MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 1
+  rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -5471,7 +5480,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
