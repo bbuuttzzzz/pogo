@@ -1,4 +1,5 @@
 using Assets.Scripts.Pogo.Difficulty;
+using Pogo.Collectibles;
 using System;
 using WizardUtils;
 
@@ -37,10 +38,13 @@ namespace Pogo.Saving
             }
         }
 
-        const float TotalCompletionFromChapters = 1f;
+        const int TotalCompletionFromChapters = 900;
+        const int TotalCompletionFromCollectibles = 100;
 
-        public void UpdatePreviewData()
+        public void UpdatePreviewData(CollectibleManifest collectibleManifest)
         {
+            UpdatePreviewDataCollectibleCounts(collectibleManifest);
+
             SaveSlotPreviewData updatedPreviewData = PreviewData;
             updatedPreviewData.TotalDeaths = 0;
             updatedPreviewData.TotalMilliseconds = 0;
@@ -56,12 +60,39 @@ namespace Pogo.Saving
                 updatedPreviewData.TotalMilliseconds += SlotData.chapterProgressDatas[0, n].millisecondsElapsed;
             }
 
+
             updatedPreviewData.CompletionPerMille = (int)
                 (
-                    (updatedPreviewData.LastFinishedChapter / 12f) * 1000 * TotalCompletionFromChapters
+                    (updatedPreviewData.LastFinishedChapter / 12f) * TotalCompletionFromChapters
+                    + (updatedPreviewData.TotalCollectibles / (float)collectibleManifest.Collectibles.Length) * TotalCompletionFromCollectibles
                 );
 
+
             PreviewData = updatedPreviewData;
+        }
+
+        private void UpdatePreviewDataCollectibleCounts(CollectibleManifest collectibleManifest)
+        {
+            SaveSlotPreviewData data = PreviewData;
+
+            data.CollectedCoins = 0;
+            data.TotalCollectibles = 0;
+
+            foreach(var collectible in collectibleManifest.Collectibles)
+            {
+                CollectibleUnlockData unlockData = GetCollectible(collectible.Key);
+                if (unlockData.isUnlocked)
+                {
+                    data.TotalCollectibles++;
+                    if (collectible.CollectibleType == CollectibleDescriptor.CollectibleTypes.Coin)
+                    {
+                        data.CollectedCoins++;
+                    }
+                }
+            }
+
+            PreviewData = data;
+            
         }
 
         public ChapterSaveData GetChapterProgressData(ChapterId id)

@@ -920,7 +920,7 @@ namespace Pogo
         {
             if (CurrentSlotDataTracker == null) return;
 
-            CurrentSlotDataTracker.UpdatePreviewData();
+            CurrentSlotDataTracker.UpdatePreviewData(CollectibleManifest);
             CurrentSlotDataTracker.Save();
         }
 
@@ -934,6 +934,7 @@ namespace Pogo
         {
             if (CurrentGlobalDataTracker == null) return;
 
+            CurrentGlobalDataTracker.UpdatePreviewData(CollectibleManifest);
             CurrentGlobalDataTracker.Save();
         }
 
@@ -963,6 +964,7 @@ namespace Pogo
         #region Collectibles
         public UnityEvent<CollectibleUnlockedEventArgs> OnCollectibleUnlocked;
         public GameObject GenericCollectibleNotificationPrefab;
+        public CollectibleManifest CollectibleManifest;
 
         public void UnlockCollectible(CollectibleDescriptor collectible)
         {

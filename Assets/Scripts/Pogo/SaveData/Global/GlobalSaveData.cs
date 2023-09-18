@@ -12,6 +12,7 @@ namespace Pogo.Saving
     {
         public CollectibleUnlockData[] collectibleUnlockDatas;
         public ChallengeSaveData[] challengeSaveDatas;
+        public int CollectedCoins;
 
         public static GlobalSaveData NewData()
         {

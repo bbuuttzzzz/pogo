@@ -21,6 +21,7 @@ namespace Pogo.Collectibles
         {
             CollectibleTypes.Key => UnlockTypes.SlotOnly,
             CollectibleTypes.ChallengePack => UnlockTypes.SlotAndGlobal,
+            CollectibleTypes.Coin => UnlockTypes.SlotAndGlobal,
             _ => UnlockTypes.SlotAndGlobal
         };
 
@@ -29,7 +30,8 @@ namespace Pogo.Collectibles
         {
             None,
             Key,
-            ChallengePack
+            ChallengePack,
+            Coin
         }
 
         public CollectibleTypes CollectibleType;

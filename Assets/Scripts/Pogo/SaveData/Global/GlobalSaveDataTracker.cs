@@ -1,4 +1,5 @@
 ﻿using Pogo.Challenges;
+using Pogo.Collectibles;
 using Pogo.Saving;
 using System;
 using System.Collections.Generic;
@@ -114,6 +115,31 @@ namespace Pogo.Saving
             {
                 SaveData.challengeSaveDatas[id] = data;
             }
+        }
+
+
+        public void UpdatePreviewData(CollectibleManifest collectibleManifest)
+        {
+            SaveData.CollectedCoins = CountCoins(collectibleManifest);
+        }
+
+        private int CountCoins(CollectibleManifest collectibleManifest)
+        {
+            int count = 0;
+            foreach (var collectible in collectibleManifest.Collectibles)
+            {
+                if (collectible.CollectibleType != CollectibleDescriptor.CollectibleTypes.Coin)
+                {
+                    continue;
+                }
+                CollectibleUnlockData data = GetCollectible(collectible.Key);
+                if (data.isUnlocked)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
     }
 }
