@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using WizardUtils;
 using WizardUtils.Saving;
 
 namespace Pogo
@@ -79,6 +80,42 @@ namespace Pogo
         }
         #endregion
 
+        #region Options
+        [System.Serializable]
+        public enum OptionsMenus
+        {
+            Disambiguation = 0,
+            GameOptions = 1,
+            SoundOptions = 2,
+            VideoOptions = 3
+        }
+
+        public GameObject MainMenuOccluder;
+        public ToggleableUIElement[] OptionsScreens;
+
+        public void OpenOptionsScreen_Disambiguation() => OpenOptionsScreen(OptionsMenus.Disambiguation);
+        public void OpenOptionsScreen_GameOptions() => OpenOptionsScreen(OptionsMenus.GameOptions);
+        public void OpenOptionsScreen_SoundOptions() => OpenOptionsScreen(OptionsMenus.SoundOptions);
+        public void OpenOptionsScreen_VideoOptions() => OpenOptionsScreen(OptionsMenus.VideoOptions);
+
+        public void OpenOptionsScreen(OptionsMenus optionsMenu)
+        {
+            for(int n = 0; n < OptionsScreens.Length; n++)
+            {
+                OptionsScreens[n].SetOpen((int)optionsMenu == n);
+            }
+            MainMenuOccluder.SetActive(true);
+        }
+
+        public void CloseOptionsScreen()
+        {
+            for (int n = 0; n < OptionsScreens.Length; n++)
+            {
+                OptionsScreens[n].SetOpen(false);
+            }
+            MainMenuOccluder.SetActive(false);
+        }
+        #endregion
 
         public void OpenWorldScreen()
         {
