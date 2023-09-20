@@ -61,6 +61,7 @@ namespace Pogo
             list.Add(new GameSettingFloat(SETTINGKEY_INVERT, 0f));
             list.Add(new GameSettingFloat(SETTINGKEY_TIMER, 0f));
             list.Add(new GameSettingFloat(SETTINGKEY_RESPAWNDELAY, 0.5f));
+            list.Add(new GameSettingFloat(SETTINGKEY_GAMMA, 100));
 
             return list;
         }
@@ -765,6 +766,7 @@ namespace Pogo
         public static string SETTINGKEY_SENSITIVITY = "Sensitivity";
         public static string SETTINGKEY_INVERT = "InvertY";
         public static string SETTINGKEY_TIMER = "ShowTimer";
+        public static string SETTINGKEY_GAMMA = "Gamma";
         public static string SETTINGKEY_RESPAWNDELAY = "RespawnDelay";
         #endregion
 

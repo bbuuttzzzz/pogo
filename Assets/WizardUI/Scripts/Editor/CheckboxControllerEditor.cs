@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WizardUtils
 {
-    [CustomEditor(typeof(CheckboxController))]
+    [CustomEditor(typeof(CheckboxController)), CanEditMultipleObjects]
     public class CheckboxControllerEditor : Editor
     {
         CheckboxController self;
