@@ -16,6 +16,20 @@ namespace WizardUtils.Saving
 
         public SaveValueDescriptor[] SaveValueDescriptors;
 
+        [ContextMenu("Clean Manifest")]
+        public void CleanManifest()
+        {
+            List<SaveValueDescriptor> cleanedList = new List<SaveValueDescriptor>();
+
+            foreach(var descriptor in SaveValueDescriptors)
+            {
+                if (descriptor == null) continue;
+                cleanedList.Add(descriptor);
+            }
+
+            SaveValueDescriptors = cleanedList.ToArray();
+        }
+
         public bool ContainsDescriptor(SaveValueDescriptor descriptor)
         {
             foreach(SaveValueDescriptor otherDescriptor in SaveValueDescriptors)
@@ -30,6 +44,8 @@ namespace WizardUtils.Saving
         {
             foreach(SaveValueDescriptor otherDescriptor in SaveValueDescriptors)
             {
+                if (otherDescriptor == null) continue;
+
                 if (otherDescriptor.Key == key) return otherDescriptor;
             }
 
