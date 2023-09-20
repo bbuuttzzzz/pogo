@@ -54,11 +54,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   QuickDisplayInterval: 10
   ShouldShowStopwatch: 1
-  DeathCount: 0
   OnDeathCountChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8239963105626518458}
+      - m_Target: {fileID: 5077754615571033385}
         m_TargetAssemblyTypeName: WizardUtils.IntegerFormatter, Assembly-CSharp
         m_MethodName: FormatInt
         m_Mode: 0
@@ -97,9 +96,8 @@ MonoBehaviour:
           m_StringArgument: QuickDisplayDeaths
           m_BoolArgument: 0
         m_CallState: 2
-  SessionStartTime: 0
   StopwatchObject: {fileID: 1806047849}
-  StopwatchTimerText: {fileID: 1861888236}
+  StopwatchTimerText: {fileID: 2666910926082404660}
 --- !u!95 &7906488212157503368
 Animator:
   serializedVersion: 5
@@ -128,6 +126,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8239963106375010797}
     m_Modifications:
+    - target: {fileID: 5594029390933331903, guid: bb63b2a754fbef3499674c0280f450cf, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6512321292040342572, guid: bb63b2a754fbef3499674c0280f450cf, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -216,6 +218,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stopwatch
       objectReference: {fileID: 0}
+    - target: {fileID: 9179089124649265010, guid: bb63b2a754fbef3499674c0280f450cf, type: 3}
+      propertyPath: m_fontColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9179089124649265010, guid: bb63b2a754fbef3499674c0280f450cf, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4282269749
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb63b2a754fbef3499674c0280f450cf, type: 3}
 --- !u!1 &1806047849 stripped
@@ -228,15 +238,15 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6512321292040342572, guid: bb63b2a754fbef3499674c0280f450cf, type: 3}
   m_PrefabInstance: {fileID: 6512321293476501062}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1861888236 stripped
+--- !u!114 &2666910926082404660 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6512321292087803562, guid: bb63b2a754fbef3499674c0280f450cf, type: 3}
+  m_CorrespondingSourceObject: {fileID: 9179089124649265010, guid: bb63b2a754fbef3499674c0280f450cf, type: 3}
   m_PrefabInstance: {fileID: 6512321293476501062}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &6788728537882814680
@@ -334,11 +344,23 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4300312894375694871, guid: b856e62258a094d408f84c12e9cfd61c, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7357025254911801689, guid: b856e62258a094d408f84c12e9cfd61c, type: 3}
+      propertyPath: m_fontColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7357025254911801689, guid: b856e62258a094d408f84c12e9cfd61c, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4282269749
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b856e62258a094d408f84c12e9cfd61c, type: 3}
---- !u!114 &8239963105626518458 stripped
+--- !u!114 &5077754615571033385 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3201024052525177698, guid: b856e62258a094d408f84c12e9cfd61c, type: 3}
+  m_CorrespondingSourceObject: {fileID: 1747860960254215665, guid: b856e62258a094d408f84c12e9cfd61c, type: 3}
   m_PrefabInstance: {fileID: 6788728537882814680}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

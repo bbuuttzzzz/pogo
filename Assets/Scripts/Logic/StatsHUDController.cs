@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -79,6 +80,6 @@ namespace Pogo.Logic
         public UnityEvent OnDeathCountChangedLargeInterval;
 
         public GameObject StopwatchObject;
-        public Text StopwatchTimerText;
+        public TextMeshProUGUI StopwatchTimerText;
     }
 }
