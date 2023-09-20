@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace WizardUtils
 {
@@ -11,6 +12,9 @@ namespace WizardUtils
     {
         public bool VsyncEnabled { get; set; }
         public bool FullscreenEnabled { get; set; }
+
+        public UnityEvent<bool> OnVsyncChanged;
+        public UnityEvent<bool> OnFullscreenChanged;
 
         private void OnEnable()
         {
@@ -20,7 +24,9 @@ namespace WizardUtils
         public void Revert()
         {
             VsyncEnabled = QualitySettings.vSyncCount > 0;
-            FullscreenEnabled = Screen.fullScreenMode == FullScreenMode.FullScreenWindow;
+            FullscreenEnabled = Screen.fullScreenMode == FullScreenMode.FullScreenWindow || Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen;
+            OnVsyncChanged.Invoke(VsyncEnabled);
+            OnFullscreenChanged.Invoke(FullscreenEnabled);
         }
 
         public void Apply()
