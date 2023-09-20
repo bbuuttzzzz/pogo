@@ -26,7 +26,14 @@ namespace WizardUtils
         public void Apply()
         {
             QualitySettings.vSyncCount = VsyncEnabled ? 1 : 0;
-            Screen.fullScreenMode = FullscreenEnabled ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+            if (FullscreenEnabled)
+            {
+                Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, FullScreenMode.FullScreenWindow);
+            }
+            else
+            {
+                Screen.fullScreenMode = FullScreenMode.Windowed;
+            }
         }
     }
 }
