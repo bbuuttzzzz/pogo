@@ -29,7 +29,7 @@ namespace Platforms.Steam
                 if (SteamAPI.RestartAppIfNecessary(AppId))
                 {
                     Debug.LogWarning("SteamApi RestartAppIfNecessary TRUE. Exiting App.");
-                    GameManager.GameInstance.Quit(true);
+                    Application.Quit();
                     return;
                 }
             }
@@ -37,7 +37,7 @@ namespace Platforms.Steam
             {
                 Debug.LogError("[Steamworks.NET] Could not load [lib]steam_api.dll/so/dylib. \n" + e);
 
-                GameManager.GameInstance.Quit(true);
+                Application.Quit();
                 return;
             }
 
