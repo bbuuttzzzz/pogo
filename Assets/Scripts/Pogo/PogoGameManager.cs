@@ -927,7 +927,7 @@ namespace Pogo
         public void LoadGlobalSave()
         {
             CurrentGlobalDataTracker = GetGlobalDataTracker();
-            CurrentGlobalDataTracker.Load();
+            CurrentGlobalDataTracker.Load(true);
         }
 
         public void SaveGlobalSave()

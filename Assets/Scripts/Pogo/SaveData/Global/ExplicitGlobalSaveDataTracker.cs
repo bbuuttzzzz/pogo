@@ -13,7 +13,7 @@ namespace Pogo.Saving
             ExplicitSaveData = explicitSaveData;
         }
 
-        public override void Load()
+        public override void Load(bool createIfEmpty = false)
         {
             SaveData = ExplicitSaveData.Data;
             DataState = DataStates.Loaded;

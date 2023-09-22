@@ -43,12 +43,20 @@ namespace Pogo.Saving
             }
         }
 
-        public override void Load()
+        public override void Load(bool createIfEmpty = false)
         {
             if (!File.Exists(FilePath))
             {
-                DataState = DataStates.Empty;
-                return;
+                if (createIfEmpty)
+                {
+                    InitializeNew();
+                    return;
+                }
+                else
+                {
+                    DataState = DataStates.Empty;
+                    return;
+                }
             }
 
             string rawDataSerialized;

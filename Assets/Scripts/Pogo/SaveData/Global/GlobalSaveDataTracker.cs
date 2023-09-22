@@ -26,7 +26,7 @@ namespace Pogo.Saving
 
         public abstract void Save();
 
-        public abstract void Load();
+        public abstract void Load(bool createIfEmpty = false);
         public abstract void Delete();
         public abstract void InitializeNew();
 
