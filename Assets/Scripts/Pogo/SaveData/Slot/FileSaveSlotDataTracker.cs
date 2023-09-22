@@ -57,7 +57,6 @@ namespace Pogo.Saving
                 }
                 else
                 {
-                    Debug.LogWarning($"SaveSlot load ERROR File not found {BaseName}.sav");
                     DataState = DataStates.Empty;
                     return;
                 }
