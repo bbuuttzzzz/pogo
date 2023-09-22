@@ -1,6 +1,7 @@
 ﻿using Inputter;
 using Pogo;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -48,8 +49,8 @@ namespace Assets.Scripts.Pogo
         }
 
         public GameObject StopwatchObject;
-        public Text StopwatchTimerText;
-        public Text DeathCountText;
+        public TextMeshProUGUI StopwatchTimerText;
+        public TextMeshProUGUI DeathCountText;
 
         private void UpdateStopwatchTimerText()
         {
