@@ -43,7 +43,7 @@ namespace Pogo
 
             OnPauseStateChanged += ((_, _) => UpdateTimeFreeze());
             OnPlayerSpawn.AddListener(() => ResetLoadedLevel());
-            OnQuitToMenu.AddListener(GameManager_OnQuitToMenu);
+            OnQuitToMenu.AddListener(FullResetSessionData);
             OnQuitToDesktop.AddListener(GameManager_OnQuitToDesktop);
             CustomCheckpoint.OnPlaced.AddListener(() => OnCustomCheckpointChanged?.Invoke(this, EventArgs.Empty));
 #if UNITY_EDITOR
@@ -75,7 +75,7 @@ namespace Pogo
             }
         }
 
-        private void GameManager_OnQuitToMenu()
+        private void FullResetSessionData()
         {
             FinishChapter(false);
             SaveSlot();
@@ -524,6 +524,7 @@ namespace Pogo
 
         #region Checkpoint Shit
         private CheckpointManifest LoadCheckpointManifest;
+        public CheckpointTrigger CurrentCheckpoint;
 
         public static void RegisterCheckpoint(CheckpointTrigger trigger)
         {
@@ -532,6 +533,86 @@ namespace Pogo
 
             PogoInstance.LoadCheckpointManifest.Add(trigger);
 
+        }
+
+        public bool TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint)
+        {
+            // get the easy thing out of the way...
+            if (!CurrentCheckpoint.Descriptor.CanSkip)
+            {
+                nextCheckpoint = null;
+                return false;
+            }
+
+            if (CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint != null)
+            {
+                nextCheckpoint = CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint;
+                return true;
+            }
+            else if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"SidePath checkpoint has NO overrideSkipTarget but is marked as skippable!: {CurrentCheckpoint.Descriptor}");
+#endif
+                nextCheckpoint = null;
+                return false;
+            }
+
+            if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 >= CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
+            {
+                // get the first checkpoint in the next chapter
+                int chapterIndex = World.IndexOf(CurrentCheckpoint.Descriptor.Chapter);
+                if (chapterIndex < 0)
+                {
+                    Debug.LogError("Tried to skip the last checkpoint in the last chapter. seriously???");
+                }
+            }
+
+
+            nextCheckpoint = CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints[CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1];
+            return true;
+        }
+
+        public bool TrySkipCheckpoint()
+        {
+            switch (CurrentCheckpoint.SkipBehavior)
+            {
+                case CheckpointTrigger.SkipBehaviors.LevelChange:
+                    return TrySkipCheckpointByLevelChange();
+                case CheckpointTrigger.SkipBehaviors.TeleportToTarget:
+                    MovePlayerRespawnPointTo(CurrentCheckpoint.SkipTarget);
+                    return true;
+                case CheckpointTrigger.SkipBehaviors.HalfCheckpoint:
+                    MovePlayerRespawnPointTo(CurrentCheckpoint.SkipTarget, true);
+                    return true;
+                default:
+                    throw new ArgumentOutOfRangeException($"Checkpoint ({CurrentCheckpoint}) has bad SkipBehaviour {CurrentCheckpoint.SkipBehavior}");
+            }
+        }
+
+        private void MovePlayerRespawnPointTo(Transform targetLocation, bool alsoSetCustomCheckpoint = false)
+        {
+        
+        }
+
+        private bool TrySkipCheckpointByLevelChange()
+        {
+            if (!TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint))
+            {
+                return false;
+            }
+
+            // serialize quicksave data ourselves first, we're going to tweak this to load the next checkpoint
+            if (!TrySerializeQuicksaveData(out QuickSaveData quickSaveData))
+            {
+                return false;
+            }
+
+            // Reset session data
+            FullResetSessionData();
+            LoadCheckpoint(nextCheckpoint);
+
+            return true;
         }
 
         #endregion
@@ -641,7 +722,6 @@ namespace Pogo
                 }
             }
         }
-        public CheckpointTrigger CurrentCheckpoint;
 
         public CustomCheckpointController CustomCheckpoint;
         public bool CustomRespawnActive;

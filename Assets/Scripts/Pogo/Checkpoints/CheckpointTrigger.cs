@@ -1,76 +1,94 @@
-﻿using Pogo;
-using Pogo.Checkpoints;
+﻿using Pogo.Checkpoints;
 using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class CheckpointTrigger : Trigger
+namespace Pogo
 {
-    public CheckpointDescriptor Descriptor;
-    public Transform RespawnPoint;
-    public UnityEvent OnEnteredNotActivated;
-
-    public UnityEvent OnAheadCheckpointLoaded;
-
-    public void Awake()
+    public class CheckpointTrigger : Trigger
     {
-        PogoGameManager.RegisterCheckpoint(this);
-    }
+        public CheckpointDescriptor Descriptor;
+        public Transform RespawnPoint;
+        public UnityEvent OnEnteredNotActivated;
 
-    public void NotifyCheckpointLoad(CheckpointDescriptor loadedCheckpoint)
-    {
-        if (Descriptor == null)
+        public UnityEvent OnAheadCheckpointLoaded;
+
+        [Serializable]
+        public enum SkipBehaviors
         {
+            LevelChange,
+            TeleportToTarget,
+            HalfCheckpoint
+        }
+        [HideInInspector]
+        public SkipBehaviors SkipBehavior;
+
+        [HideInInspector]
+        public UnityEvent OnSkip;
+
+        [HideInInspector]
+        public Transform SkipTarget;
+
+        public void Awake()
+        {
+            PogoGameManager.RegisterCheckpoint(this);
+        }
+
+        public void NotifyCheckpointLoad(CheckpointDescriptor loadedCheckpoint)
+        {
+            if (Descriptor == null)
+            {
 #if UNITY_EDITOR
-            Debug.LogWarning($"Missing CheckpointDescriptor for {AnimationUtility.CalculateTransformPath(transform, null)} in scene {gameObject.scene.name}");
+                Debug.LogWarning($"Missing CheckpointDescriptor for {AnimationUtility.CalculateTransformPath(transform, null)} in scene {gameObject.scene.name}");
 #endif
-            return;
+                return;
+            }
+
+            if (PlayerPassedThisCheckpoint(loadedCheckpoint))
+            {
+                OnAheadCheckpointLoaded?.Invoke();
+            }
         }
 
-        if (PlayerPassedThisCheckpoint(loadedCheckpoint))
+        private bool PlayerPassedThisCheckpoint(CheckpointDescriptor other)
         {
-            OnAheadCheckpointLoaded?.Invoke();
-        }
-    }
+            if (other == Descriptor) return true;
 
-    private bool PlayerPassedThisCheckpoint(CheckpointDescriptor other)
-    {
-        if (other == Descriptor) return true;
-
-        if (other.Chapter.Number > Descriptor.Chapter.Number)
-        {
-            return true;
-        }
-        else if (other.Chapter.Number < Descriptor.Chapter.Number)
-        {
-            return false;
-        }
+            if (other.Chapter.Number > Descriptor.Chapter.Number)
+            {
+                return true;
+            }
+            else if (other.Chapter.Number < Descriptor.Chapter.Number)
+            {
+                return false;
+            }
 #if DEBUG
-        if (other.Chapter != Descriptor.Chapter)
-        {
-            throw new InvalidOperationException($"ChapterDescriptor number mismatch between either {other.Chapter} or {Descriptor.Chapter}");
-        }
+            if (other.Chapter != Descriptor.Chapter)
+            {
+                throw new InvalidOperationException($"ChapterDescriptor number mismatch between either {other.Chapter} or {Descriptor.Chapter}");
+            }
 #endif
 
-        if (Descriptor.CheckpointId.CheckpointType == CheckpointTypes.MainPath
-            && other.CheckpointId.CheckpointType == CheckpointTypes.MainPath)
-        {
-            return other.CheckpointId.CheckpointNumber > Descriptor.CheckpointId.CheckpointNumber;
-        }
+            if (Descriptor.CheckpointId.CheckpointType == CheckpointTypes.MainPath
+                && other.CheckpointId.CheckpointType == CheckpointTypes.MainPath)
+            {
+                return other.CheckpointId.CheckpointNumber > Descriptor.CheckpointId.CheckpointNumber;
+            }
 
-        return false;
-    }
-
-    public override bool ColliderCanTrigger(Collider other)
-    {
-        if (WizardUtils.GameManager.GameInstanceIsValid())
-        {
-            bool success = PogoGameManager.PogoInstance.TryRegisterRespawnPoint(this);
-            if (!success) OnEnteredNotActivated?.Invoke();
-            return success;
-        }
-        else
             return false;
+        }
+
+        public override bool ColliderCanTrigger(Collider other)
+        {
+            if (WizardUtils.GameManager.GameInstanceIsValid())
+            {
+                bool success = PogoGameManager.PogoInstance.TryRegisterRespawnPoint(this);
+                if (!success) OnEnteredNotActivated?.Invoke();
+                return success;
+            }
+            else
+                return false;
+        }
     }
 }
