@@ -573,8 +573,27 @@ namespace Pogo
             return true;
         }
 
+        public bool CanSkipCheckpoint()
+        {
+            if (CurrentCheckpoint == null) return false;
+
+            switch (CurrentCheckpoint.SkipBehavior)
+            {
+                case CheckpointTrigger.SkipBehaviors.LevelChange:
+                    return TrySkipCheckpointByLevelChange(true);
+                case CheckpointTrigger.SkipBehaviors.TeleportToTarget:
+                    return true;
+                case CheckpointTrigger.SkipBehaviors.HalfCheckpoint:
+                    return true;
+                default:
+                    throw new ArgumentOutOfRangeException($"Checkpoint ({CurrentCheckpoint}) has bad SkipBehaviour {CurrentCheckpoint.SkipBehavior}");
+            }
+        }
+
         public bool TrySkipCheckpoint()
         {
+            if (CurrentCheckpoint == null) return false;
+
             switch (CurrentCheckpoint.SkipBehavior)
             {
                 case CheckpointTrigger.SkipBehaviors.LevelChange:
@@ -595,7 +614,7 @@ namespace Pogo
         
         }
 
-        private bool TrySkipCheckpointByLevelChange()
+        private bool TrySkipCheckpointByLevelChange(bool dry = false)
         {
             if (!TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint))
             {
@@ -608,12 +627,18 @@ namespace Pogo
                 return false;
             }
 
+            if (dry)
+            {
+                return true;
+            }
+
             // Reset session data
             FullResetSessionData();
             LoadCheckpoint(nextCheckpoint);
 
             return true;
         }
+
 
         #endregion
 
