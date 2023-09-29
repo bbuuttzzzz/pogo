@@ -119,6 +119,7 @@ namespace Pogo
         {
             Undo.RecordObject(self.Descriptor, "Toggle CanSkip");
             self.Descriptor.CanSkip = newValue;
+            EditorUtility.SetDirty(self.Descriptor);
         }
     }
 
