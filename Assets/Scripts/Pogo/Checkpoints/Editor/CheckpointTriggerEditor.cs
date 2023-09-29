@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 
 namespace Pogo
 {
-    [CustomEditor(typeof(CheckpointTrigger))]
+    [CustomEditor(typeof(CheckpointTrigger)),CanEditMultipleObjects]
     public class CheckpointTriggerEditor : Editor
     {
         CheckpointTrigger self;
@@ -69,6 +69,12 @@ namespace Pogo
 
         private void DrawOverrideCheckpointProperty()
         {
+            if (self.Descriptor.OverrideSkipToCheckpoint == null
+                && self.Descriptor.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
+            {
+                EditorGUILayout.HelpBox("You NEED an overrideSkipToCheckpoint for SidePaths!", MessageType.Error);
+            }
+
             CheckpointDescriptor result = (CheckpointDescriptor)EditorGUILayout.ObjectField(
                             "Override Next Checkpoint:",
                             self.Descriptor.OverrideSkipToCheckpoint,
