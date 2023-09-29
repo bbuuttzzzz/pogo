@@ -9,6 +9,7 @@ namespace Pogo.Collectibles
     [RequireComponent(typeof(Trigger))]
     public class CollectibleController : MonoBehaviour
     {
+        [HideInInspector]
         public CollectibleDescriptor Descriptor;
 
         public AudioVolumeWaypointer AmbienceWaypointer;
