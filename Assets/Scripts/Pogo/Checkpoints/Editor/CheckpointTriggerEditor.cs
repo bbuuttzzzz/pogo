@@ -88,6 +88,7 @@ namespace Pogo
                         {
                             Undo.RecordObject(self, "Select SkipTarget");
                             self.SkipTarget = itempath.item.transform;
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(self);
                         });
                     }
                     else
@@ -99,8 +100,13 @@ namespace Pogo
                             clone.transform.rotation = itempath.item.transform.rotation;
                             clone.name = "EXIT SkipPoint Clone";
 
-                            Undo.RegisterCreatedObjectUndo(clone, "CLONE Select SkipTarget");
-                            self.SkipTarget = clone.transform;
+                            using (new UndoScope("Clone & Select SkipTarget"))
+                            {
+                                Undo.RegisterCreatedObjectUndo(clone, "CLONE Select SkipTarget");
+                                Undo.RecordObject(self, "Select SkipTarget");
+                                self.SkipTarget = clone.transform;
+                                PrefabUtility.RecordPrefabInstancePropertyModifications(self);
+                            }
                         });
                     }
                     

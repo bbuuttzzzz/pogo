@@ -599,19 +599,24 @@ namespace Pogo
                 case CheckpointTrigger.SkipBehaviors.LevelChange:
                     return TrySkipCheckpointByLevelChange();
                 case CheckpointTrigger.SkipBehaviors.TeleportToTarget:
-                    MovePlayerRespawnPointTo(CurrentCheckpoint.SkipTarget);
+                    MovePlayerTo(CurrentCheckpoint.SkipTarget);
                     return true;
                 case CheckpointTrigger.SkipBehaviors.HalfCheckpoint:
-                    MovePlayerRespawnPointTo(CurrentCheckpoint.SkipTarget, true);
+                    MovePlayerTo(CurrentCheckpoint.SkipTarget, true);
                     return true;
                 default:
                     throw new ArgumentOutOfRangeException($"Checkpoint ({CurrentCheckpoint}) has bad SkipBehaviour {CurrentCheckpoint.SkipBehavior}");
             }
         }
 
-        private void MovePlayerRespawnPointTo(Transform targetLocation, bool alsoSetCustomCheckpoint = false)
+        private void MovePlayerTo(Transform targetLocation, bool alsoSetCustomCheckpoint = false)
         {
-        
+            if (alsoSetCustomCheckpoint)
+            {
+                RegisterCustomRespawnPoint(targetLocation.position, targetLocation.rotation.YawOnly());
+            }
+
+            Player.TeleportTo(targetLocation);
         }
 
         private bool TrySkipCheckpointByLevelChange(bool dry = false)
