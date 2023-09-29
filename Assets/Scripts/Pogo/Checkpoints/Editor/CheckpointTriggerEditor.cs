@@ -1,3 +1,4 @@
+using Pogo.Checkpoints;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,6 +57,7 @@ namespace Pogo
 
         private void DrawSkipProperties()
         {
+            DrawOverrideCheckpointProperty();
             EditorGUILayout.PropertyField(m_SkipBehavior);
             if (self.SkipBehavior != CheckpointTrigger.SkipBehaviors.LevelChange)
             {
@@ -64,6 +66,22 @@ namespace Pogo
                 DrawSkipSelectDropdown();
             }
         }
+
+        private void DrawOverrideCheckpointProperty()
+        {
+            CheckpointDescriptor result = (CheckpointDescriptor)EditorGUILayout.ObjectField(
+                            "Override Next Checkpoint:",
+                            self.Descriptor.OverrideSkipToCheckpoint,
+                            typeof(CheckpointDescriptor),
+                            false);
+
+            if (result == self.Descriptor.OverrideSkipToCheckpoint) return;
+
+            Undo.RecordObject(self.Descriptor, "Update OverrideSkipToCheckpoint");
+            self.Descriptor.OverrideSkipToCheckpoint = result;
+            EditorUtility.SetDirty(self.Descriptor);
+        }
+
         private void DrawSkipSelectDropdown()
         {
             if (EditorGUILayout.DropdownButton(new GUIContent("Target SkipPoint..."), FocusType.Passive))
