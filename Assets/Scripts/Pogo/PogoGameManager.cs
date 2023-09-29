@@ -415,9 +415,9 @@ namespace Pogo
                 ChapterId = ChapterToId(CurrentCheckpoint.Descriptor.Chapter),
                 checkpointId = CurrentCheckpoint.Descriptor.CheckpointId,
                 CurrentState = QuickSaveData.States.InProgress,
-                ChapterProgressDeaths = currentChapterProgressTracker.TrackedDeaths,
+                ChapterProgressDeaths = currentChapterProgressTracker?.TrackedDeaths ?? 0,
                 SessionProgressDeaths = currentSessionProgressTracker.TrackedDeaths,
-                ChapterProgressTimeMilliseconds = currentChapterProgressTracker.TrackedTimeMilliseconds,
+                ChapterProgressTimeMilliseconds = currentChapterProgressTracker?.TrackedTimeMilliseconds ?? 0,
                 SessionProgressTimeMilliseconds = currentSessionProgressTracker.TrackedTimeMilliseconds
             };
 
@@ -477,7 +477,7 @@ namespace Pogo
             {
                 InstantChangeAtmosphere = true,
                 ForceReload = false,
-                LoadingFromMenu = true,
+                LoadingFromMenu = CurrentControlScene != null,
                 QuickSaveData = quickSaveData
             });
         }
@@ -564,8 +564,25 @@ namespace Pogo
                 int chapterIndex = World.IndexOf(CurrentCheckpoint.Descriptor.Chapter);
                 if (chapterIndex < 0)
                 {
-                    Debug.LogError("Tried to skip the last checkpoint in the last chapter. seriously???");
+                    Debug.LogError($"Tried to skip out of a chapter... Couldn't find current Chapter {CurrentCheckpoint.Descriptor.Chapter} in current world {World}... ????");
+                    nextCheckpoint = default;
+                    return false;
                 }
+
+                WorldChapter nextChapter = World.FindChapter(chapterIndex + 1);
+                if (nextChapter.Type != WorldChapter.Types.Level)
+                {
+                    Debug.LogError($"Tried to skip out of a chapter... next chapter (Index {chapterIndex+1}) is of bad type {nextChapter.Type}");
+                    nextCheckpoint = default;
+                    return false;
+                }
+
+                nextCheckpoint = nextChapter.Chapter.MainPathCheckpoints[0];
+                if (nextCheckpoint == null)
+                {
+                    Debug.LogError($"Tried to skip out of a chapter... First checkpoint in next chapter is null for chapter {nextChapter.Chapter}");
+                }
+                return true;
             }
 
 
@@ -639,7 +656,14 @@ namespace Pogo
 
             // Reset session data
             FullResetSessionData();
-            LoadCheckpoint(nextCheckpoint);
+
+            // replace quicksavedata with the new stuff
+            quickSaveData.ChapterId = new ChapterId(0, World.IndexOf(nextCheckpoint.Chapter));
+            quickSaveData.checkpointId = nextCheckpoint.CheckpointId;
+            CurrentSlotDataTracker.SlotData.quickSaveData = quickSaveData;
+
+            // load quicksave data
+            LoadQuickSave();
 
             return true;
         }
