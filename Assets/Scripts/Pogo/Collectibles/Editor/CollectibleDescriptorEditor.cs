@@ -52,6 +52,7 @@ namespace Pogo.Collectibles
 
                     var controller = FindController();
                     Selection.activeObject = controller.transform;
+                    EditorApplication.ExecuteMenuItem("Edit/Frame Selected");
                 }
             }
         }

@@ -53,12 +53,14 @@ namespace Pogo.Collectibles
 
         public void DrawRegisterButtons(TDescriptor item, string headerText = "Manifests")
         {
+            bool found = false;
             GUILayout.Label(headerText, EditorStyles.boldLabel);
-            EditorGUI.indentLevel++;
+                EditorGUI.indentLevel++;
             var manifests = AssetDatabase.FindAssets($"t:{typeof(TManifest).Name}")
                 .Select(id => AssetDatabase.LoadAssetAtPath<TManifest>(AssetDatabase.GUIDToAssetPath(id)));
             foreach (var manifest in manifests)
             {
+
                 bool containsItem = manifest.Contains(item);
 
                 bool toggle;
@@ -71,6 +73,7 @@ namespace Pogo.Collectibles
                     toggle = EditorGUILayout.Toggle(containsItem);
                 }
 
+                found = found || containsItem;
                 if (!toggle && containsItem)
                 {
                     manifest.Remove(item);
@@ -85,6 +88,12 @@ namespace Pogo.Collectibles
                 }
             }
             EditorGUI.indentLevel--;
+
+
+            if (!found)
+            {
+                OnNoSetManifests.Invoke();
+            }
         }
     }
 }
