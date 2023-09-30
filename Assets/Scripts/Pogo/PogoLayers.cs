@@ -2,7 +2,7 @@
 
 public static class LAYERMASK
 {
-    // Default Layers
+    // LevelChange Layers
     public const int Default = 1 << LAYER.Default;
     public const int TransparentFX = 1 << LAYER.TransparentFX;
     public const int IgnoreRaycast = 1 << LAYER.IgnoreRaycast;

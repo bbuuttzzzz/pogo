@@ -77,22 +77,30 @@ public class PogoGameManagerEditor : GameManagerEditor
                         Undo.RecordObject(player, "Move Player to Spawnpoint");
                     }
 
-                    Selection.activeObject = self.CachedRespawnPoint.transform;
                     Undo.CollapseUndoOperations(undoGroup);
                 });
             }
             menu.DropDown(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 0f, 0f));
         }
 
-        if (GUILayout.Button("Move Player to Spawnpoint"))
+        using(new GUILayout.HorizontalScope())
         {
-            var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
-            foreach (PlayerController player in results)
+            if (GUILayout.Button("Select Point"))
             {
-                player.transform.position = self.CachedRespawnPoint.position;
-                player.transform.rotation = Quaternion.Euler(0, self.CachedRespawnPoint.rotation.eulerAngles.y, 0);
-                Undo.RecordObject(player, "Move Player to Spawnpoint");
+                Selection.activeObject = self.CachedRespawnPoint.transform;
+            }
+
+            if (GUILayout.Button("Move Player"))
+            {
+                var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
+                foreach (PlayerController player in results)
+                {
+                    player.transform.position = self.CachedRespawnPoint.position;
+                    player.transform.rotation = Quaternion.Euler(0, self.CachedRespawnPoint.rotation.eulerAngles.y, 0);
+                    Undo.RecordObject(player, "Move Player to Spawnpoint");
+                }
             }
         }
+        
     }
 }

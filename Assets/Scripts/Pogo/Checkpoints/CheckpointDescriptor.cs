@@ -14,11 +14,19 @@ namespace Pogo.Checkpoints
         public int Par;
         public string[] Hints;
 
+        public bool CanSkip;
+        public CheckpointDescriptor OverrideSkipToCheckpoint;
+
         #region Cached Data
         [Tooltip("Controlled by ChapterDescriptor!!! do not touch!!!")]
         public ChapterDescriptor Chapter;
         [Tooltip("Controlled by ChapterDescriptor!!! do not touch!!!")]
         public CheckpointId CheckpointId;
         #endregion
+
+        public override string ToString()
+        {
+            return $"Checkpoint {Chapter.name} {CheckpointId}";
+        }
     }
 }

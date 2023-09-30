@@ -43,7 +43,7 @@ namespace Pogo
 
             OnPauseStateChanged += ((_, _) => UpdateTimeFreeze());
             OnPlayerSpawn.AddListener(() => ResetLoadedLevel());
-            OnQuitToMenu.AddListener(GameManager_OnQuitToMenu);
+            OnQuitToMenu.AddListener(FullResetSessionData);
             OnQuitToDesktop.AddListener(GameManager_OnQuitToDesktop);
             CustomCheckpoint.OnPlaced.AddListener(() => OnCustomCheckpointChanged?.Invoke(this, EventArgs.Empty));
 #if UNITY_EDITOR
@@ -75,7 +75,7 @@ namespace Pogo
             }
         }
 
-        private void GameManager_OnQuitToMenu()
+        private void FullResetSessionData()
         {
             FinishChapter(false);
             SaveSlot();
@@ -415,9 +415,9 @@ namespace Pogo
                 ChapterId = ChapterToId(CurrentCheckpoint.Descriptor.Chapter),
                 checkpointId = CurrentCheckpoint.Descriptor.CheckpointId,
                 CurrentState = QuickSaveData.States.InProgress,
-                ChapterProgressDeaths = currentChapterProgressTracker.TrackedDeaths,
+                ChapterProgressDeaths = currentChapterProgressTracker?.TrackedDeaths ?? 0,
                 SessionProgressDeaths = currentSessionProgressTracker.TrackedDeaths,
-                ChapterProgressTimeMilliseconds = currentChapterProgressTracker.TrackedTimeMilliseconds,
+                ChapterProgressTimeMilliseconds = currentChapterProgressTracker?.TrackedTimeMilliseconds ?? 0,
                 SessionProgressTimeMilliseconds = currentSessionProgressTracker.TrackedTimeMilliseconds
             };
 
@@ -477,7 +477,7 @@ namespace Pogo
             {
                 InstantChangeAtmosphere = true,
                 ForceReload = false,
-                LoadingFromMenu = true,
+                LoadingFromMenu = CurrentControlScene != null,
                 QuickSaveData = quickSaveData
             });
         }
@@ -524,6 +524,7 @@ namespace Pogo
 
         #region Checkpoint Shit
         private CheckpointManifest LoadCheckpointManifest;
+        public CheckpointTrigger CurrentCheckpoint;
 
         public static void RegisterCheckpoint(CheckpointTrigger trigger)
         {
@@ -533,6 +534,140 @@ namespace Pogo
             PogoInstance.LoadCheckpointManifest.Add(trigger);
 
         }
+
+        public bool TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint)
+        {
+            // get the easy thing out of the way...
+            if (!CurrentCheckpoint.Descriptor.CanSkip)
+            {
+                nextCheckpoint = null;
+                return false;
+            }
+
+            if (CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint != null)
+            {
+                nextCheckpoint = CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint;
+                return true;
+            }
+            else if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"SidePath checkpoint has NO overrideSkipTarget but is marked as skippable!: {CurrentCheckpoint.Descriptor}");
+#endif
+                nextCheckpoint = null;
+                return false;
+            }
+
+            if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 >= CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
+            {
+                // get the first checkpoint in the next chapter
+                int chapterIndex = World.IndexOf(CurrentCheckpoint.Descriptor.Chapter);
+                if (chapterIndex < 0)
+                {
+                    Debug.LogError($"Tried to skip out of a chapter... Couldn't find current Chapter {CurrentCheckpoint.Descriptor.Chapter} in current world {World}... ????");
+                    nextCheckpoint = default;
+                    return false;
+                }
+
+                WorldChapter nextChapter = World.FindChapter(chapterIndex + 1);
+                if (nextChapter.Type != WorldChapter.Types.Level)
+                {
+                    Debug.LogError($"Tried to skip out of a chapter... next chapter (Index {chapterIndex+1}) is of bad type {nextChapter.Type}");
+                    nextCheckpoint = default;
+                    return false;
+                }
+
+                nextCheckpoint = nextChapter.Chapter.MainPathCheckpoints[0];
+                if (nextCheckpoint == null)
+                {
+                    Debug.LogError($"Tried to skip out of a chapter... First checkpoint in next chapter is null for chapter {nextChapter.Chapter}");
+                }
+                return true;
+            }
+
+
+            nextCheckpoint = CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints[CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1];
+            return true;
+        }
+
+        public bool CanSkipCheckpoint()
+        {
+            if (CurrentCheckpoint == null) return false;
+
+            switch (CurrentCheckpoint.SkipBehavior)
+            {
+                case CheckpointTrigger.SkipBehaviors.LevelChange:
+                    return TrySkipCheckpointByLevelChange(true);
+                case CheckpointTrigger.SkipBehaviors.TeleportToTarget:
+                    return true;
+                case CheckpointTrigger.SkipBehaviors.HalfCheckpoint:
+                    return true;
+                default:
+                    throw new ArgumentOutOfRangeException($"Checkpoint ({CurrentCheckpoint}) has bad SkipBehaviour {CurrentCheckpoint.SkipBehavior}");
+            }
+        }
+
+        public bool TrySkipCheckpoint()
+        {
+            if (CurrentCheckpoint == null) return false;
+
+            switch (CurrentCheckpoint.SkipBehavior)
+            {
+                case CheckpointTrigger.SkipBehaviors.LevelChange:
+                    return TrySkipCheckpointByLevelChange();
+                case CheckpointTrigger.SkipBehaviors.TeleportToTarget:
+                    MovePlayerTo(CurrentCheckpoint.SkipTarget);
+                    return true;
+                case CheckpointTrigger.SkipBehaviors.HalfCheckpoint:
+                    MovePlayerTo(CurrentCheckpoint.SkipTarget, true);
+                    return true;
+                default:
+                    throw new ArgumentOutOfRangeException($"Checkpoint ({CurrentCheckpoint}) has bad SkipBehaviour {CurrentCheckpoint.SkipBehavior}");
+            }
+        }
+
+        private void MovePlayerTo(Transform targetLocation, bool alsoSetCustomCheckpoint = false)
+        {
+            if (alsoSetCustomCheckpoint)
+            {
+                RegisterCustomRespawnPoint(targetLocation.position, targetLocation.rotation.YawOnly());
+            }
+
+            Player.TeleportTo(targetLocation);
+        }
+
+        private bool TrySkipCheckpointByLevelChange(bool dry = false)
+        {
+            if (!TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint))
+            {
+                return false;
+            }
+
+            // serialize quicksave data ourselves first, we're going to tweak this to load the next checkpoint
+            if (!TrySerializeQuicksaveData(out QuickSaveData quickSaveData))
+            {
+                return false;
+            }
+
+            if (dry)
+            {
+                return true;
+            }
+
+            // Reset session data
+            FullResetSessionData();
+
+            // replace quicksavedata with the new stuff
+            quickSaveData.ChapterId = new ChapterId(0, World.IndexOf(nextCheckpoint.Chapter));
+            quickSaveData.checkpointId = nextCheckpoint.CheckpointId;
+            CurrentSlotDataTracker.SlotData.quickSaveData = quickSaveData;
+
+            // load quicksave data
+            LoadQuickSave();
+
+            return true;
+        }
+
 
         #endregion
 
@@ -641,7 +776,6 @@ namespace Pogo
                 }
             }
         }
-        public CheckpointTrigger CurrentCheckpoint;
 
         public CustomCheckpointController CustomCheckpoint;
         public bool CustomRespawnActive;

@@ -54,7 +54,7 @@ namespace WizardUtils
         protected virtual void onPauseStateChanged(object sender, bool nowPaused)
         {
             OnMenuClosed?.Invoke();
-            Root?.SetActive(nowPaused);
+            SetOpen(nowPaused);
             CurrentMenu = nowPaused ? (OverrideMenu ?? BaseMenu) : null;
         }
 

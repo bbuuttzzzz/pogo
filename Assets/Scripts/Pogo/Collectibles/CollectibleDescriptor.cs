@@ -43,6 +43,15 @@ namespace Pogo.Collectibles
         public string GenericNotificationBody_HalfUnlocked;
         public GameObject GenericNotification3DIcon;
 
+        #region Editor Stuff
+#if UNITY_EDITOR
+        [HideInInspector]
+        public int SceneBuildIndex = -1;
+        [HideInInspector, SerializeField]
+        private GameObject self;
+#endif
+        #endregion
+
 
         public CollectibleStates GetState()
         {
