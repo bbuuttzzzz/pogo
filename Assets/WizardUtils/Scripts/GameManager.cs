@@ -185,7 +185,7 @@ namespace WizardUtils
         }
 #endif
 
-        public virtual void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
+        public virtual void LoadControlScene(ControlSceneDescriptor newScene, Action callback = null)
         {
             if (DontLoadScenesInEditor) return;
             var initialScene = CurrentControlScene;
@@ -232,7 +232,24 @@ namespace WizardUtils
 
             CurrentControlScene = newScene;
             OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, newScene));
-            callback?.Invoke(tasks);
+            StartCoroutine(AfterTasksFinish(tasks, callback));
+        }
+
+        IEnumerator AfterTasksFinish(List<AsyncOperation> tasks, Action callback)
+        {
+            bool finished = false;
+            while (!finished)
+            {
+                finished = true;
+                foreach (AsyncOperation Task in tasks)
+                {
+                    finished = finished && Task.isDone;
+                }
+
+                yield return new WaitForSecondsRealtime(0.02f);
+            }
+
+            callback?.Invoke();
         }
 
         public void UnloadControlScene()

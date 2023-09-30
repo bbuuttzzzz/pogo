@@ -874,7 +874,7 @@ namespace Pogo
             return (CurrentDifficulty == Difficulty.Hard && respawnPoint.EnabledInHardMode);
         }
 
-        public override void LoadControlScene(ControlSceneDescriptor newScene, Action<List<AsyncOperation>> callback = null)
+        public override void LoadControlScene(ControlSceneDescriptor newScene, Action callback = null)
         {
             if (levelManager != null)
             {
