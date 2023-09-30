@@ -6,7 +6,7 @@ public static class Builder
 {
     public static void BuildAll(string root)
     {
-        BuildWin64()
+        //BuildWin64();
     }
 
     public static void BuildWin64(string path) => Build(path, BuildTarget.StandaloneWindows64);
