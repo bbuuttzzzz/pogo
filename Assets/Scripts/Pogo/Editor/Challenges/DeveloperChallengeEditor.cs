@@ -31,6 +31,7 @@ namespace Pogo.Inspector
                 challenge.ChallengeType = Challenge.ChallengeTypes.PlayDeveloper;
                 challenge.DeveloperChallenge = self;
                 self.Challenge = challenge;
+                EditorUtility.SetDirty(self);
             }
             else
             {
