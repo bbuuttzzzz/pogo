@@ -36,7 +36,7 @@ namespace WizardUtils
             GameInstance = this;
             DontDestroyOnLoad(gameObject);
 
-#if STORE_STEAM
+#if !DISABLESTEAMWORKS
             PlatformService = new Platforms.Steam.SteamPlatformService();
 #else
             PlatformService = new Platforms.Portable.PortablePlatformService();
