@@ -22,7 +22,8 @@ namespace Pogo.Saving
             {
                 GlobalSaveData data = new GlobalSaveData()
                 {
-                    collectibleUnlockDatas = new CollectibleUnlockData[unlockedCollectibles.Length]
+                    collectibleUnlockDatas = new CollectibleUnlockData[unlockedCollectibles.Length],
+                    challengeSaveDatas = new ChallengeSaveData[0],
                 };
 
                 for (int n = 0; n < unlockedCollectibles.Length; n++)

@@ -52,8 +52,6 @@ namespace Pogo.Challenges
 
         public void Update()
         {
-            bool balloonPressed = InputManager.CheckKeyDown(KeyName.Balloon);
-
             if (CurrentChallenge == null
                 && PogoGameManager.PogoInstance.CustomRespawnActive
                 && PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Freeplay

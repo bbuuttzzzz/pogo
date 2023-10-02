@@ -19,9 +19,9 @@ namespace WizardUtils.Inspector
             bool isOpenNow = EditorGUILayout.Toggle("Menu Open", wasOpen);
             if (wasOpen != isOpenNow)
             {
+                Undo.RecordObject(self.Root, "Toggle Menu");
                 self.SetOpen(isOpenNow);
-                Undo.RecordObject(self, "Toggle Menu");
-                PrefabUtility.RecordPrefabInstancePropertyModifications(self);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(self.Root);
             }
         }
     }

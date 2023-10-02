@@ -1,0 +1,43 @@
+"AppBuild"
+{
+	"AppID" "2413620" // your AppID
+	"Desc" "Win64 pogo3d Demo build" // internal description for this build
+
+	"ContentRoot" "..\..\Build" // root content folder, relative to location of this file
+	"BuildOutput" "..\..\Build\SteamPipeOutput" // build output folder for build logs and build cache files
+
+	"Depots"
+	{
+		"2413621" // Win64
+		{
+			"FileMapping"
+			{
+				"LocalPath" "win64\*" // all files from contentroot folder
+				"DepotPath" "." // mapped into the root of the depot
+				"recursive" "1" // include all subfolders
+			}
+			"FileExclusion" "pogo_BurstDebugInformation_DoNotShip*"
+		}
+		
+		"2413623" // Win32
+		{
+			"FileMapping"
+			{
+				"LocalPath" "win64\*" // all files from contentroot folder
+				"DepotPath" "." // mapped into the root of the depot
+				"recursive" "1" // include all subfolders
+			}
+			"FileExclusion" "pogo_BurstDebugInformation_DoNotShip*"
+		}
+		"2413622" // Linux
+		{
+			"FileMapping"
+			{
+				"LocalPath" "linux64\*" // all files from contentroot folder
+				"DepotPath" "." // mapped into the root of the depot
+				"recursive" "1" // include all subfolders
+			}
+			"FileExclusion" "pogox86_BurstDebugInformation_DoNotShip*"
+		}
+	}
+}
