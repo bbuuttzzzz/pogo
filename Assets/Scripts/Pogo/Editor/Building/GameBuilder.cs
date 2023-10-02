@@ -37,26 +37,21 @@ namespace Pogo.Building
             }
         }
 
-        public class FileLogger : IDisposable
+        public class FileLogger
         {
             string logPath;
-            StreamWriter writer;
 
             public FileLogger(string logPath)
             {
                 this.logPath = logPath;
-                writer = File.AppendText(logPath);
-            }
-
-            public void Dispose()
-            {
-                writer.Dispose();
             }
 
             public void WriteLine(string message)
             {
                 Debug.Log(message);
+                var writer = File.AppendText(logPath);
                 writer.WriteLine(message);
+                writer.Dispose();
             }
         }
 
@@ -73,15 +68,15 @@ namespace Pogo.Building
                 myLogPath = $"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt";
             }
 
-            using FileLogger logger = new FileLogger(myLogPath);
+            FileLogger logger = new FileLogger(myLogPath);
             BuildShared(pathRoot, logger);
         }
 
-        [MenuItem("Build All")]
+        [MenuItem("Pogo/Build All")]
         public static void BuildAllFromEditor()
         {
-            string pathRoot = $"{Application.dataPath}{Path.PathSeparator}Build";
-            using FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
+            string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build";
+            FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
 
             BuildShared(pathRoot, logger);
         }
