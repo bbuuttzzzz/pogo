@@ -1,4 +1,4 @@
-﻿#if STORE_STEAM
+﻿#if !DISABLESTEAMWORKS
 using Steamworks;
 using System;
 using System.Collections.Generic;
