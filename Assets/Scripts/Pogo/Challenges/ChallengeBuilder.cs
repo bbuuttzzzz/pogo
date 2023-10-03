@@ -381,7 +381,7 @@ My Best Time: {1:N3} seconds"
             WrongLength,
             Invalid,
             CantShareInvalid,
-            CantShareUncleared
+            CantShareUncleared,
         }
 
         public UnityEvent<DecodeFailReason> OnDecodeFailed;
@@ -389,7 +389,7 @@ My Best Time: {1:N3} seconds"
         {
             var challenge = DecodeChallenge(CurrentCode,ValidLevels, out DecodeFailReason failReason);
 
-            if (challenge == null)
+            if (challenge == null || challenge.Level == null)
             {
                 OnDecodeFailed?.Invoke(failReason);
                 return;
