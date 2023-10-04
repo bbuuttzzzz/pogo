@@ -44,6 +44,7 @@ namespace Pogo.Building
             public FileLogger(string logPath)
             {
                 this.logPath = logPath;
+                Directory.CreateDirectory(Path.GetDirectoryName(logPath));
             }
 
             public void WriteLine(string message)
@@ -63,16 +64,38 @@ namespace Pogo.Building
             string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build{Path.DirectorySeparatorChar}Itch";
             FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
 
-            var targets = new PogoBuildTarget[]
+            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
+            EditorApplication.delayCall += () =>
             {
-                new PogoBuildTarget("win32", BuildTarget.StandaloneWindows, "pogo.exe"),
-                new PogoBuildTarget("win64", BuildTarget.StandaloneWindows64, "pogo.exe"),
-                new PogoBuildTarget("linux", BuildTarget.StandaloneLinux64, "pogo.x86.64"),
-                new PogoBuildTarget("web", BuildTarget.WebGL, "index.html")
-            };
+                var targets = new PogoBuildTarget[]
+                {
+                    new PogoBuildTarget("win32", BuildTarget.StandaloneWindows, "pogo.exe"),
+                    new PogoBuildTarget("win64", BuildTarget.StandaloneWindows64, "pogo.exe"),
+                    new PogoBuildTarget("linux", BuildTarget.StandaloneLinux64, "pogo.x86.64"),
+                };
 
-            BuildTargets(pathRoot, logger, targets);
+                BuildTargets(pathRoot, logger, targets);
+            };
         }
+
+        [MenuItem("Pogo/Build Web (Itch)")]
+        public static void BuildItchWeb()
+        {
+            string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build{Path.DirectorySeparatorChar}Itch";
+            FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
+
+            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.WebGL, BuildTarget.WebGL);
+            EditorApplication.delayCall += () =>
+            {
+                var targets = new PogoBuildTarget[]
+                {
+                    new PogoBuildTarget("web", BuildTarget.WebGL, "index.html")
+                };
+
+                BuildTargets(pathRoot, logger, targets);
+            };
+        }
+
 #else
         [MenuItem("Pogo/Build (Steam)")]
         public static void BuildSteam()
@@ -80,14 +103,17 @@ namespace Pogo.Building
             string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build{Path.DirectorySeparatorChar}Steam";
             FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
             
-            var targets = new PogoBuildTarget[]
+            EditorApplication.delayCall += () =>
             {
-                new PogoBuildTarget("win32", BuildTarget.StandaloneWindows, "pogo.exe"),
-                new PogoBuildTarget("win64", BuildTarget.StandaloneWindows64, "pogo.exe"),
-                new PogoBuildTarget("linux", BuildTarget.StandaloneLinux64, "pogo.x86.64")
-            };
+                var targets = new PogoBuildTarget[]
+                {
+                    new PogoBuildTarget("win32", BuildTarget.StandaloneWindows, "pogo.exe"),
+                    new PogoBuildTarget("win64", BuildTarget.StandaloneWindows64, "pogo.exe"),
+                    new PogoBuildTarget("linux", BuildTarget.StandaloneLinux64, "pogo.x86.64")
+                };
 
-            BuildTargets(pathRoot, logger, targets);
+                BuildTargets(pathRoot, logger, targets);
+            };
         }
 #endif
 
@@ -99,6 +125,7 @@ namespace Pogo.Building
 
             foreach (var pogoTarget in targets)
             {
+
                 BuildReport report = Build(
                     $"{pathRoot}{Path.DirectorySeparatorChar}{pogoTarget.BuildName}{Path.DirectorySeparatorChar}pogo{Path.DirectorySeparatorChar}{pogoTarget.FileName}",
                     pogoTarget.Target,
