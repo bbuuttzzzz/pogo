@@ -558,7 +558,9 @@ namespace Pogo
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 >= CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
+
+            // checkpoint numbers are one-indexed... for some fucking reason oh god why did I do that. so this looks weird
+            if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 > CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
             {
                 // get the first checkpoint in the next chapter
                 int chapterIndex = World.IndexOf(CurrentCheckpoint.Descriptor.Chapter);
