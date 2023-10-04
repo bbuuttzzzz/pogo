@@ -234,7 +234,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: --.---
 --- !u!114 &3359093179898493707
@@ -342,7 +342,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 'Time to Beat:'
 --- !u!1 &3359093180926570660
@@ -423,7 +423,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: LOAD
 --- !u!114 &3359093180926570662
@@ -518,7 +518,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Join & Swap Codes
 --- !u!1 &3359093181082718856
@@ -615,7 +615,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Pogo.Challenges.ChallengeBuilder, Assembly-CSharp
-        m_MethodName: DecodeCurrentCode
+        m_MethodName: DecodeAndLoadCurrentCode
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -667,6 +667,7 @@ GameObject:
   - component: {fileID: 3359093181087799471}
   - component: {fileID: 3359093181087799468}
   - component: {fileID: 3359093181087799469}
+  - component: {fileID: 783611498}
   m_Layer: 5
   m_Name: Share
   m_TagString: Untagged
@@ -779,18 +780,30 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Pogo.Challenges.ChallengeBuilder, Assembly-CSharp
-        m_MethodName: TweetChallenge
-        m_Mode: 1
+      - m_Target: {fileID: 783611498}
+        m_TargetAssemblyTypeName: WizardUtils.URLOpener, Assembly-CSharp
+        m_MethodName: OpenUrl
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: https://twitter.com/search?q=%23pogo3dballoons
+          m_StringArgument: https://hedgewizards.net/discordlink
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &783611498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3359093181087799467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 209b3e1141706024fa7860fc37d3832d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3359093181190251429
 GameObject:
   m_ObjectHideFlags: 0
@@ -961,7 +974,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: --.---
 --- !u!114 &3359093180870299007
@@ -1346,7 +1359,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 1
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: XXXXXXXXXXXXXXXXX
 --- !u!114 &3035810763951207154
@@ -1535,7 +1548,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7997275357276620986
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1676,7 +1689,7 @@ GameObject:
   - component: {fileID: 6188275866067401611}
   - component: {fileID: 6188275866067401608}
   m_Layer: 5
-  m_Name: VerticalGroup
+  m_Name: Best Time / Code / Load
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1944,7 +1957,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 'Best Time:'
 --- !u!1 &6562551864862680078
@@ -2050,8 +2063,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 2}
+  m_SizeDelta: {x: 0, y: -4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7936389069525870109
 CanvasRenderer:
@@ -2082,7 +2095,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 2fb3f67122c394c4e8ccd9c5290cb476, type: 3}
+    m_Font: {fileID: 12800000, guid: 2ee85349f74d2fa4fbd08dfded35805d, type: 3}
     m_FontSize: 22
     m_FontStyle: 0
     m_BestFit: 0
@@ -2091,8 +2104,8 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 'Here is a warning
 
@@ -2228,7 +2241,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 'Code: '
 --- !u!1001 &8357599570839110623
@@ -2241,6 +2254,30 @@ PrefabInstance:
     - target: {fileID: 7093408667780390154, guid: fb16048e339e89344ab06969a5849234, type: 3}
       propertyPath: m_Name
       value: Resume
+      objectReference: {fileID: 0}
+    - target: {fileID: 7093408667780390196, guid: fb16048e339e89344ab06969a5849234, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7093408667780390196, guid: fb16048e339e89344ab06969a5849234, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7093408667780390196, guid: fb16048e339e89344ab06969a5849234, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7093408667780390196, guid: fb16048e339e89344ab06969a5849234, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Resume
+      objectReference: {fileID: 0}
+    - target: {fileID: 7093408667780390196, guid: fb16048e339e89344ab06969a5849234, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: WizardUtils.PauseMenuController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7093408667780390196, guid: fb16048e339e89344ab06969a5849234, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7093408667780390197, guid: fb16048e339e89344ab06969a5849234, type: 3}
       propertyPath: m_Pivot.x
