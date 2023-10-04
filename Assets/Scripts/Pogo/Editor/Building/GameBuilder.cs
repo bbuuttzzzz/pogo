@@ -64,18 +64,17 @@ namespace Pogo.Building
             string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build{Path.DirectorySeparatorChar}Itch";
             FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
 
-            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
             EditorApplication.delayCall += () =>
             {
                 var targets = new PogoBuildTarget[]
                 {
-                    new PogoBuildTarget("win32", BuildTarget.StandaloneWindows, "pogo.exe"),
                     new PogoBuildTarget("win64", BuildTarget.StandaloneWindows64, "pogo.exe"),
                     new PogoBuildTarget("linux", BuildTarget.StandaloneLinux64, "pogo.x86.64"),
                 };
 
                 BuildTargets(pathRoot, logger, targets);
             };
+            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
         }
 
         [MenuItem("Pogo/Build Web (Itch)")]
