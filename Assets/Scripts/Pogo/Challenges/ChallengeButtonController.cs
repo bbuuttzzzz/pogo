@@ -10,6 +10,7 @@ namespace Pogo.Challenges
     {
         public Button button;
         public TextMeshProUGUI TitleText;
+        public TextMeshProUGUI CreatorText;
         public TextMeshProUGUI TimerText;
         public Image MedalImage;
 
@@ -48,16 +49,20 @@ namespace Pogo.Challenges
             if (DeveloperChallenge == null)
             {
                 TitleText.text = "";
+                CreatorText.text = "";
                 TimerText.text = "";
                 MedalImage.sprite = NoMedalSprite;
             }
             else
             {
+                button.GetComponent<Animator>().SetBool("HasCreator", !string.IsNullOrEmpty(DeveloperChallenge.CreatorName));
+
                 int bestTimeMS = DeveloperChallenge.BestTimeMS;
                 float bestTime = (float)bestTimeMS / 1000;
                 DeveloperChallenge.Challenge.PersonalBestTimeMS = (ushort)bestTimeMS;
 
                 TitleText.text = DeveloperChallenge.DisplayName;
+                CreatorText.text = DeveloperChallenge.CreatorName;
                 if (bestTimeMS < DeveloperChallenge.Challenge.BestTimeMS)
                 {
                     MedalImage.sprite = GoldMedalSprite;
