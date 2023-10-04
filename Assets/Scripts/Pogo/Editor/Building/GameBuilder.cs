@@ -163,6 +163,7 @@ namespace Pogo.Building
         private static string[] GetScenes()
         {
             return EditorBuildSettings.scenes
+                .Where(s => s.enabled)
                 .Select(s => s.path)
                 .ToArray();
         }
