@@ -537,66 +537,57 @@ namespace Pogo
 
         public bool TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint)
         {
-            try
+            // get the easy thing out of the way...
+            if (!CurrentCheckpoint.Descriptor.CanSkip)
             {
-                // get the easy thing out of the way...
-                if (!CurrentCheckpoint.Descriptor.CanSkip)
-                {
-                    nextCheckpoint = null;
-                    return false;
-                }
-
-                if (CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint != null)
-                {
-                    nextCheckpoint = CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint;
-                    return true;
-                }
-                else if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
-                {
-#if UNITY_EDITOR
-                    Debug.LogError($"SidePath checkpoint has NO overrideSkipTarget but is marked as skippable!: {CurrentCheckpoint.Descriptor}");
-#endif
-                    nextCheckpoint = null;
-                    return false;
-                }
-
-                if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 >= CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
-                {
-                    // get the first checkpoint in the next chapter
-                    int chapterIndex = World.IndexOf(CurrentCheckpoint.Descriptor.Chapter);
-                    if (chapterIndex < 0)
-                    {
-                        Debug.LogError($"Tried to skip out of a chapter... Couldn't find current Chapter {CurrentCheckpoint.Descriptor.Chapter} in current world {World}... ????");
-                        nextCheckpoint = default;
-                        return false;
-                    }
-
-                    WorldChapter nextChapter = World.FindChapter(chapterIndex + 1);
-                    if (nextChapter.Type != WorldChapter.Types.Level)
-                    {
-                        Debug.LogError($"Tried to skip out of a chapter... next chapter (Index {chapterIndex + 1}) is of bad type {nextChapter.Type}");
-                        nextCheckpoint = default;
-                        return false;
-                    }
-
-                    nextCheckpoint = nextChapter.Chapter.MainPathCheckpoints[0];
-                    if (nextCheckpoint == null)
-                    {
-                        Debug.LogError($"Tried to skip out of a chapter... First checkpoint in next chapter is null for chapter {nextChapter.Chapter}");
-                    }
-                    return true;
-                }
-
-
-                nextCheckpoint = CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints[CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1];
-                return true;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Error finding NextCheckpoint. {e}");
-                nextCheckpoint = default;
+                nextCheckpoint = null;
                 return false;
             }
+
+            if (CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint != null)
+            {
+                nextCheckpoint = CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint;
+                return true;
+            }
+            else if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"SidePath checkpoint has NO overrideSkipTarget but is marked as skippable!: {CurrentCheckpoint.Descriptor}");
+#endif
+                nextCheckpoint = null;
+                return false;
+            }
+
+            if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 >= CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
+            {
+                // get the first checkpoint in the next chapter
+                int chapterIndex = World.IndexOf(CurrentCheckpoint.Descriptor.Chapter);
+                if (chapterIndex < 0)
+                {
+                    Debug.LogError($"Tried to skip out of a chapter... Couldn't find current Chapter {CurrentCheckpoint.Descriptor.Chapter} in current world {World}... ????");
+                    nextCheckpoint = default;
+                    return false;
+                }
+
+                WorldChapter nextChapter = World.FindChapter(chapterIndex + 1);
+                if (nextChapter.Type != WorldChapter.Types.Level)
+                {
+                    Debug.LogError($"Tried to skip out of a chapter... next chapter (Index {chapterIndex+1}) is of bad type {nextChapter.Type}");
+                    nextCheckpoint = default;
+                    return false;
+                }
+
+                nextCheckpoint = nextChapter.Chapter.MainPathCheckpoints[0];
+                if (nextCheckpoint == null)
+                {
+                    Debug.LogError($"Tried to skip out of a chapter... First checkpoint in next chapter is null for chapter {nextChapter.Chapter}");
+                }
+                return true;
+            }
+
+
+            nextCheckpoint = CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints[CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1];
+            return true;
         }
 
         public bool CanSkipCheckpoint()
