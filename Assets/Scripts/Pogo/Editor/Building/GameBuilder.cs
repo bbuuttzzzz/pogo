@@ -55,61 +55,49 @@ namespace Pogo.Building
             }
         }
 
-        public static void BuildAll()
-        {
-            var parser = new CommandLineArgsParser();
-            if (!parser.TryGetArg("-pathRoot", out string pathRoot))
-            {
-                Debug.LogError("Missing REQUIRED argument -pathRoot <value>");
-                return;
-            }
-            if (!parser.TryGetArg("-shortLogs", out string myLogPath))
-            {
-                myLogPath = $"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt";
-            }
 
-            FileLogger logger = new FileLogger(myLogPath);
-            BuildShared(pathRoot, logger);
-        }
-
-        [MenuItem("Pogo/Build All")]
-        public static void BuildAllFromEditor()
+#if DISABLESTEAMWORKS
+        [MenuItem("Pogo/Build (Itch)")]
+        public static void BuildItch()
         {
-            string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build";
+            string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build{Path.DirectorySeparatorChar}Itch";
             FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
 
-            BuildShared(pathRoot, logger);
-        }
-
-        private static PogoBuildTarget[] GetBuildTargets()
-        {
-#if DISABLESTEAMWORKS
-            return new PogoBuildTarget[]
-            {
-                new PogoBuildTarget("win32_nosteam", BuildTarget.StandaloneWindows, "pogo.exe"),
-                new PogoBuildTarget("win64_nosteam", BuildTarget.StandaloneWindows64, "pogo.exe"),
-                new PogoBuildTarget("linux64_nosteam", BuildTarget.StandaloneLinux64, "pogo.x86.64"),
-                new PogoBuildTarget("web_nosteam", BuildTarget.WebGL, "index.html")
-            };
-#else
-            return new PogoBuildTarget[]
+            var targets = new PogoBuildTarget[]
             {
                 new PogoBuildTarget("win32", BuildTarget.StandaloneWindows, "pogo.exe"),
                 new PogoBuildTarget("win64", BuildTarget.StandaloneWindows64, "pogo.exe"),
-                new PogoBuildTarget("linux64", BuildTarget.StandaloneLinux64, "pogo.x86.64"),
+                new PogoBuildTarget("linux", BuildTarget.StandaloneLinux64, "pogo.x86.64"),
+                new PogoBuildTarget("web", BuildTarget.WebGL, "index.html")
             };
-#endif
-        }
 
-        private static void BuildShared(string pathRoot, FileLogger logger)
+            BuildTargets(pathRoot, logger, targets);
+        }
+#else
+        [MenuItem("Pogo/Build (Steam)")]
+        public static void BuildSteam()
+        {
+            string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build{Path.DirectorySeparatorChar}Steam";
+            FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
+            
+            var targets = new PogoBuildTarget[]
+            {
+                new PogoBuildTarget("win32", BuildTarget.StandaloneWindows, "pogo.exe"),
+                new PogoBuildTarget("win64", BuildTarget.StandaloneWindows64, "pogo.exe"),
+                new PogoBuildTarget("linux", BuildTarget.StandaloneLinux64, "pogo.x86.64")
+            };
+
+            BuildTargets(pathRoot, logger, targets);
+        }
+#endif
+
+        private static void BuildTargets(string pathRoot, FileLogger logger, PogoBuildTarget[] targets)
         {
             logger.WriteLine("Starting Build");
 
-            PogoBuildTarget[] pogoTargets = GetBuildTargets();
-
             List<PogoBuildResult> Results = new List<PogoBuildResult>();
 
-            foreach (var pogoTarget in pogoTargets)
+            foreach (var pogoTarget in targets)
             {
                 BuildReport report = Build(
                     $"{pathRoot}{Path.DirectorySeparatorChar}{pogoTarget.BuildName}{Path.DirectorySeparatorChar}pogo{Path.DirectorySeparatorChar}{pogoTarget.FileName}",
@@ -118,10 +106,9 @@ namespace Pogo.Building
                 Results.Add(new PogoBuildResult(pogoTarget, report));
             }
 
+            logger.WriteLine("Final Results: ");
             foreach (var result in Results)
             {
-                logger.WriteLine("Final Results: ");
-
                 logger.WriteLine($"\t{result.Target.BuildName}: {result.Result}");
             }
         }
