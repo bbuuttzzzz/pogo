@@ -9,6 +9,7 @@ using WizardUtils.Saving;
 public class DeveloperChallenge : ScriptableObject
 {
     public string DisplayName;
+    public string CreatorName;
     public Challenge Challenge;
 
     public string Key => name;

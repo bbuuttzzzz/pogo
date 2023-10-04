@@ -18,6 +18,8 @@ namespace Pogo
 
         public string DisplayName;
 
+        public bool HasChapter(ChapterDescriptor chapter) => IndexOf(chapter) != -1;
+
         public int IndexOf(ChapterDescriptor chapterDescriptor)
         {
             for (int n = 0; n < ChapterCount; n++)
