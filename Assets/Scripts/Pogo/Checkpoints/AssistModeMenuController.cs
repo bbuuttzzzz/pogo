@@ -1,4 +1,5 @@
 using Pogo;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using WizardUtils;
@@ -18,7 +19,15 @@ public class AssistModeMenuController : MonoBehaviour
         }
         AssistModeRoot.SetActive(true);
 
-        SkipButton.interactable = PogoGameManager.PogoInstance.CanSkipCheckpoint();
+        try
+        {
+            SkipButton.interactable = PogoGameManager.PogoInstance.CanSkipCheckpoint();
+        }
+        catch(Exception e)
+        {
+            Debug.LogException(e);
+            SkipButton.interactable = false;
+        }
     }
 
     public void Skip()
