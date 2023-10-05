@@ -75,7 +75,7 @@ namespace Pogo
             }
         }
 
-        private void FullResetSessionData()
+        public void FullResetSessionData()
         {
             FinishChapter(false);
             SaveAndQuitSlot();
@@ -861,7 +861,7 @@ namespace Pogo
 
         public void RegisterRespawnPoint(RespawnPointData data)
         {
-            RespawnLevel = levelManager.CurrentLevel;
+            RespawnLevel = data.OverrideLevel != null ? data.OverrideLevel : levelManager.CurrentLevel;
             PogoInstance.RespawnPoint = data;
         }
 

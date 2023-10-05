@@ -166,20 +166,20 @@ namespace Pogo.Challenges
         public void LoadChallenge()
         {
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
-            pogoInstance.FinishChapter(false);
-            pogoInstance.SaveAndQuitSlot();
+            pogoInstance.FullResetSessionData();
             pogoInstance.Equip(ChallengeStick);
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
                 pogoInstance.CustomCheckpoint.Place(CurrentChallenge.StartPoint, CurrentChallenge.StartRotation);
-                pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint));
+                pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint, CurrentChallenge.Level));
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
                 PogoGameManager.PogoInstance.ResetPlayer();
                 resetChallenge();
                 OnChallengeChanged?.Invoke(CurrentChallenge);
                 pogoInstance.OnLevelLoaded.RemoveListener(finishLoading);
+                GameManager.GameInstance.Paused = false;
                 Debug.Log("Finished loading challenge");
             };
             pogoInstance.OnLevelLoaded.AddListener(finishLoading);
