@@ -323,7 +323,7 @@ namespace Pogo
             get => currentChapter;
             private set => currentChapter = value;
         }
-        public bool CanSwitchChapters => true;
+        public bool CanSwitchChapters => CurrentDifficulty != Difficulty.Challenge;
 
         public void StartChapter(ChapterDescriptor chapter, QuickSaveData? quickSaveData = null)
         {
