@@ -1058,6 +1058,7 @@ namespace Pogo
 
             CurrentSlotDataTracker.UpdatePreviewData(CollectibleManifest);
             CurrentSlotDataTracker.Save();
+            CurrentSlotDataTracker = null;
         }
 
         public void LoadGlobalSave()
