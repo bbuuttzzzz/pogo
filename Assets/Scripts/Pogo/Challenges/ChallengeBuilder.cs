@@ -166,6 +166,7 @@ namespace Pogo.Challenges
         public void LoadChallenge()
         {
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
+            pogoInstance.SaveAndQuitSlot();
             pogoInstance.Equip(ChallengeStick);
             UnityAction finishLoading = null;
             finishLoading = () =>
