@@ -242,7 +242,7 @@ namespace Pogo
                     }
                     else
                     {
-                        yield return new WaitForSeconds(0.02f);
+                        yield return new WaitForSecondsRealtime(0.02f);
                     }
                 }
             }
@@ -271,7 +271,7 @@ namespace Pogo
                 }
                 else
                 {
-                    yield return new WaitForSeconds(0.02f);
+                    yield return new WaitForSecondsRealtime(0.02f);
                 }
             }
 
