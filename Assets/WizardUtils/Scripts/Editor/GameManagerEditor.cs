@@ -30,6 +30,7 @@ namespace WizardUtils
                     {
                         self.LoadControlSceneInEditor(level);
                         OnControlSceneLoadedInEditor();
+                        EditorUtility.SetDirty(self);
                     });
                 }
                 menu.DropDown(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 0f, 0f));

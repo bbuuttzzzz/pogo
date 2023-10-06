@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -173,8 +174,8 @@ namespace WizardUtils
                 if (!newSceneAlreadyLoaded)
                 {
                     UnityEditor.SceneManagement.EditorSceneManager.OpenScene(newScene.ScenePath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
-                    CurrentControlScene = newScene;
                 }
+                CurrentControlScene = newScene;
 
                 // unload all non-ignored scenes
                 foreach (Scene scene in scenesToUnload)
@@ -356,6 +357,6 @@ namespace WizardUtils
         {
             saveDataTracker.Save();
         }
-#endregion
+        #endregion
     }
 }
