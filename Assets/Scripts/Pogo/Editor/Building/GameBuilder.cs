@@ -66,6 +66,7 @@ namespace Pogo.Building
 
             EditorApplication.delayCall += () =>
             {
+                Debug.Log("Starting Build...");
                 var targets = new PogoBuildTarget[]
                 {
                     new PogoBuildTarget("win64", BuildTarget.StandaloneWindows64, "pogo.exe"),
@@ -74,6 +75,8 @@ namespace Pogo.Building
 
                 BuildTargets(pathRoot, logger, targets);
             };
+
+            Debug.Log("Switching Build Target...");
             EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
         }
 
@@ -83,9 +86,12 @@ namespace Pogo.Building
             string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build{Path.DirectorySeparatorChar}Itch";
             FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
 
-            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.WebGL, BuildTarget.WebGL);
+            Debug.Log("Switching Build Target...");
+
             EditorApplication.delayCall += () =>
             {
+                Debug.Log("Starting Build...");
+
                 var targets = new PogoBuildTarget[]
                 {
                     new PogoBuildTarget("web", BuildTarget.WebGL, "index.html")
@@ -93,6 +99,7 @@ namespace Pogo.Building
 
                 BuildTargets(pathRoot, logger, targets);
             };
+            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.WebGL, BuildTarget.WebGL);
         }
 
 #else
@@ -104,6 +111,8 @@ namespace Pogo.Building
             
             EditorApplication.delayCall += () =>
             {
+                Debug.Log("Starting Build...");
+
                 var targets = new PogoBuildTarget[]
                 {
                     new PogoBuildTarget("win32", BuildTarget.StandaloneWindows, "pogo.exe"),
@@ -113,6 +122,9 @@ namespace Pogo.Building
 
                 BuildTargets(pathRoot, logger, targets);
             };
+
+            Debug.Log("Switching Build Target...");
+            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
         }
 #endif
 
