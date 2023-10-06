@@ -175,7 +175,7 @@ namespace Pogo.Challenges
                 pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint, CurrentChallenge.Level));
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
-                PogoGameManager.PogoInstance.ResetPlayer();
+                PogoGameManager.PogoInstance.SpawnPlayer();
                 resetChallenge();
                 OnChallengeChanged?.Invoke(CurrentChallenge);
                 pogoInstance.OnLevelLoaded.RemoveListener(finishLoading);
