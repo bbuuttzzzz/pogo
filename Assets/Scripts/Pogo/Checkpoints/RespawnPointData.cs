@@ -12,26 +12,30 @@ namespace Pogo.Checkpoints
         public Transform transform;
         public CheckpointTrigger Trigger;
         public CustomCheckpointController CustomCheckpoint;
+        public LevelDescriptor OverrideLevel;
 
-        public RespawnPointData(Transform transform)
+        public RespawnPointData(Transform transform, LevelDescriptor overrideLevel = null)
         {
             this.transform = transform;
             Trigger = null;
             CustomCheckpoint = null;
+            OverrideLevel = overrideLevel;
         }
 
-        public RespawnPointData(CheckpointTrigger trigger)
+        public RespawnPointData(CheckpointTrigger trigger, LevelDescriptor overrideLevel = null)
         {
             transform = trigger.RespawnPoint;
             Trigger = trigger;
             CustomCheckpoint = null;
+            OverrideLevel = overrideLevel;
         }
 
-        public RespawnPointData(CustomCheckpointController customCheckpoint)
+        public RespawnPointData(CustomCheckpointController customCheckpoint, LevelDescriptor overrideLevel = null)
         {
             transform = customCheckpoint.transform;
             Trigger = null;
             CustomCheckpoint = customCheckpoint;
+            OverrideLevel = overrideLevel;
         }
     }
 }
