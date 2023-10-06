@@ -28,8 +28,15 @@ namespace Pogo.Collectibles
         {
             GetComponent<Trigger>().OnActivated.AddListener(Trigger_OnActivated);
 
-            // hide all collectibles in challenge mode
-            if (PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Challenge)
+            PogoGameManager.PogoInstance.OnDifficultyChanged.AddListener(PogoGameManager_OnDifficultyChanged);
+
+            // wer need to hide all collectibles in challenge mode
+            InitializeDifficulty(PogoGameManager.PogoInstance.CurrentDifficulty);
+        }
+
+        private void InitializeDifficulty(PogoGameManager.Difficulty newDifficulty)
+        {
+            if (newDifficulty == PogoGameManager.Difficulty.Challenge)
             {
                 Initialize(CollectibleStates.Collected);
             }
@@ -39,6 +46,19 @@ namespace Pogo.Collectibles
                 Initialize(state);
             }
         }
+
+        private void OnDestroy()
+        {
+            PogoGameManager.PogoInstance.OnDifficultyChanged.RemoveListener(PogoGameManager_OnDifficultyChanged);
+        }
+
+
+        private void PogoGameManager_OnDifficultyChanged(DifficultyChangedEventArgs arg0)
+        {
+            InitializeDifficulty(arg0.FinalDifficulty);
+        }
+
+
 
         private void Trigger_OnActivated()
         {

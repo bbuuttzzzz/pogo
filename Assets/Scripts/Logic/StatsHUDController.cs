@@ -33,7 +33,7 @@ namespace Pogo.Logic
 
         private void onStatsReset()
         {
-            OnDeathCountChanged?.Invoke(0);
+            OnDeathCountChanged?.Invoke(PogoGameManager.PogoInstance.CurrentSessionDeaths);
         }
 
         private void Update()

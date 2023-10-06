@@ -75,18 +75,19 @@ namespace Pogo
             }
         }
 
-        private void FullResetSessionData()
+        public void FullResetSessionData()
         {
             FinishChapter(false);
-            SaveSlot();
+            SaveAndQuitSlot();
             SaveGlobalSave();
             ResetCustomRespawnPoint(true);
+            ResetStats();
         }
 
         private void GameManager_OnQuitToDesktop()
         {
             FinishChapter(false);
-            SaveSlot();
+            SaveAndQuitSlot();
             SaveGlobalSave();
         }
 
@@ -242,7 +243,7 @@ namespace Pogo
                     }
                     else
                     {
-                        yield return new WaitForSeconds(0.02f);
+                        yield return new WaitForSecondsRealtime(0.02f);
                     }
                 }
             }
@@ -271,7 +272,7 @@ namespace Pogo
                 }
                 else
                 {
-                    yield return new WaitForSeconds(0.02f);
+                    yield return new WaitForSecondsRealtime(0.02f);
                 }
             }
 
@@ -323,7 +324,7 @@ namespace Pogo
             get => currentChapter;
             private set => currentChapter = value;
         }
-        public bool CanSwitchChapters => true;
+        public bool CanSwitchChapters => CurrentDifficulty != Difficulty.Challenge;
 
         public void StartChapter(ChapterDescriptor chapter, QuickSaveData? quickSaveData = null)
         {
@@ -354,30 +355,34 @@ namespace Pogo
         {
             if (CurrentChapter == null) return;
 
-            ChapterSaveData saveData = GetChapterSaveData(CurrentChapter);
-
-            saveData.deathsTracked += currentChapterProgressTracker.TrackedDeaths;
-            saveData.millisecondsElapsed += currentChapterProgressTracker.TrackedTimeMilliseconds;
-
-            if (markComplete)
+            if (CurrentSlotDataTracker != null)
             {
-                saveData.bestDeaths = !saveData.complete
-                    ? currentChapterProgressTracker.TrackedDeaths
-                    : Math.Min(saveData.bestDeaths, currentChapterProgressTracker.TrackedDeaths);
-                saveData.millisecondsBestTime = !saveData.complete
-                    ? currentChapterProgressTracker.TrackedTimeMilliseconds
-                    : Math.Min(saveData.millisecondsBestTime, currentChapterProgressTracker.TrackedTimeMilliseconds);
-                saveData.complete = true;
-            }
-            else if (TrySerializeQuicksaveData(out QuickSaveData newData))
-            {
-                CurrentSlotDataTracker.SlotData.quickSaveData = newData;
-            }
+                ChapterSaveData saveData = GetChapterSaveData(CurrentChapter);
 
-            SetChapterSaveData(CurrentChapter, saveData);
+                saveData.deathsTracked += currentChapterProgressTracker.TrackedDeaths;
+                saveData.millisecondsElapsed += currentChapterProgressTracker.TrackedTimeMilliseconds;
+
+                if (markComplete)
+                {
+                    saveData.bestDeaths = !saveData.complete
+                        ? currentChapterProgressTracker.TrackedDeaths
+                        : Math.Min(saveData.bestDeaths, currentChapterProgressTracker.TrackedDeaths);
+                    saveData.millisecondsBestTime = !saveData.complete
+                        ? currentChapterProgressTracker.TrackedTimeMilliseconds
+                        : Math.Min(saveData.millisecondsBestTime, currentChapterProgressTracker.TrackedTimeMilliseconds);
+                    saveData.complete = true;
+                }
+                else if (TrySerializeQuicksaveData(out QuickSaveData newData))
+                {
+                    CurrentSlotDataTracker.SlotData.quickSaveData = newData;
+                }
+
+                SetChapterSaveData(CurrentChapter, saveData);
+
+                currentChapterProgressTracker = null;
+            }
 
             this.CurrentChapter = null;
-            currentChapterProgressTracker = null;
         }
 
         private bool TrySerializeQuicksaveData(out QuickSaveData newData)
@@ -857,7 +862,7 @@ namespace Pogo
 
         public void RegisterRespawnPoint(RespawnPointData data)
         {
-            RespawnLevel = levelManager.CurrentLevel;
+            RespawnLevel = data.OverrideLevel != null ? data.OverrideLevel : levelManager.CurrentLevel;
             PogoInstance.RespawnPoint = data;
         }
 
@@ -923,6 +928,8 @@ namespace Pogo
             OnStatsReset?.Invoke();
         }
 
+        public int CurrentSessionDeaths => currentSessionProgressTracker?.TrackedDeaths ?? 0;
+
         public int TrackedSessionDeaths => currentSessionProgressTracker.TrackedDeaths;
         public TimeSpan TrackedSessionTime => currentSessionProgressTracker.TrackedTime;
         #endregion
@@ -950,7 +957,7 @@ namespace Pogo
 
         public void LoadSlot(SaveSlotIds slotId)
         {
-            SaveSlot();
+            SaveAndQuitSlot();
 
             CurrentSlotDataTracker = GetSaveSlotTracker(slotId);
             CurrentSlotDataTracker.Load();
@@ -1052,12 +1059,13 @@ namespace Pogo
         }
 
 
-        public void SaveSlot()
+        public void SaveAndQuitSlot()
         {
             if (CurrentSlotDataTracker == null) return;
 
             CurrentSlotDataTracker.UpdatePreviewData(CollectibleManifest);
             CurrentSlotDataTracker.Save();
+            CurrentSlotDataTracker = null;
         }
 
         public void LoadGlobalSave()
