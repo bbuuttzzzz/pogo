@@ -928,6 +928,8 @@ namespace Pogo
             OnStatsReset?.Invoke();
         }
 
+        public int CurrentSessionDeaths => currentSessionProgressTracker?.TrackedDeaths ?? 0;
+
         public int TrackedSessionDeaths => currentSessionProgressTracker.TrackedDeaths;
         public TimeSpan TrackedSessionTime => currentSessionProgressTracker.TrackedTime;
         #endregion
