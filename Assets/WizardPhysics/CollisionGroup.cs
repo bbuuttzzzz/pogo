@@ -301,11 +301,6 @@ namespace WizardPhysics
             return closestPoint + start.ParentPosition;
         }
 
-        internal void RotateTo(Quaternion desiredModelRotation, object onCollide)
-        {
-            throw new NotImplementedException();
-        }
-
         private int FindOrb(CollisionOrb orb)
         {
             for (int n = 0; n < CollisionOrbs.Length; n++)
