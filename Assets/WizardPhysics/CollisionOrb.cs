@@ -71,6 +71,16 @@ namespace WizardPhysics
                 layerMask: layermask == -1 ? cachedLayerMask : layermask);
         }
 
+        public bool TestRaySkinned(Ray ray, float maxDistance, out RaycastHit hitInfo, float skinWidth, int layermask = -1)
+        {
+            Vector3 startPosition = ray.origin + ray.direction * -1 * skinWidth;
+            Vector3 endPosition = ray.origin + ray.direction * (maxDistance + skinWidth);
+            var result = TestPath(startPosition, endPosition, out hitInfo, layermask);
+            hitInfo.distance -= skinWidth;
+            return result;
+
+        }
+
         public bool TestRay(Ray ray, float maxDistance, out RaycastHit hitInfo, int layermask = -1)
         {
             return TestPath(ray.origin, ray.origin + ray.direction * maxDistance, out hitInfo, layermask);

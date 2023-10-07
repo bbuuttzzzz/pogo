@@ -104,7 +104,7 @@ namespace WizardPhysics
                 {
                     CollisionOrb orb = CollisionOrbs[orbIndex];
                     Ray ray = new Ray(orb.transform.position, remainingMovement);
-                    if (orb.TestRay(ray, distance + skinWidth, out RaycastHit hit))
+                    if (orb.TestRaySkinned(ray, distance, out RaycastHit hit, skinWidth))
                     {
                         if (firstCollision == null || hit.distance < firstCollision.MaxDistance)
                         {
@@ -159,7 +159,7 @@ namespace WizardPhysics
                 {
                     CollisionOrb orb = CollisionOrbs[orbIndex];
                     Ray ray = new Ray(orb.transform.position, remainingMovement);
-                    if (orb.TestRay(ray, distance + skinWidth, out RaycastHit hit, SafeLayerMask))
+                    if (orb.TestRaySkinned(ray, distance, out RaycastHit hit, skinWidth, SafeLayerMask))
                     {
                         if (firstCollision == null || hit.distance < firstCollision.MaxDistance)
                         {
@@ -224,7 +224,7 @@ namespace WizardPhysics
                 Vector3 direction = end.OrbPositions[n] - start.OrbPositions[n];
                 float distance = direction.magnitude;
                 Ray testRay = new Ray(start.OrbPositions[n], direction);
-                if (CollisionOrbs[n].TestRay(testRay, distance + skinWidth, out RaycastHit hit))
+                if (CollisionOrbs[n].TestRaySkinned(testRay, distance, out RaycastHit hit, skinWidth))
                 {
                     return true;
                 }
@@ -243,7 +243,7 @@ namespace WizardPhysics
                 Vector3 direction = end.OrbPositions[n] - start.OrbPositions[n];
                 float distance = direction.magnitude;
                 Ray testRay = new Ray(start.OrbPositions[n], direction);
-                if (CollisionOrbs[n].TestRay(testRay, distance + skinWidth, out RaycastHit hit))
+                if (CollisionOrbs[n].TestRaySkinned(testRay, distance, out RaycastHit hit, skinWidth))
                 {
                     float maxDistance = (distance + skinWidth);
                     if (firstCollision == null || hit.distance / maxDistance < firstCollision.HitInfo.distance / firstCollision.MaxDistance)
