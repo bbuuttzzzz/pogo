@@ -73,7 +73,7 @@ public class PogoGameManagerEditor : GameManagerEditor
                     foreach (PlayerController player in results)
                     {
                         player.transform.position = self.CachedRespawnPoint.transform.position;
-                        player.transform.rotation = Quaternion.Euler(0, self.CachedRespawnPoint.transform.rotation.eulerAngles.y, 0);
+                        player.PhysicsRotation= Quaternion.Euler(0, self.CachedRespawnPoint.transform.rotation.eulerAngles.y, 0);
                         Undo.RecordObject(player, "Move Player to Spawnpoint");
                     }
 
