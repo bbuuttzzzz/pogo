@@ -21,8 +21,6 @@ public class PlayerController : MonoBehaviour
     [NonSerialized]
     public PlayerAttachmentHandler AttachmentHandler;
 
-    new public Transform transform;
-
     public Vector3 PhysicsPosition
     {
         get => transform.position;
@@ -71,7 +69,7 @@ public class PlayerController : MonoBehaviour
         AutoRespawnDelay = respawnDelaySetting.Value;
 
         UpdateCursorLock(PogoGameManager.GameInstance.Paused);
-        internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
+        internalEyeAngles = new Vector3(0, PhysicsRotation.eulerAngles.y, 0);
         PhysicsRotation = Quaternion.identity;
         RenderRotation = Quaternion.identity;
 

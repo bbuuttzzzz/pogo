@@ -72,7 +72,7 @@ public class PogoGameManagerEditor : GameManagerEditor
                     var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
                     foreach (PlayerController player in results)
                     {
-                        player.transform.position = self.CachedRespawnPoint.transform.position;
+                        player.PhysicsPosition= self.CachedRespawnPoint.transform.position;
                         player.PhysicsRotation= Quaternion.Euler(0, self.CachedRespawnPoint.transform.rotation.eulerAngles.y, 0);
                         Undo.RecordObject(player, "Move Player to Spawnpoint");
                     }
@@ -95,8 +95,8 @@ public class PogoGameManagerEditor : GameManagerEditor
                 var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
                 foreach (PlayerController player in results)
                 {
-                    player.transform.position = self.CachedRespawnPoint.position;
-                    player.transform.rotation = Quaternion.Euler(0, self.CachedRespawnPoint.rotation.eulerAngles.y, 0);
+                    player.PhysicsPosition = self.CachedRespawnPoint.position;
+                    player.PhysicsRotation = Quaternion.Euler(0, self.CachedRespawnPoint.rotation.eulerAngles.y, 0);
                     Undo.RecordObject(player, "Move Player to Spawnpoint");
                 }
             }
