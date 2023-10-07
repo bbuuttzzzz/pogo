@@ -29,7 +29,11 @@ public class PlayerController : MonoBehaviour
     public Quaternion PhysicsRotation
     {
         get => CollisionGroup.PhysicsRotation;
-        set => CollisionGroup.PhysicsRotation = value;
+        set
+        {
+            transform.rotation = value.YawOnly();
+            CollisionGroup.PhysicsRotation = value;
+        }
     }
     public Vector3 RenderPosition
     {
@@ -131,6 +135,7 @@ public class PlayerController : MonoBehaviour
     void PhysicsUpdate()
     {
         lastPhysicsPosition = PhysicsPosition;
+        lastPhysicsRotation = PhysicsRotation;
 
         if (CurrentState == PlayerStates.Alive)
         {
@@ -151,6 +156,7 @@ public class PlayerController : MonoBehaviour
 
     #region Physics
     private Vector3 lastPhysicsPosition;
+    private Quaternion lastPhysicsRotation;
 
     private void ApplyForces()
     {
@@ -517,6 +523,11 @@ public class PlayerController : MonoBehaviour
     public UnityEvent OnDisjoint;
     public void Disjoint()
     {
+        lastPhysicsPosition = PhysicsPosition;
+        lastPhysicsRotation = PhysicsRotation;
+        RenderPosition = PhysicsPosition;
+        RenderRotation = PhysicsRotation;
+
         OnDisjoint?.Invoke();
     }
     #endregion
