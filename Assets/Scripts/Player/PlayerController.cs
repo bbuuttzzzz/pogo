@@ -11,8 +11,6 @@ using WizardPhysics;
 using WizardUtils;
 using WizardUtils.SceneManagement;
 
-[RequireComponent(typeof(CollisionGroup))]
-
 public class PlayerController : MonoBehaviour
 {
     public AudioController AudioController;
@@ -24,7 +22,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        CollisionGroup = GetComponent<CollisionGroup>();
         AttachmentHandler = GetComponent<PlayerAttachmentHandler>();
     }
 
@@ -297,7 +294,7 @@ public class PlayerController : MonoBehaviour
     {
         Velocity = Vector3.zero;
         PitchFrac = 0;
-        Model.rotation = DesiredModelRotation;
+        RenderTransform.rotation = DesiredModelRotation;
     }
 
     public void TeleportTo(Transform target, bool preservePhysics = false)
@@ -347,7 +344,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Model maneuvering
-    public Transform Model;
+    public Transform RenderTransform;
     public Transform Camera;
     public float PitchFrac = 0;
     const float ModelPitchMul = 1.5f;
