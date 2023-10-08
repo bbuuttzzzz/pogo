@@ -121,6 +121,7 @@ public class PlayerController : MonoBehaviour
         {
             DoLook();
             UpdateDesiredModelPitch(Time.deltaTime);
+            RenderRotation = DesiredModelRotation;
         }
         else
         {
@@ -132,8 +133,11 @@ public class PlayerController : MonoBehaviour
     {
         if (CurrentState == PlayerStates.Alive)
         {
-            RenderRotateAndMove(e.FrameInterpolator);
+            RenderMove(e.FrameInterpolator);
+            RenderRotation = DesiredModelRotation;
+            UpdateCameraRotation();
         }
+
         Debug.DrawRay(RenderPosition, RenderRotation * Vector3.up * e.FrameInterpolator, new Color(e.FrameInterpolator, 1, 0), 2);
     }
 
@@ -181,9 +185,8 @@ public class PlayerController : MonoBehaviour
         CollisionGroup.Move(Velocity * Time.fixedDeltaTime);
     }
 
-    private void RenderRotateAndMove(float t)
+    private void RenderMove(float t)
     {
-        RenderRotation = DesiredModelRotation;
         RenderPosition = Vector3.Lerp(lastPhysicsPosition, PhysicsPosition, t);
     }
 
@@ -651,7 +654,12 @@ public class PlayerController : MonoBehaviour
         internalEyeAngles += InputManager.CheckAxisSet(AxisSetName.Aim).Scale(SENSITIVITY * SENS_PITCH_SCALE, SENSITIVITY, SENSITIVITY);
         //clamp pitch
         internalEyeAngles.x = Mathf.Clamp(internalEyeAngles.x, -89.9f, 89.9f);
+        
+        UpdateCameraRotation();
+    }
 
+    private void UpdateCameraRotation()
+    {
         CameraSwivelPoint.transform.rotation = GetAimQuat();
     }
     #endregion
