@@ -2642,7 +2642,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8049285594771530901}
   - component: {fileID: 8049285594771530900}
-  - component: {fileID: 2931042844658966714}
   - component: {fileID: 8049285593714969211}
   - component: {fileID: 4304070328519568578}
   - component: {fileID: 219864235}
@@ -2685,6 +2684,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AudioController: {fileID: 8049285594200099665}
+  CollisionGroup: {fileID: 554370778209730927}
   AutoRespawnDelay: 1
   Jostler: {fileID: 8565373541039228149}
   OnStateChanged:
@@ -2772,26 +2772,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   CameraSwivelPoint: {fileID: 8049285594168896995}
---- !u!114 &2931042844658966714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8049285594771530898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4da2394257cd32b469a083df10fa0882, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CollisionOrbs:
-  - {fileID: 4590690700930264296}
-  - {fileID: 5908074106086195938}
-  skinWidth: 0.03
-  OnCollide:
-    m_PersistentCalls:
-      m_Calls: []
-  DrawDebugGizmos: 0
 --- !u!114 &8049285593714969211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3090,6 +3070,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5877222373290217019}
+  - component: {fileID: 554370778209730927}
   m_Layer: 6
   m_Name: Physics
   m_TagString: Untagged
@@ -3115,6 +3096,26 @@ Transform:
   m_Father: {fileID: 8049285594771530901}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &554370778209730927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8733941495980557638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4da2394257cd32b469a083df10fa0882, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionOrbs:
+  - {fileID: 4590690700930264296}
+  - {fileID: 5908074106086195938}
+  skinWidth: 0.03
+  OnCollide:
+    m_PersistentCalls:
+      m_Calls: []
+  DrawDebugGizmos: 0
 --- !u!1 &8775729022582509889
 GameObject:
   m_ObjectHideFlags: 0
