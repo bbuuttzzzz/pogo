@@ -75,10 +75,12 @@ namespace Pogo
             }
         }
 
-        public void FullResetSessionData()
+        public void FullResetSessionData() => FullResetSessionData(true);
+
+        public void FullResetSessionData(bool quitSaveSlot = true)
         {
             FinishChapter(false);
-            SaveAndQuitSlot();
+            SaveSlot(quitAfterSave: quitSaveSlot);
             SaveGlobalSave();
             ResetCustomRespawnPoint(true);
             ResetStats();
@@ -87,7 +89,7 @@ namespace Pogo
         private void GameManager_OnQuitToDesktop()
         {
             FinishChapter(false);
-            SaveAndQuitSlot();
+            SaveSlot();
             SaveGlobalSave();
         }
 
@@ -664,7 +666,7 @@ namespace Pogo
             }
 
             // Reset session data
-            FullResetSessionData();
+            FullResetSessionData(quitSaveSlot: false);
 
             // replace quicksavedata with the new stuff
             quickSaveData.ChapterId = new ChapterId(0, World.IndexOf(nextCheckpoint.Chapter));
@@ -939,7 +941,15 @@ namespace Pogo
         #region Saving
         [HideInInspector]
         public UnityEvent OnSaveSlotChanged;
-        public SaveSlotDataTracker CurrentSlotDataTracker { get; private set; }
+
+        private SaveSlotDataTracker currentSlotDataTracker;
+        public SaveSlotDataTracker CurrentSlotDataTracker
+        {
+            get => currentSlotDataTracker; private set
+            {
+                currentSlotDataTracker = value;
+            }
+        }
         public GlobalSaveDataTracker CurrentGlobalDataTracker { get; private set; }
         public ExplicitSaveSlotData EditorOverrideSlot3Data;
         public ExplicitGlobalSaveData EditorOverrideGlobalSaveData;
@@ -959,7 +969,7 @@ namespace Pogo
 
         public void LoadSlot(SaveSlotIds slotId)
         {
-            SaveAndQuitSlot();
+            SaveSlot();
 
             CurrentSlotDataTracker = GetSaveSlotTracker(slotId);
             CurrentSlotDataTracker.Load();
@@ -1060,14 +1070,16 @@ namespace Pogo
             CurrentSlotDataTracker.SetChapterProgressData(id, data);
         }
 
-
-        public void SaveAndQuitSlot()
+        public void SaveSlot(bool quitAfterSave = true)
         {
             if (CurrentSlotDataTracker == null) return;
 
             CurrentSlotDataTracker.UpdatePreviewData(CollectibleManifest);
             CurrentSlotDataTracker.Save();
-            CurrentSlotDataTracker = null;
+            if (quitAfterSave)
+            {
+                CurrentSlotDataTracker = null;
+            }
         }
 
         public void LoadGlobalSave()
