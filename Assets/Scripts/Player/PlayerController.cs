@@ -5,6 +5,7 @@ using Pogo.Abilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using WizardPhysics;
@@ -23,15 +24,17 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 PhysicsPosition
     {
-        get => transform.position;
-        set => transform.position = value;
+        get => CollisionGroup.PhysicsPosition;
+        set
+        {
+            CollisionGroup.PhysicsPosition = value;
+        }
     }
     public Quaternion PhysicsRotation
     {
         get => CollisionGroup.PhysicsRotation;
         set
         {
-            transform.rotation = value.YawOnly();
             CollisionGroup.PhysicsRotation = value;
         }
     }
@@ -73,7 +76,9 @@ public class PlayerController : MonoBehaviour
         AutoRespawnDelay = respawnDelaySetting.Value;
 
         UpdateCursorLock(PogoGameManager.GameInstance.Paused);
-        internalEyeAngles = new Vector3(0, PhysicsRotation.eulerAngles.y, 0);
+
+        PhysicsPosition = RenderPosition;
+        internalEyeAngles = new Vector3(0, RenderRotation.eulerAngles.y, 0);
         PhysicsRotation = Quaternion.identity;
         RenderRotation = Quaternion.identity;
 
@@ -379,9 +384,9 @@ public class PlayerController : MonoBehaviour
     public void TeleportToInEditor(Transform target)
     {
         PhysicsPosition = target.position;
-        PhysicsRotation = target.rotation;
+        PhysicsRotation = target.rotation.YawOnly();
         RenderPosition = target.position;
-        RenderRotation = target.rotation;
+        RenderRotation = target.rotation.YawOnly();
     }
 #endif
     public void TeleportTo(Transform target, bool preservePhysics = false)
