@@ -43,8 +43,8 @@ public class PlayerController : MonoBehaviour
     }
     public Quaternion RenderRotation
     {
-        get => RenderTransform.rotation;
-        set => RenderTransform.rotation = value;
+        get => RenderPivotTransform.rotation;
+        set => RenderPivotTransform.rotation = value;
     }
 
     private void Awake()
@@ -435,7 +435,7 @@ public class PlayerController : MonoBehaviour
 
     #region Model maneuvering
     public Transform RenderTransform;
-    public Transform Camera;
+    public Transform RenderPivotTransform;
     public float PitchFrac = 0;
     const float ModelPitchMul = 1.5f;
     const float PitchFracSpeed = 10;
