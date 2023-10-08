@@ -131,7 +131,6 @@ public class PlayerController : MonoBehaviour
         {
             RenderRotateAndMove(e.FrameInterpolator);
         }
-        Debug.DrawRay(RenderPosition, RenderRotation * Vector3.up * e.FrameInterpolator, new Color(e.FrameInterpolator, 1, 0), 2);
     }
 
     void PhysicsUpdate()
@@ -144,9 +143,6 @@ public class PlayerController : MonoBehaviour
             ApplyForces();
             PhysicsRotateAndMove();
         }
-
-        Debug.DrawRay(lastPhysicsPosition, lastPhysicsRotation * Vector3.up, Color.gray, 2);
-        Debug.DrawRay(PhysicsPosition, PhysicsRotation * Vector3.up, Color.red, Time.fixedDeltaTime);
     }
 
     private void CheckForRespawn()
