@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour
 
         if (CurrentState == PlayerStates.Alive)
         {
-            ApplyForces();
+            ApplyForces(Time.fixedDeltaTime);
             PhysicsRotateAndMove();
         }
 
@@ -170,14 +170,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 lastPhysicsPosition;
     private Quaternion lastPhysicsRotation;
 
-    private void ApplyForces()
-    {
-        Vector3 movement = InputManager.CheckAxisSet(AxisSetName.Movement);
-        Vector3 airMove = GetYawQuat() * new Vector3(movement.x, 0, movement.z);
-        Velocity = AirAccelerate(Velocity, airMove, Time.fixedDeltaTime);
-
-        ApplyForce(Physics.gravity * Time.fixedDeltaTime);
-    }
 
     private void PhysicsRotateAndMove()
     {
@@ -482,10 +474,52 @@ public class PlayerController : MonoBehaviour
     public UnityEvent OnTouch;
     public Vector3 Velocity;
 
+    private List<IPlayerContinuousForce> ContinuousForce = new List<IPlayerContinuousForce>();
+
     const float JumpMaxSideSpeed = 6f;
     public const float JumpForce = 6f;
     const float AIR_ACCELERATE = 0;
     public const float AIR_SPEED_MAX = 1f; //max tangent air speed, the lower this value the slower the airstrafe
+
+    private void ApplyForces(float deltaTime)
+    {
+        Vector3 movement = InputManager.CheckAxisSet(AxisSetName.Movement);
+        Vector3 airMove = GetYawQuat() * new Vector3(movement.x, 0, movement.z);
+        Velocity = AirAccelerate(Velocity, airMove, deltaTime);
+
+        ApplyForce(Physics.gravity * deltaTime);
+
+        foreach(var continuousForce in ContinuousForce)
+        {
+            ApplyForce(continuousForce.GetForce(this, deltaTime));
+        }
+    }
+
+    public void AddContinuousForce(IPlayerContinuousForce force)
+    {
+        if (!ContinuousForce.Contains(force))
+        {
+            ContinuousForce.Add(force);
+        }
+#if DEBUG
+        else
+        {
+            Debug.LogWarning($"Tried to add a duplicate continuous force {force}");
+        }
+#endif
+    }
+
+    public void RemoveContinuousForce(IPlayerContinuousForce force)
+    {
+#if DEBUG
+        if (!ContinuousForce.Remove(force))
+        {
+            Debug.LogWarning($"Tried to remove a missing continuous force {force}");
+        }
+#else
+Forces.Remove(force)
+#endif
+    }
 
     public void ApplyForce(Vector3 force)
     {
