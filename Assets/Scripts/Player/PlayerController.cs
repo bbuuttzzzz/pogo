@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
         if (CurrentState == PlayerStates.Alive)
         {
             DoLook();
-            UpdateDesiredModelPitch();
+            UpdateDesiredModelPitch(Time.deltaTime);
         }
         else
         {
@@ -167,7 +167,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 movement = InputManager.CheckAxisSet(AxisSetName.Movement);
         Vector3 airMove = GetYawQuat() * new Vector3(movement.x, 0, movement.z);
-        Velocity = AirAccelerate(Velocity, airMove);
+        Velocity = AirAccelerate(Velocity, airMove, Time.fixedDeltaTime);
 
         ApplyForce(Physics.gravity * Time.fixedDeltaTime);
     }
@@ -180,7 +180,7 @@ public class PlayerController : MonoBehaviour
 
     private void RenderRotateAndMove(float t)
     {
-        RenderRotation = Quaternion.Slerp(lastPhysicsRotation, PhysicsRotation, t);
+        RenderRotation = DesiredModelRotation;
         RenderPosition = Vector3.Lerp(lastPhysicsPosition, PhysicsPosition, t);
     }
 
@@ -461,10 +461,10 @@ public class PlayerController : MonoBehaviour
     public Quaternion DesiredModelRotation => Quaternion.Euler(PitchFrac * ModelPitchMul * EyeAngles.x, EyeAngles.y, EyeAngles.z);
     public Quaternion CameraRotation => Quaternion.Euler(PitchFrac * EyeAngles.x, EyeAngles.y, EyeAngles.z);
 
-    void UpdateDesiredModelPitch()
+    void UpdateDesiredModelPitch(float deltaTime)
     {
         float targetPitchFrac = InputManager.CheckKey(KeyName.Jump) ? 0 : 1;
-        PitchFrac = Mathf.MoveTowards(PitchFrac, targetPitchFrac, PitchFracSpeed * Time.deltaTime);
+        PitchFrac = Mathf.MoveTowards(PitchFrac, targetPitchFrac, PitchFracSpeed * deltaTime);
     }
 
     #endregion
@@ -545,7 +545,7 @@ public class PlayerController : MonoBehaviour
     /// <param name="vel">Initial Velocity</param>
     /// <param name="mov">player's movement input</param>
     /// <returns>New velocity</returns>
-    Vector3 AirAccelerate(Vector3 vel, Vector3 mov)
+    Vector3 AirAccelerate(Vector3 vel, Vector3 mov, float deltaTime)
     {
         float ACCEL = AIR_ACCELERATE;
 
@@ -560,7 +560,7 @@ public class PlayerController : MonoBehaviour
         if (addspeed <= 0) //if you're already accelerating over max, don't change anything
             return vel;
 
-        float accelspeed = ACCEL * Time.deltaTime * AIR_SPEED_MAX; //finds the acceleration to add
+        float accelspeed = ACCEL * deltaTime * AIR_SPEED_MAX; //finds the acceleration to add
         if (accelspeed > addspeed) //if the acceleration would put you over max, cap it at max.
             accelspeed = addspeed;
 
