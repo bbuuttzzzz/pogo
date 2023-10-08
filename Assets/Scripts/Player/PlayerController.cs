@@ -474,7 +474,7 @@ public class PlayerController : MonoBehaviour
     public UnityEvent OnTouch;
     public Vector3 Velocity;
 
-    private List<IPlayerContinuousForce> ContinuousForce = new List<IPlayerContinuousForce>();
+    private List<IPlayerContinuousForce> ContinuousForces = new List<IPlayerContinuousForce>();
 
     const float JumpMaxSideSpeed = 6f;
     public const float JumpForce = 6f;
@@ -489,7 +489,7 @@ public class PlayerController : MonoBehaviour
 
         ApplyForce(Physics.gravity * deltaTime);
 
-        foreach(var continuousForce in ContinuousForce)
+        foreach(var continuousForce in ContinuousForces)
         {
             ApplyForce(continuousForce.GetForce(this, deltaTime));
         }
@@ -497,9 +497,9 @@ public class PlayerController : MonoBehaviour
 
     public void AddContinuousForce(IPlayerContinuousForce force)
     {
-        if (!ContinuousForce.Contains(force))
+        if (!ContinuousForces.Contains(force))
         {
-            ContinuousForce.Add(force);
+            ContinuousForces.Add(force);
         }
 #if DEBUG
         else
@@ -512,12 +512,12 @@ public class PlayerController : MonoBehaviour
     public void RemoveContinuousForce(IPlayerContinuousForce force)
     {
 #if DEBUG
-        if (!ContinuousForce.Remove(force))
+        if (!ContinuousForces.Remove(force))
         {
             Debug.LogWarning($"Tried to remove a missing continuous force {force}");
         }
 #else
-Forces.Remove(force)
+        ContinuousForces.Remove(force);
 #endif
     }
 
