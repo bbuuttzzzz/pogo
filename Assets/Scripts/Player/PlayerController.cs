@@ -12,10 +12,11 @@ using WizardPhysics.PhysicsTime;
 using WizardUtils;
 using WizardUtils.SceneManagement;
 
+[RequireComponent(typeof(CollisionGroup))]
 public class PlayerController : MonoBehaviour
 {
     public AudioController AudioController;
-    public CollisionGroup CollisionGroup;
+    public CollisionGroup CollisionGroup {get; private set;}
     public float AutoRespawnDelay;
     public PlayerJostler Jostler;
     [NonSerialized]
@@ -48,6 +49,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        CollisionGroup = GetComponent<CollisionGroup>();
         AttachmentHandler = GetComponent<PlayerAttachmentHandler>();
     }
 
