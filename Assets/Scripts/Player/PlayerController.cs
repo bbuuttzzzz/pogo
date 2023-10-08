@@ -387,6 +387,7 @@ public class PlayerController : MonoBehaviour
         PhysicsRotation = target.rotation.YawOnly();
         RenderPosition = target.position;
         RenderRotation = target.rotation.YawOnly();
+        CameraSwivelPoint.transform.rotation = target.rotation.YawOnly();
     }
 #endif
     public void TeleportTo(Transform target, bool preservePhysics = false)
