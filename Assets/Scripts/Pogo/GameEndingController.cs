@@ -28,7 +28,7 @@ namespace Assets.Scripts.Pogo
         public void StartEndGame()
         {
             PogoGameManager.PogoInstance.FinishChapter();
-            PogoGameManager.PogoInstance.SaveAndQuitSlot();
+            PogoGameManager.PogoInstance.SaveSlot(quitAfterSave: false);
             StartCoroutine(ChangeLevelDelayed(LevelChangeDelay));
         }
 
