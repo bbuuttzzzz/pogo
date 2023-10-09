@@ -5,28 +5,17 @@ using WizardPhysics;
 using WizardUtils;
 
 [RequireComponent(typeof(OrbSafeMover))]
-public class OrbSafePositionWaypointer : Waypointer<Vector3>
+public class OrbSafePositionWaypointer : PhysicsTimeWaypointer<Vector3>
 {
     Vector3 origin;
     private OrbSafeMover mover;
+    public Transform RendererTransform;
 
     public override void Awake()
     {
         mover = GetComponent<OrbSafeMover>();
         origin = transform.position;
         base.Awake();
-    }
-
-    protected override Vector3 GetCurrentValue()
-    {
-        return transform.position - origin;
-    }
-
-    protected override void InterpolateAndApply(Vector3 startValue, Vector3 endValue, float i)
-    {
-        Vector3 newPositionFromOrigin = Vector3.Lerp(startValue, endValue, i);
-
-        mover.MoveTo(origin + newPositionFromOrigin);
     }
 
     private void OnDrawGizmosSelected()
@@ -47,5 +36,24 @@ public class OrbSafePositionWaypointer : Waypointer<Vector3>
                 Gizmos.DrawIcon(transform.position + worldOffset, "sp_flag.tiff", false, Color.blue);
             }
         }
+    }
+
+    protected override Vector3 GetCurrentPhysicsValue()
+    {
+        return transform.position - origin;
+    }
+
+    protected override void InterpolateAndApplyPhysics(Vector3 startValue, Vector3 endValue, float i)
+    {
+        Vector3 newPositionFromOrigin = Vector3.Lerp(startValue, endValue, i);
+
+        mover.MoveTo(origin + newPositionFromOrigin);
+    }
+
+    protected override void InterpolateAndApplyRender(Vector3 startValue, Vector3 endValue, float i)
+    {
+        Vector3 newPositionFromOrigin = Vector3.Lerp(startValue, endValue, i);
+
+        RendererTransform.position = origin + newPositionFromOrigin;
     }
 }
