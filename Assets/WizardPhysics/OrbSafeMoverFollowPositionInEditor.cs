@@ -17,7 +17,7 @@ namespace Assets.WizardPhysics
 
             if (Target.ShouldFollowTargetPosition)
             {
-                Target.FollowTargetPosition();
+                Target.FollowTargetPositionInEditor();
             }
         }
 #endif

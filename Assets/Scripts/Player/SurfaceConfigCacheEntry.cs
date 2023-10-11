@@ -1,4 +1,5 @@
 ﻿
+using Pogo.MaterialTypes;
 using UnityEngine;
 
 public class SurfaceConfigCacheEntry

@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.GlobalIllumination;
+using WizardPhysics.PhysicsTime;
 using WizardUI;
 using WizardUtils;
 using WizardUtils.Equipment;
@@ -1193,6 +1194,12 @@ namespace Pogo
             CurrentSlotDataTracker.SetCollectible(slotData);
             return true;
         }
+        #endregion
+
+        #region Time Manager
+        public PhysicsTimeManager TimeManager;
+
+
         #endregion
     }
 }

@@ -14,7 +14,7 @@ public class AbilityTrigger : MonoBehaviour
         OnTriggered.Invoke();
 
         var player = PogoGameManager.PogoInstance.Player;
-        var abilityObject = Instantiate(Ability.Prefab, player.transform);
+        var abilityObject = Instantiate(Ability.Prefab, player.RenderTransform);
         abilityObject.GetComponent<PlayerAbility>().Apply(player);
     }
 }
