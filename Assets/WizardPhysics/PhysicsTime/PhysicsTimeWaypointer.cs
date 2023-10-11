@@ -51,6 +51,12 @@ namespace WizardUtils
             PogoGameManager.PogoInstance.TimeManager.OnRenderUpdate.AddListener(OnRenderUpdate);
         }
 
+        public virtual void OnDestroy()
+        {
+            PogoGameManager.PogoInstance.TimeManager.OnPhysicsUpdate.RemoveListener(OnPhysicsUpdate);
+            PogoGameManager.PogoInstance.TimeManager.OnRenderUpdate.RemoveListener(OnRenderUpdate);
+        }
+
         private void OnRenderUpdate(RenderArgs arg0)
         {
             if (state != States.RenderArrived)
