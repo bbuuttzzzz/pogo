@@ -107,11 +107,9 @@ namespace WizardPhysics
             Subscribers.Remove(group);
         }
 
-        public void PhysicsMoveTo(Vector3 finalPosition) => PhysicsMoveTo(finalPosition, -1);
-
-        public void PhysicsMoveTo(Vector3 finalPosition, float interval)
+        public void PhysicsMoveTo(Vector3 finalPosition)
         {
-            lastVelocity = (finalPosition - transform.position) / interval;
+            lastVelocity = (finalPosition - transform.position) / Time.fixedDeltaTime;
 
             if (transform.position == finalPosition) { return; }
 
