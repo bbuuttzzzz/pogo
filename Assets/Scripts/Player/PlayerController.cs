@@ -265,6 +265,16 @@ public class PlayerController : MonoBehaviour
                     material = (hitInfo.collider as MeshCollider).sharedMesh.GetMaterialAtTriangle(renderer, hitInfo.triangleIndex);
                 }
             }
+            else
+            {
+                var specifier = hitInfo.collider.GetComponent<SurfaceConfigSpecifier>();
+                if (specifier != null)
+                {
+                    surfaceCache.Collider = hitInfo.collider;
+                    surfaceCache.SurfaceConfig = specifier.SurfaceConfig;
+                    return specifier.SurfaceConfig;
+                }
+            }
         }
         else
         {
