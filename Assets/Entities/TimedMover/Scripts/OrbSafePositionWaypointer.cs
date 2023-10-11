@@ -9,7 +9,6 @@ public class OrbSafePositionWaypointer : PhysicsTimeWaypointer<Vector3>
 {
     Vector3 origin;
     private OrbSafeMover mover;
-    public Transform RendererTransform;
 
     public override void Awake()
     {
@@ -47,13 +46,13 @@ public class OrbSafePositionWaypointer : PhysicsTimeWaypointer<Vector3>
     {
         Vector3 newPositionFromOrigin = Vector3.Lerp(startValue, endValue, i);
 
-        mover.MoveTo(origin + newPositionFromOrigin);
+        mover.PhysicsMoveTo(origin + newPositionFromOrigin);
     }
 
     protected override void InterpolateAndApplyRender(Vector3 startValue, Vector3 endValue, float i)
     {
         Vector3 newPositionFromOrigin = Vector3.Lerp(startValue, endValue, i);
 
-        RendererTransform.position = origin + newPositionFromOrigin;
+        mover.RendererMoveTo(origin + newPositionFromOrigin);
     }
 }

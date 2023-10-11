@@ -2,6 +2,7 @@ using Assets.Scripts.Player;
 using Inputter;
 using Pogo;
 using Pogo.Abilities;
+using Pogo.MaterialTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;

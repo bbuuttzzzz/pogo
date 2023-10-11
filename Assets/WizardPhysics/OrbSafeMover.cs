@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.MaterialTypes;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,8 @@ namespace WizardPhysics
         public bool ShouldFollowTargetPosition;
         public bool TargetPositionIsLocal;
         public Vector3 TargetPosition;
+
+        public Transform RendererTransform;
 
         [System.Serializable]
         public enum PlayerCollisionBehavior
@@ -49,7 +52,7 @@ namespace WizardPhysics
             }
 #endif
 
-            MoveTo(targetPosition);
+            PhysicsMoveTo(targetPosition);
         }
 
         public void Subscribe(CollisionGroup group)
@@ -62,9 +65,9 @@ namespace WizardPhysics
             Subscribers.Remove(group);
         }
 
-        public void MoveTo(Vector3 finalPosition) => MoveTo(finalPosition, -1);
+        public void PhysicsMoveTo(Vector3 finalPosition) => PhysicsMoveTo(finalPosition, -1);
 
-        public void MoveTo(Vector3 finalPosition, float interval)
+        public void PhysicsMoveTo(Vector3 finalPosition, float interval)
         {
             if (interval <= 0) interval = Time.deltaTime;
 
@@ -79,6 +82,8 @@ namespace WizardPhysics
 
             transform.position = finalPosition;
         }
+
+        public void RendererMoveTo(Vector3 finalPosition) => RendererTransform.position = finalPosition;
 
         /// <summary>
         /// Check if this object has special player collision behavior given this data, and then perform that behavior

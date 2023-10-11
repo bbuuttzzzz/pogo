@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Pogo.MaterialTypes;
+using UnityEngine;
 
 namespace Pogo
 {
