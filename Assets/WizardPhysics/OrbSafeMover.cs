@@ -111,8 +111,6 @@ namespace WizardPhysics
 
         public void PhysicsMoveTo(Vector3 finalPosition, float interval)
         {
-            if (interval <= 0) interval = Time.deltaTime;
-
             lastVelocity = (finalPosition - transform.position) / interval;
 
             if (transform.position == finalPosition) { return; }
