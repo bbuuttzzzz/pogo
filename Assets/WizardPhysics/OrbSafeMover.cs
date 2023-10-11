@@ -1,8 +1,10 @@
-﻿using Pogo.MaterialTypes;
+﻿using Pogo;
+using Pogo.MaterialTypes;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using WizardPhysics.PhysicsTime;
 using WizardUtils;
 
 namespace WizardPhysics
@@ -19,6 +21,8 @@ namespace WizardPhysics
 
         public Transform RendererTransform;
 
+        private bool _subscribedToPhysicsUpdates;
+
         [System.Serializable]
         public enum PlayerCollisionBehavior
         {
@@ -30,30 +34,68 @@ namespace WizardPhysics
 
         private void Awake()
         {
-            self = GetComponent<Collider>();    
-        }
-
-        private void Update()
-        {
-            if (ShouldFollowTargetPosition)
+            self = GetComponent<Collider>();
+            if (ShouldFollowTargetPosition && RendererTransformExists())
             {
-                FollowTargetPosition();
+
+                _subscribedToPhysicsUpdates = true;
+
+                PogoGameManager.PogoInstance.TimeManager.OnPhysicsUpdate.AddListener(OnPhysicsUpdate);
+                PogoGameManager.PogoInstance.TimeManager.OnRenderUpdate.AddListener(OnRenderUpdate);
             }
         }
 
-        public void FollowTargetPosition()
+        private bool RendererTransformExists()
+        {
+            if (RendererTransform == null)
+            {
+                Debug.LogError($"OrbSafeMover DISABLED!!! RendererTransform missing for {name}", gameObject);
+                return false;
+            }
+            return true;
+        }
+
+        private void OnDestroy()
+        {
+            if (_subscribedToPhysicsUpdates)
+            {
+                PogoGameManager.PogoInstance.TimeManager.OnPhysicsUpdate.RemoveListener(OnPhysicsUpdate);
+                PogoGameManager.PogoInstance.TimeManager.OnRenderUpdate.RemoveListener(OnRenderUpdate);
+            }
+        }
+
+        #region Following
+        private Vector3 lastPhysicsPosition;
+        private Vector3 currentPhysicsPosition;
+
+        private void OnPhysicsUpdate()
+        {
+            lastPhysicsPosition = currentPhysicsPosition;
+            currentPhysicsPosition = TargetPositionIsLocal ? transform.parent.TransformPoint(TargetPosition) : TargetPosition;
+            PhysicsMoveTo(currentPhysicsPosition);
+        }
+
+        private void OnRenderUpdate(RenderArgs arg0)
+        {
+            RendererMoveTo(Vector3.Lerp(lastPhysicsPosition, currentPhysicsPosition, arg0.FrameInterpolator));
+        }
+
+#if UNITY_EDITOR
+        public void FollowTargetPositionInEditor()
         {
             Vector3 targetPosition = TargetPositionIsLocal ? transform.parent.TransformPoint(TargetPosition) : TargetPosition;
-#if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlaying)
             {
                 transform.position = targetPosition;
                 return;
             }
-#endif
 
             PhysicsMoveTo(targetPosition);
+            RendererMoveTo(targetPosition);
         }
+#endif
+
+        #endregion
 
         public void Subscribe(CollisionGroup group)
         {
