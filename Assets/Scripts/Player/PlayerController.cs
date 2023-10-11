@@ -561,10 +561,10 @@ public class PlayerController : MonoBehaviour
     private void onCollide(CollisionEventArgs e)
     {
         // if we have any speed into the surface, remove it
-        var normalVelocity = Velocity.GetNormalComponent(e.HitInfo.normal);
-        if (normalVelocity.magnitude < 0)
+        var normalSpeed = Vector3.Dot(Velocity, e.HitInfo.normal);
+        if (normalSpeed < 0)
         {
-            Velocity -= normalVelocity;
+            Velocity -= normalSpeed * e.HitInfo.normal;
         }
     }
 
