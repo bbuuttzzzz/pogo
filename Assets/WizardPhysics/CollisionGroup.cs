@@ -6,14 +6,11 @@ using WizardUtils.Math;
 
 namespace WizardPhysics
 {
-    public partial class CollisionGroup : MonoBehaviour
+    public class CollisionGroup : MonoBehaviour
     {
         public CollisionOrb[] CollisionOrbs;
         public float skinWidth = 0.01f;
         float rotationSkinDegrees;
-
-        [Tooltip("Instead of rotating this transform, rotate this specific transform (must be a child)")]
-        public Transform SwivelTransform;
 
         public CollisionEvent OnCollide;
 
@@ -21,13 +18,11 @@ namespace WizardPhysics
 
         private void Awake()
         {
-            if (SwivelTransform == null) SwivelTransform = transform;
-
             float minRadius = float.MaxValue;
             foreach (CollisionOrb orb in CollisionOrbs)
             {
 #if UNITY_EDITOR
-                if (!orb.transform.IsChildOf(SwivelTransform))
+                if (!orb.transform.IsChildOf(transform))
                 {
                     Debug.LogWarning($"{orb.gameObject} isn't a child of CollisionGoup {gameObject}");
                 }
@@ -40,9 +35,20 @@ namespace WizardPhysics
             OnCollide.AddListener(checkForTriggers);
         }
 
+        public Vector3 PhysicsPosition
+        {
+            get => transform.position;
+            set => transform.position = value;  
+        }
+        public Quaternion PhysicsRotation
+        {
+            get => transform.rotation;
+            set => transform.rotation = value;
+        }
+
         public void RotateTo(Quaternion targetRotation)
         {
-            Rotate(Quaternion.Inverse(SwivelTransform.rotation) * targetRotation);
+            Rotate(Quaternion.Inverse(PhysicsRotation) * targetRotation);
         }
 
         public void Rotate(Quaternion addRotation)
@@ -52,7 +58,7 @@ namespace WizardPhysics
             if (addAngle < 1E-8f) return;
 
             Quaternion skinnedAddRotation = Quaternion.AngleAxis(addAngle + rotationSkinDegrees, addAxis);
-            CollisionGroupPositionRecording start = new CollisionGroupPositionRecording(transform, SwivelTransform, CollisionOrbs);
+            CollisionGroupPositionRecording start = new CollisionGroupPositionRecording(transform, transform, CollisionOrbs);
             CollisionGroupPositionRecording skinnedFullRotation = start.Rotate(skinnedAddRotation);
             TestResult firstCollision = FindFirstCollision(start, skinnedFullRotation);
 
@@ -60,7 +66,7 @@ namespace WizardPhysics
             if (firstCollision == null)
             {
                 // we hit nothing. just move forward
-                SwivelTransform.rotation *= addRotation;
+                PhysicsRotation *= addRotation;
                 return;
             }
 
@@ -86,8 +92,8 @@ namespace WizardPhysics
             OnCollide.Invoke(firstCollisionArgs);
             firstCollision.CollidedOrb.OnCollisionEnter.Invoke(firstCollisionArgs);
 
-            transform.position += translation;
-            SwivelTransform.rotation *= addRotation;
+            PhysicsPosition += translation;
+            PhysicsRotation *= addRotation;
             return;
         }
 
@@ -104,7 +110,7 @@ namespace WizardPhysics
                 {
                     CollisionOrb orb = CollisionOrbs[orbIndex];
                     Ray ray = new Ray(orb.transform.position, remainingMovement);
-                    if (orb.TestRay(ray, distance + skinWidth, out RaycastHit hit))
+                    if (orb.TestRaySkinned(ray, distance, out RaycastHit hit, skinWidth))
                     {
                         if (firstCollision == null || hit.distance < firstCollision.MaxDistance)
                         {
@@ -120,7 +126,7 @@ namespace WizardPhysics
                     float skinDepth = skinWidth / Mathf.Sin(angleOfIncidence * Mathf.Deg2Rad);
 
                     float moveDistance = firstCollision.HitInfo.distance - skinDepth;
-                    transform.position += moveDistance * remainingMovement.normalized;
+                    PhysicsPosition += moveDistance * remainingMovement.normalized;
                     remainingMovement -= moveDistance * remainingMovement.normalized;
 
                     // remove non-tangent component from remainingMovement
@@ -134,7 +140,7 @@ namespace WizardPhysics
                 else
                 {
                     // move all the way up
-                    transform.position += remainingMovement;
+                    PhysicsPosition += remainingMovement;
                     remainingMovement = Vector3.zero;
                 }
             }
@@ -147,7 +153,7 @@ namespace WizardPhysics
         {
             using var _ = new LayerChangeScope(other.gameObject, SafeLayer);
             Vector3 remainingMovement = -1 * movement;
-            Vector3 initialPosition = transform.position;
+            Vector3 initialPosition = PhysicsPosition;
 
             while (remainingMovement.magnitude >= 1E-8f)
             {
@@ -159,7 +165,7 @@ namespace WizardPhysics
                 {
                     CollisionOrb orb = CollisionOrbs[orbIndex];
                     Ray ray = new Ray(orb.transform.position, remainingMovement);
-                    if (orb.TestRay(ray, distance + skinWidth, out RaycastHit hit, SafeLayerMask))
+                    if (orb.TestRaySkinned(ray, distance, out RaycastHit hit, skinWidth, SafeLayerMask))
                     {
                         if (firstCollision == null || hit.distance < firstCollision.MaxDistance)
                         {
@@ -175,7 +181,7 @@ namespace WizardPhysics
                     float skinDepth = skinWidth / Mathf.Sin(angleOfIncidence * Mathf.Deg2Rad);
 
                     float moveDistance = firstCollision.HitInfo.distance - skinDepth;
-                    transform.position += moveDistance * remainingMovement.normalized;
+                    PhysicsPosition += moveDistance * remainingMovement.normalized;
                     remainingMovement -= moveDistance * remainingMovement.normalized;
 
                     // remove non-tangent component from remainingMovement
@@ -189,13 +195,13 @@ namespace WizardPhysics
                 else
                 {
                     // move all the way up
-                    transform.position += remainingMovement;
+                    PhysicsPosition += remainingMovement;
                     remainingMovement = Vector3.zero;
                 }
             }
 
             // jump backwards the distance the object will move since the above is all calculated relatively
-            transform.position += movement;
+            PhysicsPosition += movement;
         }
 
         #region Collision
@@ -212,8 +218,8 @@ namespace WizardPhysics
         #region Helper Functions
         private void ApplyRecording(CollisionGroupPositionRecording recording)
         {
-            transform.position = recording.ParentPosition;
-            SwivelTransform.rotation = recording.ParentRotation;
+            PhysicsPosition = recording.ParentPosition;
+            PhysicsRotation = recording.ParentRotation;
         }
 
 
@@ -224,7 +230,7 @@ namespace WizardPhysics
                 Vector3 direction = end.OrbPositions[n] - start.OrbPositions[n];
                 float distance = direction.magnitude;
                 Ray testRay = new Ray(start.OrbPositions[n], direction);
-                if (CollisionOrbs[n].TestRay(testRay, distance + skinWidth, out RaycastHit hit))
+                if (CollisionOrbs[n].TestRaySkinned(testRay, distance, out RaycastHit hit, skinWidth))
                 {
                     return true;
                 }
@@ -243,7 +249,7 @@ namespace WizardPhysics
                 Vector3 direction = end.OrbPositions[n] - start.OrbPositions[n];
                 float distance = direction.magnitude;
                 Ray testRay = new Ray(start.OrbPositions[n], direction);
-                if (CollisionOrbs[n].TestRay(testRay, distance + skinWidth, out RaycastHit hit))
+                if (CollisionOrbs[n].TestRaySkinned(testRay, distance, out RaycastHit hit, skinWidth))
                 {
                     float maxDistance = (distance + skinWidth);
                     if (firstCollision == null || hit.distance / maxDistance < firstCollision.HitInfo.distance / firstCollision.MaxDistance)
@@ -299,11 +305,6 @@ namespace WizardPhysics
             }
 
             return closestPoint + start.ParentPosition;
-        }
-
-        internal void RotateTo(Quaternion desiredModelRotation, object onCollide)
-        {
-            throw new NotImplementedException();
         }
 
         private int FindOrb(CollisionOrb orb)

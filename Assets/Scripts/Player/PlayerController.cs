@@ -2,16 +2,17 @@ using Assets.Scripts.Player;
 using Inputter;
 using Pogo;
 using Pogo.Abilities;
+using Pogo.MaterialTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using WizardPhysics;
+using WizardPhysics.PhysicsTime;
 using WizardUtils;
 using WizardUtils.SceneManagement;
-
-[RequireComponent(typeof(CollisionGroup))]
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,9 +23,35 @@ public class PlayerController : MonoBehaviour
     [NonSerialized]
     public PlayerAttachmentHandler AttachmentHandler;
 
+    public Vector3 PhysicsPosition
+    {
+        get => CollisionGroup.PhysicsPosition;
+        set
+        {
+            CollisionGroup.PhysicsPosition = value;
+        }
+    }
+    public Quaternion PhysicsRotation
+    {
+        get => CollisionGroup.PhysicsRotation;
+        set
+        {
+            CollisionGroup.PhysicsRotation = value;
+        }
+    }
+    public Vector3 RenderPosition
+    {
+        get => RenderTransform.position;
+        set => RenderTransform.position = value;
+    }
+    public Quaternion RenderRotation
+    {
+        get => RenderPivotTransform.rotation;
+        set => RenderPivotTransform.rotation = value;
+    }
+
     private void Awake()
     {
-        CollisionGroup = GetComponent<CollisionGroup>();
         AttachmentHandler = GetComponent<PlayerAttachmentHandler>();
     }
 
@@ -33,6 +60,8 @@ public class PlayerController : MonoBehaviour
         PogoGameManager.RegisterPlayer(this);
         PogoGameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
         PogoGameManager.GameInstance.OnControlSceneChanged += onControlSceneChanged;
+        PogoGameManager.PogoInstance.TimeManager.OnPhysicsUpdate.AddListener(PhysicsUpdate);
+        PogoGameManager.PogoInstance.TimeManager.OnRenderUpdate.AddListener(RenderUpdate);
         loadSurfaceProperties();
 
         var sensitivitySetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.SETTINGKEY_SENSITIVITY);
@@ -48,8 +77,11 @@ public class PlayerController : MonoBehaviour
         AutoRespawnDelay = respawnDelaySetting.Value;
 
         UpdateCursorLock(PogoGameManager.GameInstance.Paused);
-        internalEyeAngles = new Vector3(0, transform.localRotation.eulerAngles.y, 0);
-        transform.rotation = Quaternion.identity;
+
+        PhysicsPosition = RenderPosition;
+        internalEyeAngles = new Vector3(0, RenderRotation.eulerAngles.y, 0);
+        PhysicsRotation = Quaternion.identity;
+        RenderRotation = Quaternion.identity;
 
         CollisionGroup.OnCollide.AddListener(onCollide);
 
@@ -89,14 +121,40 @@ public class PlayerController : MonoBehaviour
         if (CurrentState == PlayerStates.Alive)
         {
             DoLook();
-            UpdateDesiredModelPitch();
-            ApplyForces();
-            RotateAndMove();
+            UpdateDesiredModelPitch(Time.deltaTime);
+            RenderRotation = DesiredModelRotation;
         }
         else
         {
             CheckForRespawn();
         }
+    }
+
+    void RenderUpdate(RenderArgs e)
+    {
+        if (CurrentState == PlayerStates.Alive)
+        {
+            RenderMove(e.FrameInterpolator);
+            RenderRotation = DesiredModelRotation;
+            UpdateCameraRotation();
+        }
+
+        Debug.DrawRay(RenderPosition, RenderRotation * Vector3.up * e.FrameInterpolator, new Color(e.FrameInterpolator, 1, 0), 2);
+    }
+
+    void PhysicsUpdate()
+    {
+        lastPhysicsPosition = PhysicsPosition;
+        lastPhysicsRotation = PhysicsRotation;
+
+        if (CurrentState == PlayerStates.Alive)
+        {
+            ApplyForces(Time.fixedDeltaTime);
+            PhysicsRotateAndMove();
+        }
+
+        Debug.DrawRay(lastPhysicsPosition, lastPhysicsRotation * Vector3.up, Color.gray, 2);
+        Debug.DrawRay(PhysicsPosition, PhysicsRotation * Vector3.up, Color.red, Time.fixedDeltaTime);
     }
 
     private void CheckForRespawn()
@@ -108,6 +166,24 @@ public class PlayerController : MonoBehaviour
             Spawn();
         }
     }
+
+    #region Physics
+    private Vector3 lastPhysicsPosition;
+    private Quaternion lastPhysicsRotation;
+
+
+    private void PhysicsRotateAndMove()
+    {
+        CollisionGroup.RotateTo(DesiredModelRotation);
+        CollisionGroup.Move(Velocity * Time.fixedDeltaTime);
+    }
+
+    private void RenderMove(float t)
+    {
+        RenderPosition = Vector3.Lerp(lastPhysicsPosition, PhysicsPosition, t);
+    }
+
+    #endregion
 
     #region Game Logic
     private PlayerStates currentState;
@@ -187,6 +263,16 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     material = (hitInfo.collider as MeshCollider).sharedMesh.GetMaterialAtTriangle(renderer, hitInfo.triangleIndex);
+                }
+            }
+            else
+            {
+                var specifier = hitInfo.collider.GetComponent<SurfaceConfigSpecifier>();
+                if (specifier != null)
+                {
+                    surfaceCache.Collider = hitInfo.collider;
+                    surfaceCache.SurfaceConfig = specifier.SurfaceConfig;
+                    return specifier.SurfaceConfig;
                 }
             }
         }
@@ -297,12 +383,23 @@ public class PlayerController : MonoBehaviour
     {
         Velocity = Vector3.zero;
         PitchFrac = 0;
-        Model.rotation = DesiredModelRotation;
+        RenderTransform.rotation = DesiredModelRotation;
     }
 
+#if UNITY_EDITOR
+    public void TeleportToInEditor(Transform target)
+    {
+        PhysicsPosition = target.position;
+        PhysicsRotation = target.rotation.YawOnly();
+        RenderPosition = target.position;
+        RenderRotation = target.rotation.YawOnly();
+        CameraSwivelPoint.transform.rotation = target.rotation.YawOnly();
+    }
+#endif
     public void TeleportTo(Transform target, bool preservePhysics = false)
     {
-        transform.position = target.position;
+        PhysicsPosition = target.position;
+        RenderPosition = target.position;
         internalEyeAngles = new Vector3(0, target.rotation.eulerAngles.y, 0);
         if (!preservePhysics)
         {
@@ -347,8 +444,8 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Model maneuvering
-    public Transform Model;
-    public Transform Camera;
+    public Transform RenderTransform;
+    public Transform RenderPivotTransform;
     public float PitchFrac = 0;
     const float ModelPitchMul = 1.5f;
     const float PitchFracSpeed = 10;
@@ -374,10 +471,10 @@ public class PlayerController : MonoBehaviour
     public Quaternion DesiredModelRotation => Quaternion.Euler(PitchFrac * ModelPitchMul * EyeAngles.x, EyeAngles.y, EyeAngles.z);
     public Quaternion CameraRotation => Quaternion.Euler(PitchFrac * EyeAngles.x, EyeAngles.y, EyeAngles.z);
 
-    void UpdateDesiredModelPitch()
+    void UpdateDesiredModelPitch(float deltaTime)
     {
         float targetPitchFrac = InputManager.CheckKey(KeyName.Jump) ? 0 : 1;
-        PitchFrac = Mathf.MoveTowards(PitchFrac, targetPitchFrac, PitchFracSpeed * Time.deltaTime);
+        PitchFrac = Mathf.MoveTowards(PitchFrac, targetPitchFrac, PitchFracSpeed * deltaTime);
     }
 
     #endregion
@@ -388,23 +485,56 @@ public class PlayerController : MonoBehaviour
     public UnityEvent OnTouch;
     public Vector3 Velocity;
 
+    private List<IPlayerContinuousForce> ContinuousForces = new List<IPlayerContinuousForce>();
+
     const float JumpMaxSideSpeed = 6f;
     public const float JumpForce = 6f;
     const float AIR_ACCELERATE = 0;
     public const float AIR_SPEED_MAX = 1f; //max tangent air speed, the lower this value the slower the airstrafe
 
-    public void ApplyForce(Vector3 force)
-    {
-        Velocity += force;
-    }
-
-    public void ApplyForces()
+    private void ApplyForces(float deltaTime)
     {
         Vector3 movement = InputManager.CheckAxisSet(AxisSetName.Movement);
         Vector3 airMove = GetYawQuat() * new Vector3(movement.x, 0, movement.z);
-        Velocity = AirAccelerate(Velocity, airMove);
+        Velocity = AirAccelerate(Velocity, airMove, deltaTime);
 
-        ApplyForce(Physics.gravity * Time.deltaTime);
+        ApplyForce(Physics.gravity * deltaTime);
+
+        foreach(var continuousForce in ContinuousForces)
+        {
+            ApplyForce(continuousForce.GetForce(this, deltaTime));
+        }
+    }
+
+    public void AddContinuousForce(IPlayerContinuousForce force)
+    {
+        if (!ContinuousForces.Contains(force))
+        {
+            ContinuousForces.Add(force);
+        }
+#if DEBUG
+        else
+        {
+            Debug.LogWarning($"Tried to add a duplicate continuous force {force}");
+        }
+#endif
+    }
+
+    public void RemoveContinuousForce(IPlayerContinuousForce force)
+    {
+#if DEBUG
+        if (!ContinuousForces.Remove(force))
+        {
+            Debug.LogWarning($"Tried to remove a missing continuous force {force}");
+        }
+#else
+        ContinuousForces.Remove(force);
+#endif
+    }
+
+    public void ApplyForce(Vector3 force)
+    {
+        Velocity += force;
     }
 
     int lastJumpSoundIndex = -1;
@@ -438,26 +568,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void RotateAndMove()
-    {
-        if (Time.deltaTime == 0) return;
-        CollisionGroup.RotateTo(DesiredModelRotation);
-        CollisionGroup.Move(Velocity * Time.deltaTime);
-    }
-
     private void onCollide(CollisionEventArgs e)
     {
         // if we have any speed into the surface, remove it
-        var normalVelocity = Velocity.GetNormalComponent(e.HitInfo.normal);
-        if (normalVelocity.magnitude < 0)
+        var normalSpeed = Vector3.Dot(Velocity, e.HitInfo.normal);
+        if (normalSpeed < 0)
         {
-            Velocity -= normalVelocity;
+            Velocity -= normalSpeed * e.HitInfo.normal;
         }
     }
 
     public UnityEvent OnDisjoint;
     public void Disjoint()
     {
+        lastPhysicsPosition = PhysicsPosition;
+        lastPhysicsRotation = PhysicsRotation;
+        RenderPosition = PhysicsPosition;
+        RenderRotation = PhysicsRotation;
+
         OnDisjoint?.Invoke();
     }
     #endregion
@@ -469,7 +597,7 @@ public class PlayerController : MonoBehaviour
     /// <param name="vel">Initial Velocity</param>
     /// <param name="mov">player's movement input</param>
     /// <returns>New velocity</returns>
-    Vector3 AirAccelerate(Vector3 vel, Vector3 mov)
+    Vector3 AirAccelerate(Vector3 vel, Vector3 mov, float deltaTime)
     {
         float ACCEL = AIR_ACCELERATE;
 
@@ -484,7 +612,7 @@ public class PlayerController : MonoBehaviour
         if (addspeed <= 0) //if you're already accelerating over max, don't change anything
             return vel;
 
-        float accelspeed = ACCEL * Time.deltaTime * AIR_SPEED_MAX; //finds the acceleration to add
+        float accelspeed = ACCEL * deltaTime * AIR_SPEED_MAX; //finds the acceleration to add
         if (accelspeed > addspeed) //if the acceleration would put you over max, cap it at max.
             accelspeed = addspeed;
 
@@ -571,7 +699,12 @@ public class PlayerController : MonoBehaviour
         internalEyeAngles += InputManager.CheckAxisSet(AxisSetName.Aim).Scale(SENSITIVITY * SENS_PITCH_SCALE, SENSITIVITY, SENSITIVITY);
         //clamp pitch
         internalEyeAngles.x = Mathf.Clamp(internalEyeAngles.x, -89.9f, 89.9f);
+        
+        UpdateCameraRotation();
+    }
 
+    private void UpdateCameraRotation()
+    {
         CameraSwivelPoint.transform.rotation = GetAimQuat();
     }
     #endregion

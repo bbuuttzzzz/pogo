@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 4
+  m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000006, guid: df57d869bd2e7f3488283ae38601ac15, type: 2}
+  m_LightingDataAsset: {fileID: 112000006, guid: 21dc2b7296c420a4ab2f4dfbd39d46ca, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 686ad3da72f088049a001ff5b5e903be, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -1835,6 +1835,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1481370417}
     m_Modifications:
+    - target: {fileID: 767351559234931580, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
+      propertyPath: m_BoundingSphereOverride.w
+      value: 3.74e-43
+      objectReference: {fileID: 0}
+    - target: {fileID: 767351559234931580, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
+      propertyPath: m_BoundingSphereOverride.x
+      value: 1.67e-43
+      objectReference: {fileID: 0}
+    - target: {fileID: 767351559234931580, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
+      propertyPath: m_BoundingSphereOverride.y
+      value: 4.68e-43
+      objectReference: {fileID: 0}
+    - target: {fileID: 767351559234931580, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
+      propertyPath: m_BoundingSphereOverride.z
+      value: 4.89e-43
+      objectReference: {fileID: 0}
     - target: {fileID: 6520150853076963147, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
       propertyPath: m_Name
       value: Basalt_Lamp (2)
@@ -3770,6 +3786,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1481370417}
     m_Modifications:
+    - target: {fileID: 767351559234931580, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
+      propertyPath: m_BoundingSphereOverride.x
+      value: -0.57735026
+      objectReference: {fileID: 0}
+    - target: {fileID: 767351559234931580, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
+      propertyPath: m_BoundingSphereOverride.y
+      value: -0
+      objectReference: {fileID: 0}
     - target: {fileID: 6520150853076963147, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
       propertyPath: m_Name
       value: Basalt_Lamp
@@ -6215,6 +6239,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1481370417}
     m_Modifications:
+    - target: {fileID: 767351559234931580, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
+      propertyPath: m_BoundingSphereOverride.w
+      value: 1e-45
+      objectReference: {fileID: 0}
     - target: {fileID: 6520150853076963147, guid: 38879ce836d0ec241ac8f24b54439749, type: 3}
       propertyPath: m_Name
       value: Basalt_Lamp (1)
@@ -6732,6 +6760,10 @@ PrefabInstance:
     - target: {fileID: 3258288277852662720, guid: 7d8835105f429f040b2d001a2d413c28, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 20.263
+      objectReference: {fileID: 0}
+    - target: {fileID: 5145007097090944661, guid: 7d8835105f429f040b2d001a2d413c28, type: 3}
+      propertyPath: m_BoundingSphereOverride.y
+      value: 1e-45
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d8835105f429f040b2d001a2d413c28, type: 3}
@@ -7505,10 +7537,11 @@ RenderTexture:
   m_UseDynamicScale: 0
   m_BindMS: 0
   m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
   m_TextureSettings:
     serializedVersion: 2
     m_FilterMode: 1
-    m_Aniso: 1
+    m_Aniso: 0
     m_MipBias: 0
     m_WrapU: 1
     m_WrapV: 1
@@ -8062,6 +8095,14 @@ PrefabInstance:
     - target: {fileID: 3258288277852662720, guid: 7d8835105f429f040b2d001a2d413c28, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 20.263
+      objectReference: {fileID: 0}
+    - target: {fileID: 5145007097090944661, guid: 7d8835105f429f040b2d001a2d413c28, type: 3}
+      propertyPath: m_BoundingSphereOverride.w
+      value: 4e-45
+      objectReference: {fileID: 0}
+    - target: {fileID: 5145007097090944661, guid: 7d8835105f429f040b2d001a2d413c28, type: 3}
+      propertyPath: m_BoundingSphereOverride.y
+      value: 1e-45
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d8835105f429f040b2d001a2d413c28, type: 3}

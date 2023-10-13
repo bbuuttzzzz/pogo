@@ -1,6 +1,7 @@
 ﻿using Players.Visuals;
 using System;
 using UnityEngine;
+using WizardPhysics.PhysicsTime;
 using WizardUtils;
 
 namespace Pogo.Abilities
@@ -16,28 +17,32 @@ namespace Pogo.Abilities
 
         public PlayerModelAttachment BackAttachment;
 
-        protected override void AppliedUpdate()
+        protected override void AppliedPhysicsUpdate()
         {
-            ApplyLift();
-            ApplyDragAndRudder();
+            ApplyLift(Time.fixedDeltaTime);
+            ApplyDragAndRudder(Time.fixedDeltaTime);
             WingsTransform.rotation = Owner.DesiredModelRotation;
         }
 
-        private void ApplyLift()
+        protected override void AppliedRenderUpdate(RenderArgs arg0)
+        {
+        }
+
+        private void ApplyLift(float interval)
         {
             float evaluatedLift = LiftCurve.Evaluate(Owner.AngleOfAttack) * LiftScale;
             float squareVelocityAlongForward = Square(Vector3.Dot(Owner.ModelForward, Owner.Velocity));
 
-            Owner.ApplyForce(Owner.ModelUp * evaluatedLift * squareVelocityAlongForward * Time.deltaTime);
+            Owner.ApplyForce(Owner.ModelUp * evaluatedLift * squareVelocityAlongForward * interval);
         }
 
-        private void ApplyDragAndRudder()
+        private void ApplyDragAndRudder(float interval)
         {
             float evaluatedDrag = DragCurve.Evaluate(Owner.AngleOfAttack) * DragScale;
             float squareSpeed = Owner.Velocity.sqrMagnitude;
 
-            Owner.ApplyForce(Owner.Velocity.normalized * -1 * evaluatedDrag * squareSpeed * Time.deltaTime);
-            Owner.ApplyForce(Owner.ModelForward * evaluatedDrag * squareSpeed * Time.deltaTime * RudderScale);
+            Owner.ApplyForce(Owner.Velocity.normalized * -1 * evaluatedDrag * squareSpeed * interval);
+            Owner.ApplyForce(Owner.ModelForward * evaluatedDrag * squareSpeed * interval * RudderScale);
         }
 
         protected override void OnApply()

@@ -4833,7 +4833,7 @@ GameObject:
   - component: {fileID: 1631083514916103912}
   - component: {fileID: 531757198}
   - component: {fileID: 531757197}
-  - component: {fileID: 5873238162174998996}
+  - component: {fileID: 3590749567778168557}
   m_Layer: 7
   m_Name: BlowingFan
   m_TagString: Untagged
@@ -4888,8 +4888,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LocalDirection: {x: 0, y: 0, z: 1}
   WindSpeed: 10
-  Drag: 4
---- !u!114 &5873238162174998996
+  Drag: 0.5714286
+--- !u!114 &3590749567778168557
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4898,15 +4898,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1631083514916103919}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0537f4aa593d094296eebdd77a5b85a, type: 3}
+  m_Script: {fileID: 11500000, guid: e4fd0b6f382af704fa8b990da6e61b27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WhileInside:
+  OnEnter:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 531757197}
         m_TargetAssemblyTypeName: Pogo.Blower, Assembly-CSharp
-        m_MethodName: Blow
+        m_MethodName: Apply
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnExit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 531757197}
+        m_TargetAssemblyTypeName: Pogo.Blower, Assembly-CSharp
+        m_MethodName: Remove
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

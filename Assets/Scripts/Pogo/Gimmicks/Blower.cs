@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Pogo
 {
@@ -9,30 +10,44 @@ namespace Pogo
         public float WindSpeed;
         public float Drag = 1;
 
-        Collider cachedPlayerCollider;
-        PlayerController cachedPlayer;
+        BlowerForce Force;
+
+        private void Awake()
+        {
+            Force = new BlowerForce(this);
+        }
+
         public void Blow(Collider other)
         {
-            if (cachedPlayerCollider != other)
-            {
-                // LAZY AS FUCK!!!! lol
-                PlayerController player = other.GetComponentInParent<PlayerController>();
-                if (player != null)
-                {
-                    cachedPlayer = player;
-                }
-                else
-                {
-                    return;
-                }
-            }
-
-            Vector3 direction = transform.TransformVector(LocalDirection);
-            float deltaSpeed = WindSpeed - Vector3.Dot(cachedPlayer.Velocity, direction);
-            if (deltaSpeed < 0) return;
-
-            cachedPlayer.ApplyForce(direction * Drag * deltaSpeed * deltaSpeed * Time.deltaTime * Time.deltaTime);
+            throw new NotImplementedException();
         }
+
+        public void Apply(Collider other)
+        {
+            PlayerController player = other.GetComponentInParent<PlayerController>();
+            if (player != null)
+            {
+                player.AddContinuousForce(Force);
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        public void Remove(Collider other)
+        {
+            PlayerController player = other.GetComponentInParent<PlayerController>();
+            if (player != null)
+            {
+                player.RemoveContinuousForce(Force);
+            }
+            else
+            {
+                return;
+            }
+        }
+
 
         private void OnDrawGizmosSelected()
         {
@@ -41,6 +56,27 @@ namespace Pogo
             Quaternion localAxisRotation = Quaternion.LookRotation(LocalDirection, Vector3.up);
             Gizmos.color = Color.white;
             Gizmos.DrawMesh(arrowMesh, transform.position, transform.rotation * localAxisRotation, Vector3.one);
+        }
+
+        public class BlowerForce : IPlayerContinuousForce
+        {
+            private Blower parent;
+
+            public BlowerForce(Blower parent)
+            {
+                this.parent = parent;
+            }
+
+            public bool IsValid() => parent != null;
+
+            public Vector3 GetForce(PlayerController player, float deltaTime)
+            {
+                Vector3 direction = parent.transform.TransformVector(parent.LocalDirection);
+                float deltaSpeed = parent.WindSpeed - Vector3.Dot(player.Velocity, direction);
+                if (deltaSpeed < 0) return Vector3.zero;
+
+                return direction * parent.Drag * deltaSpeed * deltaTime;
+            }
         }
     }
 }
