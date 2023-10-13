@@ -55,7 +55,7 @@ namespace Pogo.Challenges
             }
             else
             {
-                button.GetComponent<Animator>().SetBool("HasCreator", !string.IsNullOrEmpty(DeveloperChallenge.CreatorName));
+                SetHasCreator(!string.IsNullOrEmpty(DeveloperChallenge.CreatorName));
 
                 int bestTimeMS = DeveloperChallenge.BestTimeMS;
                 float bestTime = (float)bestTimeMS / 1000;
@@ -80,6 +80,12 @@ namespace Pogo.Challenges
                 }
             }
             
+        }
+
+        private void SetHasCreator(bool hasCreator)
+        {
+            CreatorText.alpha = hasCreator ? 1 : 0;
+            TitleText.verticalAlignment = hasCreator ? VerticalAlignmentOptions.Top : VerticalAlignmentOptions.Middle;
         }
     }
 }
