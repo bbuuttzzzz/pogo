@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using WizardPhysics.PhysicsTime;
 
 namespace Pogo.Abilities
 {
@@ -18,6 +19,35 @@ namespace Pogo.Abilities
             CleanseOnTouch
         }
         public CleanseTypes CleanseType;
+
+        private void Awake()
+        {
+            PogoGameManager.PogoInstance.TimeManager.OnPhysicsUpdate.AddListener(OnPhysicsUpdate);
+            PogoGameManager.PogoInstance.TimeManager.OnRenderUpdate.AddListener(OnRenderUpdate);
+        }
+
+        private void OnDestroy()
+        {
+            PogoGameManager.PogoInstance.TimeManager.OnPhysicsUpdate.RemoveListener(OnPhysicsUpdate);
+            PogoGameManager.PogoInstance.TimeManager.OnRenderUpdate.RemoveListener(OnRenderUpdate);
+        }
+
+
+        private void OnPhysicsUpdate()
+        {
+            if (IsApplied)
+            {
+                AppliedPhysicsUpdate();
+            }
+        }
+
+        private void OnRenderUpdate(RenderArgs arg0)
+        {
+            if (IsApplied)
+            {
+                AppliedRenderUpdate(arg0);
+            }
+        }
 
         public void Apply(PlayerController target)
         {
@@ -67,14 +97,11 @@ namespace Pogo.Abilities
 
         protected virtual void Update()
         {
-            if (IsApplied)
-            {
-                AppliedUpdate();
-            }
         }
 
         protected abstract void OnApply();
         protected abstract void OnCleanse();
-        protected abstract void AppliedUpdate();
+        protected abstract void AppliedPhysicsUpdate();
+        protected abstract void AppliedRenderUpdate(RenderArgs arg0);
     }
 }

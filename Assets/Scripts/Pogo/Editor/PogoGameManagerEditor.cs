@@ -68,14 +68,7 @@ public class PogoGameManagerEditor : GameManagerEditor
                     self.CachedRespawnPoint.transform.position = itempath.item.transform.position;
                     self.CachedRespawnPoint.transform.rotation = Quaternion.Euler(0, itempath.item.transform.rotation.eulerAngles.y, 0);
                     Undo.RecordObject(self.CachedRespawnPoint.transform, "Move Player to Spawnpoint");
-
-                    var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
-                    foreach (PlayerController player in results)
-                    {
-                        player.transform.position = self.CachedRespawnPoint.transform.position;
-                        player.transform.rotation = Quaternion.Euler(0, self.CachedRespawnPoint.transform.rotation.eulerAngles.y, 0);
-                        Undo.RecordObject(player, "Move Player to Spawnpoint");
-                    }
+                    MovePlayerToSpawnPoint();
 
                     Undo.CollapseUndoOperations(undoGroup);
                 });
@@ -92,15 +85,25 @@ public class PogoGameManagerEditor : GameManagerEditor
 
             if (GUILayout.Button("Move Player"))
             {
-                var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
-                foreach (PlayerController player in results)
-                {
-                    player.transform.position = self.CachedRespawnPoint.position;
-                    player.transform.rotation = Quaternion.Euler(0, self.CachedRespawnPoint.rotation.eulerAngles.y, 0);
-                    Undo.RecordObject(player, "Move Player to Spawnpoint");
-                }
+                MovePlayerToSpawnPoint();
             }
         }
         
+    }
+
+    private void MovePlayerToSpawnPoint()
+    {
+        var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
+        foreach (PlayerController player in results)
+        {
+            using (new UndoScope("Move Player to Spawn Point"))
+            {
+                Undo.RecordObject(player, "Move Player to Spawnpoint");
+                Undo.RecordObject(player.CollisionGroup.transform, "");
+                Undo.RecordObject(player.RenderTransform, "");
+                Undo.RecordObject(player.RenderPivotTransform, "");
+                player.TeleportToInEditor(self.CachedRespawnPoint.transform);
+            }
+        }
     }
 }

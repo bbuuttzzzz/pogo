@@ -1,4 +1,5 @@
-﻿using WizardPhysics;
+﻿using Pogo.MaterialTypes;
+using WizardPhysics;
 
 public interface ISpecialPlayerCollisionBehavior
 {

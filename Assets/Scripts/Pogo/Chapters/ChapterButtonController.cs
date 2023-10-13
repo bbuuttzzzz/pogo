@@ -66,7 +66,7 @@ namespace Pogo.Challenges
                     IconImage.sprite = ComingSoonSprite;
                     break;
                 case WorldChapter.Types.SteamOnly:
-                    TitleText.text = "Steam Version Only";
+                    TitleText.text = "Full Version Only";
                     IconImage.sprite = ComingSoonSprite;
                     break;
             }
