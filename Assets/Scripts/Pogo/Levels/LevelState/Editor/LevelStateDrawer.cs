@@ -20,19 +20,21 @@ namespace Pogo.Levels
             var propertyLevel = property.FindPropertyRelative(nameof(LevelState.Level));
             var propertyState = property.FindPropertyRelative(nameof(LevelState.StateId));
 
-            Rect[] rects = RectExtensions.SplitRectHorizontally(position, 0.4f, 0.4f, 0.2f);
+            Rect[] rects = RectExtensions.SplitRectHorizontally(position, 0.4f, 0.25f, 0.2f, 0.15f);
 
             int state = propertyState.intValue;
 
-            EasyLabelledPropertyField(rects[0].Margin(5,0), 0.3f, propertyLevel, new GUIContent("Level"));
+            EditorGUI.LabelField(rects[0], label);
+
+            EditorGUI.PropertyField(rects[1], propertyLevel,GUIContent.none);
 
             using (new EditorGUI.DisabledScope(state < 0))
             {
-                EasyLabelledPropertyField(rects[1].Margin(5,0), 0.3f, propertyState, new GUIContent(nameof(LevelState.StateId)));
+                EasyLabelledPropertyField(rects[2].Margin(5,0), 0.6f, propertyState, new GUIContent(nameof(LevelState.StateId)));
             }
             bool toggle;
 
-            toggle = EasyLabelledToggle(rects[2].Margin(5,0), 0.5f, state < 0, new GUIContent("any?"));
+            toggle = EasyLabelledToggle(rects[3].Margin(0,0,0,5), 0.5f, state < 0, new GUIContent("any?"));
             if (!toggle && state < 0)
             {
                 propertyState.intValue = cachedState;
