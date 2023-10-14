@@ -8,8 +8,7 @@ namespace Pogo
     public class AreaPortal : MonoBehaviour
     {
         public LevelState LevelState;
-        public LevelDescriptor Level;
-        
+
         public void EnterPortal()
         {
             PogoGameManager.PogoInstance.LoadLevel(LevelState);
