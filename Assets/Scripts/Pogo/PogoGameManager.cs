@@ -4,6 +4,7 @@ using Platforms;
 using Pogo.Challenges;
 using Pogo.Checkpoints;
 using Pogo.Collectibles;
+using Pogo.Levels;
 using Pogo.Saving;
 using System;
 using System.Collections;
@@ -301,6 +302,26 @@ namespace Pogo
         {
             levelManager.TransitionAtmosphere(postProcessingPrefab, instant);
         }
+        #endregion
+
+        #region Level State
+
+        [HideInInspector]
+        public UnityEvent<LevelStateChangedArgs> OnLevelStateChanged;
+        private LevelState? CurrentLevelState;
+
+        public void SetLevelState(LevelState newState, bool instant = false)
+        {
+            LevelStateChangedArgs args = new LevelStateChangedArgs(
+                CurrentLevelState,
+                newState,
+                instant
+            );
+
+            CurrentLevelState = newState;
+            OnLevelStateChanged?.Invoke(args);
+        }
+
         #endregion
 
         #region Time Freezing

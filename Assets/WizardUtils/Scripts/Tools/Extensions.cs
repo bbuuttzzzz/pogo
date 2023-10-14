@@ -5,6 +5,18 @@ namespace WizardUtils
 {
     public static class RectExtensions
     {
+        public static Rect Margin(this Rect rect, float horizontal, float vertical) => Margin(rect, vertical, horizontal, vertical, horizontal);
+        public static Rect Margin(this Rect rect, float top, float right, float bottom, float left)
+        {
+            left = Mathf.Min(left, rect.width);
+            right = Mathf.Min(right, rect.width - left);
+
+            top = Mathf.Min(top, rect.height);
+            bottom = Mathf.Min(bottom, rect.height - top);
+
+            return new Rect(rect.x + left, rect.y + top, rect.width - left - right, rect.height - top - bottom);
+        }
+
         /// <summary>
         /// Splits the supplied rectangle into 2 rectangles in a row
         /// </summary>
