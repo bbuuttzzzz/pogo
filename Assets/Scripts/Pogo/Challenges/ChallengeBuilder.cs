@@ -1,5 +1,6 @@
 ﻿using Inputter;
 using Pogo.Checkpoints;
+using Pogo.Levels;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Pogo.Challenges
 {
     public class ChallengeBuilder : MonoBehaviour
     {
-        public LevelManifest ValidLevels;
+        public LevelShareIndexManifest ValidLevels;
 
         [NonSerialized]
         public Challenge CurrentChallenge;
@@ -261,9 +262,9 @@ My Best Time: {1:N3} seconds"
             return EncodeChallenge(challenge, ValidLevels);
         }
 
-        public static string EncodeChallenge(Challenge challenge, LevelManifest manifest)
+        public static string EncodeChallenge(Challenge challenge, LevelShareIndexManifest manifest)
         {
-            // todo WRAP THIS cuz maybe I use it later... i guess. this just feels so ugly being in here
+            // todo WRAP THIS cuz maybe I use it later... shareIndex guess. this just feels so ugly being in here
             byte[] completeChallenge = new byte[PayloadLength];
             int offset = 0;
 
@@ -277,7 +278,7 @@ My Best Time: {1:N3} seconds"
             addByte(ref completeChallenge, offset, yaw);
             offset++;
 
-            int rawIndex = GetLevelIndex(challenge.Level, manifest);
+            int rawIndex = GetShareIndex(challenge.LevelState, manifest);
             byte levelIndex = Convert.ToByte(rawIndex);
             addByte(ref completeChallenge, offset, levelIndex);
             offset++;
@@ -293,32 +294,30 @@ My Best Time: {1:N3} seconds"
             return result;
         }
 
-        private static int GetLevelIndex(LevelDescriptor level, LevelManifest manifest)
+        private static int GetShareIndex(LevelState levelState, LevelShareIndexManifest manifest)
         {
-            foreach (LevelDescriptor validLevel in manifest.Levels)
+            for (int shareIndex = 0; shareIndex < manifest.LevelStates.Length; shareIndex++)
             {
-                if (validLevel == level)
+                LevelState manifestLevelState = manifest.LevelStates[shareIndex];
+                if (manifestLevelState == levelState)
                 {
-                    return level.ShareIndex;
+                    return shareIndex;
                 }
             }
 
-            Debug.LogError(($"level \'{level}\' was not valid for Manifest \'{manifest}\'"));
-            return 0;
+            Debug.LogError(($"levelState \'{levelState}\' was not valid for Manifest \'{manifest}\'"));
+            return -1;
         }
 
-        public static LevelDescriptor GetLevelFromIndex(int shareIndex, LevelManifest manifest)
+        public static LevelState? GetLevelStateFromShareIndex(int shareIndex, LevelShareIndexManifest manifest)
         {
-            foreach (LevelDescriptor validLevel in manifest.Levels)
+            if (shareIndex >= manifest.LevelStates.Length - 1)
             {
-                if (validLevel.ShareIndex == shareIndex)
-                {
-                    return validLevel;
-                }
+                Debug.LogError(($"shareIndex \'{shareIndex}\' was not valid for Manifest \'{manifest}\'"));
+                return null;
             }
 
-            Debug.LogError(($"shareIndex \'{shareIndex}\' was not valid for Manifest \'{manifest}\'"));
-            return null;
+            return manifest.LevelStates[shareIndex];
         }
 
         static void AddVector3Short(ref byte[] array, int offset, Vector3Short value)
@@ -384,11 +383,12 @@ My Best Time: {1:N3} seconds"
         #region Decoding
         public enum DecodeFailReason
         {
-            _none,
-            WrongLength,
-            Invalid,
-            CantShareInvalid,
-            CantShareUncleared,
+            _none = 0,
+            WrongLength = 1,
+            Invalid = 2,
+            Incompatible = 3,
+            CantShareInvalid = 65,
+            CantShareUncleared = 66,
         }
 
         public UnityEvent<DecodeFailReason> OnDecodeFailed;
@@ -406,7 +406,7 @@ My Best Time: {1:N3} seconds"
             LoadChallenge();
         }
 
-        public static Challenge DecodeChallenge(string encodedPayload, LevelManifest manifest, out DecodeFailReason failReason)
+        public static Challenge DecodeChallenge(string encodedPayload, LevelShareIndexManifest manifest, out DecodeFailReason failReason)
         {
             if (encodedPayload.Length != PayloadLength)
             {
@@ -441,8 +441,15 @@ My Best Time: {1:N3} seconds"
             offset++;
 
 
-            byte levelIndex = getByte(rawPayload, offset);
-            challenge.Level = GetLevelFromIndex(levelIndex, manifest);
+            byte shareIndex = getByte(rawPayload, offset);
+            LevelState? levelState = GetLevelStateFromShareIndex(shareIndex, manifest);
+            if (!levelState.HasValue)
+            {
+                failReason = DecodeFailReason.Incompatible;
+                return null;
+            }
+
+            challenge.LevelState = levelState.Value;
             offset++;
 
 

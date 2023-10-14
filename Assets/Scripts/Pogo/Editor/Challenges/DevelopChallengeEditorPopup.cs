@@ -8,11 +8,11 @@ namespace Pogo.Inspector
 {
     public class DevelopChallengeEditorPopup : PopupWindowContent
     {
-        public Action<LevelManifest, string> DecodePressedAction;
-        public LevelManifest Manifest;
+        public Action<LevelShareIndexManifest, string> DecodePressedAction;
+        public LevelShareIndexManifest Manifest;
         public string DecodeString;
 
-        public DevelopChallengeEditorPopup(Action<LevelManifest, string> decodePressedAction)
+        public DevelopChallengeEditorPopup(Action<LevelShareIndexManifest, string> decodePressedAction)
         {
             DecodePressedAction = decodePressedAction;
             DecodeString = "";
@@ -43,7 +43,7 @@ namespace Pogo.Inspector
 
         private void DrawManifestField()
         {
-            Manifest = (LevelManifest)EditorGUILayout.ObjectField("Manifest:", Manifest, typeof(LevelManifest), false);
+            Manifest = (LevelShareIndexManifest)EditorGUILayout.ObjectField("Manifest:", Manifest, typeof(LevelShareIndexManifest), false);
         }
 
         private void DrawDecodeStringField()

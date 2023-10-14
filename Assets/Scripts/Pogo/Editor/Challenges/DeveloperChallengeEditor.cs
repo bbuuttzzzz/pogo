@@ -22,7 +22,7 @@ namespace Pogo.Inspector
             return base.CreateInspectorGUI();
         }
 
-        private void onDecodePressed(LevelManifest manifest, string decodeString)
+        private void onDecodePressed(LevelShareIndexManifest manifest, string decodeString)
         {
             var challenge = ChallengeBuilder.DecodeChallenge(decodeString, manifest, out ChallengeBuilder.DecodeFailReason failReason);
             if (challenge != null)
