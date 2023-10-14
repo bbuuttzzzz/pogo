@@ -111,7 +111,6 @@ namespace Pogo
         public UnityEvent OnLevelLoaded;
 
         bool isLoadingLevel;
-        LevelDescriptor queuedLevel;
 
 #if UNITY_EDITOR
         public override void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
@@ -135,7 +134,7 @@ namespace Pogo
 #endif
             if (isLoadingLevel)
             {
-                queuedLevel = newLevel;
+                Debug.LogWarning("Tried to load a level while already loading a level :(");
                 return;
             }
 
