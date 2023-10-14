@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Levels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace Pogo.Challenges
         public const int WORST_TIME = 60_000;
         public ChallengeTypes ChallengeType;
 
+        public LevelState LevelState;
         public LevelDescriptor Level;
         public DeveloperChallenge DeveloperChallenge;
 

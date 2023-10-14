@@ -111,18 +111,23 @@ namespace Pogo
         /// <param name="settings"></param>
         /// <returns>FALSE if level is already loaded</returns>
         /// <param name="callback">called only if level loading starts successfully</param>
-        public bool LoadLevelAsync(LevelDescriptor newLevel, LevelLoadingSettings settings, Action<LevelLoadingData> callback = null)
+        public bool LoadLevelAsync(LevelLoadingSettings settings, Action<LevelLoadingData> callback = null)
         {
-            if (currentLevel == newLevel && !settings.ForceReload)
+            if (currentLevel == settings.LevelState.Level && !settings.ForceReload)
             {
-                Debug.LogWarning($"Tried to load already-loaded level {newLevel}");
+                if (PogoGameManager.PogoInstance.CurrentLevelState.HasValue
+                    && settings.LevelState.StateId != PogoGameManager.PogoInstance.CurrentLevelState.Value.StateId)
+                {
+                    PogoGameManager.PogoInstance.SetLevelState(settings.LevelState, settings.Instantly);
+                    return false;
+                }
                 return false;
             }
-            currentLevel = newLevel;
+            currentLevel = settings.LevelState.Level;
 
             List<AsyncOperation> loadTasks = new List<AsyncOperation>();
             List<AsyncOperation> unloadTasks = new List<AsyncOperation>();
-            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(newLevel);
+            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(settings.LevelState.Level);
 
             foreach (LevelDescriptor descriptor in scenesToLoad)
             {

@@ -1,4 +1,5 @@
-﻿using Pogo.Saving;
+﻿using Pogo.Levels;
+using Pogo.Saving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,16 @@ namespace Pogo
         /// <summary>
         /// Instantly adjust the atmosphere on level load finish instead of slowly transitioning
         /// </summary>
-        public bool InstantChangeAtmosphere;
+        public bool Instantly;
         public QuickSaveData? QuickSaveData;
+        public LevelState LevelState;
 
         public static LevelLoadingSettings Default => new LevelLoadingSettings() { ForceReload = false };
+        public static LevelLoadingSettings DefaultWithState(LevelState levelState)
+        {
+            var settings = Default;
+            settings.LevelState = levelState;
+            return settings;
+        }
     }
 }

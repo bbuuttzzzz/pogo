@@ -121,13 +121,18 @@ namespace Pogo
             levelManager.LoadDefaultAtmosphere();
         }
 #endif
-
-        public void LoadLevel(LevelDescriptor newLevel)
+        public void LoadLevel(LevelState newLevelState)
         {
-            LoadLevel(newLevel, LevelLoadingSettings.Default);
+            LoadLevel(LevelLoadingSettings.DefaultWithState(newLevelState));
         }
 
-        public void LoadLevel(LevelDescriptor newLevel, LevelLoadingSettings settings)
+        public void LoadLevel(LevelDescriptor newLevel) => LoadLevel(new LevelState()
+        {
+            Level = newLevel,
+            StateId = 0
+        });
+        
+        public void LoadLevel(LevelLoadingSettings settings)
         {
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
@@ -140,25 +145,21 @@ namespace Pogo
 
             Action callBack = () =>
             {
-                OnLoadLevelFinished(settings);
+                LevelManager.TransitionAtmosphere(LevelManager.CurrentLevel, settings.Instantly);
                 OnLevelLoaded?.Invoke();
+                SetLevelState(settings.LevelState, settings.Instantly);
             };
             isLoadingLevel = true;
 
             settings.LoadingFromMenu = settings.LoadingFromMenu || CurrentControlScene != null;
 #if UNITY_WEBGL
-            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelScenesInOrder(levelLoadingData, settings, callBack))))
+            if (!levelManager.LoadLevelAsync(settings, (levelLoadingData) => StartCoroutine(loadLevelScenesInOrder(levelLoadingData, settings, callBack))))
 #else
-            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelScenesSimultaneous(levelLoadingData, settings, callBack))))
+            if (!levelManager.LoadLevelAsync(settings, (levelLoadingData) => StartCoroutine(loadLevelScenesSimultaneous(levelLoadingData, settings, callBack))))
 #endif
             {
                 isLoadingLevel = false;
             }
-        }
-
-        void OnLoadLevelFinished(LevelLoadingSettings settings)
-        {
-            LevelManager.TransitionAtmosphere(LevelManager.CurrentLevel, settings.InstantChangeAtmosphere);
         }
 
         IEnumerator loadLevelScenesSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
@@ -307,7 +308,7 @@ namespace Pogo
 
         [HideInInspector]
         public UnityEvent<LevelStateChangedArgs> OnLevelStateChanged;
-        private LevelState? CurrentLevelState;
+        public LevelState? CurrentLevelState { get; private set; }
 
         public void SetLevelState(LevelState newState, bool instant = false)
         {
@@ -501,9 +502,10 @@ namespace Pogo
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
             OnLevelLoaded.AddListener(finishLoading);
-            LoadLevel(checkpoint.Level, new LevelLoadingSettings
+            LoadLevel(new LevelLoadingSettings
             {
-                InstantChangeAtmosphere = true,
+                LevelState = checkpoint.LevelState,
+                Instantly = true,
                 ForceReload = false,
                 LoadingFromMenu = CurrentControlScene != null,
                 QuickSaveData = quickSaveData

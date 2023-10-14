@@ -4,17 +4,17 @@ namespace Pogo.Levels
     public struct LevelState
     {
         public LevelDescriptor Level;
-        public int State;
+        public int StateId;
 
         public const int State_Any = -1;
 
         public bool AnyState
         {
-            get => State == State_Any;
+            get => StateId == State_Any;
             set
             {
                 if (value == AnyState) return;
-                State = value ? State_Any : 0;
+                StateId = value ? State_Any : 0;
             }
         }
     }

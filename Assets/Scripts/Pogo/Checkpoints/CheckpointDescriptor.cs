@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Levels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace Pogo.Checkpoints
     [CreateAssetMenu(fileName = "ck_", menuName = "Pogo/CheckpointDescriptor")]
     public class CheckpointDescriptor : ScriptableObject
     {
+        public LevelState LevelState;
         public LevelDescriptor Level;
         public int Par;
         public string[] Hints;

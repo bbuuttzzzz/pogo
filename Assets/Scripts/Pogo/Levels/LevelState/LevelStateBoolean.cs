@@ -65,7 +65,7 @@ namespace Pogo.Levels
                 if (positiveState.Level != levelState.Level) break;
 
                 if (positiveState.AnyState
-                    || positiveState.State == levelState.State)
+                    || positiveState.StateId == levelState.StateId)
                 {
                     return true;
                 }

@@ -18,7 +18,7 @@ namespace Pogo.Levels
             EditorGUI.BeginProperty(position, label, property);
 
             var propertyLevel = property.FindPropertyRelative(nameof(LevelState.Level));
-            var propertyState = property.FindPropertyRelative(nameof(LevelState.State));
+            var propertyState = property.FindPropertyRelative(nameof(LevelState.StateId));
 
             Rect[] rects = RectExtensions.SplitRectHorizontally(position, 0.4f, 0.4f, 0.2f);
 
@@ -28,7 +28,7 @@ namespace Pogo.Levels
 
             using (new EditorGUI.DisabledScope(state < 0))
             {
-                EasyLabelledPropertyField(rects[1].Margin(5,0), 0.3f, propertyState, new GUIContent("State"));
+                EasyLabelledPropertyField(rects[1].Margin(5,0), 0.3f, propertyState, new GUIContent(nameof(LevelState.StateId)));
             }
             bool toggle;
 
