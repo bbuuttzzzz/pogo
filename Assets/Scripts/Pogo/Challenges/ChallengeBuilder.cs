@@ -25,6 +25,7 @@ namespace Pogo.Challenges
 
         public UnityEvent<Challenge> OnChallengeChanged;
         public UnityEvent<string> OnCodeChanged;
+        public UnityEvent<EncodeChallengeResult.FailReasons> OnEncodeFailed;
 
         public PauseMenuController PauseMenu;
         public ToggleableUIElement ChallengeMenu;
@@ -132,9 +133,18 @@ namespace Pogo.Challenges
                             PopupSpawner.SpawnPrefab(SilverMedalPrefab);
                         }
                     }
-                    CurrentCode = EncodeChallenge(CurrentChallenge);
-                    codeIsValid = true;
-                    OnCodeChanged?.Invoke(CurrentCode);
+                    var result = EncodeChallenge(CurrentChallenge);
+                    if (result.Success)
+                    {
+                        CurrentCode = result.Code;
+                        codeIsValid = true;
+                        OnCodeChanged?.Invoke(CurrentCode);
+                    }
+                    else
+                    {
+                        OnEncodeFailed?.Invoke(result.FailReason);
+                        OnCodeChanged?.Invoke("");
+                    }
                 }
                 OnChallengeChanged?.Invoke(CurrentChallenge);
             }
@@ -252,17 +262,24 @@ My Best Time: {1:N3} seconds"
         public void EncodeAndPrint()
         {
             var challenge = CreateChallenge();
-            string result = EncodeChallenge(challenge);
+            var result = EncodeChallenge(challenge);
 
-            Debug.Log(result);
+            if (result.Success)
+            {
+                Debug.Log(result);
+            }
+            else
+            {
+                Debug.LogError($"Failed to encode challenge. Reason: {result.FailReason}");
+            }
         }
 
-        public string EncodeChallenge(Challenge challenge)
+        public EncodeChallengeResult EncodeChallenge(Challenge challenge)
         {
             return EncodeChallenge(challenge, ValidLevels);
         }
 
-        public static string EncodeChallenge(Challenge challenge, LevelShareIndexManifest manifest)
+        public static EncodeChallengeResult EncodeChallenge(Challenge challenge, LevelShareIndexManifest manifest)
         {
             // todo WRAP THIS cuz maybe I use it later... shareIndex guess. this just feels so ugly being in here
             byte[] completeChallenge = new byte[PayloadLength];
@@ -278,7 +295,10 @@ My Best Time: {1:N3} seconds"
             addByte(ref completeChallenge, offset, yaw);
             offset++;
 
-            int rawIndex = GetShareIndex(challenge.LevelState, manifest);
+            if (!TryGetShareIndex(challenge.LevelState, manifest, out int rawIndex))
+            {
+                return EncodeChallengeResult.NewFailure(EncodeChallengeResult.FailReasons.MissingShareIndex);
+            }
             byte levelIndex = Convert.ToByte(rawIndex);
             addByte(ref completeChallenge, offset, levelIndex);
             offset++;
@@ -291,22 +311,23 @@ My Best Time: {1:N3} seconds"
             addByte(ref completeChallenge, offset, (byte)hash);
 
             string result = Pretty256Helper.Encode(completeChallenge);
-            return result;
+            return EncodeChallengeResult.NewSuccess(result);
         }
 
-        private static int GetShareIndex(LevelState levelState, LevelShareIndexManifest manifest)
+        private static bool TryGetShareIndex(LevelState levelState, LevelShareIndexManifest manifest, out int shareIndex)
         {
-            for (int shareIndex = 0; shareIndex < manifest.LevelStates.Length; shareIndex++)
+            for (shareIndex = 0; shareIndex < manifest.LevelStates.Length; shareIndex++)
             {
                 LevelState manifestLevelState = manifest.LevelStates[shareIndex];
                 if (manifestLevelState == levelState)
                 {
-                    return shareIndex;
+                    return true;
                 }
             }
 
             Debug.LogError(($"levelState \'{levelState}\' was not valid for Manifest \'{manifest}\'"));
-            return -1;
+            shareIndex = -1;
+            return false;
         }
 
         public static LevelState? GetLevelStateFromShareIndex(int shareIndex, LevelShareIndexManifest manifest)
