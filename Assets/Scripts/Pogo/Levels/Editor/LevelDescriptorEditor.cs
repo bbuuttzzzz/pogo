@@ -119,6 +119,12 @@ namespace Pogo.Levels
                     }
                 }
             }
+
+            if (GUILayout.Button("+ Add State"))
+            {
+                Undo.RecordObject(self, "Add State");
+                self.LevelStatesCount++;
+            }
         }
 
         private void AddCodeToManifest(ManifestShareCodeGroup manifestGroup, LevelState levelState, int shareIndex)

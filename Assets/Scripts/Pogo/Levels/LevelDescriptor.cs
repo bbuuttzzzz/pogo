@@ -28,8 +28,6 @@ namespace Pogo.Levels
             }
         }
 
-        public int LevelStatesCount;
-
         public int BuildIndex;
 
         [Range(0, 255)]
@@ -38,5 +36,6 @@ namespace Pogo.Levels
         public string ScenePath => SceneUtility.GetScenePathByBuildIndex(BuildIndex);
 
         public bool HideInEditor = false;
+        public int LevelStatesCount;
     }
 }
