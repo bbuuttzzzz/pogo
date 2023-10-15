@@ -86,6 +86,7 @@ namespace Pogo
             SaveGlobalSave();
             ResetCustomRespawnPoint(true);
             ResetStats();
+            CurrentLevelState = null;
         }
 
         private void GameManager_OnQuitToDesktop()

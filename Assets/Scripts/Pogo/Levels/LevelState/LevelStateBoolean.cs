@@ -62,7 +62,7 @@ namespace Pogo.Levels
         {
             foreach (var positiveState in PositiveStates)
             {
-                if (positiveState.Level != levelState.Level) break;
+                if (positiveState.Level != levelState.Level) continue;
 
                 if (positiveState.AnyState
                     || positiveState.StateId == levelState.StateId)
