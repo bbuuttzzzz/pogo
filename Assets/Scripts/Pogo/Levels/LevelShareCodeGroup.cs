@@ -10,5 +10,20 @@ namespace Pogo.Levels
     {
         public LevelDescriptor Level;
         public List<ShareCode> Codes;
+
+        public bool TryGetCode(LevelState state, out ShareCode code)
+        {
+            foreach(var _code in Codes)
+            {
+                if (_code.LevelState == state)
+                {
+                    code = _code;
+                    return true;
+                }
+            }
+
+            code = default;
+            return false;
+        }
     }
 }

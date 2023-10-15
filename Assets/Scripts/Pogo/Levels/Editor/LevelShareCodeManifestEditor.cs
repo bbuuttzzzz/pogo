@@ -15,6 +15,12 @@ namespace Pogo.Levels
         public override VisualElement CreateInspectorGUI()
         {
             self = target as LevelShareCodeManifest;
+            if (self.ShareCodes == null)
+            {
+                self.ShareCodes = new ShareCode[] { };
+                EditorUtility.SetDirty(self);
+            }
+
             collation = self.CollateCodesByLevel();
             return base.CreateInspectorGUI();
         }

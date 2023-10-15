@@ -11,6 +11,9 @@ namespace Pogo.Levels
         [HideInInspector]
         public ShareCode[] ShareCodes;
 
+        [Tooltip("Lower Number = Displayed First")]
+        public int EditorDisplayPriority;
+
         public LevelShareCodeGroup GetCodesForLevel(LevelDescriptor level)
         {
             var codes = ShareCodes
