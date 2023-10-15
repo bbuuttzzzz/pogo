@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Pogo.Levels
+{
+    public class LevelShareCodeGroup
+    {
+        public LevelDescriptor Level;
+        public List<ShareCode> Codes;
+    }
+}

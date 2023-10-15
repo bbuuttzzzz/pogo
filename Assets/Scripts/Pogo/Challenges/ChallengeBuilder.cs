@@ -15,7 +15,7 @@ namespace Pogo.Challenges
 {
     public class ChallengeBuilder : MonoBehaviour
     {
-        public LevelShareIndexManifest ValidLevels;
+        public LevelShareCodeManifest ValidLevels;
 
         [NonSerialized]
         public Challenge CurrentChallenge;
@@ -183,7 +183,7 @@ namespace Pogo.Challenges
             finishLoading = () =>
             {
                 pogoInstance.CustomCheckpoint.Place(CurrentChallenge.StartPoint, CurrentChallenge.StartRotation);
-                pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint, CurrentChallenge.Level));
+                pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint, CurrentChallenge.LevelState.Level));
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
                 PogoGameManager.PogoInstance.SpawnPlayer();
@@ -279,7 +279,7 @@ My Best Time: {1:N3} seconds"
             return EncodeChallenge(challenge, ValidLevels);
         }
 
-        public static EncodeChallengeResult EncodeChallenge(Challenge challenge, LevelShareIndexManifest manifest)
+        public static EncodeChallengeResult EncodeChallenge(Challenge challenge, LevelShareCodeManifest manifest)
         {
             // todo WRAP THIS cuz maybe I use it later... shareIndex guess. this just feels so ugly being in here
             byte[] completeChallenge = new byte[PayloadLength];
@@ -314,13 +314,13 @@ My Best Time: {1:N3} seconds"
             return EncodeChallengeResult.NewSuccess(result);
         }
 
-        private static bool TryGetShareIndex(LevelState levelState, LevelShareIndexManifest manifest, out int shareIndex)
+        private static bool TryGetShareIndex(LevelState levelState, LevelShareCodeManifest manifest, out int shareIndex)
         {
-            for (shareIndex = 0; shareIndex < manifest.LevelStates.Length; shareIndex++)
+            foreach(var shareCode in manifest.ShareCodes)
             {
-                LevelState manifestLevelState = manifest.LevelStates[shareIndex];
-                if (manifestLevelState == levelState)
+                if (shareCode.LevelState == levelState)
                 {
+                    shareIndex = shareCode.ShareIndex;
                     return true;
                 }
             }
@@ -330,15 +330,18 @@ My Best Time: {1:N3} seconds"
             return false;
         }
 
-        public static LevelState? GetLevelStateFromShareIndex(int shareIndex, LevelShareIndexManifest manifest)
+        public static LevelState? GetLevelStateFromShareIndex(int shareIndex, LevelShareCodeManifest manifest)
         {
-            if (shareIndex >= manifest.LevelStates.Length - 1)
+            foreach (var shareCode in manifest.ShareCodes)
             {
-                Debug.LogError(($"shareIndex \'{shareIndex}\' was not valid for Manifest \'{manifest}\'"));
-                return null;
+                if (shareCode.ShareIndex == shareIndex)
+                {
+                    return shareCode.LevelState;
+                }
             }
 
-            return manifest.LevelStates[shareIndex];
+            Debug.LogError(($"shareIndex \'{shareIndex}\' was not valid for Manifest \'{manifest}\'"));
+            return null;
         }
 
         static void AddVector3Short(ref byte[] array, int offset, Vector3Short value)
@@ -427,7 +430,7 @@ My Best Time: {1:N3} seconds"
             LoadChallenge();
         }
 
-        public static Challenge DecodeChallenge(string encodedPayload, LevelShareIndexManifest manifest, out DecodeFailReason failReason)
+        public static Challenge DecodeChallenge(string encodedPayload, LevelShareCodeManifest manifest, out DecodeFailReason failReason)
         {
             if (encodedPayload.Length != PayloadLength)
             {

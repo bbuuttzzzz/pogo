@@ -1,4 +1,5 @@
 ﻿using Pogo.Challenges;
+using Pogo.Levels;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -8,11 +9,11 @@ namespace Pogo.Inspector
 {
     public class DevelopChallengeEditorPopup : PopupWindowContent
     {
-        public Action<LevelShareIndexManifest, string> DecodePressedAction;
-        public LevelShareIndexManifest Manifest;
+        public Action<LevelShareCodeManifest, string> DecodePressedAction;
+        public LevelShareCodeManifest Manifest;
         public string DecodeString;
 
-        public DevelopChallengeEditorPopup(Action<LevelShareIndexManifest, string> decodePressedAction)
+        public DevelopChallengeEditorPopup(Action<LevelShareCodeManifest, string> decodePressedAction)
         {
             DecodePressedAction = decodePressedAction;
             DecodeString = "";
@@ -43,7 +44,7 @@ namespace Pogo.Inspector
 
         private void DrawManifestField()
         {
-            Manifest = (LevelShareIndexManifest)EditorGUILayout.ObjectField("Manifest:", Manifest, typeof(LevelShareIndexManifest), false);
+            Manifest = (LevelShareCodeManifest)EditorGUILayout.ObjectField("Manifest:", Manifest, typeof(LevelShareCodeManifest), false);
         }
 
         private void DrawDecodeStringField()

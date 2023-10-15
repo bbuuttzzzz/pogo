@@ -1,4 +1,5 @@
 using Pogo.Challenges;
+using Pogo.Levels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Pogo.Inspector
             return base.CreateInspectorGUI();
         }
 
-        private void onDecodePressed(LevelShareIndexManifest manifest, string decodeString)
+        private void onDecodePressed(LevelShareCodeManifest manifest, string decodeString)
         {
             var challenge = ChallengeBuilder.DecodeChallenge(decodeString, manifest, out ChallengeBuilder.DecodeFailReason failReason);
             if (challenge != null)
