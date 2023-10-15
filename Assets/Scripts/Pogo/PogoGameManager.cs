@@ -313,8 +313,6 @@ namespace Pogo
 
         public void SetLevelState(LevelState newState, bool instant = false)
         {
-            if (newState.AnyState) return;
-
             LevelStateChangedArgs args = new LevelStateChangedArgs(
                 CurrentLevelState,
                 newState,
