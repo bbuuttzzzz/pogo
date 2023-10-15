@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Checkpoints;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,33 +11,33 @@ namespace Pogo.Tools
 {
     public static class LevelStateMigrationTools
     {
-        [MenuItem("Pogo/Migration Tools/Challenges")]
-        public static void MigrateChallenges()
+        [MenuItem("Pogo/Migration Tools/Checkpoints")]
+        public static void MigrateCheckpoints()
         {
 
-            var pathPairs = AssetDatabase.FindAssets($"t:{nameof(DeveloperChallenge)}")
+            var pathPairs = AssetDatabase.FindAssets($"t:{nameof(CheckpointDescriptor)}")
                 .Select(id =>
                 {
                     var path = AssetDatabase.GUIDToAssetPath(id);
                     return new
                     {
                         Path = path,
-                        Asset = AssetDatabase.LoadAssetAtPath<DeveloperChallenge>(path)
+                        Asset = AssetDatabase.LoadAssetAtPath<CheckpointDescriptor>(path)
                     };
                 });
 
             foreach (var pathPair in pathPairs)
             {
-                if (pathPair.Asset.Challenge.LevelState.Level == pathPair.Asset.Challenge.Level)
+                if (pathPair.Asset.LevelState.Level == pathPair.Asset.Level)
                 {
                     Debug.Log($"Skipping already migrated developerChallenge @ {pathPair.Path}");
                 }
                 else
                 {
                     Debug.Log($"Migrating developerChallenge @ {pathPair.Path}");
-                    pathPair.Asset.Challenge.LevelState = new Levels.LevelState()
+                    pathPair.Asset.LevelState = new Levels.LevelState()
                     {
-                        Level = pathPair.Asset.Challenge.Level,
+                        Level = pathPair.Asset.Level,
                         StateId = 0
                     };
 
