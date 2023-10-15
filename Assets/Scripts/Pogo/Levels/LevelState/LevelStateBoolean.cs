@@ -10,7 +10,8 @@ namespace Pogo.Levels
 {
     public class LevelStateBoolean : LevelStateSubListener
     {
-        public LevelState[] PositiveStates;
+        public LevelDescriptor TargetLevel;
+        public int[] PositiveStates;
 
         public UnityEvent OnEnterPositiveStateInstantly;
         public UnityEvent OnEnterNegativeStateInstantly;
@@ -62,10 +63,9 @@ namespace Pogo.Levels
         {
             foreach (var positiveState in PositiveStates)
             {
-                if (positiveState.Level != levelState.Level) continue;
+                if (TargetLevel != levelState.Level) continue;
 
-                if (positiveState.AnyState
-                    || positiveState.StateId == levelState.StateId)
+                if (positiveState == levelState.StateId)
                 {
                     return true;
                 }

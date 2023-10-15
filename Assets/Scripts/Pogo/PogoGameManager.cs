@@ -309,18 +309,30 @@ namespace Pogo
 
         [HideInInspector]
         public UnityEvent<LevelStateChangedArgs> OnLevelStateChanged;
-        public LevelState? CurrentLevelState { get; private set; }
+        private Dictionary<LevelDescriptor, LevelState> CurrentLevelStates = new Dictionary<LevelDescriptor, LevelState>();
 
         public void SetLevelState(LevelState newState, bool instant = false)
         {
             LevelStateChangedArgs args = new LevelStateChangedArgs(
-                CurrentLevelState,
+                GetLevelStateForLevel(newState.Level),
                 newState,
                 instant
             );
 
-            CurrentLevelState = newState;
+            CurrentLevelStates[newState.Level] = newState;
             OnLevelStateChanged?.Invoke(args);
+        }
+
+        public LevelState? GetLevelStateForLevel(LevelDescriptor levelDescriptor)
+        {
+            if (CurrentLevelStates.TryGetValue(levelDescriptor, out LevelState currentState))
+            {
+                return currentState;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         #endregion
