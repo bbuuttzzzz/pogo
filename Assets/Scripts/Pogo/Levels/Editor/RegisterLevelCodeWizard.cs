@@ -66,14 +66,14 @@ namespace Pogo.Levels
                 if (GUILayout.Button("Confirm"))
                 {
                     Undo.RecordObject(TargetManifest, "Add LevelCode to Manifest");
-                    codeGroup.Codes
+                    codeGroup.Codes = codeGroup.Codes
                         .Where(c => c.LevelState != LevelState)
                         .Append(new ShareCode()
                         {
                             LevelState = LevelState,
                             ShareIndex = ShareIndex
                         })
-                        .ToArray();
+                        .ToList();
 
                     TargetManifest.UpdateWithGroup(codeGroup);
                     this.Close();
