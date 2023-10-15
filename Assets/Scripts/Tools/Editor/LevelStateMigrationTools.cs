@@ -26,11 +26,7 @@ namespace Pogo.Tools
                 else
                 {
                     Debug.Log($"Updating AreaPortal @ {areaPortals.CurrentScenePath} {path}...", areaPortal);
-                    areaPortal.LevelState = new Levels.LevelState()
-                    {
-                        Level = areaPortal.Level,
-                        StateId = 0
-                    };
+                    areaPortal.Level = areaPortal.LevelState.Level;
                     EditorUtility.SetDirty(areaPortal);
                 }
             }
