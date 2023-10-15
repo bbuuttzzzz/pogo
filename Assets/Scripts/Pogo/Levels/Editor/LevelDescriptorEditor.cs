@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using System.Linq;
+using System;
 
 namespace Pogo.Levels
 {
@@ -17,13 +18,13 @@ namespace Pogo.Levels
         public override VisualElement CreateInspectorGUI()
         {
             self = target as LevelDescriptor;
-            RecalculateCachedShareCodeGroups();
             return base.CreateInspectorGUI();
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            RecalculateCachedShareCodeGroups();
             DrawRegisterButtons();
         }
 
@@ -34,7 +35,7 @@ namespace Pogo.Levels
                 .Select(m => new ManifestShareCodeGroup()
                 {
                     manifest = m,
-                    group = m.GetCodesForLevel(self)
+                    group = m.GetCodeGroupForLevel(self)
                 })
                 .OrderBy(m => m.manifest.EditorDisplayPriority)
                 .ToArray();
@@ -52,23 +53,23 @@ namespace Pogo.Levels
                 };
 
                 int? cachedShareIndex = null;
-                bool codeError = false;
+                bool conflictingCodesError = false;
 
                 EditorGUILayout.LabelField("StateId", n.ToString());
                 using (new EditorGUI.IndentLevelScope())
                 {
                     foreach(var manifestGroup in cachedManifestShareCodeGroups)
                     {
-                        bool hasCode = manifestGroup.group.TryGetCode(levelState, out ShareCode code);
+                        bool hasCode = manifestGroup.group.TryGetCode(levelState, out ShareCode existingCode);
 
                         if (hasCode && cachedShareIndex.HasValue
-                            && cachedShareIndex != code.ShareIndex)
+                            && cachedShareIndex != existingCode.ShareIndex)
                         {
-                            codeError = true;
+                            conflictingCodesError = true;
                         }
                         else if (hasCode && !cachedShareIndex.HasValue)
                         {
-                            cachedShareIndex = code.ShareIndex;
+                            cachedShareIndex = existingCode.ShareIndex;
                         }
 
                         using (new EditorGUILayout.HorizontalScope())
@@ -77,17 +78,75 @@ namespace Pogo.Levels
                             {
                                 EditorGUILayout.ObjectField(manifestGroup.manifest, typeof(LevelShareCodeManifest), false);
                             }
-                            bool shouldHaveCode = EditorGUILayout.Toggle(hasCode);
-                            EditorGUILayout.LabelField("Share Index", code.ShareIndex.ToString());
+
+                            bool shouldHaveCode = hasCode;
+                            using (new EditorGUI.DisabledScope(conflictingCodesError))
+                            {
+                                shouldHaveCode = EditorGUILayout.Toggle(hasCode);
+                            }
+                            if (hasCode)
+                            {
+                                EditorGUILayout.LabelField("Share Index", existingCode.ShareIndex.ToString());
+                            }
+                            else
+                            {
+                                EditorGUILayout.LabelField("", "");
+                            }
+
+                            if (shouldHaveCode && !hasCode
+                                && !conflictingCodesError)
+                            {
+                                if (cachedShareIndex.HasValue)
+                                {
+                                    AddCodeToManifest(manifestGroup, levelState, cachedShareIndex.Value);
+                                }
+                                else
+                                {
+                                    SpawnAddCodeToManifestWizard(manifestGroup, levelState); ;
+                                }
+                            }
+                            else if (!shouldHaveCode && hasCode
+                                && !conflictingCodesError)
+                            {
+                                RemoveCodeFromManifest(manifestGroup, existingCode);
+                            }
                         }
                     }
 
-                    if (codeError)
+                    if (conflictingCodesError)
                     {
                         EditorGUILayout.HelpBox("Inconsistent Share Indexes!!! Please Fix!!!", MessageType.Error);
                     }
                 }
             }
+        }
+
+        private void AddCodeToManifest(ManifestShareCodeGroup manifestGroup, LevelState levelState, int shareIndex)
+        {
+            Undo.RecordObject(manifestGroup.manifest, "Remove LevelCode from Manifest");
+
+            manifestGroup.group.Codes.Add(new ShareCode()
+            {
+                LevelState = levelState,
+                ShareIndex = shareIndex
+            });
+
+            manifestGroup.manifest.UpdateWithGroup(manifestGroup.group);
+            EditorUtility.SetDirty(manifestGroup.manifest);
+        }
+
+        private void SpawnAddCodeToManifestWizard(ManifestShareCodeGroup manifestGroup, LevelState levelState)
+        {
+            RegisterLevelCodeWizard.Spawn(manifestGroup.manifest, levelState); ;
+        }
+
+        private void RemoveCodeFromManifest(ManifestShareCodeGroup manifestGroup, ShareCode code)
+        {
+            Undo.RecordObject(manifestGroup.manifest, "Remove LevelCode from Manifest");
+
+            manifestGroup.group.Codes.Remove(code);
+            manifestGroup.manifest.UpdateWithGroup(manifestGroup.group);
+            EditorUtility.SetDirty(manifestGroup.manifest);
         }
 
         private struct ManifestShareCodeGroup

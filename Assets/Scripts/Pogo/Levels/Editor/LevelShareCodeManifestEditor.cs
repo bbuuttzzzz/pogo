@@ -21,13 +21,15 @@ namespace Pogo.Levels
                 EditorUtility.SetDirty(self);
             }
 
-            collation = self.CollateCodesByLevel();
             return base.CreateInspectorGUI();
         }
 
         public override void OnInspectorGUI()
         {
-            foreach(var group in collation)
+            base.OnInspectorGUI();
+            collation = self.CollateCodesByLevel();
+
+            foreach (var group in collation)
             {
                 using (new EditorGUI.DisabledScope(true))
                 {
@@ -39,15 +41,13 @@ namespace Pogo.Levels
                         {
                             using (new EditorGUILayout.HorizontalScope())
                             {
-                                EditorGUILayout.IntField(code.ShareIndex);
-                                EditorGUILayout.IntField(code.LevelState.StateId);
+                                EditorGUILayout.IntField("Share Index", code.ShareIndex);
+                                EditorGUILayout.IntField("State Id", code.LevelState.StateId);
                             }
                         }
                     }
                 }
             }
-
-            base.OnInspectorGUI();
         }
 
     }

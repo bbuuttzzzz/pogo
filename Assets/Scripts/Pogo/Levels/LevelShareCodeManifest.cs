@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Pogo.Levels
 {
@@ -14,7 +15,23 @@ namespace Pogo.Levels
         [Tooltip("Lower Number = Displayed First")]
         public int EditorDisplayPriority;
 
-        public LevelShareCodeGroup GetCodesForLevel(LevelDescriptor level)
+        public bool ShareIndexExists(int shareIndex) => TryGetLevelState(shareIndex, out _);
+        public bool TryGetLevelState(int shareIndex, out LevelState result)
+        {
+            foreach(var ShareCode in ShareCodes)
+            {
+                if (ShareCode.ShareIndex == shareIndex)
+                {
+                    result = ShareCode.LevelState;
+                    return true;
+                }
+            }
+
+            result = default;
+            return false;
+        }    
+
+        public LevelShareCodeGroup GetCodeGroupForLevel(LevelDescriptor level)
         {
             var codes = ShareCodes
                 .Where(c => c.LevelState.Level == level)
@@ -54,11 +71,10 @@ namespace Pogo.Levels
 
         public void UpdateWithGroup(LevelShareCodeGroup group)
         {
-            List<ShareCode> existingCodes = ShareCodes
+            ShareCodes = ShareCodes
                 .Where(sc => sc.LevelState.Level != group.Level)
-                .ToList();
-
-            existingCodes.AddRange(group.Codes);
+                .Concat(group.Codes)
+                .ToArray();
         }
     }
 }
