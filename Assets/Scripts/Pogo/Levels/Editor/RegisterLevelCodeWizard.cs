@@ -21,7 +21,6 @@ namespace Pogo.Levels
 
         private void OnGUI()
         {
-
             using (new EditorGUI.DisabledScope(true))
             {
                 EditorGUILayout.ObjectField("Target Manifest", TargetManifest, typeof(LevelShareCodeManifest), false);
@@ -36,6 +35,11 @@ namespace Pogo.Levels
             if (ShareIndex <= 0 || ShareIndex > 255)
             {
                 EditorGUILayout.HelpBox($"Use a valid ShareIndex (1 <= x <= 255)", MessageType.Error);
+                if (GUILayout.Button("Choose Next Empty"))
+                {
+                    ShareIndex = TargetManifest.GetNextUnusedShareIndex();
+                }
+
             }
             else if (TargetManifest.TryGetLevelState(ShareIndex, out LevelState existingLevelState))
             {

@@ -29,7 +29,29 @@ namespace Pogo.Levels
 
             result = default;
             return false;
-        }    
+        }
+
+        public int GetNextUnusedShareIndex()
+        {
+            int index = 1;
+            foreach(var code in ShareCodes.OrderBy(x => x.ShareIndex))
+            {
+                if (index < code.ShareIndex)
+                {
+                    return index;
+                }
+                else
+                {
+                    index = code.ShareIndex + 1;
+                }
+            }
+
+            if (index < 256)
+            {
+                return index;
+            }
+            throw new KeyNotFoundException("Couldn't find any unused ShareIndexes :(");
+        }
 
         public LevelShareCodeGroup GetCodeGroupForLevel(LevelDescriptor level)
         {
