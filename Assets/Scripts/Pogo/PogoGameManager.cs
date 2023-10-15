@@ -432,7 +432,7 @@ namespace Pogo
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.Level == null)
+            if (CurrentCheckpoint.Descriptor.LevelState.Level == null)
             {
                 Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Level!!!", CurrentCheckpoint);
                 newData = new QuickSaveData();
