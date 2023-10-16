@@ -122,16 +122,8 @@ namespace Pogo
             levelManager.LoadDefaultAtmosphere();
         }
 #endif
-        public void LoadLevel(LevelState newLevelState)
-        {
-            LoadLevel(LevelLoadingSettings.DefaultWithState(newLevelState));
-        }
 
-        public void LoadLevel(LevelDescriptor newLevel) => LoadLevel(new LevelState()
-        {
-            Level = newLevel,
-            StateId = 0
-        });
+        public void LoadLevel(LevelDescriptor newLevel) => LoadLevel(LevelLoadingSettings.DefaultWithLevel(newLevel));
         
         public void LoadLevel(LevelLoadingSettings settings)
         {
@@ -148,7 +140,10 @@ namespace Pogo
             {
                 LevelManager.TransitionAtmosphere(LevelManager.CurrentLevel, settings.Instantly);
                 OnLevelLoaded?.Invoke();
-                SetLevelState(settings.LevelState, settings.Instantly);
+                if (settings.LevelState.HasValue)
+                {
+                    SetLevelState(settings.LevelState.Value, settings.Instantly);
+                }
             };
             isLoadingLevel = true;
 

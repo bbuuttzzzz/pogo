@@ -114,16 +114,19 @@ namespace Pogo
         /// <param name="callback">called only if level loading starts successfully</param>
         public bool LoadLevelAsync(LevelLoadingSettings settings, Action<LevelLoadingData> callback = null)
         {
-            if (currentLevel == settings.LevelState.Level && !settings.ForceReload)
+            if (currentLevel == settings.Level && !settings.ForceReload)
             {
-                PogoGameManager.PogoInstance.SetLevelState(settings.LevelState, settings.Instantly);
+                if (settings.LevelState.HasValue)
+                {
+                    PogoGameManager.PogoInstance.SetLevelState(settings.LevelState.Value, settings.Instantly);
+                }
                 return false;
             }
-            currentLevel = settings.LevelState.Level;
+            currentLevel = settings.Level;
 
             List<AsyncOperation> loadTasks = new List<AsyncOperation>();
             List<AsyncOperation> unloadTasks = new List<AsyncOperation>();
-            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(settings.LevelState.Level);
+            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(settings.Level);
 
             foreach (LevelDescriptor descriptor in scenesToLoad)
             {
