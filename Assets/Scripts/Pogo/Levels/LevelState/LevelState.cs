@@ -11,6 +11,12 @@ namespace Pogo.Levels
 
         public const int State_Any = -1;
 
+        public LevelState(LevelDescriptor level, int stateId)
+        {
+            Level = level;
+            StateId = stateId;
+        }
+
         public bool AnyState
         {
             get => StateId == State_Any;

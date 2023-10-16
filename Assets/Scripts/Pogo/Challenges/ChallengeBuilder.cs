@@ -196,6 +196,7 @@ namespace Pogo.Challenges
             pogoInstance.OnLevelLoaded.AddListener(finishLoading);
             pogoInstance.LoadLevel(new LevelLoadingSettings()
             {
+                Level = CurrentChallenge.LevelState.Level,
                 LevelState = CurrentChallenge.LevelState,
                 ForceReload = true,
                 Instantly = true
@@ -420,7 +421,7 @@ My Best Time: {1:N3} seconds"
         {
             var challenge = DecodeChallenge(CurrentCode,ValidLevels, out DecodeFailReason failReason);
 
-            if (challenge == null || challenge.Level == null)
+            if (challenge == null || challenge.LevelState.Level == null)
             {
                 OnDecodeFailed?.Invoke(failReason);
                 return;

@@ -517,6 +517,7 @@ namespace Pogo
             OnLevelLoaded.AddListener(finishLoading);
             LoadLevel(new LevelLoadingSettings
             {
+                Level = checkpoint.LevelState.Level,
                 LevelState = checkpoint.LevelState,
                 Instantly = true,
                 ForceReload = false,

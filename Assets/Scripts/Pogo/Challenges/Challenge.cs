@@ -25,7 +25,6 @@ namespace Pogo.Challenges
         public ChallengeTypes ChallengeType;
 
         public LevelState LevelState;
-        public LevelDescriptor Level;
         public DeveloperChallenge DeveloperChallenge;
 
         public Vector3 StartPoint => StartPointCm.ToVector3() / 100;
@@ -60,7 +59,7 @@ namespace Pogo.Challenges
         public Challenge(LevelDescriptor level, Transform start, Vector3 end) : this()
         {
             ChallengeType = ChallengeTypes.Create;
-            Level = level;
+            LevelState = new LevelState(level, 0);
             StartPointCm = Vector3Short.FromVector3(start.position * 100);
             StartYaw = (int)start.rotation.eulerAngles.y;
             EndPointCm = Vector3Short.FromVector3(end * 100);
