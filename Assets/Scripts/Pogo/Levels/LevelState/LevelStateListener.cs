@@ -6,6 +6,7 @@ namespace Pogo.Levels
 {
     public class LevelStateListener : MonoBehaviour
     {
+        public LevelDescriptor TargetLevel;
         public UnityEvent<LevelStateChangedArgs> OnLevelStateChanged;
 
         public void Start()
@@ -15,7 +16,10 @@ namespace Pogo.Levels
 
         private void GameManager_OnLevelStateChanged(LevelStateChangedArgs arg0)
         {
-            OnLevelStateChanged.Invoke(arg0);
+            if (arg0.NewState.Level == TargetLevel)
+            {
+                OnLevelStateChanged.Invoke(arg0);
+            }
         }
 
         private void OnDestroy()

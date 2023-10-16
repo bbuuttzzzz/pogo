@@ -86,7 +86,7 @@ namespace Pogo
             SaveGlobalSave();
             ResetCustomRespawnPoint(true);
             ResetStats();
-            CurrentLevelState = null;
+            ResetLevelStates();
         }
 
         private void GameManager_OnQuitToDesktop()
@@ -310,6 +310,11 @@ namespace Pogo
         [HideInInspector]
         public UnityEvent<LevelStateChangedArgs> OnLevelStateChanged;
         private Dictionary<LevelDescriptor, LevelState> CurrentLevelStates = new Dictionary<LevelDescriptor, LevelState>();
+
+        private void ResetLevelStates()
+        {
+            CurrentLevelStates.Clear();
+        }
 
         public void SetLevelState(LevelState newState, bool instant = false)
         {

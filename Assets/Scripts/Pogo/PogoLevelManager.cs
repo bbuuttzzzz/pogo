@@ -116,12 +116,7 @@ namespace Pogo
         {
             if (currentLevel == settings.LevelState.Level && !settings.ForceReload)
             {
-                if (PogoGameManager.PogoInstance.CurrentLevelState.HasValue
-                    && settings.LevelState.StateId != PogoGameManager.PogoInstance.CurrentLevelState.Value.StateId)
-                {
-                    PogoGameManager.PogoInstance.SetLevelState(settings.LevelState, settings.Instantly);
-                    return false;
-                }
+                PogoGameManager.PogoInstance.SetLevelState(settings.LevelState, settings.Instantly);
                 return false;
             }
             currentLevel = settings.LevelState.Level;

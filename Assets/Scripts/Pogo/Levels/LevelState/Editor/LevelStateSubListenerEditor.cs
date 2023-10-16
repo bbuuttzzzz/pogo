@@ -31,6 +31,13 @@ namespace Pogo.Levels
                 }
                 EditorGUILayout.HelpBox("Missing Parent!", MessageType.Error);
             }
+            else
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.ObjectField("Parent Target Level", self.Parent.TargetLevel,typeof(LevelDescriptor) , false);
+                }
+            }
 
             DrawDefaultInspector();
         }
