@@ -144,6 +144,10 @@ namespace Pogo
                 {
                     SetLevelState(settings.LevelState.Value, settings.Instantly);
                 }
+                else
+                {
+                    TryInitializeLevelStateForLevel(settings.Level, settings.Instantly);
+                }
             };
             isLoadingLevel = true;
 
@@ -309,6 +313,14 @@ namespace Pogo
         private void ResetLevelStates()
         {
             CurrentLevelStates.Clear();
+        }
+
+        private void TryInitializeLevelStateForLevel(LevelDescriptor level, bool instant = false)
+        {
+            if (GetLevelStateForLevel(level) == null)
+            {
+                SetLevelState(new LevelState(level, 0), instant);
+            }
         }
 
         public void SetLevelState(LevelState newState, bool instant = false)
