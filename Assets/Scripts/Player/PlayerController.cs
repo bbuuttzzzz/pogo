@@ -144,6 +144,8 @@ public class PlayerController : MonoBehaviour
 
     void PhysicsUpdate()
     {
+        if (!gameObject.activeInHierarchy) return;
+
         lastPhysicsPosition = PhysicsPosition;
         lastPhysicsRotation = PhysicsRotation;
 
