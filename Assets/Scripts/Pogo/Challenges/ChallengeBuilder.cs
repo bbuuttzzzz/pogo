@@ -297,7 +297,7 @@ My Best Time: {1:N3} seconds"
             addByte(ref completeChallenge, offset, yaw);
             offset++;
 
-            if (!TryGetShareIndex(challenge.LevelState, manifest, out int rawIndex))
+            if (!manifest.TryGetShareIndex(challenge.LevelState, out int rawIndex))
             {
                 return EncodeChallengeResult.NewFailure(EncodeChallengeResult.FailReasons.MissingShareIndex);
             }
@@ -314,22 +314,6 @@ My Best Time: {1:N3} seconds"
 
             string result = Pretty256Helper.Encode(completeChallenge);
             return EncodeChallengeResult.NewSuccess(result);
-        }
-
-        private static bool TryGetShareIndex(LevelState levelState, LevelShareCodeManifest manifest, out int shareIndex)
-        {
-            foreach(var shareCode in manifest.ShareCodes)
-            {
-                if (shareCode.LevelState == levelState)
-                {
-                    shareIndex = shareCode.ShareIndex;
-                    return true;
-                }
-            }
-
-            Debug.LogError(($"levelState \'{levelState}\' was not valid for Manifest \'{manifest}\'"));
-            shareIndex = -1;
-            return false;
         }
 
         public static LevelState? GetLevelStateFromShareIndex(int shareIndex, LevelShareCodeManifest manifest)

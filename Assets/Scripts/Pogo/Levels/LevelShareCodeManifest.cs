@@ -15,6 +15,66 @@ namespace Pogo.Levels
         [Tooltip("Lower Number = Displayed First")]
         public int EditorDisplayPriority;
 
+        /// <summary>
+        /// Find the ShareIndex of the provided <paramref name="levelState"/><br/>
+        /// If <paramref name="enableSoftMatching"/> is true (default), return the shareIndex for an equivalent state
+        /// </summary>
+        /// <param name="levelState"></param>
+        /// <param name="manifest"></param>
+        /// <param name="shareIndex"></param>
+        /// <param name="enableSoftMatching">if true, if there's no exact match, search in the negative direction for the next shared state</param>
+        /// <returns></returns>
+        public bool TryGetShareIndex(LevelState levelState, out int shareIndex)
+        {
+            int bestStateId = -1;
+
+            for (int i = 0; i < ShareCodes.Length; i++)
+            {
+                ShareCode shareCode = ShareCodes[i];
+                if (shareCode.LevelState == levelState)
+                {
+                    shareIndex = shareCode.ShareIndex;
+                    return true;
+                }
+                else if (bestStateId == -1
+                    && shareCode.LevelState.StateId < levelState.StateId)
+                {
+                    bestStateId = i;
+                }
+                else if (bestStateId != -1
+                    && shareCode.LevelState.StateId < ShareCodes[bestStateId].LevelState.StateId)
+                {
+                    bestStateId = i;
+                }
+            }
+
+            if (bestStateId >= 0)
+            {
+                shareIndex = ShareCodes[bestStateId].ShareIndex;
+                return true;
+            }
+
+            shareIndex = -1;
+            return false;
+        }
+
+        public bool TryGetShareIndexExactly(LevelState levelState, out int shareIndex)
+        {
+            for (int i = 0; i < ShareCodes.Length; i++)
+            {
+                ShareCode shareCode = ShareCodes[i];
+                if (shareCode.LevelState == levelState)
+                {
+                    shareIndex = shareCode.ShareIndex;
+                    return true;
+                }
+            }
+
+            Debug.LogError(($"levelState \'{levelState}\' was not valid for Manifest \'{this}\'"));
+            shareIndex = -1;
+            return false;
+        }
+
         public bool ShareIndexExists(int shareIndex) => TryGetLevelState(shareIndex, out _);
         public bool TryGetLevelState(int shareIndex, out LevelState result)
         {
