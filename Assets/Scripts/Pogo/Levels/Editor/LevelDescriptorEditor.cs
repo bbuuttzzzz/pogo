@@ -124,6 +124,7 @@ namespace Pogo.Levels
             {
                 Undo.RecordObject(self, "Add State");
                 self.LevelStatesCount++;
+                EditorUtility.SetDirty(self);
             }
         }
 
