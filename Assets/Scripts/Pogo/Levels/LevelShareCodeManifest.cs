@@ -16,15 +16,15 @@ namespace Pogo.Levels
         public int EditorDisplayPriority;
 
         /// <summary>
-        /// Find the ShareIndex of the provided <paramref name="levelState"/><br/>
-        /// If <paramref name="enableSoftMatching"/> is true (default), return the shareIndex for an equivalent state
+        /// Find the ShareCode of the provided <paramref name="levelState"/><br/>
+        /// If <paramref name="enableSoftMatching"/> is true (default), return the result for an equivalent state
         /// </summary>
         /// <param name="levelState"></param>
         /// <param name="manifest"></param>
-        /// <param name="shareIndex"></param>
+        /// <param name="result"></param>
         /// <param name="enableSoftMatching">if true, if there's no exact match, search in the negative direction for the next shared state</param>
         /// <returns></returns>
-        public bool TryGetShareIndex(LevelState levelState, out int shareIndex)
+        public bool TryGetShareCode(LevelState levelState, out ShareCode result)
         {
             int bestStateId = -1;
 
@@ -33,7 +33,7 @@ namespace Pogo.Levels
                 ShareCode shareCode = ShareCodes[i];
                 if (shareCode.LevelState == levelState)
                 {
-                    shareIndex = shareCode.ShareIndex;
+                    result = shareCode;
                     return true;
                 }
                 else if (bestStateId == -1
@@ -50,28 +50,28 @@ namespace Pogo.Levels
 
             if (bestStateId >= 0)
             {
-                shareIndex = ShareCodes[bestStateId].ShareIndex;
+                result = ShareCodes[bestStateId];
                 return true;
             }
 
-            shareIndex = -1;
+            result = default;
             return false;
         }
 
-        public bool TryGetShareIndexExactly(LevelState levelState, out int shareIndex)
+        public bool TryGetShareCodeExactly(LevelState levelState, out ShareCode result)
         {
             for (int i = 0; i < ShareCodes.Length; i++)
             {
                 ShareCode shareCode = ShareCodes[i];
                 if (shareCode.LevelState == levelState)
                 {
-                    shareIndex = shareCode.ShareIndex;
+                    result = shareCode;
                     return true;
                 }
             }
 
             Debug.LogError(($"levelState \'{levelState}\' was not valid for Manifest \'{this}\'"));
-            shareIndex = -1;
+            result = default;
             return false;
         }
 

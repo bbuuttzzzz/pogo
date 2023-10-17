@@ -297,11 +297,11 @@ My Best Time: {1:N3} seconds"
             addByte(ref completeChallenge, offset, yaw);
             offset++;
 
-            if (!manifest.TryGetShareIndex(challenge.LevelState, out int rawIndex))
+            if (!manifest.TryGetShareCode(challenge.LevelState, out ShareCode shareCode))
             {
                 return EncodeChallengeResult.NewFailure(EncodeChallengeResult.FailReasons.MissingShareIndex);
             }
-            byte levelIndex = Convert.ToByte(rawIndex);
+            byte levelIndex = Convert.ToByte(shareCode.ShareIndex);
             addByte(ref completeChallenge, offset, levelIndex);
             offset++;
 
