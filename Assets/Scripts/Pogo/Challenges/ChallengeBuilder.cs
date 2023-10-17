@@ -15,7 +15,7 @@ namespace Pogo.Challenges
 {
     public class ChallengeBuilder : MonoBehaviour
     {
-        public LevelShareCodeManifest ValidLevels;
+        public LevelShareCodeManifest ShareCodeManifest;
 
         [NonSerialized]
         public Challenge CurrentChallenge;
@@ -159,10 +159,17 @@ namespace Pogo.Challenges
             }
 
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
-            var startTransform = pogoInstance.GetRespawnTransform();
-            var level = pogoInstance.RealTargetRespawnLevel ?? pogoInstance.LevelManager.CurrentLevel;
-            var levelState = pogoInstance.GetLevelStateForLevel(level) ?? new LevelState(level, 0);
-            var endPoint = pogoInstance.Player.PhysicsPosition;
+            Transform startTransform = pogoInstance.GetRespawnTransform();
+
+            // crunch existing LevelState down to a shareable levelState
+            LevelDescriptor level = pogoInstance.RealTargetRespawnLevel ?? pogoInstance.LevelManager.CurrentLevel;
+            LevelState levelState = pogoInstance.GetLevelStateForLevel(level) ?? new LevelState(level, 0);
+            if (ShareCodeManifest.TryGetShareCode(levelState, out ShareCode shareCode))
+            {
+                levelState = shareCode.LevelState;
+            }
+
+            Vector3 endPoint = pogoInstance.Player.PhysicsPosition;
             return new Challenge(levelState, startTransform, endPoint);
         }
 
@@ -278,7 +285,7 @@ My Best Time: {1:N3} seconds"
 
         public EncodeChallengeResult EncodeChallenge(Challenge challenge)
         {
-            return EncodeChallenge(challenge, ValidLevels);
+            return EncodeChallenge(challenge, ShareCodeManifest);
         }
 
         public static EncodeChallengeResult EncodeChallenge(Challenge challenge, LevelShareCodeManifest manifest)
@@ -404,7 +411,7 @@ My Best Time: {1:N3} seconds"
         public UnityEvent<DecodeFailReason> OnDecodeFailed;
         public void DecodeAndLoadCurrentCode()
         {
-            var challenge = DecodeChallenge(CurrentCode,ValidLevels, out DecodeFailReason failReason);
+            var challenge = DecodeChallenge(CurrentCode,ShareCodeManifest, out DecodeFailReason failReason);
 
             if (challenge == null || challenge.LevelState.Level == null)
             {
