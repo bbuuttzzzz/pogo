@@ -9,11 +9,15 @@ namespace Pogo.Levels
 {
     public class LevelStateChanger : MonoBehaviour
     {
-        public LevelState LevelState;
+        public LevelDescriptor Level;
 
-        public void Activate()
+        public void GoToState(int state)
         {
-            PogoGameManager.PogoInstance.SetLevelState(LevelState);
+            PogoGameManager.PogoInstance.SetLevelState(new LevelState()
+            {
+                Level = Level,
+                StateId = state
+            });
         }
     }
 }
