@@ -161,8 +161,9 @@ namespace Pogo.Challenges
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
             var startTransform = pogoInstance.GetRespawnTransform();
             var level = pogoInstance.RealTargetRespawnLevel ?? pogoInstance.LevelManager.CurrentLevel;
+            var levelState = pogoInstance.GetLevelStateForLevel(level) ?? new LevelState(level, 0);
             var endPoint = pogoInstance.Player.PhysicsPosition;
-            return new Challenge(level, startTransform, endPoint);
+            return new Challenge(levelState, startTransform, endPoint);
         }
 
         public void ExitChallenge()

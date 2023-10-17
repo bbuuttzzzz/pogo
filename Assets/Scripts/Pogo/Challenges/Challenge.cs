@@ -56,10 +56,10 @@ namespace Pogo.Challenges
 
         public Quaternion StartRotation => Quaternion.Euler(0, StartYaw, 0);
 
-        public Challenge(LevelDescriptor level, Transform start, Vector3 end) : this()
+        public Challenge(LevelState levelState, Transform start, Vector3 end) : this()
         {
             ChallengeType = ChallengeTypes.Create;
-            LevelState = new LevelState(level, 0);
+            LevelState = levelState;
             StartPointCm = Vector3Short.FromVector3(start.position * 100);
             StartYaw = (int)start.rotation.eulerAngles.y;
             EndPointCm = Vector3Short.FromVector3(end * 100);
