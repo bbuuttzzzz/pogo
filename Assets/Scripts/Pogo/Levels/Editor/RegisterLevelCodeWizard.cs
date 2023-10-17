@@ -80,6 +80,8 @@ namespace Pogo.Levels
                         .ToList();
 
                     TargetManifest.UpdateWithGroup(codeGroup);
+
+                    EditorUtility.SetDirty(TargetManifest);
                     this.Close();
                 }
             }

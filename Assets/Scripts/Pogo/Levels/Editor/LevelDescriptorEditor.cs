@@ -143,7 +143,7 @@ namespace Pogo.Levels
 
         private void SpawnAddCodeToManifestWizard(ManifestShareCodeGroup manifestGroup, LevelState levelState)
         {
-            RegisterLevelCodeWizard.Spawn(manifestGroup.manifest, levelState); ;
+            RegisterLevelCodeWizard.Spawn(manifestGroup.manifest, levelState);
         }
 
         private void RemoveCodeFromManifest(ManifestShareCodeGroup manifestGroup, ShareCode code)
