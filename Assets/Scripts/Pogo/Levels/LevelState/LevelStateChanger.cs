@@ -13,11 +13,13 @@ namespace Pogo.Levels
 
         public void GoToState(int state)
         {
-            PogoGameManager.PogoInstance.SetLevelState(new LevelState()
+            LevelState newState = new LevelState()
             {
                 Level = Level,
                 StateId = state
-            });
+            };
+            Debug.Log($"LevelStateChanger setting LevelState {newState}");
+            PogoGameManager.PogoInstance.SetLevelState(newState);
         }
     }
 }

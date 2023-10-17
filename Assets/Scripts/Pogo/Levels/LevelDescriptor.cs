@@ -33,6 +33,11 @@ namespace Pogo.Levels
         [Range(0, 255)]
         public int ShareIndex;
 
+#if UNITY_EDITOR
+        [Multiline(8)]
+        public string Notes;
+#endif
+
         public string ScenePath => SceneUtility.GetScenePathByBuildIndex(BuildIndex);
 
         public bool HideInEditor = false;
