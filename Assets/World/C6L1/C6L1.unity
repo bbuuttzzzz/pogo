@@ -2614,34 +2614,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d30fca56c374649a5663750ba514af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Chapter: {fileID: 11400000, guid: ddefe459fc2998349aa78b9326c74f5e, type: 2}
-  OnLoaded:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1069840809}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1069840810}
-        m_TargetAssemblyTypeName: WizardUtils.Waypointer`1[[System.Single, mscorlib
-        m_MethodName: GoToWaypoint
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1001 &496983515
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3026,7 +2998,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 2027107937}
-  PositiveStates: 0100000002000000
+  EnableLogging: 1
+  PositiveStates: 0300000004000000
   OnEnterPositiveStateInstantly:
     m_PersistentCalls:
       m_Calls:
@@ -3139,7 +3112,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  EnableLogging: 0
 --- !u!4 &659652632 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4130756547994525346, guid: 262a16cf5a0fa194ba6d6c911440f283, type: 3}
@@ -8870,7 +8842,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 2027107937}
-  PositiveStates: 0100000002000000
+  EnableLogging: 1
+  PositiveStates: 0000000002000000
   OnEnterPositiveStateInstantly:
     m_PersistentCalls:
       m_Calls:
@@ -8931,7 +8904,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  EnableLogging: 0
 --- !u!1 &1007679004
 GameObject:
   m_ObjectHideFlags: 0
@@ -12960,7 +12932,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 2027107937}
-  PositiveStates: 00000000
+  EnableLogging: 1
+  PositiveStates: 02000000
   OnEnterPositiveStateInstantly:
     m_PersistentCalls:
       m_Calls:
@@ -13021,7 +12994,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  EnableLogging: 0
 --- !u!1 &1769850383
 GameObject:
   m_ObjectHideFlags: 0
@@ -14476,7 +14448,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 2027107937}
-  PositiveStates: 03000000
+  EnableLogging: 1
+  PositiveStates: 04000000
   OnEnterPositiveStateInstantly:
     m_PersistentCalls:
       m_Calls:
@@ -14633,7 +14606,6 @@ MonoBehaviour:
           m_StringArgument: Close
           m_BoolArgument: 0
         m_CallState: 2
-  EnableLogging: 0
 --- !u!1001 &380898339348201741
 PrefabInstance:
   m_ObjectHideFlags: 0
