@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.GlobalIllumination;
@@ -309,6 +310,19 @@ namespace Pogo
         [HideInInspector]
         public UnityEvent<LevelStateChangedArgs> OnLevelStateChanged;
         private Dictionary<LevelDescriptor, LevelState> CurrentLevelStates = new Dictionary<LevelDescriptor, LevelState>();
+
+        [ContextMenu("Log Current LevelStates")]
+        public void LogLevelStates()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Current LevelStates:");
+            foreach(var item in CurrentLevelStates)
+            {
+                sb.AppendLine(item.Value.ToString());
+            }
+
+            Debug.Log(sb.ToString());
+        }
 
         private void ResetLevelStates()
         {

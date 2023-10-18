@@ -18,7 +18,6 @@ namespace Pogo.Levels
                 Level = Level,
                 StateId = state
             };
-            Debug.Log($"LevelStateChanger setting LevelState {newState}");
             PogoGameManager.PogoInstance.SetLevelState(newState);
         }
     }
