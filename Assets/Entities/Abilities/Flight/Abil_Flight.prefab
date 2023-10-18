@@ -49,7 +49,31 @@ MonoBehaviour:
   AttachPoint: 3
   OnAttach:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1673962596497052431}
+        m_TargetAssemblyTypeName: GlideParticleSystemController, Assembly-CSharp
+        m_MethodName: SetParent
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8983284678472549958}
+        m_TargetAssemblyTypeName: GlideParticleSystemController, Assembly-CSharp
+        m_MethodName: SetParent
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4458818893041782464
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,18 +263,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7844109104103469707}
     m_Modifications:
-    - target: {fileID: 2184287984699268076, guid: c026cb9bbd8eba04d8d8ecb474ad1049, type: 3}
-      propertyPath: prewarm
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2184287984699268076, guid: c026cb9bbd8eba04d8d8ecb474ad1049, type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 2184287984699268076, guid: c026cb9bbd8eba04d8d8ecb474ad1049, type: 3}
-      propertyPath: InitialModule.startLifetime.minScalar
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 3067053284205777154, guid: c026cb9bbd8eba04d8d8ecb474ad1049, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -301,6 +313,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c026cb9bbd8eba04d8d8ecb474ad1049, type: 3}
+--- !u!114 &1673962596497052431 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2002389606335455729, guid: c026cb9bbd8eba04d8d8ecb474ad1049, type: 3}
+  m_PrefabInstance: {fileID: 933079240561160958}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c635a57cf356d1a44a2b1fa9219eb054, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1352640761191218754
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -466,6 +489,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c026cb9bbd8eba04d8d8ecb474ad1049, type: 3}
+--- !u!114 &8983284678472549958 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2002389606335455729, guid: c026cb9bbd8eba04d8d8ecb474ad1049, type: 3}
+  m_PrefabInstance: {fileID: 7449766791772891063}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c635a57cf356d1a44a2b1fa9219eb054, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8245300075994054526
 PrefabInstance:
   m_ObjectHideFlags: 0
