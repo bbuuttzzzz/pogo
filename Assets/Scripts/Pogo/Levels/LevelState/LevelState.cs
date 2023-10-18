@@ -45,7 +45,8 @@ namespace Pogo.Levels
 
         public override string ToString()
         {
-            return $"{Level.name} State {StateId}";
+            string levelName = Level != null ? Level.name : "NULL";
+            return $"{levelName} State {StateId}";
         }
 
         public static bool operator ==(LevelState left, LevelState right)
