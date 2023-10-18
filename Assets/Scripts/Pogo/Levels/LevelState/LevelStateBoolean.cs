@@ -3,13 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace Pogo.Levels
 {
     public class LevelStateBoolean : LevelStateSubListener
     {
+
+#if DEBUG
+        public bool EnableLogging;
+#endif
+
         public int[] PositiveStates;
 
         public UnityEvent OnEnterPositiveStateInstantly;
@@ -27,6 +34,15 @@ namespace Pogo.Levels
             {
                 return;
             }
+
+
+#if DEBUG
+            if (EnableLogging)
+            {
+                string speed = e.Instant ? "instantly" : "";
+                Debug.Log($"Boolean {gameObject.name} set to {newStateIsPositive} {speed}. [{e.OldState??new LevelState()} -> {e.NewState}]");
+            }
+#endif
 
             SetBoolean(newStateIsPositive, e.Instant);
         }

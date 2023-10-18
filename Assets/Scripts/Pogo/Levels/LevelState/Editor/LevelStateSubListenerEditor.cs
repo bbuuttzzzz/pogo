@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace Pogo.Levels
 {
-    [CustomEditor(typeof(LevelStateSubListener), true)]
+    [CustomEditor(typeof(LevelStateSubListener), true), CanEditMultipleObjects]
     public class LevelStateSubListenerEditor : Editor
     {
         protected LevelStateSubListener self;
