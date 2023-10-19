@@ -1,52 +1,77 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.ParticleSystemJobs;
 
 public class GlideParticleSystemController : MonoBehaviour
 {
     // Start is called before the first frame update
     public ParticleSystem Target;
 
-    private Transform lastOrientationTransform;
-    private Vector3 lastOrientationPosition;
-    private Quaternion lastOrientationRotation;
     public AnimationCurve SpaceChangeCurve;
+    Matrix4x4 lastWorldToLocalMatrix;
 
-    ParticleSystem.Particle[] particles;
-    int currentParticleCount = 0;
+    UpdateParticlesJob job;
 
     public void Awake()
     {
-        lastOrientationTransform = new GameObject("lastOrientation").transform;
-        lastOrientationTransform.parent = transform;
-
-        particles = new ParticleSystem.Particle[Target.main.maxParticles];
+        job = new UpdateParticlesJob(default, SpaceChangeCurve);
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        currentParticleCount = Target.GetParticles(particles);
-        lastOrientationTransform.position = lastOrientationPosition;
-        lastOrientationTransform.rotation = lastOrientationRotation;
+        job.transformMatrix = transform.localToWorldMatrix * lastWorldToLocalMatrix;
+        job.Schedule(Target);
 
-        for(int n = 0; n < currentParticleCount; n++)
+        lastWorldToLocalMatrix = transform.worldToLocalMatrix;
+    }
+
+    private void OnDestroy()
+    {
+        job.Dispose();
+    }
+
+
+    struct UpdateParticlesJob : IJobParticleSystem
+    {
+        public Matrix4x4 transformMatrix;
+        private NativeArray<float> lookupTable;
+
+        public UpdateParticlesJob(Matrix4x4 transformMatrix, AnimationCurve curve, int lookupTableResolution = 100) : this()
         {
-            Vector3 previousLocalPosition = lastOrientationTransform.InverseTransformPoint(particles[n].position);
-            Vector3 nextRelativeWorldPosition = transform.TransformPoint(previousLocalPosition);
-            Vector3 deltaWorldPosition = nextRelativeWorldPosition - particles[n].position;
-
-            float tRaw = 1 - particles[n].remainingLifetime / particles[n].startLifetime;
-
-            Vector3 finalPosition = Vector3.Lerp(particles[n].position, particles[n].position + deltaWorldPosition, SpaceChangeCurve.Evaluate(tRaw));
-            particles[n].position = finalPosition;
-
+            this.transformMatrix = transformMatrix;
+            lookupTable = new NativeArray<float>(lookupTableResolution, Allocator.Persistent);
+            for(int n = 0; n < lookupTableResolution; n++)
+            {
+                lookupTable[n] = curve.Evaluate(n / (float)(lookupTableResolution - 1));
+            }
         }
 
-        Target.SetParticles(particles);
-        lastOrientationPosition = transform.position;
-        lastOrientationRotation = transform.rotation;
+        public void Execute(ParticleSystemJobData jobData)
+        {
+            var positions = jobData.positions;
+            var lifeTimePercentages = jobData.aliveTimePercent;
+            for (int i = 0; i < jobData.count; i++)
+            {
+                float tRaw = lifeTimePercentages[i] / 100f;
+                Vector3 deltaWorldPosition = transformMatrix.MultiplyPoint(positions[i]);
+                positions[i] = Vector3.Lerp(positions[i], positions[i] + deltaWorldPosition, SampleLookupTable(tRaw));
+            }
+        }
+
+        private float SampleLookupTable(float t)
+        {
+            int index = (int)(t * lookupTable.Length);
+            return lookupTable[Math.Clamp(index, 0, lookupTable.Length)];
+        }
+
+        public void Dispose()
+        {
+            lookupTable.Dispose();
+        }
     }
 }
