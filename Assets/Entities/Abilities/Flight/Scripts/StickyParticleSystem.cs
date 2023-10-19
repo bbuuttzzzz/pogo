@@ -6,7 +6,7 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.ParticleSystemJobs;
 
-public class GlideParticleSystemController : MonoBehaviour
+public class StickyParticleSystem : MonoBehaviour
 {
     // Start is called before the first frame update
     public ParticleSystem Target;
@@ -22,7 +22,6 @@ public class GlideParticleSystemController : MonoBehaviour
         job = new UpdateParticlesJob(default, SpaceChangeCurve);
         jobs = new List<JobHandle>();
     }
-
 
     // Update is called once per frame
     void Update()
