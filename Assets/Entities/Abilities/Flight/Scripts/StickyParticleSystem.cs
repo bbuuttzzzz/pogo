@@ -13,40 +13,28 @@ public class StickyParticleSystem : MonoBehaviour
 
     public AnimationCurve SpaceChangeCurve;
     Matrix4x4 lastWorldToLocalMatrix;
-    List<JobHandle> jobs;
+    JobHandle lastJobHandle;
 
     UpdateParticlesJob job;
 
     public void Awake()
     {
         job = new UpdateParticlesJob(default, SpaceChangeCurve);
-        jobs = new List<JobHandle>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        for (int i = jobs.Count - 1; i >= 0; i--)
-        {
-            JobHandle handle = jobs[i];
-            if (handle.IsCompleted)
-            {
-                jobs.RemoveAt(i);
-            }
-        }
-
+        lastJobHandle.Complete();
         job.transformMatrix = transform.localToWorldMatrix * lastWorldToLocalMatrix;
-        jobs.Add(job.Schedule(Target));
+        lastJobHandle = job.Schedule(Target);
 
         lastWorldToLocalMatrix = transform.worldToLocalMatrix;
     }
 
     private void OnDestroy()
     {
-        foreach(var job in jobs)
-        {
-            job.Complete();
-        }
+        lastJobHandle.Complete();
         job.Dispose();
     }
 
