@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.ParticleSystemJobs;
 
@@ -12,26 +13,41 @@ public class GlideParticleSystemController : MonoBehaviour
 
     public AnimationCurve SpaceChangeCurve;
     Matrix4x4 lastWorldToLocalMatrix;
+    List<JobHandle> jobs;
 
     UpdateParticlesJob job;
 
     public void Awake()
     {
         job = new UpdateParticlesJob(default, SpaceChangeCurve);
+        jobs = new List<JobHandle>();
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        for (int i = jobs.Count - 1; i >= 0; i--)
+        {
+            JobHandle handle = jobs[i];
+            if (handle.IsCompleted)
+            {
+                jobs.RemoveAt(i);
+            }
+        }
+
         job.transformMatrix = transform.localToWorldMatrix * lastWorldToLocalMatrix;
-        job.Schedule(Target);
+        jobs.Add(job.Schedule(Target));
 
         lastWorldToLocalMatrix = transform.worldToLocalMatrix;
     }
 
     private void OnDestroy()
     {
+        foreach(var job in jobs)
+        {
+            job.Complete();
+        }
         job.Dispose();
     }
 
