@@ -81,8 +81,13 @@ public class PogoGameManagerEditor : GameManagerEditor
         {
             if (GUILayout.Button("Select Point"))
             {
+                var previousSelection = Selection.activeObject;
                 Selection.activeObject = self.CachedRespawnPoint.transform;
-                EditorApplication.ExecuteMenuItem("Edit/Frame Selected");
+                EditorApplication.delayCall += () =>
+                {
+                    EditorApplication.ExecuteMenuItem("Edit/Frame Selected");
+                    Selection.activeObject = previousSelection;
+                };
             }
 
             if (GUILayout.Button("Move Player"))
@@ -105,8 +110,14 @@ public class PogoGameManagerEditor : GameManagerEditor
                 Undo.RecordObject(player.RenderTransform, "");
                 Undo.RecordObject(player.RenderPivotTransform, "");
                 player.TeleportToInEditor(self.CachedRespawnPoint);
-                Selection.activeGameObject = self.CachedRespawnPoint.gameObject;
-                EditorApplication.ExecuteMenuItem("Edit/Frame Selected");
+
+                var previousSelection = Selection.activeObject;
+                Selection.activeObject = self.CachedRespawnPoint.transform;
+                EditorApplication.delayCall += () =>
+                {
+                    EditorApplication.ExecuteMenuItem("Edit/Frame Selected");
+                    Selection.activeObject = previousSelection;
+                };
             }
         }
     }
