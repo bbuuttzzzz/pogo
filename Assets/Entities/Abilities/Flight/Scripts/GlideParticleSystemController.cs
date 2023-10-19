@@ -58,8 +58,8 @@ public class GlideParticleSystemController : MonoBehaviour
             for (int i = 0; i < jobData.count; i++)
             {
                 float tRaw = lifeTimePercentages[i] / 100f;
-                Vector3 deltaWorldPosition = transformMatrix.MultiplyPoint(positions[i]);
-                positions[i] = Vector3.Lerp(positions[i], positions[i] + deltaWorldPosition, SampleLookupTable(tRaw));
+                Vector3 transformFollowedPosition = transformMatrix.MultiplyPoint(positions[i]);
+                positions[i] = Vector3.Lerp(positions[i], transformFollowedPosition, SampleLookupTable(tRaw));
             }
         }
 
