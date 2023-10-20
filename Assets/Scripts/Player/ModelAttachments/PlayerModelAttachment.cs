@@ -12,11 +12,17 @@ namespace Players.Visuals
 
         string IPlayerModelAttachment.Name => name;
 
-        public UnityEvent<PlayerController> OnAttach;
+        public UnityEvent OnAttach;
+        public UnityEvent OnDetach;
 
-        void IPlayerModelAttachment.OnAttach(PlayerController parent)
+        void IPlayerModelAttachment.OnAttach()
         {
-            OnAttach?.Invoke(parent);
+            OnAttach?.Invoke();
+        }
+
+        void IPlayerModelAttachment.OnDetach()
+        {
+            OnDetach?.Invoke();
         }
 
         void IPlayerAttachPointSnappable.SnapToTransform(Transform target)

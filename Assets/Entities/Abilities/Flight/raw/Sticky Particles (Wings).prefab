@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 2864996325518450239}
   - component: {fileID: 2184287984699268076}
   - component: {fileID: 2002389606335455729}
+  - component: {fileID: -6869400514462370243}
   m_Layer: 7
-  m_Name: Sticky Particles
+  m_Name: Sticky Particles (Wings)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -674,7 +675,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 20
+    maxNumParticles: 40
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -940,7 +941,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 20
+      scalar: 40
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -2762,7 +2763,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
   NoiseModule:
-    enabled: 0
+    enabled: 1
     strength:
       serializedVersion: 2
       minMaxState: 0
@@ -4848,19 +4849,28 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.16519071
     - serializedVersion: 3
-      time: 0.5613961
-      value: 0.6344929
-      inSlope: -1.0488437
-      outSlope: -1.0488437
-      tangentMode: 34
+      time: 0.3327076
+      value: 0.9866507
+      inSlope: -0.2959752
+      outSlope: -0.2959752
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.16563687
+    - serializedVersion: 3
+      time: 0.73789656
+      value: 0.7258158
+      inSlope: -1.2792648
+      outSlope: -1.2792648
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.26678267
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -1.4466194
-      outSlope: -1.4466194
+      inSlope: -2.769196
+      outSlope: -2.769196
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -4868,3 +4878,15 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-6869400514462370243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5639589784374099591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a5cfe03c1847d840a7addd092d567a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

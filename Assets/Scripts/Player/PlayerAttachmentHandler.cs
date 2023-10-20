@@ -56,7 +56,7 @@ namespace Assets.Scripts.Player
             if (attachment == null) throw new NullReferenceException();
 
             Attachments.Add(attachment);
-            attachment.OnAttach(parent);
+            attachment.OnAttach();
 #if DEBUG
             _AddAttachmentDetails(attachment);
 #endif
@@ -66,6 +66,7 @@ namespace Assets.Scripts.Player
         {
             if (attachment == null) throw new NullReferenceException();
 
+            attachment.OnDetach();
 #if DEBUG
             int index = Attachments.IndexOf(attachment);
             if (index != -1)
