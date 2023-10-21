@@ -56,14 +56,14 @@ namespace Pogo
         public string CurrentCode { get; set; }
         public void LoadChallenge()
         {
-            var builder = PogoGameManager.PogoInstance.GetComponent<ChallengeBuilder>();
+            var builder = PogoGameManager.PogoInstance.ChallengeBuilder;
             builder.SetCode(CurrentCode == null || CurrentCode == "" ? DefaultCode : CurrentCode, true);
             builder.DecodeAndLoadCurrentCode();
         }
 
         public void LoadDeveloperChallenge(DeveloperChallenge developerChallenge)
         {
-            var builder = PogoGameManager.PogoInstance.GetComponent<ChallengeBuilder>();
+            var builder = PogoGameManager.PogoInstance.ChallengeBuilder;
             var clonedChallenge = new Challenge()
             {
                 LevelState = developerChallenge.Challenge.LevelState,
