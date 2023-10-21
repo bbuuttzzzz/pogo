@@ -34,7 +34,7 @@ namespace Pogo
         {
             if (pressQueued)
             {
-                if (lastPress + holdInterval < Time.time)
+                if (lastPress + holdInterval < Time.unscaledTime)
                 {
                     pressQueued = false;
                     resetRespawn();
@@ -51,7 +51,7 @@ namespace Pogo
                 if (PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Freeplay)
                 {
                     pressQueued = true;
-                    lastPress = Time.time;
+                    lastPress = Time.unscaledTime;
                 }
             }
 
