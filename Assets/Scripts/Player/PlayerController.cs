@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.TextCore.LowLevel;
 using WizardPhysics;
 using WizardPhysics.PhysicsTime;
 using WizardUtils;
@@ -144,6 +145,8 @@ public class PlayerController : MonoBehaviour
 
     void PhysicsUpdate()
     {
+        if (!gameObject.activeInHierarchy) return;
+
         lastPhysicsPosition = PhysicsPosition;
         lastPhysicsRotation = PhysicsRotation;
 
@@ -500,8 +503,14 @@ public class PlayerController : MonoBehaviour
 
         ApplyForce(Physics.gravity * deltaTime);
 
-        foreach(var continuousForce in ContinuousForces)
+        for (int forceIndex = ContinuousForces.Count - 1; forceIndex >= 0; forceIndex--)
         {
+            IPlayerContinuousForce continuousForce = ContinuousForces[forceIndex];
+            if (!continuousForce.IsValid())
+            {
+                ContinuousForces.RemoveAt(forceIndex);
+                continue;
+            }
             ApplyForce(continuousForce.GetForce(this, deltaTime));
         }
     }
@@ -604,7 +613,7 @@ public class PlayerController : MonoBehaviour
         Vector3 flatVel = vel.Flatten();
         float currentspeed = Vector3.Dot(flatVel, mov); //gets velocity along movement
                                                         //weird step here from the quake guys
-                                                        //really, i want to see if AIR_SPEED_MAX is bigger than currentspeed
+                                                        //really, forceIndex want to see if AIR_SPEED_MAX is bigger than currentspeed
                                                         //then, if it is, add the amount it is bigger by the player's speed along mov
                                                         //this just cuts out a step because lol
         float addspeed = AIR_SPEED_MAX - currentspeed; //finds how far from max your current speed is

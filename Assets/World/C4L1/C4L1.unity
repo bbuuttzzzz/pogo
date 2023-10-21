@@ -686,10 +686,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d30fca56c374649a5663750ba514af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Chapter: {fileID: 11400000, guid: 586b4875d1542ef41affee1d39d60844, type: 2}
-  OnLoaded:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &51279832 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8653657349070071835, guid: f2e86e9e49f400a40a94eb69ecefebf1, type: 3}
@@ -15509,10 +15505,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d30fca56c374649a5663750ba514af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Chapter: {fileID: 11400000, guid: 4f6136b7d843af24e9fe5c2567bccff5, type: 2}
-  OnLoaded:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!4 &1436814201 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5284064879027073598, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
@@ -19738,7 +19730,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1989167204}
   - component: {fileID: 1989167207}
-  - component: {fileID: 1989167206}
+  - component: {fileID: 1989167209}
   - component: {fileID: 1989167208}
   m_Layer: 7
   m_Name: Slower
@@ -19763,33 +19755,6 @@ Transform:
   m_Father: {fileID: 1164801335}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1989167206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1989167203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0537f4aa593d094296eebdd77a5b85a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WhileInside:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1989167208}
-        m_TargetAssemblyTypeName: Pogo.SlowFaller, Assembly-CSharp
-        m_MethodName: Slow
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!65 &1989167207
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19816,7 +19781,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxFallSpeed: 2
-  Drag: 4
+  Drag: 0.9
+--- !u!114 &1989167209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989167203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4fd0b6f382af704fa8b990da6e61b27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1989167208}
+        m_TargetAssemblyTypeName: Pogo.SlowFaller, Assembly-CSharp
+        m_MethodName: Apply
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnExit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1989167208}
+        m_TargetAssemblyTypeName: Pogo.SlowFaller, Assembly-CSharp
+        m_MethodName: Remove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &2010875958
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20862,6 +20869,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 849268749}
     m_Modifications:
+    - target: {fileID: 310483360518905767, guid: 60b3bbfc83cdaa645a39fcca24b56e3f, type: 3}
+      propertyPath: LevelState.Level
+      value: 
+      objectReference: {fileID: 11400000, guid: ed8e7c0e04a8c054280ab2454b8047df, type: 2}
+    - target: {fileID: 310483361746466804, guid: 60b3bbfc83cdaa645a39fcca24b56e3f, type: 3}
+      propertyPath: LevelState.Level
+      value: 
+      objectReference: {fileID: 11400000, guid: a9d80a307c6cb664e884b04bb3a64bec, type: 2}
     - target: {fileID: 4401529423893958127, guid: 60b3bbfc83cdaa645a39fcca24b56e3f, type: 3}
       propertyPath: m_RootOrder
       value: 7

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Levels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace Pogo.Challenges
         public const int WORST_TIME = 60_000;
         public ChallengeTypes ChallengeType;
 
-        public LevelDescriptor Level;
+        public LevelState LevelState;
         public DeveloperChallenge DeveloperChallenge;
 
         public Vector3 StartPoint => StartPointCm.ToVector3() / 100;
@@ -55,10 +56,10 @@ namespace Pogo.Challenges
 
         public Quaternion StartRotation => Quaternion.Euler(0, StartYaw, 0);
 
-        public Challenge(LevelDescriptor level, Transform start, Vector3 end) : this()
+        public Challenge(LevelState levelState, Transform start, Vector3 end) : this()
         {
             ChallengeType = ChallengeTypes.Create;
-            Level = level;
+            LevelState = levelState;
             StartPointCm = Vector3Short.FromVector3(start.position * 100);
             StartYaw = (int)start.rotation.eulerAngles.y;
             EndPointCm = Vector3Short.FromVector3(end * 100);

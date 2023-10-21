@@ -3,7 +3,8 @@ namespace Players.Visuals.ModelAttachments
 {
     public interface IPlayerModelAttachment : IPlayerAttachPointSnappable
     {
-        public void OnAttach(PlayerController parent);
+        public void OnAttach();
+        public void OnDetach();
 
         public string Name { get; }
     }
