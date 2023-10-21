@@ -20,7 +20,7 @@ namespace Pogo.Challenges
 
         private void Start()
         {
-            challengeBuilder = PogoGameManager.GameInstance.GetComponent<ChallengeBuilder>();
+            challengeBuilder = PogoGameManager.PogoInstance.ChallengeBuilder;
             challengeBuilder.OnDecodeFailed.AddListener(ReceiveLoadError);
             text = GetComponent<Text>();
         }
@@ -70,7 +70,7 @@ namespace Pogo.Challenges
         public void ResetText()
         {
             if (this.text == null) this.text = GetComponent<Text>();
-            if (challengeBuilder == null) this.challengeBuilder = PogoGameManager.PogoInstance.GetComponent<ChallengeBuilder>();
+            if (challengeBuilder == null) this.challengeBuilder = PogoGameManager.PogoInstance.ChallengeBuilder;
 
             if (challengeBuilder.CurrentChallenge != null && challengeBuilder.CurrentChallenge.BestTimeMS > 60_000)
             {
