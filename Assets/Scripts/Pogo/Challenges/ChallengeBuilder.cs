@@ -217,6 +217,25 @@ namespace Pogo.Challenges
             OnChallengeReset?.Invoke();
         }
 
+        #region Challenge Preview
+
+        public UnityEvent OnShowChallengePreview;
+        public UnityEvent OnHideChallengePreview;
+
+        public void SetShowChallengePreview(bool showPreview)
+        {
+            if (showPreview)
+            {
+                OnShowChallengePreview?.Invoke();
+            }
+            else
+            {
+                OnHideChallengePreview?.Invoke();
+            }
+        }
+
+        #endregion
+
         const string composeTweetLinkHeader = "https://twitter.com/compose/tweet?text=";
         public static readonly string[] TweetFormats =
         {
