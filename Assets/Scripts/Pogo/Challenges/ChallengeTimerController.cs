@@ -13,7 +13,7 @@ namespace Pogo.Challenges
     [RequireComponent(typeof(StringStopWatch))]
     public class ChallengeTimerController : MonoBehaviour
     {
-        public ChallengeBuilder challengeBuilder;
+        private ChallengeBuilder challengeBuilder;
         Animator animator;
         StringStopWatch stopWatch;
         public Text popupText;
@@ -38,10 +38,11 @@ namespace Pogo.Challenges
             }
         }
 
-        private void Awake()
+        private void Start()
         {
             stopWatch = GetComponent<StringStopWatch>();
             animator = GetComponent<Animator>();
+            challengeBuilder = PogoGameManager.PogoInstance.ChallengeBuilder;
             challengeBuilder.OnChallengeChanged.AddListener(onChallengeChanged);
             challengeBuilder.OnChallengeComplete.AddListener(onChallengeComplete);
             challengeBuilder.OnChallengeReset.AddListener(onChallengeReset);
