@@ -97,6 +97,7 @@ namespace Pogo
             SaveGlobalSave();
         }
 
+        public ChallengeBuilder ChallengeBuilder;
 
         #region Level Management
         public enum GameStates
