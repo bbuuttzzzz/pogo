@@ -100,7 +100,7 @@ namespace Pogo.Challenges
                     DeveloperChallenge.BestTimeMS = LastAttemptTimeMS;
                 }
 
-                if (PersonalBestTimeMS == WORST_TIME)
+                if (PersonalBestTimeMS >= WORST_TIME)
                 {
                     data.FirstClear = true;
                 }

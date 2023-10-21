@@ -42,6 +42,7 @@ namespace Pogo.Challenges
         public UIElementSpawner PopupSpawner;
 
         public GameObject ClearCheckPrefab;
+        public GameObject EncodeFailedPrefab;
         public GameObject SilverMedalPrefab;
         public GameObject GoldMedalPrefab;
 
@@ -117,6 +118,7 @@ namespace Pogo.Challenges
             {
                 if (CurrentChallenge.BestTimeMS < 60_000)
                 {
+                    bool firstCreateClear = false;
 
                     if (data.GoldMedalEarned)
                     {
@@ -126,7 +128,7 @@ namespace Pogo.Challenges
                     {
                         if (CurrentChallenge.ChallengeType == Challenge.ChallengeTypes.Create)
                         {
-                            PopupSpawner.SpawnPrefab(ClearCheckPrefab);
+                            firstCreateClear = true;
                         }
                         else if (CurrentChallenge.ChallengeType == Challenge.ChallengeTypes.PlayDeveloper)
                         {
@@ -139,11 +141,19 @@ namespace Pogo.Challenges
                         CurrentCode = result.Code;
                         codeIsValid = true;
                         OnCodeChanged?.Invoke(CurrentCode);
+                        if (firstCreateClear)
+                        {
+                            PopupSpawner.SpawnPrefab(ClearCheckPrefab);
+                        }
                     }
                     else
                     {
                         OnEncodeFailed?.Invoke(result.FailReason);
                         OnCodeChanged?.Invoke("");
+                        if (firstCreateClear)
+                        {
+                            PopupSpawner.SpawnPrefab(EncodeFailedPrefab);
+                        }
                     }
                 }
                 OnChallengeChanged?.Invoke(CurrentChallenge);
