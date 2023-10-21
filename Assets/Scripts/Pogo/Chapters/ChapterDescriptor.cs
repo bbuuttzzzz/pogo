@@ -1,4 +1,5 @@
 ﻿using Pogo.Checkpoints;
+using Pogo.Levels;
 using System;
 using System.Collections;
 using System.IO;
@@ -33,20 +34,6 @@ namespace Pogo
 
         public CheckpointDescriptor[] MainPathCheckpoints;
         public CheckpointDescriptor[] SidePathCheckpoints;
-
-        public ChapterStartPoint FindStartPoint()
-        {
-            var startPoints = FindObjectsOfType(typeof(ChapterStartPoint)) as ChapterStartPoint[];
-            foreach (var startPoint in startPoints)
-            {
-                if (startPoint.Chapter == this)
-                {
-                    return startPoint;
-                }
-            }
-
-            throw new MissingReferenceException($"Could not find ChapterStartPoint for ChapterDescriptor {name}");
-        }
 
         private void OnValidate()
         {

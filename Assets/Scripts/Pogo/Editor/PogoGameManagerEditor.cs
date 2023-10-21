@@ -1,4 +1,5 @@
 using Pogo;
+using Pogo.Levels;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,7 +81,13 @@ public class PogoGameManagerEditor : GameManagerEditor
         {
             if (GUILayout.Button("Select Point"))
             {
+                var previousSelection = Selection.activeObject;
                 Selection.activeObject = self.CachedRespawnPoint.transform;
+                EditorApplication.delayCall += () =>
+                {
+                    EditorApplication.ExecuteMenuItem("Edit/Frame Selected");
+                    Selection.activeObject = previousSelection;
+                };
             }
 
             if (GUILayout.Button("Move Player"))
@@ -102,7 +109,15 @@ public class PogoGameManagerEditor : GameManagerEditor
                 Undo.RecordObject(player.CollisionGroup.transform, "");
                 Undo.RecordObject(player.RenderTransform, "");
                 Undo.RecordObject(player.RenderPivotTransform, "");
-                player.TeleportToInEditor(self.CachedRespawnPoint.transform);
+                player.TeleportToInEditor(self.CachedRespawnPoint);
+
+                var previousSelection = Selection.activeObject;
+                Selection.activeObject = self.CachedRespawnPoint.transform;
+                EditorApplication.delayCall += () =>
+                {
+                    EditorApplication.ExecuteMenuItem("Edit/Frame Selected");
+                    Selection.activeObject = previousSelection;
+                };
             }
         }
     }

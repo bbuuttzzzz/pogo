@@ -25,6 +25,13 @@ namespace WizardUtils
 
         public void SetValue(float newValue)
         {
+#if DEBUG
+            if (setting == null)
+            {
+                Debug.LogError("GameSettingChanger not set up yet D:", gameObject);
+                return;
+            }
+#endif
             setting.Value = newValue;
         }
     }

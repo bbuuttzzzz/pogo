@@ -1,5 +1,6 @@
 ﻿using Inputter;
 using Pogo.Checkpoints;
+using Pogo.Levels;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Pogo.Challenges
 {
     public class ChallengeBuilder : MonoBehaviour
     {
-        public LevelManifest ValidLevels;
+        public LevelShareCodeManifest ShareCodeManifest;
 
         [NonSerialized]
         public Challenge CurrentChallenge;
@@ -24,6 +25,7 @@ namespace Pogo.Challenges
 
         public UnityEvent<Challenge> OnChallengeChanged;
         public UnityEvent<string> OnCodeChanged;
+        public UnityEvent<EncodeChallengeResult.FailReasons> OnEncodeFailed;
 
         public PauseMenuController PauseMenu;
         public ToggleableUIElement ChallengeMenu;
@@ -131,9 +133,18 @@ namespace Pogo.Challenges
                             PopupSpawner.SpawnPrefab(SilverMedalPrefab);
                         }
                     }
-                    CurrentCode = EncodeChallenge(CurrentChallenge);
-                    codeIsValid = true;
-                    OnCodeChanged?.Invoke(CurrentCode);
+                    var result = EncodeChallenge(CurrentChallenge);
+                    if (result.Success)
+                    {
+                        CurrentCode = result.Code;
+                        codeIsValid = true;
+                        OnCodeChanged?.Invoke(CurrentCode);
+                    }
+                    else
+                    {
+                        OnEncodeFailed?.Invoke(result.FailReason);
+                        OnCodeChanged?.Invoke("");
+                    }
                 }
                 OnChallengeChanged?.Invoke(CurrentChallenge);
             }
@@ -148,10 +159,18 @@ namespace Pogo.Challenges
             }
 
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
-            var startTransform = pogoInstance.GetRespawnTransform();
-            var level = pogoInstance.RealTargetRespawnLevel ?? pogoInstance.LevelManager.CurrentLevel;
-            var endPoint = pogoInstance.Player.PhysicsPosition;
-            return new Challenge(level, startTransform, endPoint);
+            Transform startTransform = pogoInstance.GetRespawnTransform();
+
+            // crunch existing LevelState down to a shareable levelState
+            LevelDescriptor level = pogoInstance.RealTargetRespawnLevel ?? pogoInstance.LevelManager.CurrentLevel;
+            LevelState levelState = pogoInstance.GetLevelStateForLevel(level) ?? new LevelState(level, 0);
+            if (ShareCodeManifest.TryGetShareCode(levelState, out ShareCode shareCode))
+            {
+                levelState = shareCode.LevelState;
+            }
+
+            Vector3 endPoint = pogoInstance.Player.PhysicsPosition;
+            return new Challenge(levelState, startTransform, endPoint);
         }
 
         public void ExitChallenge()
@@ -172,7 +191,7 @@ namespace Pogo.Challenges
             finishLoading = () =>
             {
                 pogoInstance.CustomCheckpoint.Place(CurrentChallenge.StartPoint, CurrentChallenge.StartRotation);
-                pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint, CurrentChallenge.Level));
+                pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint, CurrentChallenge.LevelState.Level));
                 ChallengePickup.transform.position = CurrentChallenge.EndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
                 PogoGameManager.PogoInstance.SpawnPlayer();
@@ -183,7 +202,13 @@ namespace Pogo.Challenges
                 Debug.Log("Finished loading challenge");
             };
             pogoInstance.OnLevelLoaded.AddListener(finishLoading);
-            pogoInstance.LoadLevel(CurrentChallenge.Level, new LevelLoadingSettings() { ForceReload = true, InstantChangeAtmosphere = true });
+            pogoInstance.LoadLevel(new LevelLoadingSettings()
+            {
+                Level = CurrentChallenge.LevelState.Level,
+                LevelState = CurrentChallenge.LevelState,
+                ForceReload = true,
+                Instantly = true
+            });
         }
 
         private void resetChallenge()
@@ -246,19 +271,26 @@ My Best Time: {1:N3} seconds"
         public void EncodeAndPrint()
         {
             var challenge = CreateChallenge();
-            string result = EncodeChallenge(challenge);
+            var result = EncodeChallenge(challenge);
 
-            Debug.Log(result);
+            if (result.Success)
+            {
+                Debug.Log(result);
+            }
+            else
+            {
+                Debug.LogError($"Failed to encode challenge. Reason: {result.FailReason}");
+            }
         }
 
-        public string EncodeChallenge(Challenge challenge)
+        public EncodeChallengeResult EncodeChallenge(Challenge challenge)
         {
-            return EncodeChallenge(challenge, ValidLevels);
+            return EncodeChallenge(challenge, ShareCodeManifest);
         }
 
-        public static string EncodeChallenge(Challenge challenge, LevelManifest manifest)
+        public static EncodeChallengeResult EncodeChallenge(Challenge challenge, LevelShareCodeManifest manifest)
         {
-            // todo WRAP THIS cuz maybe I use it later... i guess. this just feels so ugly being in here
+            // todo WRAP THIS cuz maybe I use it later... shareIndex guess. this just feels so ugly being in here
             byte[] completeChallenge = new byte[PayloadLength];
             int offset = 0;
 
@@ -272,8 +304,11 @@ My Best Time: {1:N3} seconds"
             addByte(ref completeChallenge, offset, yaw);
             offset++;
 
-            int rawIndex = GetLevelIndex(challenge.Level, manifest);
-            byte levelIndex = Convert.ToByte(rawIndex);
+            if (!manifest.TryGetShareCode(challenge.LevelState, out ShareCode shareCode))
+            {
+                return EncodeChallengeResult.NewFailure(EncodeChallengeResult.FailReasons.MissingShareIndex);
+            }
+            byte levelIndex = Convert.ToByte(shareCode.ShareIndex);
             addByte(ref completeChallenge, offset, levelIndex);
             offset++;
 
@@ -285,30 +320,16 @@ My Best Time: {1:N3} seconds"
             addByte(ref completeChallenge, offset, (byte)hash);
 
             string result = Pretty256Helper.Encode(completeChallenge);
-            return result;
+            return EncodeChallengeResult.NewSuccess(result);
         }
 
-        private static int GetLevelIndex(LevelDescriptor level, LevelManifest manifest)
+        public static LevelState? GetLevelStateFromShareIndex(int shareIndex, LevelShareCodeManifest manifest)
         {
-            foreach (LevelDescriptor validLevel in manifest.Levels)
+            foreach (var shareCode in manifest.ShareCodes)
             {
-                if (validLevel == level)
+                if (shareCode.ShareIndex == shareIndex)
                 {
-                    return level.ShareIndex;
-                }
-            }
-
-            Debug.LogError(($"level \'{level}\' was not valid for Manifest \'{manifest}\'"));
-            return 0;
-        }
-
-        public static LevelDescriptor GetLevelFromIndex(int shareIndex, LevelManifest manifest)
-        {
-            foreach (LevelDescriptor validLevel in manifest.Levels)
-            {
-                if (validLevel.ShareIndex == shareIndex)
-                {
-                    return validLevel;
+                    return shareCode.LevelState;
                 }
             }
 
@@ -379,19 +400,20 @@ My Best Time: {1:N3} seconds"
         #region Decoding
         public enum DecodeFailReason
         {
-            _none,
-            WrongLength,
-            Invalid,
-            CantShareInvalid,
-            CantShareUncleared,
+            _none = 0,
+            WrongLength = 1,
+            Invalid = 2,
+            Incompatible = 3,
+            CantShareInvalid = 65,
+            CantShareUncleared = 66,
         }
 
         public UnityEvent<DecodeFailReason> OnDecodeFailed;
         public void DecodeAndLoadCurrentCode()
         {
-            var challenge = DecodeChallenge(CurrentCode,ValidLevels, out DecodeFailReason failReason);
+            var challenge = DecodeChallenge(CurrentCode,ShareCodeManifest, out DecodeFailReason failReason);
 
-            if (challenge == null || challenge.Level == null)
+            if (challenge == null || challenge.LevelState.Level == null)
             {
                 OnDecodeFailed?.Invoke(failReason);
                 return;
@@ -401,7 +423,7 @@ My Best Time: {1:N3} seconds"
             LoadChallenge();
         }
 
-        public static Challenge DecodeChallenge(string encodedPayload, LevelManifest manifest, out DecodeFailReason failReason)
+        public static Challenge DecodeChallenge(string encodedPayload, LevelShareCodeManifest manifest, out DecodeFailReason failReason)
         {
             if (encodedPayload.Length != PayloadLength)
             {
@@ -436,8 +458,15 @@ My Best Time: {1:N3} seconds"
             offset++;
 
 
-            byte levelIndex = getByte(rawPayload, offset);
-            challenge.Level = GetLevelFromIndex(levelIndex, manifest);
+            byte shareIndex = getByte(rawPayload, offset);
+            LevelState? levelState = GetLevelStateFromShareIndex(shareIndex, manifest);
+            if (!levelState.HasValue)
+            {
+                failReason = DecodeFailReason.Incompatible;
+                return null;
+            }
+
+            challenge.LevelState = levelState.Value;
             offset++;
 
 

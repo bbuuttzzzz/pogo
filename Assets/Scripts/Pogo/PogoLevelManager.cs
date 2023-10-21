@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Levels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -111,18 +112,21 @@ namespace Pogo
         /// <param name="settings"></param>
         /// <returns>FALSE if level is already loaded</returns>
         /// <param name="callback">called only if level loading starts successfully</param>
-        public bool LoadLevelAsync(LevelDescriptor newLevel, LevelLoadingSettings settings, Action<LevelLoadingData> callback = null)
+        public bool LoadLevelAsync(LevelLoadingSettings settings, Action<LevelLoadingData> callback = null)
         {
-            if (currentLevel == newLevel && !settings.ForceReload)
+            if (currentLevel == settings.Level && !settings.ForceReload)
             {
-                Debug.LogWarning($"Tried to load already-loaded level {newLevel}");
+                if (settings.LevelState.HasValue)
+                {
+                    PogoGameManager.PogoInstance.SetLevelState(settings.LevelState.Value, settings.Instantly);
+                }
                 return false;
             }
-            currentLevel = newLevel;
+            currentLevel = settings.Level;
 
             List<AsyncOperation> loadTasks = new List<AsyncOperation>();
             List<AsyncOperation> unloadTasks = new List<AsyncOperation>();
-            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(newLevel);
+            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(settings.Level);
 
             foreach (LevelDescriptor descriptor in scenesToLoad)
             {

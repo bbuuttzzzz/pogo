@@ -25,6 +25,7 @@ namespace WizardUtils
         [NonSerialized]
         public UnityEvent OnQuitToDesktop = new UnityEvent();
         public string PersistentDataPath => PlatformService.PersistentDataPath;
+        public AudioManager AudioManager => GetComponent<AudioManager>();
 
         protected virtual void Awake()
         {
@@ -55,6 +56,7 @@ namespace WizardUtils
                 new GameSettingFloat(KEY_VOLUME_EFFECTS, 80),
                 new GameSettingFloat(KEY_VOLUME_AMBIENCE, 80),
                 new GameSettingFloat(KEY_VOLUME_MUSIC, 80),
+                new GameSettingFloat(SETTINGKEY_MUTE_ON_ALT_TAB, 0),
             };
         }
 
@@ -303,6 +305,8 @@ namespace WizardUtils
         public static string KEY_VOLUME_EFFECTS = "Volume_Effects";
         public static string KEY_VOLUME_AMBIENCE = "Volume_Ambience";
         public static string KEY_VOLUME_MUSIC = "Volume_Music";
+
+        public static string SETTINGKEY_MUTE_ON_ALT_TAB = "MuteOnAltTab";
         #endregion
 
         #region Saving

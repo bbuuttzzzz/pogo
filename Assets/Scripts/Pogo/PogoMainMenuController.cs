@@ -66,7 +66,7 @@ namespace Pogo
             var builder = PogoGameManager.PogoInstance.GetComponent<ChallengeBuilder>();
             var clonedChallenge = new Challenge()
             {
-                Level = developerChallenge.Challenge.Level,
+                LevelState = developerChallenge.Challenge.LevelState,
                 BestTimeMS = developerChallenge.Challenge.BestTimeMS,
                 PersonalBestTimeMS = (ushort)developerChallenge.BestTimeMS,
                 StartPointCm = developerChallenge.Challenge.StartPointCm,

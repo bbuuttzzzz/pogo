@@ -4,11 +4,13 @@ using Platforms;
 using Pogo.Challenges;
 using Pogo.Checkpoints;
 using Pogo.Collectibles;
+using Pogo.Levels;
 using Pogo.Saving;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.GlobalIllumination;
@@ -85,6 +87,7 @@ namespace Pogo
             SaveGlobalSave();
             ResetCustomRespawnPoint(true);
             ResetStats();
+            ResetLevelStates();
         }
 
         private void GameManager_OnQuitToDesktop()
@@ -110,7 +113,6 @@ namespace Pogo
         public UnityEvent OnLevelLoaded;
 
         bool isLoadingLevel;
-        LevelDescriptor queuedLevel;
 
 #if UNITY_EDITOR
         public override void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
@@ -122,43 +124,44 @@ namespace Pogo
         }
 #endif
 
-        public void LoadLevel(LevelDescriptor newLevel)
-        {
-            LoadLevel(newLevel, LevelLoadingSettings.Default);
-        }
-
-        public void LoadLevel(LevelDescriptor newLevel, LevelLoadingSettings settings)
+        public void LoadLevel(LevelDescriptor newLevel) => LoadLevel(LevelLoadingSettings.DefaultWithLevel(newLevel));
+        
+        public void LoadLevel(LevelLoadingSettings settings)
         {
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
 #endif
             if (isLoadingLevel)
             {
-                queuedLevel = newLevel;
+                Debug.LogWarning("Tried to load a level while already loading a level :(");
                 return;
             }
 
             Action callBack = () =>
             {
-                OnLoadLevelFinished(settings);
+                LevelManager.TransitionAtmosphere(LevelManager.CurrentLevel, settings.Instantly);
                 OnLevelLoaded?.Invoke();
+                if (settings.LevelState.HasValue)
+                {
+                    SetLevelState(settings.LevelState.Value, settings.Instantly);
+                }
+
+                foreach(var initialLevelState in settings.Level.LoadLevelStates)
+                {
+                    TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
+                }
             };
             isLoadingLevel = true;
 
             settings.LoadingFromMenu = settings.LoadingFromMenu || CurrentControlScene != null;
 #if UNITY_WEBGL
-            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelScenesInOrder(levelLoadingData, settings, callBack))))
+            if (!levelManager.LoadLevelAsync(settings, (levelLoadingData) => StartCoroutine(loadLevelScenesInOrder(levelLoadingData, settings, callBack))))
 #else
-            if (!levelManager.LoadLevelAsync(newLevel, settings, (levelLoadingData) => StartCoroutine(loadLevelScenesSimultaneous(levelLoadingData, settings, callBack))))
+            if (!levelManager.LoadLevelAsync(settings, (levelLoadingData) => StartCoroutine(loadLevelScenesSimultaneous(levelLoadingData, settings, callBack))))
 #endif
             {
                 isLoadingLevel = false;
             }
-        }
-
-        void OnLoadLevelFinished(LevelLoadingSettings settings)
-        {
-            LevelManager.TransitionAtmosphere(LevelManager.CurrentLevel, settings.InstantChangeAtmosphere);
         }
 
         IEnumerator loadLevelScenesSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
@@ -303,6 +306,64 @@ namespace Pogo
         }
         #endregion
 
+        #region Level State
+
+        [HideInInspector]
+        public UnityEvent<LevelStateChangedArgs> OnLevelStateChanged;
+        private Dictionary<LevelDescriptor, LevelState> CurrentLevelStates = new Dictionary<LevelDescriptor, LevelState>();
+
+        [ContextMenu("Log Current LevelStates")]
+        public void LogLevelStates()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Current LevelStates:");
+            foreach(var item in CurrentLevelStates)
+            {
+                sb.AppendLine(item.Value.ToString());
+            }
+
+            Debug.Log(sb.ToString());
+        }
+
+        private void ResetLevelStates()
+        {
+            CurrentLevelStates.Clear();
+        }
+
+        private void TryInitializeLevelStateForLevel(LevelState levelState, bool instant = false)
+        {
+            if (GetLevelStateForLevel(levelState.Level) == null)
+            {
+                SetLevelState(levelState, instant);
+            }
+        }
+
+        public void SetLevelState(LevelState newState, bool instant = false)
+        {
+            LevelStateChangedArgs args = new LevelStateChangedArgs(
+                GetLevelStateForLevel(newState.Level),
+                newState,
+                instant
+            );
+
+            CurrentLevelStates[newState.Level] = newState;
+            OnLevelStateChanged?.Invoke(args);
+        }
+
+        public LevelState? GetLevelStateForLevel(LevelDescriptor levelDescriptor)
+        {
+            if (CurrentLevelStates.TryGetValue(levelDescriptor, out LevelState currentState))
+            {
+                return currentState;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
         #region Time Freezing
         private bool TimeFrozen
         {
@@ -411,7 +472,7 @@ namespace Pogo
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.Level == null)
+            if (CurrentCheckpoint.Descriptor.LevelState.Level == null)
             {
                 Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Level!!!", CurrentCheckpoint);
                 newData = new QuickSaveData();
@@ -481,9 +542,11 @@ namespace Pogo
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
             OnLevelLoaded.AddListener(finishLoading);
-            LoadLevel(checkpoint.Level, new LevelLoadingSettings
+            LoadLevel(new LevelLoadingSettings
             {
-                InstantChangeAtmosphere = true,
+                Level = checkpoint.LevelState.Level,
+                LevelState = checkpoint.LevelState,
+                Instantly = true,
                 ForceReload = false,
                 LoadingFromMenu = CurrentControlScene != null,
                 QuickSaveData = quickSaveData
