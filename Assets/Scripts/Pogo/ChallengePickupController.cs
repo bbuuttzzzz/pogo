@@ -12,6 +12,11 @@ namespace Pogo
     {
         public UnityEvent OnReset;
 
+        public void PickUp()
+        {
+            PogoGameManager.PogoInstance.ChallengeBuilder.CompleteChallenge();
+        }
+
         public void Reset()
         {
             OnReset?.Invoke();

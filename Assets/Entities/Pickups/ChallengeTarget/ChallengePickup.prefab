@@ -9894,6 +9894,14 @@ MonoBehaviour:
   - 0
   InitialWaypointIndex: -1
   TransitionDuration: 0.5
+  UseRealTime: 0
+  UseCustomCurve: 0
+  CustomCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   Target: {fileID: 406563785320118350}
 --- !u!1 &4189955593190532498
 GameObject:
@@ -10162,9 +10170,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Pogo.Challenges.ChallengeBuilder, Assembly-CSharp
-        m_MethodName: RegisterTime
+      - m_Target: {fileID: 6445744712139980567}
+        m_TargetAssemblyTypeName: Pogo.ChallengePickupController, Assembly-CSharp
+        m_MethodName: PickUp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10260,7 +10268,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &5834614553642961594
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -10277,7 +10285,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1057599179047821356
 PrefabInstance:
   m_ObjectHideFlags: 0
