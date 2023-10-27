@@ -64,7 +64,7 @@ namespace Pogo.Collectibles
                 }
             }
 
-            throw new NullReferenceException("Couldn't find the collectible in currently loaded scenes :(");
+            throw new NullReferenceException($"Couldn't find checkpoint {self.CheckpointId} in currently loaded scenes :(");
         }
 
         private static void OpenScene(int buildIndex)
