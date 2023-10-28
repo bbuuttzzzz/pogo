@@ -1,5 +1,6 @@
 ﻿using Pogo.Levels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -112,8 +113,7 @@ namespace Pogo
         /// <param name="newLevel">the level to load</param>
         /// <param name="settings"></param>
         /// <returns>FALSE if level is already loaded</returns>
-        /// <param name="callback">called only if level loading starts successfully</param>
-        public bool LoadLevelAsync(LevelLoadingSettings settings, Action<LevelLoadingData> callback = null)
+        public bool LoadLevelAsync(LevelLoadingSettings settings)
         {
             if (currentLevel == settings.Level && !settings.ForceReload)
             {
@@ -148,7 +148,23 @@ namespace Pogo
                 if (task != null) unloadTasks.Add(task);
             }
 
-            if (callback != null) callback(new LevelLoadingData(loadTasks, unloadTasks));
+            Action callBack = () =>
+            {
+                TransitionAtmosphere(CurrentLevel, settings.Instantly);
+                PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
+                if (settings.LevelState.HasValue)
+                {
+                    PogoGameManager.PogoInstance.SetLevelState(settings.LevelState.Value, settings.Instantly);
+                }
+
+                foreach (var initialLevelState in settings.Level.LoadLevelStates)
+                {
+                    PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
+                }
+            };
+
+            loadLevelScenesInOrder(new LevelLoadingData(loadTasks, unloadTasks), settings, callBack);
+
             return true;
         }
 
@@ -156,6 +172,134 @@ namespace Pogo
         {
             currentLevel = null;
         }
+
+
+        IEnumerator loadLevelScenesSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
+        {
+            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
+            {
+                task.allowSceneActivation = false;
+            }
+
+            bool finished = false;
+            while (!finished)
+            {
+                float progress = 0;
+                finished = true;
+
+                string txt = "";
+                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
+                {
+                    progress += Task.isDone ? 1 : Task.progress / 0.9f;
+                    finished = finished && (Task.progress >= 0.9f || Task.isDone);
+                    txt = txt + Task.progress + " ";
+                }
+
+                progress /= levelLoadingData.LoadingSceneTasks.Count;
+                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
+
+                yield return new WaitForSecondsRealtime(0.02f);
+            }
+
+            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
+            {
+                task.allowSceneActivation = true;
+            }
+            finished = false;
+            while (!finished)
+            {
+                float progress = 0;
+                finished = true;
+
+                string txt = "";
+                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
+                {
+                    progress += Task.isDone ? 1 : Task.progress;
+                    finished = finished && Task.isDone;
+                    txt = txt + Task.progress + " ";
+                }
+
+                progress /= levelLoadingData.LoadingSceneTasks.Count;
+                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
+
+                yield return new WaitForSecondsRealtime(0.02f);
+            }
+
+            if (settings.LoadingFromMenu)
+            {
+                PogoGameManager.PogoInstance.UnloadControlScene();
+                PogoGameManager.PogoInstance.ResetStats(settings.QuickSaveData);
+            }
+
+            callback?.Invoke();
+        }
+
+        IEnumerator loadLevelScenesInOrder(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
+        {
+            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
+            {
+                task.allowSceneActivation = false;
+            }
+
+            int completed = 0;
+            foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
+            {
+                bool finished = false;
+                while (!finished)
+                {
+                    finished = (Task.progress >= 0.9f || Task.isDone);
+
+                    Debug.Log($"Progress: %{(Task.progress * 100):N2} ({completed + 1}/{levelLoadingData.LoadingSceneTasks.Count})");
+
+                    if (finished)
+                    {
+                        completed++;
+                        Task.allowSceneActivation = true;
+                    }
+                    else
+                    {
+                        yield return new WaitForSecondsRealtime(0.02f);
+                    }
+                }
+            }
+
+            bool cleanupFinished = false;
+            while (!cleanupFinished)
+            {
+                float progress = 0;
+                cleanupFinished = true;
+
+                string txt = "";
+                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
+                {
+                    progress += Task.isDone ? 1 : Task.progress;
+                    cleanupFinished = cleanupFinished && Task.isDone;
+                    txt = txt + Task.progress + " ";
+                }
+
+                progress /= levelLoadingData.LoadingSceneTasks.Count;
+                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
+
+
+                if (cleanupFinished)
+                {
+                    break;
+                }
+                else
+                {
+                    yield return new WaitForSecondsRealtime(0.02f);
+                }
+            }
+
+            if (settings.LoadingFromMenu)
+            {
+                PogoGameManager.PogoInstance.UnloadControlScene();
+                PogoGameManager.PogoInstance.ResetStats(settings.QuickSaveData);
+            }
+
+            callback?.Invoke();
+        }
+
 
         #region Scenes
         public static readonly int[] ignoredScenes =
