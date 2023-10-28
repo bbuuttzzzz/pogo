@@ -55,6 +55,17 @@ namespace Pogo
 #endif
         }
 
+        private void Start()
+        {
+#if UNITY_EDITOR
+            if (_CachedCheckpoint != null)
+            {
+                StartChapter(_CachedCheckpoint.Chapter);
+                SetLevelState(_CachedCheckpoint.LevelState);
+            }
+#endif
+        }
+
         protected override List<GameSettingFloat> LoadGameSettings()
         {
             var list = base.LoadGameSettings();
@@ -597,6 +608,9 @@ namespace Pogo
         #region Checkpoint Shit
         private CheckpointManifest LoadCheckpointManifest;
         public CheckpointTrigger CurrentCheckpoint;
+#if UNITY_EDITOR
+        public CheckpointDescriptor _CachedCheckpoint;
+#endif
 
         public static void RegisterCheckpoint(CheckpointTrigger trigger)
         {
@@ -745,7 +759,7 @@ namespace Pogo
         }
 
 
-        #endregion
+#endregion
 
         #region Equipment
 

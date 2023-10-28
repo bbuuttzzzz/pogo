@@ -66,6 +66,15 @@ public class PogoGameManagerEditor : GameManagerEditor
                     Undo.SetCurrentGroupName("Move Spawnpoint");
                     int undoGroup = Undo.GetCurrentGroup();
 
+                    CheckpointTrigger checkpointTrigger = itempath.item.GetComponentInParent<CheckpointTrigger>();
+                    if (checkpointTrigger != null)
+                    {
+                        self._CachedCheckpoint = checkpointTrigger.Descriptor;
+                    }
+                    else
+                    {
+                        self._CachedCheckpoint = null;
+                    }
                     self.CachedRespawnPoint.transform.position = itempath.item.transform.position;
                     self.CachedRespawnPoint.transform.rotation = Quaternion.Euler(0, itempath.item.transform.rotation.eulerAngles.y, 0);
                     Undo.RecordObject(self.CachedRespawnPoint.transform, "Move Player to Spawnpoint");
