@@ -34,6 +34,7 @@ namespace Pogo.Levels.Loading
         public bool CurrentlyNeeded { get; private set; }
 
         public UnityEvent OnIdle;
+        public UnityEvent OnReadyToActivate;
         public bool IsIdle => CurrentLoadState == LoadStates.Loaded || CurrentLoadState == LoadStates.NotLoaded;
 
         public LevelSceneLoader(PogoLevelManager parent, LevelDescriptor level, bool levelIsLoaded)
@@ -42,6 +43,7 @@ namespace Pogo.Levels.Loading
             Level = level;
             CurrentLoadState = levelIsLoaded ? LoadStates.Loaded : LoadStates.NotLoaded;
             OnIdle = new UnityEvent();
+            OnReadyToActivate = new UnityEvent();
         }
 
         public void MarkNeeded()
@@ -61,13 +63,13 @@ namespace Pogo.Levels.Loading
             }
         }
 
-        public void MarkNotNeeded()
+        public void MarkNotNeeded(bool unloadInstantly = false)
         {
             CurrentlyNeeded=false;
             AllowSceneActivation = true;
             if (CurrentLoadState == LoadStates.Loaded)
             {
-                Unload(false);
+                Unload(unloadInstantly);
             }
         }
 
@@ -141,7 +143,7 @@ namespace Pogo.Levels.Loading
 
             while (true)
             {
-                TaskProgress = unloadTask.isDone ? 1 : (unloadTask.progress / 0.9f);
+                TaskProgress = unloadTask.isDone ? 1 : unloadTask.progress;
 
                 if (unloadTask.isDone)
                 {
@@ -162,21 +164,30 @@ namespace Pogo.Levels.Loading
 
             while (true)
             {
-                TaskProgress = loadTask.isDone ? 1 : (loadTask.progress / 0.9f);
+                TaskProgress = loadTask.isDone ? 1 : loadTask.progress;
 
-                if (loadTask.isDone)
+                if (loadTask.isDone || loadTask.progress >= 0.9f)
                 {
                     break;
                 }
                 yield return new WaitForSecondsRealtime(0.02f);
             }
 
-            while (!AllowSceneActivation)
+            if (CurrentlyNeeded)
             {
-                yield return new WaitForSecondsRealtime(0.02f);
+                OnReadyToActivate.Invoke();
+                while (!AllowSceneActivation)
+                {
+                    yield return new WaitForSecondsRealtime(0.02f);
+                }
             }
 
             loadTask.allowSceneActivation = true;
+
+            while (!loadTask.isDone)
+            {
+                yield return new WaitForSecondsRealtime(0.02f);
+            }
 
             FinishLoading();
         }

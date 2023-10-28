@@ -15,7 +15,7 @@ namespace Pogo.Levels
         public LevelShareCodeManifest ShareCodeManifest;
 
         private List<LevelSceneLoader> CurrentLevelSceneLoaders;
-        private LevelLoadingSettings CurrentLevelLoadSettings;
+        private LevelLoadingSettings? CurrentLevelLoadSettings;
 
         void Start()
         {
@@ -136,9 +136,11 @@ namespace Pogo.Levels
                 if (loader == null)
                 {
                     loader = new LevelSceneLoader(this, sceneLevel, false);
-                    RegisterSceneLoader(loader);
+                    CurrentLevelSceneLoaders.Add(loader);
                 }
                 loader.MarkNeeded();
+                loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingLevel);
+                loader.OnIdle.AddListener(RecalculateFinishedLoadingLevel);
             }
 
             foreach(var scene in scenesToUnload)
@@ -149,9 +151,9 @@ namespace Pogo.Levels
                 {
                     LevelDescriptor level = FindLevelBySceneBuildIndex(scene.buildIndex);
                     loader = new LevelSceneLoader(this, level, true);
-                    RegisterSceneLoader(loader);
+                    CurrentLevelSceneLoaders.Add(loader);
                 }
-                loader.MarkNotNeeded();
+                loader.MarkNotNeeded(settings.Instantly);
             }
 
             CurrentLevelLoadSettings = settings;
@@ -159,42 +161,86 @@ namespace Pogo.Levels
             return true;
         }
 
-        private void RegisterSceneLoader(LevelSceneLoader loader)
-        {
-            CurrentLevelSceneLoaders.Add(loader);
-            loader.OnIdle.AddListener(RecalculateFinishedLoadingLevel);
-        }
-
         private void RecalculateFinishedLoadingLevel()
         {
             for (int i = CurrentLevelSceneLoaders.Count - 1; i >= 0; i--)
             {
-                if (CurrentLevelSceneLoaders[i].IsIdle)
+                LevelSceneLoader loader = CurrentLevelSceneLoaders[i];
+                if (loader.IsIdle)
                 {
-                    CurrentLevelSceneLoaders[i].OnIdle.RemoveListener(RecalculateFinishedLoadingLevel);
+                    loader.OnReadyToActivate.RemoveAllListeners();
+                    loader.OnIdle.RemoveAllListeners();
                     CurrentLevelSceneLoaders.RemoveAt(i);
                 }
             }
 
-            if (CurrentLevelSceneLoaders.Count == 0)
+            if (AllLoadingLevelsAreReady())
+            {
+                ActivateAllRemainingLoaders();
+            }
+
+            if (AllLoadingLevelsFinished())
             {
                 FinishLoadingLevel();
             }
         }
 
-        private void FinishLoadingLevel()
+        private void ActivateAllRemainingLoaders()
         {
-            TransitionAtmosphere(CurrentLevel, CurrentLevelLoadSettings.Instantly);
-            PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
-            if (CurrentLevelLoadSettings.LevelState.HasValue)
+            foreach (var sceneLoader in CurrentLevelSceneLoaders)
             {
-                PogoGameManager.PogoInstance.SetLevelState(CurrentLevelLoadSettings.LevelState.Value, CurrentLevelLoadSettings.Instantly);
+                if (sceneLoader.CurrentLoadState == LevelSceneLoader.LoadStates.Loading)
+                {
+                    sceneLoader.AllowSceneActivation = true;
+                }
+            }
+        }
+
+        private bool AllLoadingLevelsAreReady()
+        {
+            foreach (var sceneLoader in CurrentLevelSceneLoaders)
+            {
+                if (sceneLoader.CurrentLoadState == LevelSceneLoader.LoadStates.Loading
+                    && sceneLoader.TaskProgress < 0.9f)
+                {
+                    return false;
+                }
             }
 
-            foreach (var initialLevelState in CurrentLevelLoadSettings.Level.LoadLevelStates)
+            return true;
+        }
+        private bool AllLoadingLevelsFinished()
+        {
+            foreach (var sceneLoader in CurrentLevelSceneLoaders)
             {
-                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, CurrentLevelLoadSettings.Instantly);
+                if (sceneLoader.CurrentLoadState == LevelSceneLoader.LoadStates.Loading)
+                {
+                    return false;
+                }
             }
+
+            return true;
+        }
+
+
+        private void FinishLoadingLevel()
+        {
+            if (!CurrentLevelLoadSettings.HasValue) return;
+
+
+            TransitionAtmosphere(CurrentLevel, CurrentLevelLoadSettings.Value.Instantly);
+            PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
+            if (CurrentLevelLoadSettings.Value.LevelState.HasValue)
+            {
+                PogoGameManager.PogoInstance.SetLevelState(CurrentLevelLoadSettings.Value.LevelState.Value, CurrentLevelLoadSettings.Value.Instantly);
+            }
+
+            foreach (var initialLevelState in CurrentLevelLoadSettings.Value.Level.LoadLevelStates)
+            {
+                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, CurrentLevelLoadSettings.Value.Instantly);
+            }
+
+            CurrentLevelLoadSettings = null;
         }
 
         internal void ResetLoadedLevel()
