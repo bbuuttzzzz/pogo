@@ -15,7 +15,7 @@ namespace Pogo.Levels
     public class PogoLevelManager : MonoBehaviour
     {
         public bool LoadInitialLevelImmediately = true;
-        public List<LevelSceneLoader> CurrentSceneLoaders;
+
 
         void Start()
         {
