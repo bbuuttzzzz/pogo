@@ -226,18 +226,24 @@ namespace Pogo.Levels
         private void FinishLoadingLevel()
         {
             if (!CurrentLevelLoadSettings.HasValue) return;
+            LevelLoadingSettings settings = CurrentLevelLoadSettings.Value;
 
-
-            TransitionAtmosphere(CurrentLevel, CurrentLevelLoadSettings.Value.Instantly);
+            TransitionAtmosphere(CurrentLevel, settings.Instantly);
             PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
-            if (CurrentLevelLoadSettings.Value.LevelState.HasValue)
+            if (settings.LevelState.HasValue)
             {
-                PogoGameManager.PogoInstance.SetLevelState(CurrentLevelLoadSettings.Value.LevelState.Value, CurrentLevelLoadSettings.Value.Instantly);
+                PogoGameManager.PogoInstance.SetLevelState(settings.LevelState.Value, settings.Instantly);
             }
 
-            foreach (var initialLevelState in CurrentLevelLoadSettings.Value.Level.LoadLevelStates)
+            foreach (var initialLevelState in settings.Level.LoadLevelStates)
             {
-                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, CurrentLevelLoadSettings.Value.Instantly);
+                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
+            }
+
+            if (settings.LoadingFromMenu)
+            {
+                PogoGameManager.PogoInstance.UnloadControlScene();
+                PogoGameManager.PogoInstance.ResetStats();
             }
 
             CurrentLevelLoadSettings = null;
