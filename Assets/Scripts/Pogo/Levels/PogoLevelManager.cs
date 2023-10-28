@@ -16,9 +16,12 @@ namespace Pogo.Levels
     {
         public bool LoadInitialLevelImmediately = true;
 
+        private List<LevelSceneLoader> CurrentLevelSceneLoaders;
+        private LevelLoadingSettings CurrentLevelLoadSettings;
 
         void Start()
         {
+            CurrentLevelSceneLoaders = new List<LevelSceneLoader>();
             PogoGameManager game = GetComponent<PogoGameManager>();
             game.OnControlSceneChanged += onControlSceneChanged;
             if (LoadInitialLevelImmediately && !game.DontLoadScenesInEditor && game.InitialLevel != null)
@@ -126,47 +129,74 @@ namespace Pogo.Levels
             }
             currentLevel = settings.Level;
 
-            List<AsyncOperation> loadTasks = new List<AsyncOperation>();
-            List<AsyncOperation> unloadTasks = new List<AsyncOperation>();
             (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(settings.Level);
 
-            foreach (LevelDescriptor descriptor in scenesToLoad)
+            foreach (var sceneLevel in scenesToLoad)
             {
-                var task = SceneManager.LoadSceneAsync(descriptor.BuildIndex, LoadSceneMode.Additive);
-                if (task != null)
+                var loader = CurrentLevelSceneLoaders.Find(l => l.Level == sceneLevel);
+
+                if (loader == null)
                 {
-                    Debug.Log($"Loading scene {descriptor.name}");
-                    loadTasks.Add(task);
+                    loader = new LevelSceneLoader(this, sceneLevel, false);
+                    RegisterSceneLoader(loader);
                 }
+                loader.MarkNeeded();
             }
 
-            string sceneNames = "Already Loaded: ";
-            foreach (Scene scene in scenesToUnload)
+            foreach(var scene in scenesToUnload)
             {
-                sceneNames += $"{scene.name} ";
-                var task = SceneManager.UnloadSceneAsync(scene);
-                Debug.Log($"Unloading scene {scene.name}");
-                if (task != null) unloadTasks.Add(task);
+                var loader = CurrentLevelSceneLoaders.Find(l => l.Level.BuildIndex == scene.buildIndex);
+
+                if (loader == null)
+                {
+                    LevelDescriptor level = FindLevelBySceneBuildIndex(scene.buildIndex);
+                    loader = new LevelSceneLoader(this, level, true);
+                    RegisterSceneLoader(loader);
+                }
+                loader.MarkNotNeeded();
             }
 
-            Action callBack = () =>
-            {
-                TransitionAtmosphere(CurrentLevel, settings.Instantly);
-                PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
-                if (settings.LevelState.HasValue)
-                {
-                    PogoGameManager.PogoInstance.SetLevelState(settings.LevelState.Value, settings.Instantly);
-                }
-
-                foreach (var initialLevelState in settings.Level.LoadLevelStates)
-                {
-                    PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
-                }
-            };
-
-            loadLevelScenesInOrder(new LevelLoadingData(loadTasks, unloadTasks), settings, callBack);
+            CurrentLevelLoadSettings = settings;
 
             return true;
+        }
+
+        private void RegisterSceneLoader(LevelSceneLoader loader)
+        {
+            CurrentLevelSceneLoaders.Add(loader);
+            loader.OnIdle.AddListener(RecalculateFinishedLoadingLevel);
+        }
+
+        private void RecalculateFinishedLoadingLevel()
+        {
+            for (int i = CurrentLevelSceneLoaders.Count - 1; i >= 0; i--)
+            {
+                if (CurrentLevelSceneLoaders[i].IsIdle)
+                {
+                    CurrentLevelSceneLoaders[i].OnIdle.RemoveListener(RecalculateFinishedLoadingLevel);
+                    CurrentLevelSceneLoaders.RemoveAt(i);
+                }
+            }
+
+            if (CurrentLevelSceneLoaders.Count == 0)
+            {
+                FinishLoadingLevel();
+            }
+        }
+
+        private void FinishLoadingLevel()
+        {
+            TransitionAtmosphere(CurrentLevel, CurrentLevelLoadSettings.Instantly);
+            PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
+            if (CurrentLevelLoadSettings.LevelState.HasValue)
+            {
+                PogoGameManager.PogoInstance.SetLevelState(CurrentLevelLoadSettings.LevelState.Value, CurrentLevelLoadSettings.Instantly);
+            }
+
+            foreach (var initialLevelState in CurrentLevelLoadSettings.Level.LoadLevelStates)
+            {
+                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, CurrentLevelLoadSettings.Instantly);
+            }
         }
 
         internal void ResetLoadedLevel()
@@ -174,143 +204,27 @@ namespace Pogo.Levels
             currentLevel = null;
         }
 
-
-        IEnumerator loadLevelScenesSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
-        {
-            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
-            {
-                task.allowSceneActivation = false;
-            }
-
-            bool finished = false;
-            while (!finished)
-            {
-                float progress = 0;
-                finished = true;
-
-                string txt = "";
-                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-                {
-                    progress += Task.isDone ? 1 : Task.progress / 0.9f;
-                    finished = finished && (Task.progress >= 0.9f || Task.isDone);
-                    txt = txt + Task.progress + " ";
-                }
-
-                progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{progress * 100:N2} -- {txt}");
-
-                yield return new WaitForSecondsRealtime(0.02f);
-            }
-
-            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
-            {
-                task.allowSceneActivation = true;
-            }
-            finished = false;
-            while (!finished)
-            {
-                float progress = 0;
-                finished = true;
-
-                string txt = "";
-                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-                {
-                    progress += Task.isDone ? 1 : Task.progress;
-                    finished = finished && Task.isDone;
-                    txt = txt + Task.progress + " ";
-                }
-
-                progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{progress * 100:N2} -- {txt}");
-
-                yield return new WaitForSecondsRealtime(0.02f);
-            }
-
-            if (settings.LoadingFromMenu)
-            {
-                PogoGameManager.PogoInstance.UnloadControlScene();
-                PogoGameManager.PogoInstance.ResetStats(settings.QuickSaveData);
-            }
-
-            callback?.Invoke();
-        }
-
-        IEnumerator loadLevelScenesInOrder(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
-        {
-            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
-            {
-                task.allowSceneActivation = false;
-            }
-
-            int completed = 0;
-            foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-            {
-                bool finished = false;
-                while (!finished)
-                {
-                    finished = Task.progress >= 0.9f || Task.isDone;
-
-                    Debug.Log($"Progress: %{Task.progress * 100:N2} ({completed + 1}/{levelLoadingData.LoadingSceneTasks.Count})");
-
-                    if (finished)
-                    {
-                        completed++;
-                        Task.allowSceneActivation = true;
-                    }
-                    else
-                    {
-                        yield return new WaitForSecondsRealtime(0.02f);
-                    }
-                }
-            }
-
-            bool cleanupFinished = false;
-            while (!cleanupFinished)
-            {
-                float progress = 0;
-                cleanupFinished = true;
-
-                string txt = "";
-                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-                {
-                    progress += Task.isDone ? 1 : Task.progress;
-                    cleanupFinished = cleanupFinished && Task.isDone;
-                    txt = txt + Task.progress + " ";
-                }
-
-                progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{progress * 100:N2} -- {txt}");
-
-
-                if (cleanupFinished)
-                {
-                    break;
-                }
-                else
-                {
-                    yield return new WaitForSecondsRealtime(0.02f);
-                }
-            }
-
-            if (settings.LoadingFromMenu)
-            {
-                PogoGameManager.PogoInstance.UnloadControlScene();
-                PogoGameManager.PogoInstance.ResetStats(settings.QuickSaveData);
-            }
-
-            callback?.Invoke();
-        }
-
-
         #region Scenes
+
+        private LevelDescriptor FindLevelBySceneBuildIndex(int sceneIndex)
+        {
+            throw new NotImplementedException();
+        }
+
         public static readonly int[] ignoredScenes =
         {
             7, // Main Menu
             10 // Credits
         };
+
         static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) getSceneDifference(LevelDescriptor newLevel)
         {
-            List<LevelDescriptor> scenesToLoad = new List<LevelDescriptor>(newLevel.LoadLevels);
+            return getSceneDifference(newLevel.LoadLevels);
+        }
+
+        static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) getSceneDifference(ICollection<LevelDescriptor> loadLevels)
+        {
+            List<LevelDescriptor> scenesToLoad = new List<LevelDescriptor>(loadLevels);
             List<Scene> scenesToUnload = new List<Scene>();
 
             // for each new scene

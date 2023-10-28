@@ -33,16 +33,15 @@ namespace Pogo.Levels.Loading
         public LoadStates CurrentLoadState;
         public bool CurrentlyNeeded { get; private set; }
 
-        public UnityEvent OnFinishedLoading;
-        public UnityEvent OnFinishedUnloading;
+        public UnityEvent OnIdle;
+        public bool IsIdle => CurrentLoadState == LoadStates.Loaded || CurrentLoadState == LoadStates.NotLoaded;
 
         public LevelSceneLoader(PogoLevelManager parent, LevelDescriptor level, bool levelIsLoaded)
         {
             this.parent = parent;
             Level = level;
             CurrentLoadState = levelIsLoaded ? LoadStates.Loaded : LoadStates.NotLoaded;
-            OnFinishedLoading = new UnityEvent();
-            OnFinishedUnloading = new UnityEvent();
+            OnIdle = new UnityEvent();
         }
 
         public void MarkNeeded()
@@ -101,7 +100,7 @@ namespace Pogo.Levels.Loading
             }
             else
             {
-                OnFinishedLoading.Invoke();
+                OnIdle.Invoke();
             }
         }
 
@@ -115,7 +114,7 @@ namespace Pogo.Levels.Loading
             }
             else
             {
-                OnFinishedUnloading.Invoke();
+                OnIdle.Invoke();
             }
         }
 
