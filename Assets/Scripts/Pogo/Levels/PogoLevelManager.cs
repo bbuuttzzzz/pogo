@@ -1,4 +1,4 @@
-﻿using Pogo.Levels;
+﻿using Pogo.Levels.Loading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,11 +10,12 @@ using UnityEngine.SceneManagement;
 using WizardUtils;
 using WizardUtils.SceneManagement;
 
-namespace Pogo
+namespace Pogo.Levels
 {
     public class PogoLevelManager : MonoBehaviour
     {
         public bool LoadInitialLevelImmediately = true;
+        public List<LevelSceneLoader> CurrentSceneLoaders;
 
         void Start()
         {
@@ -63,7 +64,7 @@ namespace Pogo
                 UnityEditor.SceneManagement.EditorSceneManager.OpenScene(descriptor.ScenePath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
             }
 
-            if ( UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
                 foreach (Scene scene in scenesToUnload)
                 {
@@ -71,7 +72,7 @@ namespace Pogo
                 }
             }
 
-            foreach(var atmosphere in getExistingAtmospheres())
+            foreach (var atmosphere in getExistingAtmospheres())
             {
                 DestroyImmediate(atmosphere.gameObject);
             }
@@ -110,9 +111,9 @@ namespace Pogo
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="newLevel">the level to load</param>
+        /// <param name="newLevel">the Level to load</param>
         /// <param name="settings"></param>
-        /// <returns>FALSE if level is already loaded</returns>
+        /// <returns>FALSE if Level is already loaded</returns>
         public bool LoadLevelAsync(LevelLoadingSettings settings)
         {
             if (currentLevel == settings.Level && !settings.ForceReload)
@@ -140,7 +141,7 @@ namespace Pogo
             }
 
             string sceneNames = "Already Loaded: ";
-            foreach(Scene scene in scenesToUnload)
+            foreach (Scene scene in scenesToUnload)
             {
                 sceneNames += $"{scene.name} ";
                 var task = SceneManager.UnloadSceneAsync(scene);
@@ -196,7 +197,7 @@ namespace Pogo
                 }
 
                 progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
+                Debug.Log($"Progress: %{progress * 100:N2} -- {txt}");
 
                 yield return new WaitForSecondsRealtime(0.02f);
             }
@@ -220,7 +221,7 @@ namespace Pogo
                 }
 
                 progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
+                Debug.Log($"Progress: %{progress * 100:N2} -- {txt}");
 
                 yield return new WaitForSecondsRealtime(0.02f);
             }
@@ -247,9 +248,9 @@ namespace Pogo
                 bool finished = false;
                 while (!finished)
                 {
-                    finished = (Task.progress >= 0.9f || Task.isDone);
+                    finished = Task.progress >= 0.9f || Task.isDone;
 
-                    Debug.Log($"Progress: %{(Task.progress * 100):N2} ({completed + 1}/{levelLoadingData.LoadingSceneTasks.Count})");
+                    Debug.Log($"Progress: %{Task.progress * 100:N2} ({completed + 1}/{levelLoadingData.LoadingSceneTasks.Count})");
 
                     if (finished)
                     {
@@ -278,7 +279,7 @@ namespace Pogo
                 }
 
                 progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
+                Debug.Log($"Progress: %{progress * 100:N2} -- {txt}");
 
 
                 if (cleanupFinished)
@@ -321,7 +322,7 @@ namespace Pogo
 
                 LevelDescriptor matchingLevel = null;
 
-                // find the matching level if it exists
+                // find the matching Level if it exists
                 foreach (LevelDescriptor sceneToLoad in scenesToLoad)
                 {
                     if (sceneToLoad.BuildIndex == scene.buildIndex)
@@ -331,12 +332,12 @@ namespace Pogo
                 }
                 if (matchingLevel != null)
                 {
-                    // level already exists, so we don't need to load it
+                    // Level already exists, so we don't need to load it
                     scenesToLoad.Remove(matchingLevel);
                 }
                 else
                 {
-                    // level no longer exists. so we need to get rid of it
+                    // Level no longer exists. so we need to get rid of it
                     scenesToUnload.Add(scene);
                 }
             }
