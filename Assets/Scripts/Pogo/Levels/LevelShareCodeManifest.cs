@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Pogo.Levels
 {
+    [InitializeOnLoad]
     [CreateAssetMenu(fileName = "levels_", menuName = "Pogo/LevelManifest", order = 1)]
     public class LevelShareCodeManifest : ScriptableObject
     {
@@ -16,7 +18,7 @@ namespace Pogo.Levels
         [NonSerialized]
         public LevelDescriptor[] Levels;
 
-        private void Awake()
+        public void OnEnable()
         {
             Levels = ShareCodes
                 .Select(s => s.LevelState.Level)
