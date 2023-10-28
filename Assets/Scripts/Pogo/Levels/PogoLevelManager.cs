@@ -1,10 +1,7 @@
 ﻿using Pogo.Levels.Loading;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WizardUtils;
@@ -15,6 +12,7 @@ namespace Pogo.Levels
     public class PogoLevelManager : MonoBehaviour
     {
         public bool LoadInitialLevelImmediately = true;
+        public LevelShareCodeManifest ShareCodeManifest;
 
         private List<LevelSceneLoader> CurrentLevelSceneLoaders;
         private LevelLoadingSettings CurrentLevelLoadSettings;
@@ -206,9 +204,9 @@ namespace Pogo.Levels
 
         #region Scenes
 
-        private LevelDescriptor FindLevelBySceneBuildIndex(int sceneIndex)
+        private LevelDescriptor FindLevelBySceneBuildIndex(int buildIndex)
         {
-            throw new NotImplementedException();
+            return Array.Find(ShareCodeManifest.Levels, l => l.BuildIndex == buildIndex);
         }
 
         public static readonly int[] ignoredScenes =

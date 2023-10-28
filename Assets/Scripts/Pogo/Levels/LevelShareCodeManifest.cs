@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,6 +12,17 @@ namespace Pogo.Levels
     {
         [HideInInspector]
         public ShareCode[] ShareCodes;
+
+        [NonSerialized]
+        public LevelDescriptor[] Levels;
+
+        private void Awake()
+        {
+            Levels = ShareCodes
+                .Select(s => s.LevelState.Level)
+                .Distinct()
+                .ToArray();
+        }
 
         [Tooltip("Lower Number = Displayed First")]
         public int EditorDisplayPriority;
