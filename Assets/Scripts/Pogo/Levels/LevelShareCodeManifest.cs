@@ -8,7 +8,9 @@ using UnityEngine.UIElements;
 
 namespace Pogo.Levels
 {
+#if UNITY_EDITOR
     [InitializeOnLoad]
+#endif
     [CreateAssetMenu(fileName = "levels_", menuName = "Pogo/LevelManifest", order = 1)]
     public class LevelShareCodeManifest : ScriptableObject
     {
