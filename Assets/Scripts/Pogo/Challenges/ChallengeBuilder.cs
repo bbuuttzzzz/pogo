@@ -215,7 +215,7 @@ namespace Pogo.Challenges
             pogoInstance.LoadLevel(new LevelLoadingSettings()
             {
                 Level = CurrentChallenge.LevelState.Level,
-                LevelState = CurrentChallenge.LevelState,
+                MainLevelState = CurrentChallenge.LevelState,
                 ForceReload = true,
                 Instantly = true
             });

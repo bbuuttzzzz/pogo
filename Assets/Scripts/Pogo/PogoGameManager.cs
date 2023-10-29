@@ -400,7 +400,8 @@ namespace Pogo
             LoadLevel(new LevelLoadingSettings
             {
                 Level = checkpoint.MainLevelState.Level,
-                LevelState = checkpoint.MainLevelState,
+                MainLevelState = checkpoint.MainLevelState,
+                AdditionalDefaultLevelStates = checkpoint.AdditionalLevelStates,
                 Instantly = true,
                 ForceReload = false,
                 LoadingFromMenu = CurrentControlScene != null,

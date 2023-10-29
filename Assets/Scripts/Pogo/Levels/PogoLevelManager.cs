@@ -120,9 +120,9 @@ namespace Pogo.Levels
         {
             if (currentLevel == settings.Level && !settings.ForceReload)
             {
-                if (settings.LevelState.HasValue)
+                if (settings.MainLevelState.HasValue)
                 {
-                    PogoGameManager.PogoInstance.SetLevelState(settings.LevelState.Value, settings.Instantly);
+                    PogoGameManager.PogoInstance.SetLevelState(settings.MainLevelState.Value, settings.Instantly);
                 }
                 return false;
             }
@@ -231,11 +231,18 @@ namespace Pogo.Levels
 
             TransitionAtmosphere(CurrentLevel, settings.Instantly);
             PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
-            if (settings.LevelState.HasValue)
+            if (settings.MainLevelState.HasValue)
             {
-                PogoGameManager.PogoInstance.SetLevelState(settings.LevelState.Value, settings.Instantly);
+                PogoGameManager.PogoInstance.SetLevelState(settings.MainLevelState.Value, settings.Instantly);
             }
 
+            if (settings.AdditionalDefaultLevelStates != null)
+            {
+                foreach (var initialLevelState in settings.AdditionalDefaultLevelStates)
+                {
+                    PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
+                }
+            }
             foreach (var initialLevelState in settings.Level.LoadLevelStates)
             {
                 PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
