@@ -63,6 +63,13 @@ namespace Pogo
             {
                 StartChapter(_CachedCheckpoint.Chapter);
                 SetLevelState(_CachedCheckpoint.MainLevelState);
+                if (_CachedCheckpoint.AdditionalLevelStates != null)
+                {
+                    foreach (var levelState in _CachedCheckpoint.AdditionalLevelStates)
+                    {
+                        TryInitializeLevelStateForLevel(levelState);
+                    }
+                }
             }
 #endif
         }
