@@ -62,7 +62,7 @@ namespace Pogo
             if (_CachedCheckpoint != null)
             {
                 StartChapter(_CachedCheckpoint.Chapter);
-                SetLevelState(_CachedCheckpoint.LevelState);
+                SetLevelState(_CachedCheckpoint.MainLevelState);
             }
 #endif
         }
@@ -327,7 +327,7 @@ namespace Pogo
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.LevelState.Level == null)
+            if (CurrentCheckpoint.Descriptor.MainLevelState.Level == null)
             {
                 Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Level!!!", CurrentCheckpoint);
                 newData = new QuickSaveData();
@@ -399,8 +399,8 @@ namespace Pogo
             OnLevelLoaded.AddListener(finishLoading);
             LoadLevel(new LevelLoadingSettings
             {
-                Level = checkpoint.LevelState.Level,
-                LevelState = checkpoint.LevelState,
+                Level = checkpoint.MainLevelState.Level,
+                LevelState = checkpoint.MainLevelState,
                 Instantly = true,
                 ForceReload = false,
                 LoadingFromMenu = CurrentControlScene != null,

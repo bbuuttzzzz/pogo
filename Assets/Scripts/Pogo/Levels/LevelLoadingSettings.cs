@@ -28,7 +28,7 @@ namespace Pogo
         public bool Instantly;
         public QuickSaveData? QuickSaveData;
         /// <summary>
-        /// Also set this LevelState after load
+        /// Also set this MainLevelState after load
         /// </summary>
         public LevelState? LevelState;
 

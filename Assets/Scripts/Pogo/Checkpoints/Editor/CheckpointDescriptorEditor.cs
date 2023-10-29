@@ -37,13 +37,13 @@ namespace Pogo.Collectibles
                 if (GUILayout.Button("Find In World"))
                 {
                     var manager = UnityEngine.Object.FindFirstObjectByType<PogoLevelManager>();
-                    if (manager.CurrentLevel != self.LevelState.Level)
+                    if (manager.CurrentLevel != self.MainLevelState.Level)
                     {
                         if (!UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                         {
                             return;
                         }
-                        manager.LoadLevelInEditor(self.LevelState.Level);
+                        manager.LoadLevelInEditor(self.MainLevelState.Level);
                     }
 
                     var worldObject = FindWorldObject();
