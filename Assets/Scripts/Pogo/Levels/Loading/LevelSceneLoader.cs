@@ -39,6 +39,11 @@ namespace Pogo.Levels.Loading
 
         public LevelSceneLoader(PogoLevelManager parent, LevelDescriptor level, bool levelIsLoaded)
         {
+#if UNITY_WEBGL
+            // don't be coy with scene loading on web
+            AllowSceneActivation = true;
+#endif
+
             this.parent = parent;
             Level = level;
             CurrentLoadState = levelIsLoaded ? LoadStates.Loaded : LoadStates.NotLoaded;
@@ -160,7 +165,7 @@ namespace Pogo.Levels.Loading
         {
             CanCancelActiveCoroutine = false;
             AsyncOperation loadTask = SceneManager.LoadSceneAsync(Level.BuildIndex, LoadSceneMode.Additive);
-            loadTask.allowSceneActivation = false;
+            loadTask.allowSceneActivation = AllowSceneActivation;
 
             while (true)
             {
