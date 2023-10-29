@@ -158,6 +158,7 @@ namespace Pogo.Levels
             }
 
             CurrentLevelLoadSettings = settings;
+            RecalculateFinishedLoadingLevel();
 
             return true;
         }
