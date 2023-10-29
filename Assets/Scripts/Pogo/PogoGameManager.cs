@@ -185,11 +185,11 @@ namespace Pogo
             CurrentLevelStates.Clear();
         }
 
-        public void TryInitializeLevelStateForLevel(LevelState levelState, bool instant = false)
+        public void TryInitializeLevelStateForLevel(LevelState levelState)
         {
             if (GetLevelStateForLevel(levelState.Level) == null)
             {
-                SetLevelState(levelState, instant);
+                SetLevelState(levelState, true);
             }
         }
 

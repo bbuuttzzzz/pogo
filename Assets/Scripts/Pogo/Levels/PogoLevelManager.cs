@@ -240,12 +240,12 @@ namespace Pogo.Levels
             {
                 foreach (var initialLevelState in settings.AdditionalDefaultLevelStates)
                 {
-                    PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
+                    PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState);
                 }
             }
             foreach (var initialLevelState in settings.Level.LoadLevelStates)
             {
-                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
+                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState);
             }
 
             if (settings.LoadingFromMenu)
