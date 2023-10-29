@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WizardUtils;
@@ -384,6 +385,15 @@ namespace Pogo.Levels
 #endif
         }
         #endregion
+
+        [ContextMenu("Log LevelLoader Status")]
+        public void LogLoaders()
+        {
+            StringBuilder sb = new StringBuilder();
+            CurrentLevelSceneLoaders.ForEach(loader => sb.AppendLine(loader.ToString()));
+
+            Debug.Log(sb.ToString());
+        }
 
         public void LevelLoadingDebugLog(string text)
         {
