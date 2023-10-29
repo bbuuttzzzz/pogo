@@ -403,7 +403,7 @@ namespace Pogo
                 MainLevelState = checkpoint.MainLevelState,
                 AdditionalDefaultLevelStates = checkpoint.AdditionalLevelStates,
                 Instantly = true,
-                ForceReload = false,
+                ForceReload = true,
                 LoadingFromMenu = CurrentControlScene != null,
                 QuickSaveData = quickSaveData
             });
