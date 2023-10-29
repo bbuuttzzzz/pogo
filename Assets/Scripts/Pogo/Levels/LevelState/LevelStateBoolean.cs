@@ -40,7 +40,7 @@ namespace Pogo.Levels
             if (EnableLogging)
             {
                 string speed = e.Instant ? "instantly" : "";
-                Debug.Log($"Boolean {gameObject.name} set to {newStateIsPositive} {speed}. [{e.OldState??new LevelState()} -> {e.NewState}]");
+                Debug.Log($"Boolean {gameObject.name} set to {newStateIsPositive} {speed}. [{e.OldState??new LevelState()} -> {e.NewState}]", gameObject);
             }
 #endif
 
