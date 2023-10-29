@@ -12,6 +12,7 @@ namespace Pogo.Checkpoints
     public class CheckpointDescriptor : ScriptableObject
     {
         public LevelState MainLevelState;
+        public LevelState[] AdditionalLevelStates;
         public int Par;
         public string[] Hints;
 
