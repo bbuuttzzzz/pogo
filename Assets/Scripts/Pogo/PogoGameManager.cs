@@ -125,8 +125,6 @@ namespace Pogo
 
         public UnityEvent OnLevelLoaded;
 
-        bool isLoadingLevel;
-
 #if UNITY_EDITOR
         public override void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
         {
@@ -144,165 +142,9 @@ namespace Pogo
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
 #endif
-            if (isLoadingLevel)
-            {
-                Debug.LogWarning("Tried to load a level while already loading a level :(");
-                return;
-            }
-
-            Action callBack = () =>
-            {
-                LevelManager.TransitionAtmosphere(LevelManager.CurrentLevel, settings.Instantly);
-                OnLevelLoaded?.Invoke();
-                if (settings.LevelState.HasValue)
-                {
-                    SetLevelState(settings.LevelState.Value, settings.Instantly);
-                }
-
-                foreach(var initialLevelState in settings.Level.LoadLevelStates)
-                {
-                    TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
-                }
-            };
-            isLoadingLevel = true;
 
             settings.LoadingFromMenu = settings.LoadingFromMenu || CurrentControlScene != null;
-#if UNITY_WEBGL
-            if (!levelManager.LoadLevelAsync(settings, (levelLoadingData) => StartCoroutine(loadLevelScenesInOrder(levelLoadingData, settings, callBack))))
-#else
-            if (!levelManager.LoadLevelAsync(settings, (levelLoadingData) => StartCoroutine(loadLevelScenesSimultaneous(levelLoadingData, settings, callBack))))
-#endif
-            {
-                isLoadingLevel = false;
-            }
-        }
-
-        IEnumerator loadLevelScenesSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
-        {
-            foreach(AsyncOperation task in levelLoadingData.LoadingSceneTasks)
-            {
-                task.allowSceneActivation = false;
-            }
-
-            bool finished = false;
-            while( !finished )
-            {
-                float progress = 0;
-                finished = true;
-
-                string txt = "";
-                foreach(AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-                {
-                    progress += Task.isDone ? 1 : Task.progress / 0.9f;
-                    finished = finished && (Task.progress >= 0.9f || Task.isDone);
-                    txt = txt + Task.progress + " ";
-                }
-
-                progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
-
-                yield return new WaitForSecondsRealtime(0.02f);
-            }
-
-            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
-            {
-                task.allowSceneActivation = true;
-            }
-            finished = false;
-            while (!finished )
-            {
-                float progress = 0;
-                finished = true;
-
-                string txt = "";
-                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-                {
-                    progress += Task.isDone ? 1 : Task.progress;
-                    finished = finished && Task.isDone;
-                    txt = txt + Task.progress + " ";
-                }
-
-                progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
-
-                yield return new WaitForSecondsRealtime(0.02f);
-            }
-
-            if (settings.LoadingFromMenu)
-            {
-                UnloadControlScene();
-                ResetStats();
-            }
-
-            isLoadingLevel = false;
-            callback?.Invoke();
-        }
-
-        IEnumerator loadLevelScenesInOrder(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
-        {
-            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
-            {
-                task.allowSceneActivation = false;
-            }
-
-            int completed = 0;
-            foreach(AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-            {
-                bool finished = false;
-                while (!finished)
-                {
-                    finished = (Task.progress >= 0.9f || Task.isDone);
-
-                    Debug.Log($"Progress: %{(Task.progress * 100):N2} ({completed + 1}/{levelLoadingData.LoadingSceneTasks.Count})");
-
-                    if (finished)
-                    {
-                        completed++;
-                        Task.allowSceneActivation = true;
-                    }
-                    else
-                    {
-                        yield return new WaitForSecondsRealtime(0.02f);
-                    }
-                }
-            }
-
-            bool cleanupFinished = false;
-            while (!cleanupFinished)
-            {
-                float progress = 0;
-                cleanupFinished = true;
-
-                string txt = "";
-                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-                {
-                    progress += Task.isDone ? 1 : Task.progress;
-                    cleanupFinished = cleanupFinished && Task.isDone;
-                    txt = txt + Task.progress + " ";
-                }
-
-                progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
-
-
-                if (cleanupFinished)
-                {
-                    break;
-                }
-                else
-                {
-                    yield return new WaitForSecondsRealtime(0.02f);
-                }
-            }
-
-            if (settings.LoadingFromMenu)
-            {
-                UnloadControlScene();
-                ResetStats(settings.QuickSaveData);
-            }
-
-            isLoadingLevel = false;
-            callback?.Invoke();
+            levelManager.LoadLevelAsync(settings);
         }
 
         void ResetLoadedLevel()
@@ -343,7 +185,7 @@ namespace Pogo
             CurrentLevelStates.Clear();
         }
 
-        private void TryInitializeLevelStateForLevel(LevelState levelState, bool instant = false)
+        public void TryInitializeLevelStateForLevel(LevelState levelState, bool instant = false)
         {
             if (GetLevelStateForLevel(levelState.Level) == null)
             {
@@ -1004,7 +846,7 @@ namespace Pogo
         {
             ResetStats(null);
         }
-        private void ResetStats(QuickSaveData? quickSaveData)
+        public void ResetStats(QuickSaveData? quickSaveData)
         {
             currentSessionProgressTracker = quickSaveData.HasValue
                 ? new GameProgressTracker(this, quickSaveData.Value.SessionProgressTimeMilliseconds, quickSaveData.Value.SessionProgressDeaths)
