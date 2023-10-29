@@ -82,7 +82,7 @@ namespace Pogo.Levels
             var newAtmosphereObj = UnityEditor.PrefabUtility.InstantiatePrefab(newLevel.PostProcessingPrefab, AtmosphereParent) as GameObject;
             var newAtmosphere = newAtmosphereObj.GetComponent<Atmosphere>();
             newAtmosphere.SetWeightFromEditor(1);
-            PogoGameManager.PogoInstance._CachedCheckpoint = null;
+            FindFirstObjectByType<PogoGameManager>()._CachedCheckpoint = null;
         }
 #endif
 
