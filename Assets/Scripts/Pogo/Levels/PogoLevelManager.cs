@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,10 +14,6 @@ namespace Pogo.Levels
     {
         public bool LoadInitialLevelImmediately = true;
         public LevelShareCodeManifest ShareCodeManifest;
-
-#if UNITY_EDITOR
-        public bool EnableVerboseLevelLoadingLogging;
-#endif
 
         private List<LevelSceneLoader> CurrentLevelSceneLoaders;
         private LevelLoadingSettings? CurrentLevelLoadSettings;
@@ -123,8 +118,6 @@ namespace Pogo.Levels
         /// <returns>FALSE if Level is already loaded</returns>
         public bool LoadLevelAsync(LevelLoadingSettings settings)
         {
-            string startLevelName = CurrentLevel != null ? CurrentLevel.name : "NULL";
-            LevelLoadingDebugLog($"TRIGGER {startLevelName} -> {settings.Level.name}");
             if (currentLevel == settings.Level && !settings.ForceReload)
             {
                 if (settings.LevelState.HasValue)
@@ -145,11 +138,6 @@ namespace Pogo.Levels
                 {
                     loader = new LevelSceneLoader(this, sceneLevel, false);
                     CurrentLevelSceneLoaders.Add(loader);
-                    LevelLoadingDebugLog($"\tLOAD {loader.Level.name} (NEW LOADER)");
-                }
-                else
-                {
-                    LevelLoadingDebugLog($"\tLOAD {loader.Level.name} (EXISTING LOADER IN STATE {loader.CurrentLoadState})");
                 }
                 loader.MarkNeeded();
                 loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingLevel);
@@ -165,11 +153,6 @@ namespace Pogo.Levels
                     LevelDescriptor level = FindLevelBySceneBuildIndex(scene.buildIndex);
                     loader = new LevelSceneLoader(this, level, true);
                     CurrentLevelSceneLoaders.Add(loader);
-                    LevelLoadingDebugLog($"\tUNLOAD {loader.Level.name} (NEW LOADER)");
-                }
-                else
-                {
-                    LevelLoadingDebugLog($"\tUNLOAD {loader.Level.name} (EXISTING LOADER IN STATE {loader.CurrentLoadState})");
                 }
                 loader.MarkNotNeeded(settings.Instantly);
             }
@@ -186,7 +169,6 @@ namespace Pogo.Levels
                 LevelSceneLoader loader = CurrentLevelSceneLoaders[i];
                 if (loader.IsIdle)
                 {
-                    LevelLoadingDebugLog($"\tFINISH {loader.Level.name} IN STATE {loader.CurrentLoadState}");
                     loader.OnReadyToActivate.RemoveAllListeners();
                     loader.OnIdle.RemoveAllListeners();
                     CurrentLevelSceneLoaders.RemoveAt(i);
@@ -412,7 +394,6 @@ namespace Pogo.Levels
 #endif
         }
         #endregion
-
         [ContextMenu("Log LevelLoader Status")]
         public void LogLoaders()
         {
@@ -420,15 +401,6 @@ namespace Pogo.Levels
             CurrentLevelSceneLoaders.ForEach(loader => sb.AppendLine(loader.ToString()));
 
             Debug.Log(sb.ToString());
-        }
-
-        public void LevelLoadingDebugLog(string text)
-        {
-#if UNITY_EDITOR
-            if (!EnableVerboseLevelLoadingLogging) return;
-
-            Debug.Log(text);
-#endif
         }
     }
 }
