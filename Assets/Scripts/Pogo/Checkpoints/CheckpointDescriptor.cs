@@ -11,7 +11,6 @@ namespace Pogo.Checkpoints
     [CreateAssetMenu(fileName = "ck_", menuName = "Pogo/CheckpointDescriptor")]
     public class CheckpointDescriptor : ScriptableObject
     {
-        public LevelState LevelState;
         public LevelState MainLevelState;
         public LevelState[] AdditionalLevelStates;
         public int Par;
