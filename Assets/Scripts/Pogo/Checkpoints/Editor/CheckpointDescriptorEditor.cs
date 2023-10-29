@@ -24,11 +24,23 @@ namespace Pogo.Collectibles
         public override void OnInspectorGUI()
         {
             bool corrupt = false;
-            if (self.Chapter.GetCheckpointDescriptor(self.CheckpointId) != self)
+            try
             {
-                EditorGUILayout.HelpBox("Corrupted CheckpointId/Chapter!", MessageType.Error);
+                if (self.Chapter.GetCheckpointDescriptor(self.CheckpointId) != self)
+                {
+                    corrupt = true;
+                }
+            }
+            catch(Exception e)
+            {
                 corrupt = true;
             }
+
+            if (corrupt)
+            {
+                EditorGUILayout.HelpBox("Corrupted CheckpointId/Chapter!", MessageType.Error);
+            }
+
 
             DrawDefaultInspector();
 
