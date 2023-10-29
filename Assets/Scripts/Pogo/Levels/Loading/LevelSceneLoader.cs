@@ -191,5 +191,11 @@ namespace Pogo.Levels.Loading
 
             FinishLoading();
         }
+
+        public override string ToString()
+        {
+            string levelName = Level != null ? Level.name : "NULL LEVEL";
+            return $"LOADER {levelName} | {CurrentLoadState}";
+        }
     }
 }

@@ -64,7 +64,7 @@ namespace Pogo.Levels
 #if UNITY_EDITOR
         public void LoadLevelInEditor(LevelDescriptor newLevel)
         {
-            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(newLevel);
+            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(newLevel);
 
             foreach (LevelDescriptor descriptor in scenesToLoad)
             {
@@ -100,7 +100,7 @@ namespace Pogo.Levels
             }
             currentLevel = newLevel;
 
-            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(newLevel);
+            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(newLevel);
 
             foreach (LevelDescriptor descriptor in scenesToLoad)
             {
@@ -135,7 +135,7 @@ namespace Pogo.Levels
             }
             currentLevel = settings.Level;
 
-            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = getSceneDifference(settings.Level);
+            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(settings.Level.LoadLevels, CurrentLevelSceneLoaders);
 
             foreach (var sceneLevel in scenesToLoad)
             {
@@ -286,42 +286,69 @@ namespace Pogo.Levels
             10 // Credits
         };
 
-        static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) getSceneDifference(LevelDescriptor newLevel)
+        static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) GetSceneDifference(LevelDescriptor newLevel)
         {
-            return getSceneDifference(newLevel.LoadLevels);
+            return GetSceneDifference(newLevel.LoadLevels, new LevelSceneLoader[0]);
         }
 
-        static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) getSceneDifference(ICollection<LevelDescriptor> loadLevels)
+        static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) GetSceneDifference(
+            ICollection<LevelDescriptor> loadLevels,
+            ICollection<LevelSceneLoader> loaders
+            )
         {
             List<LevelDescriptor> scenesToLoad = new List<LevelDescriptor>(loadLevels);
             List<Scene> scenesToUnload = new List<Scene>();
 
-            // for each new scene
+            // for each currently loaded scene
             for (int n = 0; n < SceneManager.sceneCount; n++)
             {
                 Scene scene = SceneManager.GetSceneAt(n);
                 if (GameManager.ignoredScenes.Contains(scene.buildIndex)
                     || ignoredScenes.Contains(scene.buildIndex)) continue;
 
-                LevelDescriptor matchingLevel = null;
-
-                // find the matching Level if it exists
+                LevelDescriptor matchingToLoadLevel = null;
                 foreach (LevelDescriptor sceneToLoad in scenesToLoad)
                 {
                     if (sceneToLoad.BuildIndex == scene.buildIndex)
                     {
-                        matchingLevel = sceneToLoad;
+                        matchingToLoadLevel = sceneToLoad;
                     }
                 }
-                if (matchingLevel != null)
+
+                // if we want to have it loaded
+                if (matchingToLoadLevel != null)
                 {
-                    // Level already exists, so we don't need to load it
-                    scenesToLoad.Remove(matchingLevel);
+                    LevelSceneLoader existingLoader = loaders.FirstOrDefault(l => l.Level == matchingToLoadLevel);
+
+                    // if this level is marked as not needed
+                    if (existingLoader != null && !existingLoader.CurrentlyNeeded)
+                    {
+                        // keep it in our scenesToLoad list, so we know to mark it needed
+                    }
+                    else
+                    {
+                        // Level already exists, so we don't need to load it
+                        scenesToLoad.Remove(matchingToLoadLevel);
+                    }
                 }
                 else
                 {
                     // Level no longer exists. so we need to get rid of it
                     scenesToUnload.Add(scene);
+                }
+            }
+
+            // for each unloading scene
+            for (int i = scenesToUnload.Count - 1; i >= 0; i--)
+            {
+                Scene scene = scenesToUnload[i];
+                LevelSceneLoader existingLoader = loaders.FirstOrDefault(l => l.Level.BuildIndex == scene.buildIndex);
+
+                // if this level is marked as needed
+                if (existingLoader != null && existingLoader.CurrentlyNeeded)
+                {
+                    // we will want to mark it as not needed
+                    scenesToUnload.RemoveAt(i);
                 }
             }
 
