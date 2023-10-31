@@ -29,11 +29,17 @@ namespace Pogo
                 && self.MainPathCheckpoints[^1] != null
                 && GUILayout.Button("+1 Main Checkpoint"))
             {
-                var newCheckpoint = DuplicateCheckpoint(self.MainPathCheckpoints[^1]);
+                using (new UndoScope("+1 Main Checkpoint"))
+                {
+                    Undo.RecordObject(self, "+1 Main Checkpoint");
+                    var newCheckpoint = DuplicateCheckpoint(self.MainPathCheckpoints[^1]);
+                    Undo.RegisterCreatedObjectUndo(newCheckpoint, "create checkpoint");
 
-                ArrayHelper.InsertAndResize(ref self.MainPathCheckpoints, newCheckpoint);
+                    ArrayHelper.InsertAndResize(ref self.MainPathCheckpoints, newCheckpoint);
 
-                self.UpdateMainCheckpoint(self.MainPathCheckpoints.Length - 1);
+                    self.UpdateMainCheckpoint(self.MainPathCheckpoints.Length - 1);
+                }
+                EditorUtility.SetDirty(self);
             }
 
             if (self.SidePathCheckpoints.Length > 0
