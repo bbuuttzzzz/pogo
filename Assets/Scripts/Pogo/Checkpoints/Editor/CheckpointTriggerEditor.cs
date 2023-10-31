@@ -1,3 +1,4 @@
+using Codice.Utils;
 using Pogo.Checkpoints;
 using System;
 using System.Collections;
@@ -32,6 +33,17 @@ namespace Pogo
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button("Move Player Here"))
+            {
+                PogoGameManager gameManager = FindObjectOfType<PogoGameManager>();
+
+                PogoGameManagerEditor.SetSpawnPointInEditor(gameManager, self.RespawnPoint);
+            }
+
+            EditorGUILayout.Space();
 
             if (self.Descriptor == null)
             {
