@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589246, b: 0.29782626, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2719,7 +2719,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 506619795}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &380146194
 MeshCollider:
@@ -3280,7 +3280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2957236458396339947, guid: 9860381ae7b3ff641bdcf95546caa1ad, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2957236458396339947, guid: 9860381ae7b3ff641bdcf95546caa1ad, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3520,10 +3520,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1116221283}
   - {fileID: 377428312}
+  - {fileID: 1116221283}
   - {fileID: 1486630005}
   - {fileID: 1474454219}
+  - {fileID: 1828699617}
   m_Father: {fileID: 558028684}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3786,23 +3787,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5863932380961024571, guid: d6e8ad559fae8b1419a9b4dc011223cb, type: 3}
       propertyPath: OnToggledOn.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5863932380961024571, guid: d6e8ad559fae8b1419a9b4dc011223cb, type: 3}
       propertyPath: OnToggledOn.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 630854436}
+      objectReference: {fileID: 4600493157270900885}
     - target: {fileID: 5863932380961024571, guid: d6e8ad559fae8b1419a9b4dc011223cb, type: 3}
       propertyPath: OnToggledOn.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5863932380961024571, guid: d6e8ad559fae8b1419a9b4dc011223cb, type: 3}
       propertyPath: OnToggledOn.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
-      value: Toggle
+      value: SetLeverState
       objectReference: {fileID: 0}
     - target: {fileID: 5863932380961024571, guid: d6e8ad559fae8b1419a9b4dc011223cb, type: 3}
       propertyPath: OnToggledOn.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
-      value: Logic.Toggler, Assembly-CSharp
+      value: DoorController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5863932380961024571, guid: d6e8ad559fae8b1419a9b4dc011223cb, type: 3}
       propertyPath: OnToggledOn.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -4883,17 +4884,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4600493156673602485, guid: d3bd8d08a7405924a875b8162fe209dd, type: 3}
   m_PrefabInstance: {fileID: 4600493157270900884}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &630854436 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4600493156673602480, guid: d3bd8d08a7405924a875b8162fe209dd, type: 3}
-  m_PrefabInstance: {fileID: 4600493157270900884}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1006273154574149a3f5c7f2a6a9703, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &648545940
 GameObject:
   m_ObjectHideFlags: 0
@@ -7371,7 +7361,7 @@ GameObject:
   - component: {fileID: 1116221283}
   - component: {fileID: 1116221284}
   m_Layer: 0
-  m_Name: LevelStateChanger
+  m_Name: C10L1 LevelStateChanger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7390,7 +7380,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 506619795}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1116221284
 MonoBehaviour:
@@ -8013,6 +8003,113 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4170146199728202432, guid: f2e86e9e49f400a40a94eb69ecefebf1, type: 3}
+--- !u!1 &1199619567
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1199619568}
+  - component: {fileID: 1199619569}
+  m_Layer: 0
+  m_Name: DoorGroup1Boolean
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1199619568
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1199619567}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1828699617}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1199619569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1199619567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a09581d0c0094e94b951a19c208df10c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Parent: {fileID: 1828699618}
+  EnableLogging: 1
+  PositiveStates: 01000000
+  OnEnterPositiveStateInstantly:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4600493157270900885}
+        m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
+        m_MethodName: SetOverrideStateInstantly
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnEnterNegativeStateInstantly:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4600493157270900885}
+        m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
+        m_MethodName: SetOverrideStateInstantly
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnEnterPositiveState:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4600493157270900885}
+        m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
+        m_MethodName: SetOverrideState
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnEnterNegativeState:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4600493157270900885}
+        m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
+        m_MethodName: SetOverrideState
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!64 &1203581009
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9372,7 +9469,7 @@ GameObject:
   - component: {fileID: 1474454219}
   - component: {fileID: 1474454220}
   m_Layer: 0
-  m_Name: LevelStateListener
+  m_Name: C10L1 LevelStateListener
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9391,7 +9488,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1821773336}
-  - {fileID: 2029705631}
   m_Father: {fileID: 506619795}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12075,6 +12171,55 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4665597222362575099, guid: 2dfcdd3a6bb24fe42b5da3c614380bcc, type: 3}
   m_PrefabInstance: {fileID: 1824120103}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1828699616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1828699617}
+  - component: {fileID: 1828699618}
+  m_Layer: 0
+  m_Name: C10L2 LevelStateListener
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1828699617
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828699616}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1199619568}
+  m_Father: {fileID: 506619795}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1828699618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828699616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5106bc29558113a459c40c4165fec7cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetLevel: {fileID: 11400000, guid: 8c4488d01b0062347b1c5b92a5d5e9f5, type: 2}
+  OnLevelStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1889509109
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12477,7 +12622,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4523322652056667666, guid: 1e40691275d6f7f4982d0a79984910ee, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4523322652056667666, guid: 1e40691275d6f7f4982d0a79984910ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -13058,141 +13203,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4665597222362575099, guid: 2dfcdd3a6bb24fe42b5da3c614380bcc, type: 3}
   m_PrefabInstance: {fileID: 2010658963}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2029705630
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2029705631}
-  - component: {fileID: 2029705633}
-  - component: {fileID: 2029705632}
-  m_Layer: 0
-  m_Name: Door1Boolean
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2029705631
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2029705630}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1474454219}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2029705632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2029705630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e0571693e599e14e8be53d3262369af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnCalled:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1486630003}
-        m_TargetAssemblyTypeName: WizardUtils.Waypointer`1[[System.Single, mscorlib
-        m_MethodName: SnapToWaypoint
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &2029705633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2029705630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a09581d0c0094e94b951a19c208df10c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Parent: {fileID: 1474454220}
-  EnableLogging: 1
-  PositiveStates: 02000000
-  OnEnterPositiveStateInstantly:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1486630003}
-        m_TargetAssemblyTypeName: WizardUtils.Waypointer`1[[System.Single, mscorlib
-        m_MethodName: SnapToWaypoint
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnEnterNegativeStateInstantly:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1486630003}
-        m_TargetAssemblyTypeName: WizardUtils.Waypointer`1[[System.Single, mscorlib
-        m_MethodName: SnapToWaypoint
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnEnterPositiveState:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2029705632}
-        m_TargetAssemblyTypeName: AnimationEventReplicator, Assembly-CSharp
-        m_MethodName: DelayedCall
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -1
-          m_FloatArgument: 1
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnEnterNegativeState:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1486630003}
-        m_TargetAssemblyTypeName: WizardUtils.Waypointer`1[[System.Single, mscorlib
-        m_MethodName: GoToWaypoint
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1001 &2053224352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14162,6 +14172,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3bd8d08a7405924a875b8162fe209dd, type: 3}
+--- !u!114 &4600493157270900885 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3853951191080999772, guid: d3bd8d08a7405924a875b8162fe209dd, type: 3}
+  m_PrefabInstance: {fileID: 4600493157270900884}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00d28d599ab06f54dac1958555848680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!33 &8662790366343432645
 MeshFilter:
   m_ObjectHideFlags: 0
