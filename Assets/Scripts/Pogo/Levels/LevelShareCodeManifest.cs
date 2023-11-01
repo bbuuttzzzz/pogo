@@ -1,16 +1,32 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Pogo.Levels
 {
+#if UNITY_EDITOR
+    [InitializeOnLoad]
+#endif
     [CreateAssetMenu(fileName = "levels_", menuName = "Pogo/LevelManifest", order = 1)]
     public class LevelShareCodeManifest : ScriptableObject
     {
         [HideInInspector]
         public ShareCode[] ShareCodes;
+
+        [NonSerialized]
+        public LevelDescriptor[] Levels;
+
+        public void OnEnable()
+        {
+            Levels = ShareCodes
+                .Select(s => s.LevelState.Level)
+                .Distinct()
+                .ToArray();
+        }
 
         [Tooltip("Lower Number = Displayed First")]
         public int EditorDisplayPriority;

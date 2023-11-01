@@ -11,11 +11,11 @@ namespace Pogo
     public struct LevelLoadingSettings
     {
         /// <summary>
-        /// the level to load
+        /// the Level to load
         /// </summary>
         public LevelDescriptor Level;
         /// <summary>
-        /// allow reloading your current level. usually this warns and fails
+        /// allow reloading your current Level. usually this warns and fails
         /// </summary>
         public bool ForceReload;
         /// <summary>
@@ -23,14 +23,15 @@ namespace Pogo
         /// </summary>
         public bool LoadingFromMenu;
         /// <summary>
-        /// Instantly adjust the atmosphere on level load finish instead of slowly transitioning
+        /// Instantly adjust the atmosphere on Level load finish instead of slowly transitioning
         /// </summary>
         public bool Instantly;
         public QuickSaveData? QuickSaveData;
         /// <summary>
-        /// Also set this LevelState after load
+        /// Also set this MainLevelState after load
         /// </summary>
-        public LevelState? LevelState;
+        public LevelState? MainLevelState;
+        public LevelState[] AdditionalDefaultLevelStates;
 
         public static LevelLoadingSettings Default => new LevelLoadingSettings() { ForceReload = false };
         public static LevelLoadingSettings DefaultWithLevel(LevelDescriptor level)

@@ -27,10 +27,12 @@ namespace Pogo
         public static PogoGameManager PogoInstance => GameInstance as PogoGameManager;
 
         protected override void Awake()
+
         {
             base.Awake();
             if (GameInstance != this) return;
 
+            LoadCheckpointManifest = new CheckpointManifest();
             LoadGlobalSave();
             RespawnPoint = new RespawnPointData(CachedRespawnPoint);
             levelManager = GetComponent<PogoLevelManager>();
@@ -40,6 +42,7 @@ namespace Pogo
             {
                 LoadSlot(SaveSlotIds.Slot3);
                 levelManager.SetCurrentLevelInEditor(InitialLevel);
+                CurrentGameState = GameStates.InGame;
                 currentSessionProgressTracker = new GameProgressTracker(this);
             }
 #endif
@@ -52,6 +55,24 @@ namespace Pogo
 #if UNITY_EDITOR
 #else
             LoadControlScene(MainMenuControlScene);       
+#endif
+        }
+
+        private void Start()
+        {
+#if UNITY_EDITOR
+            if (_CachedCheckpoint != null)
+            {
+                StartChapter(_CachedCheckpoint.Chapter);
+                SetLevelState(_CachedCheckpoint.MainLevelState);
+                if (_CachedCheckpoint.AdditionalLevelStates != null)
+                {
+                    foreach (var levelState in _CachedCheckpoint.AdditionalLevelStates)
+                    {
+                        TryInitializeLevelStateForLevel(levelState);
+                    }
+                }
+            }
 #endif
         }
 
@@ -113,8 +134,6 @@ namespace Pogo
 
         public UnityEvent OnLevelLoaded;
 
-        bool isLoadingLevel;
-
 #if UNITY_EDITOR
         public override void LoadControlSceneInEditor(ControlSceneDescriptor newScene)
         {
@@ -132,165 +151,9 @@ namespace Pogo
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
 #endif
-            if (isLoadingLevel)
-            {
-                Debug.LogWarning("Tried to load a level while already loading a level :(");
-                return;
-            }
-
-            Action callBack = () =>
-            {
-                LevelManager.TransitionAtmosphere(LevelManager.CurrentLevel, settings.Instantly);
-                OnLevelLoaded?.Invoke();
-                if (settings.LevelState.HasValue)
-                {
-                    SetLevelState(settings.LevelState.Value, settings.Instantly);
-                }
-
-                foreach(var initialLevelState in settings.Level.LoadLevelStates)
-                {
-                    TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
-                }
-            };
-            isLoadingLevel = true;
 
             settings.LoadingFromMenu = settings.LoadingFromMenu || CurrentControlScene != null;
-#if UNITY_WEBGL
-            if (!levelManager.LoadLevelAsync(settings, (levelLoadingData) => StartCoroutine(loadLevelScenesInOrder(levelLoadingData, settings, callBack))))
-#else
-            if (!levelManager.LoadLevelAsync(settings, (levelLoadingData) => StartCoroutine(loadLevelScenesSimultaneous(levelLoadingData, settings, callBack))))
-#endif
-            {
-                isLoadingLevel = false;
-            }
-        }
-
-        IEnumerator loadLevelScenesSimultaneous(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
-        {
-            foreach(AsyncOperation task in levelLoadingData.LoadingSceneTasks)
-            {
-                task.allowSceneActivation = false;
-            }
-
-            bool finished = false;
-            while( !finished )
-            {
-                float progress = 0;
-                finished = true;
-
-                string txt = "";
-                foreach(AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-                {
-                    progress += Task.isDone ? 1 : Task.progress / 0.9f;
-                    finished = finished && (Task.progress >= 0.9f || Task.isDone);
-                    txt = txt + Task.progress + " ";
-                }
-
-                progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
-
-                yield return new WaitForSecondsRealtime(0.02f);
-            }
-
-            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
-            {
-                task.allowSceneActivation = true;
-            }
-            finished = false;
-            while (!finished )
-            {
-                float progress = 0;
-                finished = true;
-
-                string txt = "";
-                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-                {
-                    progress += Task.isDone ? 1 : Task.progress;
-                    finished = finished && Task.isDone;
-                    txt = txt + Task.progress + " ";
-                }
-
-                progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
-
-                yield return new WaitForSecondsRealtime(0.02f);
-            }
-
-            if (settings.LoadingFromMenu)
-            {
-                UnloadControlScene();
-                ResetStats();
-            }
-
-            isLoadingLevel = false;
-            callback?.Invoke();
-        }
-
-        IEnumerator loadLevelScenesInOrder(LevelLoadingData levelLoadingData, LevelLoadingSettings settings, Action callback = null)
-        {
-            foreach (AsyncOperation task in levelLoadingData.LoadingSceneTasks)
-            {
-                task.allowSceneActivation = false;
-            }
-
-            int completed = 0;
-            foreach(AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-            {
-                bool finished = false;
-                while (!finished)
-                {
-                    finished = (Task.progress >= 0.9f || Task.isDone);
-
-                    Debug.Log($"Progress: %{(Task.progress * 100):N2} ({completed + 1}/{levelLoadingData.LoadingSceneTasks.Count})");
-
-                    if (finished)
-                    {
-                        completed++;
-                        Task.allowSceneActivation = true;
-                    }
-                    else
-                    {
-                        yield return new WaitForSecondsRealtime(0.02f);
-                    }
-                }
-            }
-
-            bool cleanupFinished = false;
-            while (!cleanupFinished)
-            {
-                float progress = 0;
-                cleanupFinished = true;
-
-                string txt = "";
-                foreach (AsyncOperation Task in levelLoadingData.LoadingSceneTasks)
-                {
-                    progress += Task.isDone ? 1 : Task.progress;
-                    cleanupFinished = cleanupFinished && Task.isDone;
-                    txt = txt + Task.progress + " ";
-                }
-
-                progress /= levelLoadingData.LoadingSceneTasks.Count;
-                Debug.Log($"Progress: %{(progress * 100):N2} -- {txt}");
-
-
-                if (cleanupFinished)
-                {
-                    break;
-                }
-                else
-                {
-                    yield return new WaitForSecondsRealtime(0.02f);
-                }
-            }
-
-            if (settings.LoadingFromMenu)
-            {
-                UnloadControlScene();
-                ResetStats(settings.QuickSaveData);
-            }
-
-            isLoadingLevel = false;
-            callback?.Invoke();
+            levelManager.LoadLevelAsync(settings);
         }
 
         void ResetLoadedLevel()
@@ -331,11 +194,11 @@ namespace Pogo
             CurrentLevelStates.Clear();
         }
 
-        private void TryInitializeLevelStateForLevel(LevelState levelState, bool instant = false)
+        public void TryInitializeLevelStateForLevel(LevelState levelState)
         {
             if (GetLevelStateForLevel(levelState.Level) == null)
             {
-                SetLevelState(levelState, instant);
+                SetLevelState(levelState, true);
             }
         }
 
@@ -473,7 +336,7 @@ namespace Pogo
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.LevelState.Level == null)
+            if (CurrentCheckpoint.Descriptor.MainLevelState.Level == null)
             {
                 Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Level!!!", CurrentCheckpoint);
                 newData = new QuickSaveData();
@@ -518,7 +381,6 @@ namespace Pogo
         }
         public void LoadChapter(ChapterDescriptor newChapter, CheckpointId checkpointId, QuickSaveData? quickSaveData)
         {
-            LoadCheckpointManifest = new CheckpointManifest();
             CheckpointDescriptor checkpoint = newChapter.GetCheckpointDescriptor(checkpointId);
             if (checkpoint == null)
             {
@@ -545,10 +407,11 @@ namespace Pogo
             OnLevelLoaded.AddListener(finishLoading);
             LoadLevel(new LevelLoadingSettings
             {
-                Level = checkpoint.LevelState.Level,
-                LevelState = checkpoint.LevelState,
+                Level = checkpoint.MainLevelState.Level,
+                MainLevelState = checkpoint.MainLevelState,
+                AdditionalDefaultLevelStates = checkpoint.AdditionalLevelStates,
                 Instantly = true,
-                ForceReload = false,
+                ForceReload = true,
                 LoadingFromMenu = CurrentControlScene != null,
                 QuickSaveData = quickSaveData
             });
@@ -589,23 +452,16 @@ namespace Pogo
 
             CurrentGameState = GameStates.InGame;
             SpawnPlayer();
-            LoadCheckpointManifest = null;
         }
 
         #endregion
 
         #region Checkpoint Shit
-        private CheckpointManifest LoadCheckpointManifest;
+        public CheckpointManifest LoadCheckpointManifest { get; private set; }
         public CheckpointTrigger CurrentCheckpoint;
-
-        public static void RegisterCheckpoint(CheckpointTrigger trigger)
-        {
-            if (PogoInstance == null) return;
-            if (PogoInstance.LoadCheckpointManifest == null) return;
-
-            PogoInstance.LoadCheckpointManifest.Add(trigger);
-
-        }
+#if UNITY_EDITOR
+        public CheckpointDescriptor _CachedCheckpoint;
+#endif
 
         public bool TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint)
         {
@@ -745,7 +601,7 @@ namespace Pogo
         }
 
 
-        #endregion
+#endregion
 
         #region Equipment
 
@@ -989,7 +845,7 @@ namespace Pogo
         {
             ResetStats(null);
         }
-        private void ResetStats(QuickSaveData? quickSaveData)
+        public void ResetStats(QuickSaveData? quickSaveData)
         {
             currentSessionProgressTracker = quickSaveData.HasValue
                 ? new GameProgressTracker(this, quickSaveData.Value.SessionProgressTimeMilliseconds, quickSaveData.Value.SessionProgressDeaths)

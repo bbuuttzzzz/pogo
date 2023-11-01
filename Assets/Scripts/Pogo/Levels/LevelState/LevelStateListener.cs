@@ -12,6 +12,11 @@ namespace Pogo.Levels
         public void Start()
         {
             PogoGameManager.PogoInstance.OnLevelStateChanged.AddListener(GameManager_OnLevelStateChanged);
+            var currentState = PogoGameManager.PogoInstance.GetLevelStateForLevel(TargetLevel);
+            if (currentState != null)
+            {
+                OnLevelStateChanged.Invoke(new LevelStateChangedArgs(null, currentState.Value, true));
+            }
         }
 
         private void GameManager_OnLevelStateChanged(LevelStateChangedArgs arg0)

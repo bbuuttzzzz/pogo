@@ -21,5 +21,15 @@ namespace Pogo.Checkpoints
         {
             checkpointTriggers.Add(checkpointTrigger);
         }
+
+        public void Remove(CheckpointTrigger checkpointTrigger)
+        {
+            checkpointTriggers.Remove(checkpointTrigger);
+        }
+
+        public void Set(ICollection<CheckpointTrigger> checkpointTriggers)
+        {
+            this.checkpointTriggers = new List<CheckpointTrigger>(checkpointTriggers);
+        }
     }
 }
