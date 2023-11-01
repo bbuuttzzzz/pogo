@@ -32,7 +32,7 @@ namespace Pogo
 
         public void Awake()
         {
-            PogoGameManager.RegisterCheckpoint(this);
+            PogoGameManager.PogoInstance.LoadCheckpointManifest.Add(this);
         }
 
         public void NotifyCheckpointLoad(CheckpointDescriptor loadedCheckpoint)
@@ -89,6 +89,11 @@ namespace Pogo
             }
             else
                 return false;
+        }
+
+        private void OnDestroy()
+        {
+            PogoGameManager.PogoInstance.LoadCheckpointManifest.Remove(this);
         }
     }
 }

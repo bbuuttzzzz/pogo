@@ -27,10 +27,12 @@ namespace Pogo
         public static PogoGameManager PogoInstance => GameInstance as PogoGameManager;
 
         protected override void Awake()
+
         {
             base.Awake();
             if (GameInstance != this) return;
 
+            LoadCheckpointManifest = new CheckpointManifest();
             LoadGlobalSave();
             RespawnPoint = new RespawnPointData(CachedRespawnPoint);
             levelManager = GetComponent<PogoLevelManager>();
@@ -62,7 +64,14 @@ namespace Pogo
             if (_CachedCheckpoint != null)
             {
                 StartChapter(_CachedCheckpoint.Chapter);
-                SetLevelState(_CachedCheckpoint.LevelState);
+                SetLevelState(_CachedCheckpoint.MainLevelState);
+                if (_CachedCheckpoint.AdditionalLevelStates != null)
+                {
+                    foreach (var levelState in _CachedCheckpoint.AdditionalLevelStates)
+                    {
+                        TryInitializeLevelStateForLevel(levelState);
+                    }
+                }
             }
 #endif
         }
@@ -185,11 +194,11 @@ namespace Pogo
             CurrentLevelStates.Clear();
         }
 
-        public void TryInitializeLevelStateForLevel(LevelState levelState, bool instant = false)
+        public void TryInitializeLevelStateForLevel(LevelState levelState)
         {
             if (GetLevelStateForLevel(levelState.Level) == null)
             {
-                SetLevelState(levelState, instant);
+                SetLevelState(levelState, true);
             }
         }
 
@@ -327,7 +336,7 @@ namespace Pogo
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.LevelState.Level == null)
+            if (CurrentCheckpoint.Descriptor.MainLevelState.Level == null)
             {
                 Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Level!!!", CurrentCheckpoint);
                 newData = new QuickSaveData();
@@ -372,7 +381,6 @@ namespace Pogo
         }
         public void LoadChapter(ChapterDescriptor newChapter, CheckpointId checkpointId, QuickSaveData? quickSaveData)
         {
-            LoadCheckpointManifest = new CheckpointManifest();
             CheckpointDescriptor checkpoint = newChapter.GetCheckpointDescriptor(checkpointId);
             if (checkpoint == null)
             {
@@ -399,10 +407,11 @@ namespace Pogo
             OnLevelLoaded.AddListener(finishLoading);
             LoadLevel(new LevelLoadingSettings
             {
-                Level = checkpoint.LevelState.Level,
-                LevelState = checkpoint.LevelState,
+                Level = checkpoint.MainLevelState.Level,
+                MainLevelState = checkpoint.MainLevelState,
+                AdditionalDefaultLevelStates = checkpoint.AdditionalLevelStates,
                 Instantly = true,
-                ForceReload = false,
+                ForceReload = true,
                 LoadingFromMenu = CurrentControlScene != null,
                 QuickSaveData = quickSaveData
             });
@@ -443,26 +452,16 @@ namespace Pogo
 
             CurrentGameState = GameStates.InGame;
             SpawnPlayer();
-            LoadCheckpointManifest = null;
         }
 
         #endregion
 
         #region Checkpoint Shit
-        private CheckpointManifest LoadCheckpointManifest;
+        public CheckpointManifest LoadCheckpointManifest { get; private set; }
         public CheckpointTrigger CurrentCheckpoint;
 #if UNITY_EDITOR
         public CheckpointDescriptor _CachedCheckpoint;
 #endif
-
-        public static void RegisterCheckpoint(CheckpointTrigger trigger)
-        {
-            if (PogoInstance == null) return;
-            if (PogoInstance.LoadCheckpointManifest == null) return;
-
-            PogoInstance.LoadCheckpointManifest.Add(trigger);
-
-        }
 
         public bool TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint)
         {

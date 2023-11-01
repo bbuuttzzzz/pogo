@@ -75,10 +75,8 @@ public class PogoGameManagerEditor : GameManagerEditor
                     {
                         self._CachedCheckpoint = null;
                     }
-                    self.CachedRespawnPoint.transform.position = itempath.item.transform.position;
-                    self.CachedRespawnPoint.transform.rotation = Quaternion.Euler(0, itempath.item.transform.rotation.eulerAngles.y, 0);
-                    Undo.RecordObject(self.CachedRespawnPoint.transform, "Move Player to Spawnpoint");
-                    MovePlayerToSpawnPoint();
+
+                    SetSpawnPointInEditor(self, itempath.item.transform);
 
                     Undo.CollapseUndoOperations(undoGroup);
                 });
@@ -107,7 +105,17 @@ public class PogoGameManagerEditor : GameManagerEditor
         
     }
 
-    private void MovePlayerToSpawnPoint()
+    public static void SetSpawnPointInEditor(PogoGameManager self, Transform newSpawnPoint)
+    {
+        self.CachedRespawnPoint.transform.position = newSpawnPoint.position;
+        self.CachedRespawnPoint.transform.rotation = Quaternion.Euler(0, newSpawnPoint.rotation.eulerAngles.y, 0);
+        Undo.RecordObject(self.CachedRespawnPoint.transform, "Move Player to Spawnpoint");
+        MovePlayerToSpawnPoint(newSpawnPoint);
+    }
+
+    private void MovePlayerToSpawnPoint() => MovePlayerToSpawnPoint(self.CachedRespawnPoint);
+
+    public static void MovePlayerToSpawnPoint(Transform spawnPoint)
     {
         var results = Resources.FindObjectsOfTypeAll(typeof(PlayerController));
         foreach (PlayerController player in results)
@@ -118,10 +126,10 @@ public class PogoGameManagerEditor : GameManagerEditor
                 Undo.RecordObject(player.CollisionGroup.transform, "");
                 Undo.RecordObject(player.RenderTransform, "");
                 Undo.RecordObject(player.RenderPivotTransform, "");
-                player.TeleportToInEditor(self.CachedRespawnPoint);
+                player.TeleportToInEditor(spawnPoint);
 
                 var previousSelection = Selection.activeObject;
-                Selection.activeObject = self.CachedRespawnPoint.transform;
+                Selection.activeObject = spawnPoint.transform;
                 EditorApplication.delayCall += () =>
                 {
                     EditorApplication.ExecuteMenuItem("Edit/Frame Selected");

@@ -82,7 +82,7 @@ namespace Pogo.Levels
             var newAtmosphereObj = UnityEditor.PrefabUtility.InstantiatePrefab(newLevel.PostProcessingPrefab, AtmosphereParent) as GameObject;
             var newAtmosphere = newAtmosphereObj.GetComponent<Atmosphere>();
             newAtmosphere.SetWeightFromEditor(1);
-            PogoGameManager.PogoInstance._CachedCheckpoint = null;
+            FindFirstObjectByType<PogoGameManager>()._CachedCheckpoint = null;
         }
 #endif
 
@@ -120,9 +120,9 @@ namespace Pogo.Levels
         {
             if (currentLevel == settings.Level && !settings.ForceReload)
             {
-                if (settings.LevelState.HasValue)
+                if (settings.MainLevelState.HasValue)
                 {
-                    PogoGameManager.PogoInstance.SetLevelState(settings.LevelState.Value, settings.Instantly);
+                    PogoGameManager.PogoInstance.SetLevelState(settings.MainLevelState.Value, settings.Instantly);
                 }
                 return false;
             }
@@ -158,6 +158,7 @@ namespace Pogo.Levels
             }
 
             CurrentLevelLoadSettings = settings;
+            RecalculateFinishedLoadingLevel();
 
             return true;
         }
@@ -231,14 +232,21 @@ namespace Pogo.Levels
 
             TransitionAtmosphere(CurrentLevel, settings.Instantly);
             PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
-            if (settings.LevelState.HasValue)
+            if (settings.MainLevelState.HasValue)
             {
-                PogoGameManager.PogoInstance.SetLevelState(settings.LevelState.Value, settings.Instantly);
+                PogoGameManager.PogoInstance.SetLevelState(settings.MainLevelState.Value, settings.Instantly);
             }
 
+            if (settings.AdditionalDefaultLevelStates != null)
+            {
+                foreach (var initialLevelState in settings.AdditionalDefaultLevelStates)
+                {
+                    PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState);
+                }
+            }
             foreach (var initialLevelState in settings.Level.LoadLevelStates)
             {
-                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState, settings.Instantly);
+                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState);
             }
 
             if (settings.LoadingFromMenu)

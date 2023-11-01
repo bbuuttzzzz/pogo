@@ -19,7 +19,7 @@ namespace Pogo
             LevelLoadingSettings settings = LevelLoadingSettings.DefaultWithLevel(Level);
             if (ShouldSetLevelState)
             {
-                settings.LevelState = LevelState;
+                settings.MainLevelState = LevelState;
             }
             PogoGameManager.PogoInstance.LoadLevel(settings);
         }

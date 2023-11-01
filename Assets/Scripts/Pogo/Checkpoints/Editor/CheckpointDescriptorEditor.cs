@@ -24,11 +24,23 @@ namespace Pogo.Collectibles
         public override void OnInspectorGUI()
         {
             bool corrupt = false;
-            if (self.Chapter.GetCheckpointDescriptor(self.CheckpointId) != self)
+            try
             {
-                EditorGUILayout.HelpBox("Corrupted CheckpointId/Chapter!", MessageType.Error);
+                if (self.Chapter.GetCheckpointDescriptor(self.CheckpointId) != self)
+                {
+                    corrupt = true;
+                }
+            }
+            catch(Exception e)
+            {
                 corrupt = true;
             }
+
+            if (corrupt)
+            {
+                EditorGUILayout.HelpBox("Corrupted CheckpointId/Chapter!", MessageType.Error);
+            }
+
 
             DrawDefaultInspector();
 
@@ -37,13 +49,13 @@ namespace Pogo.Collectibles
                 if (GUILayout.Button("Find In World"))
                 {
                     var manager = UnityEngine.Object.FindFirstObjectByType<PogoLevelManager>();
-                    if (manager.CurrentLevel != self.LevelState.Level)
+                    if (manager.CurrentLevel != self.MainLevelState.Level)
                     {
                         if (!UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                         {
                             return;
                         }
-                        manager.LoadLevelInEditor(self.LevelState.Level);
+                        manager.LoadLevelInEditor(self.MainLevelState.Level);
                     }
 
                     var worldObject = FindWorldObject();

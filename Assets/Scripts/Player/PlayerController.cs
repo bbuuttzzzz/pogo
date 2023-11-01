@@ -238,6 +238,14 @@ public class PlayerController : MonoBehaviour
     SurfaceConfig GetSurfacePropertyFromCollision(RaycastHit hitInfo)
     {
         Material material = null;
+
+        var specifier = hitInfo.collider.GetComponent<SurfaceConfigSpecifier>();
+        if (specifier != null)
+        {
+            surfaceCache.Collider = hitInfo.collider;
+            surfaceCache.SurfaceConfig = specifier.SurfaceConfig;
+            return specifier.SurfaceConfig;
+        }
         if (hitInfo.collider is MeshCollider)
         {
             MeshRenderer renderer;
@@ -257,6 +265,7 @@ public class PlayerController : MonoBehaviour
                 surfaceCache.MeshRenderer = renderer;
                 surfaceCache.MeshTriangleIndex = hitInfo.triangleIndex;
             }
+
             if (renderer != null)
             {
                 if (hitInfo.collider is MeshCollider meshCollider && meshCollider.convex)
@@ -266,16 +275,6 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     material = (hitInfo.collider as MeshCollider).sharedMesh.GetMaterialAtTriangle(renderer, hitInfo.triangleIndex);
-                }
-            }
-            else
-            {
-                var specifier = hitInfo.collider.GetComponent<SurfaceConfigSpecifier>();
-                if (specifier != null)
-                {
-                    surfaceCache.Collider = hitInfo.collider;
-                    surfaceCache.SurfaceConfig = specifier.SurfaceConfig;
-                    return specifier.SurfaceConfig;
                 }
             }
         }
@@ -294,14 +293,6 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                var specifier = hitInfo.collider.GetComponent<SurfaceConfigSpecifier>();
-                if (specifier != null)
-                {
-                    surfaceCache.Collider = hitInfo.collider;
-                    surfaceCache.SurfaceConfig = specifier.SurfaceConfig;
-                    return specifier.SurfaceConfig;
-                }
-
                 renderer = hitInfo.collider.GetComponent<Renderer>();
                 surfaceCache.Collider = hitInfo.collider;
                 material = renderer.sharedMaterial;

@@ -354,11 +354,27 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 98359867}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 39.45621, y: 19.999998, z: 2.7160528}
   m_Center: {x: -44.271896, y: 0, z: -36.335155}
+--- !u!114 &98359872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98359867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbf489f47b717cb42a8b56d8343857ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  Type: {fileID: 11400000, guid: c9bf8366dfd30c041964b05fadd36783, type: 2}
 --- !u!1 &116856638
 GameObject:
   m_ObjectHideFlags: 0
@@ -1063,6 +1079,14 @@ PrefabInstance:
     - target: {fileID: 1674248449, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
       value: 67.99998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4452495269832164838, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.55098957
+      objectReference: {fileID: 0}
+    - target: {fileID: 4452495269832164838, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.051036835
       objectReference: {fileID: 0}
     - target: {fileID: 4474375267029053566, guid: 5c9e2835cb37cb6458485fd2d1c703d6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2626,7 +2650,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6526668758159245670, guid: 764e00aea54b5ab4091773e273e5f31f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -53.899994
+      value: -53.32
       objectReference: {fileID: 0}
     - target: {fileID: 6526668758159245670, guid: 764e00aea54b5ab4091773e273e5f31f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2634,7 +2658,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6526668758159245670, guid: 764e00aea54b5ab4091773e273e5f31f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.08
+      value: -7.61
       objectReference: {fileID: 0}
     - target: {fileID: 6526668758159245670, guid: 764e00aea54b5ab4091773e273e5f31f, type: 3}
       propertyPath: m_LocalRotation.w

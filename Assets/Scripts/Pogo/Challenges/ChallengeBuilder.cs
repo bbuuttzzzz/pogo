@@ -171,7 +171,7 @@ namespace Pogo.Challenges
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
             Transform startTransform = pogoInstance.GetRespawnTransform();
 
-            // crunch existing LevelState down to a shareable levelState
+            // crunch existing MainLevelState down to a shareable levelState
             LevelDescriptor level = pogoInstance.RealTargetRespawnLevel ?? pogoInstance.LevelManager.CurrentLevel;
             LevelState levelState = pogoInstance.GetLevelStateForLevel(level) ?? new LevelState(level, 0);
             if (ShareCodeManifest.TryGetShareCode(levelState, out ShareCode shareCode))
@@ -215,7 +215,7 @@ namespace Pogo.Challenges
             pogoInstance.LoadLevel(new LevelLoadingSettings()
             {
                 Level = CurrentChallenge.LevelState.Level,
-                LevelState = CurrentChallenge.LevelState,
+                MainLevelState = CurrentChallenge.LevelState,
                 ForceReload = true,
                 Instantly = true
             });

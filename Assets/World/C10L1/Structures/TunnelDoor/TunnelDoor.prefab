@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4600493156673602485}
   - component: {fileID: 4600493156673602487}
   - component: {fileID: 4600493156673602486}
-  - component: {fileID: 4600493156673602480}
+  - component: {fileID: 3853951191080999772}
   m_Layer: 0
   m_Name: TunnelDoor
   m_TagString: Untagged
@@ -152,7 +152,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4600493156673602480
+--- !u!114 &3853951191080999772
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,14 +161,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 4600493156673602484}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1006273154574149a3f5c7f2a6a9703, type: 3}
+  m_Script: {fileID: 11500000, guid: 00d28d599ab06f54dac1958555848680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initalState: 0
-  isToggledOn: 0
-  Cooldown: 0
-  CallEventsOnInitialStateSet: 0
-  OnToggledOn:
+  OnEnterPositiveStateInstantly:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4600493156673602486}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: OpenInstantly
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnEnterNegativeStateInstantly:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4600493156673602486}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: CloseInstantly
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnEnterPositiveState:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4600493156673602487}
@@ -195,9 +221,23 @@ MonoBehaviour:
           m_StringArgument: Open
           m_BoolArgument: 0
         m_CallState: 2
-  OnToggledOff:
+  OnEnterNegativeState:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4600493156673602486}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: CloseInstantly
+          m_BoolArgument: 0
+        m_CallState: 2
+  leverActive: 0
+  overrideActive: 0
 --- !u!1 &4600493156807269568
 GameObject:
   m_ObjectHideFlags: 0

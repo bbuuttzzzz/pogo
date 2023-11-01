@@ -28,9 +28,10 @@ namespace Pogo
         public bool Instantly;
         public QuickSaveData? QuickSaveData;
         /// <summary>
-        /// Also set this LevelState after load
+        /// Also set this MainLevelState after load
         /// </summary>
-        public LevelState? LevelState;
+        public LevelState? MainLevelState;
+        public LevelState[] AdditionalDefaultLevelStates;
 
         public static LevelLoadingSettings Default => new LevelLoadingSettings() { ForceReload = false };
         public static LevelLoadingSettings DefaultWithLevel(LevelDescriptor level)
