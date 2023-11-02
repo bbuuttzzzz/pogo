@@ -337,7 +337,7 @@ public class PlayerController : MonoBehaviour
         DelayedRespawnRoutine = StartCoroutine(DelayedRespawn(AutoRespawnDelay));
         if (data.KillType != null)
         {
-            AudioController.PlayOneShot(data.KillType.RandomSound);
+            AudioController.PlayOneShot(data.KillType.RandomSound, true);
         }
 
         if (data.Position.HasValue && data.Normal.HasValue)

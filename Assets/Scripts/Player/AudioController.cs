@@ -30,9 +30,11 @@ public class AudioController : MonoBehaviour
         }
     }
 
-    public void PlayOneShot(AudioClip clip)
+    public void PlayOneShot(AudioClip clip) => PlayOneShot(clip, false);
+
+    public void PlayOneShot(AudioClip clip, bool ignoreReplayDelay)
     {
-        if (canPlay())
+        if (canPlay() || ignoreReplayDelay)
         {
             lastPlay = Time.time;
             audioSource.PlayOneShot(clip);
