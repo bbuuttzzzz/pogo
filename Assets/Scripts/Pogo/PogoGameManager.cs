@@ -672,7 +672,7 @@ namespace Pogo
         public void SpawnPlayer()
         {
             OnPlayerSpawn?.Invoke();
-            Player.TeleportToSpawnpoint();
+            Player.Spawn();
         }
 
         public void TrackDeath()

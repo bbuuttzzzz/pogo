@@ -368,7 +368,7 @@ public class PlayerController : MonoBehaviour
         TeleportToSpawnpoint();
     }
 
-    public void TeleportToSpawnpoint()
+    private void TeleportToSpawnpoint()
     {
         TeleportTo(PogoGameManager.PogoInstance.GetRespawnTransform());
     }
