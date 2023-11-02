@@ -54,6 +54,7 @@ namespace Pogo.Abilities
             Owner = target;
             Owner.OnBeforeApplyAbility?.Invoke(this);
             Owner.OnTouch.AddListener(Target_OnTouch);
+            Owner.OnDie.AddListener(Target_OnSpawn);
             Owner.OnSpawn.AddListener(Target_OnSpawn);
             Owner.OnBeforeApplyAbility.AddListener(Target_OnBeforeApplyAbility);
             isApplied = true;
@@ -88,6 +89,7 @@ namespace Pogo.Abilities
             isApplied = false;
             OnCleanse();
             Owner.OnTouch.RemoveListener(Target_OnTouch);
+            Owner.OnDie.RemoveListener(Target_OnSpawn);
             Owner.OnSpawn.RemoveListener(Target_OnSpawn);
             Owner.OnBeforeApplyAbility.RemoveListener(Target_OnBeforeApplyAbility);
 
