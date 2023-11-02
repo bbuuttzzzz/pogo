@@ -18,6 +18,7 @@ using WizardUtils.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     public AudioController AudioController;
+    public AudioController JumpSqueakAudioController;
     public CollisionGroup CollisionGroup;
     public float AutoRespawnDelay;
     public PlayerJostler Jostler;
@@ -544,6 +545,7 @@ public class PlayerController : MonoBehaviour
         AudioClip sound;
         (sound, lastJumpSoundIndex) = surfaceConfig.NextRandomSound(lastJumpSoundIndex);
         if (sound != null) AudioController.PlayOneShot(sound);
+        JumpSqueakAudioController.Play();
         OnTouch?.Invoke();
 
 
