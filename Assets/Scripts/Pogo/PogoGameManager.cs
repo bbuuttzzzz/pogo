@@ -141,6 +141,7 @@ namespace Pogo
             var levelManager = GetComponent<PogoLevelManager>();
 
             levelManager.LoadDefaultAtmosphere();
+            _CachedCheckpoint = null;
         }
 #endif
 
