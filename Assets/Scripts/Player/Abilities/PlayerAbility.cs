@@ -57,6 +57,7 @@ namespace Pogo.Abilities
             Owner.OnDie.AddListener(Target_OnSpawn);
             Owner.OnSpawn.AddListener(Target_OnSpawn);
             Owner.OnBeforeApplyAbility.AddListener(Target_OnBeforeApplyAbility);
+            PogoGameManager.PogoInstance.OnQuitToMenu.AddListener(CleanseInstantly);
             isApplied = true;
             OnApply();
         }
@@ -84,17 +85,28 @@ namespace Pogo.Abilities
             }
         }
 
-        public void Cleanse()
+        public void Cleanse() => Cleanse(false);
+        public void CleanseInstantly() => Cleanse(true);
+        public void Cleanse(bool instant)
         {
+
             isApplied = false;
             OnCleanse();
             Owner.OnTouch.RemoveListener(Target_OnTouch);
             Owner.OnDie.RemoveListener(Target_OnSpawn);
             Owner.OnSpawn.RemoveListener(Target_OnSpawn);
             Owner.OnBeforeApplyAbility.RemoveListener(Target_OnBeforeApplyAbility);
+            PogoGameManager.PogoInstance.OnQuitToMenu.RemoveListener(CleanseInstantly);
 
             Owner = null;
-            Destroy(gameObject, DestroyDelay);
+            if (instant)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject, DestroyDelay);
+            }
         }
 
         protected virtual void Update()
