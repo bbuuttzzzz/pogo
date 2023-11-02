@@ -25,7 +25,8 @@ public class AudioController : MonoBehaviour
         if (canPlay() && Clips.Length > 0)
         {
             lastPlay = Time.time;
-            audioSource.PlayOneShot(NextRandomSound());
+            int chosenSoundIndex = Random.Range(0, Clips.Length);
+            audioSource.PlayOneShot(Clips[chosenSoundIndex]);
         }
     }
 
@@ -43,23 +44,5 @@ public class AudioController : MonoBehaviour
     private bool canPlay()
     {
         return lastPlay + ReplayDelay < Time.time;
-    }
-
-    int previousIndex = -1;
-    private AudioClip NextRandomSound()
-    {
-        if (previousIndex >= 0 && previousIndex < Clips.Length)
-        {
-            int index = Random.Range(0, Clips.Length - 1);
-            if (index >= previousIndex) index++;
-
-            previousIndex = index;
-            return Clips[index];
-        }
-        else
-        {
-            previousIndex = Random.Range(0, Clips.Length);
-            return Clips[previousIndex];
-        }
     }
 }
