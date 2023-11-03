@@ -108,6 +108,11 @@ namespace Pogo.Levels
             }
 
             TransitionAtmosphere(newLevel, true);
+
+            foreach (var initialLevelState in newLevel.LoadLevelStates)
+            {
+                PogoGameManager.PogoInstance.TryInitializeLevelStateForLevel(initialLevelState);
+            }
         }
 
         /// <summary>
