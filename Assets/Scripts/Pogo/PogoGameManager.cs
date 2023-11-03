@@ -141,6 +141,7 @@ namespace Pogo
             var levelManager = GetComponent<PogoLevelManager>();
 
             levelManager.LoadDefaultAtmosphere();
+            _CachedCheckpoint = null;
         }
 #endif
 
@@ -515,8 +516,8 @@ namespace Pogo
                 return true;
             }
 
-
-            nextCheckpoint = CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints[CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1];
+            // checkpoint numbers are one-indexed... for some fucking reason oh god why did I do that. so this looks weird
+            nextCheckpoint = CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints[CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 0];
             return true;
         }
 
@@ -672,7 +673,7 @@ namespace Pogo
         public void SpawnPlayer()
         {
             OnPlayerSpawn?.Invoke();
-            Player.TeleportToSpawnpoint();
+            Player.Spawn();
         }
 
         public void TrackDeath()

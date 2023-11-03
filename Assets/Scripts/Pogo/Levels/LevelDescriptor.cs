@@ -53,9 +53,6 @@ namespace Pogo.Levels
 
         public int BuildIndex;
 
-        [Range(0, 255)]
-        public int ShareIndex;
-
 #if UNITY_EDITOR
         [Multiline(8)]
         public string Notes;
