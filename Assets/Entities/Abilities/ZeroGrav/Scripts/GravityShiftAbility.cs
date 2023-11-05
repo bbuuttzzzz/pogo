@@ -1,12 +1,15 @@
 using Players.Visuals;
+using Pogo;
 using Pogo.Abilities;
 using UnityEngine;
+using WizardEffects;
 using WizardPhysics.PhysicsTime;
 
 public class GravityShiftAbility : PlayerAbility
 {
     public Vector3 NewGravity;
     public PlayerModelAttachment BackAttachment;
+    public string EffectName;
 
     protected override void AppliedPhysicsUpdate()
     {
@@ -20,10 +23,18 @@ public class GravityShiftAbility : PlayerAbility
     protected override void OnApply()
     {
         Owner.AttachmentHandler.AddAttachment(BackAttachment);
+        
+        EffectData data = new EffectData();
+        data.position = Owner.RenderPosition;
+        WizardEffects.EffectManager.CreateEffect(EffectName, data);
     }
 
     protected override void OnCleanse()
     {
         Owner.AttachmentHandler.RemoveAttachment(BackAttachment);
+
+        EffectData data = new EffectData();
+        data.position = Owner.RenderPosition;
+        WizardEffects.EffectManager.CreateEffect(EffectName, data);
     }
 }
