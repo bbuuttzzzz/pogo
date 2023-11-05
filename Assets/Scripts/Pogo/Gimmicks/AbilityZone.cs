@@ -29,7 +29,7 @@ namespace Pogo
         {
             PlayerController player = other.GetComponentInParent<PlayerController>();
             if (player == null) return;
-            if (cachedAbilityInstance == null)
+            if (cachedAbilityInstance == null || cachedAbilityInstance.IsApplied)
             {
                 return;
             }
