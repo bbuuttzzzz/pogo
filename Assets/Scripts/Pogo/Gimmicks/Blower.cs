@@ -17,11 +17,6 @@ namespace Pogo
             Force = new BlowerForce(this);
         }
 
-        public void Blow(Collider other)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Apply(Collider other)
         {
             PlayerController player = other.GetComponentInParent<PlayerController>();
