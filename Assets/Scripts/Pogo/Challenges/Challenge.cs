@@ -27,8 +27,8 @@ namespace Pogo.Challenges
         public LevelState LevelState;
         public DeveloperChallenge DeveloperChallenge;
 
-        public Vector3 WorldStartPoint => LevelState.Level.ShareOrigin + SharePosition;
-        public Vector3 SharePosition => ShareStartPointCm.ToVector3() / 100;
+        public Vector3 WorldStartPoint => LevelState.Level.ShareOrigin + ShareStartPoint;
+        public Vector3 ShareStartPoint => ShareStartPointCm.ToVector3() / 100;
         public Vector3Short ShareStartPointCm;
 
         [SerializeField]
@@ -42,7 +42,8 @@ namespace Pogo.Challenges
             }
         }
 
-        public Vector3 EndPoint => ShareEndPointCm.ToVector3() / 100;
+        public Vector3 WorldEndPoint => LevelState.Level.ShareOrigin + ShareEndPoint;
+        public Vector3 ShareEndPoint => ShareEndPointCm.ToVector3() / 100;
         public Vector3Short ShareEndPointCm;
 
         public ushort LastAttemptTimeMS;
