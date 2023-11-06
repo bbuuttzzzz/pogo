@@ -181,7 +181,11 @@ namespace Pogo.Challenges
             }
 
             Vector3 endPoint = pogoInstance.Player.PhysicsPosition;
-            return new Challenge(levelState, startTransform, endPoint);
+            if (!Challenge.TryCreate(levelState, startTransform, endPoint, out Challenge newChallenge))
+            {
+                throw new ArgumentOutOfRangeException($"Challenge start or end was out of range. \nlevel: {levelState}, \nstart: {startTransform.position}, \nend: {endPoint}");
+            }
+            return newChallenge;
         }
 
         public void ExitChallenge()
@@ -324,10 +328,10 @@ My Best Time: {1:N3} seconds"
             byte[] completeChallenge = new byte[PayloadLength];
             int offset = 0;
 
-            AddVector3Short(ref completeChallenge, offset, challenge.StartPointCm);
+            AddVector3Short(ref completeChallenge, offset, challenge.ShareStartPointCm);
             offset += sizeof(short) * 3;
 
-            AddVector3Short(ref completeChallenge, offset, challenge.EndPointCm);
+            AddVector3Short(ref completeChallenge, offset, challenge.ShareEndPointCm);
             offset += sizeof(short) * 3;
 
             byte yaw = Convert.ToByte(challenge.StartYaw / 2);
@@ -477,10 +481,10 @@ My Best Time: {1:N3} seconds"
 
             int offset = 0;
 
-            challenge.StartPointCm = GetVector3Short(rawPayload, offset);
+            challenge.ShareStartPointCm = GetVector3Short(rawPayload, offset);
             offset += sizeof(short) * 3;
 
-            challenge.EndPointCm = GetVector3Short(rawPayload, offset);
+            challenge.ShareEndPointCm = GetVector3Short(rawPayload, offset);
             offset += sizeof(short) * 3;
 
             byte yaw = getByte(rawPayload, offset);

@@ -67,7 +67,18 @@ namespace Pogo.Levels
         public int LevelStatesCount;
 
         #region SharePosition
+        public bool TryGetSharePositionCm(Vector3 worldPosition, out Vector3Short sharePositionCm)
+        {
+            Vector3 localPosition = (worldPosition - ShareOrigin);
+            if (!(localPosition * 100).FitsInShort())
+            {
+                sharePositionCm = default;
+                return false;
+            }
 
+            sharePositionCm = Vector3Short.FromVector3(localPosition * 100);
+            return true;
+        }
         #endregion
     }
 }

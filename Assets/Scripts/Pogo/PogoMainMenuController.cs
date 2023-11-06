@@ -69,8 +69,8 @@ namespace Pogo
                 LevelState = developerChallenge.Challenge.LevelState,
                 BestTimeMS = developerChallenge.Challenge.BestTimeMS,
                 PersonalBestTimeMS = (ushort)developerChallenge.BestTimeMS,
-                StartPointCm = developerChallenge.Challenge.StartPointCm,
-                EndPointCm = developerChallenge.Challenge.EndPointCm,
+                ShareStartPointCm = developerChallenge.Challenge.ShareStartPointCm,
+                ShareEndPointCm = developerChallenge.Challenge.ShareEndPointCm,
                 StartYaw = developerChallenge.Challenge.StartYaw,
                 DeveloperChallenge = developerChallenge,
                 ChallengeType = Challenge.ChallengeTypes.PlayDeveloper
