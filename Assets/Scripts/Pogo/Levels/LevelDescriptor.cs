@@ -65,5 +65,9 @@ namespace Pogo.Levels
 
         public bool HideInEditor = false;
         public int LevelStatesCount;
+
+        #region SharePosition
+
+        #endregion
     }
 }

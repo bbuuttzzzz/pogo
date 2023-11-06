@@ -27,8 +27,10 @@ namespace Pogo.Challenges
         public LevelState LevelState;
         public DeveloperChallenge DeveloperChallenge;
 
-        public Vector3 StartPoint => StartPointCm.ToVector3() / 100;
+        public Vector3 WorldStartPoint => LevelState.Level.ShareOrigin + SharePosition;
+        public Vector3 SharePosition => StartPointCm.ToVector3() / 100;
         public Vector3Short StartPointCm;
+        public Vector3Short SharePositionCm;
 
         [SerializeField]
         int startYaw;
