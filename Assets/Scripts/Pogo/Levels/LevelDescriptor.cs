@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using WizardUtils.Math;
 
 namespace Pogo.Levels
 {
@@ -15,6 +16,8 @@ namespace Pogo.Levels
 
         [Tooltip("Loading into this level will set these states, but not override existing states. If you don't supply one for THIS level, defaults to zero")]
         public LevelState[] InitialLevelStates;
+
+        public Vector3 ShareOrigin;
 
         public GameObject PostProcessingPrefab;
 

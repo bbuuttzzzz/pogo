@@ -52,5 +52,25 @@ namespace WizardUtils.Math
         {
             return new Vector3(vec.x, vec.y, vec.z);
         }
+
+        public static bool FitsInShort(this Vector3 vec)
+        {
+            if (vec.x > short.MaxValue || vec.x < short.MinValue)
+            {
+                return false;
+            }
+
+            if (vec.y > short.MaxValue || vec.y < short.MinValue)
+            {
+                return false;
+            }
+
+            if (vec.z > short.MaxValue || vec.z < short.MinValue)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
