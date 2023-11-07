@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Difficulties;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -42,7 +43,8 @@ namespace Pogo.Logic
         }
         private void onDifficultyChanged(DifficultyChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            SkullMesh.sharedMesh = PogoGameManager.PogoInstance.CurrentDifficultyDescriptor.SkullMesh;
+            SkullMeshRenderer.sharedMaterial = PogoGameManager.PogoInstance.CurrentDifficultyDescriptor.SkullMaterial;
         }
 
         private void Update()
