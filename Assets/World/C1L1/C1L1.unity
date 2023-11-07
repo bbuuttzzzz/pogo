@@ -862,7 +862,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 548382912707152932, guid: 79a9dbd6d8f169748a0bcab473e2ca70, type: 3}
       propertyPath: m_Name
-      value: Custom Sign
+      value: AssistMode Sign
       objectReference: {fileID: 0}
     - target: {fileID: 548382912707152932, guid: 79a9dbd6d8f169748a0bcab473e2ca70, type: 3}
       propertyPath: m_IsActive
@@ -3276,10 +3276,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31b5f0075abd9b948a720d01193b1a64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Level: {fileID: 11400000, guid: aa400ddf7dcb1a146af93dfdd66c9c12, type: 2}
+  ShouldSetLevelState: 0
   LevelState:
     Level: {fileID: 11400000, guid: aa400ddf7dcb1a146af93dfdd66c9c12, type: 2}
     StateId: 0
-  Level: {fileID: 11400000, guid: aa400ddf7dcb1a146af93dfdd66c9c12, type: 2}
 --- !u!1 &433138600
 GameObject:
   m_ObjectHideFlags: 0
@@ -3551,6 +3552,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 451726283}
+  - component: {fileID: 451726285}
   - component: {fileID: 451726284}
   m_Layer: 0
   m_Name: 2nd Sign
@@ -3586,31 +3588,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 451726282}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8153abf25bb68824084f6f0608358397, type: 3}
+  m_Script: {fileID: 11500000, guid: 542cb5756b3abb144a6c417ce9fbc8c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnNormalMode:
-    m_PersistentCalls:
-      m_Calls: []
-  OnHardMode:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1293508929}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  OnExpertMode:
-    m_PersistentCalls:
-      m_Calls: []
-  OnFreeplayMode:
+  TargetDifficulty: 1
+  OnEnter:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 133730754}
@@ -3625,7 +3607,38 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  OnChallengeMode:
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &451726285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451726282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 542cb5756b3abb144a6c417ce9fbc8c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetDifficulty: 2
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1293508929}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnExit:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1001 &459161505
@@ -27349,10 +27362,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31b5f0075abd9b948a720d01193b1a64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Level: {fileID: 11400000, guid: ad9dd217ac4e76c4ead61e34322ec8ee, type: 2}
+  ShouldSetLevelState: 0
   LevelState:
     Level: {fileID: 11400000, guid: ad9dd217ac4e76c4ead61e34322ec8ee, type: 2}
     StateId: 0
-  Level: {fileID: 11400000, guid: ad9dd217ac4e76c4ead61e34322ec8ee, type: 2}
 --- !u!1 &1793891735623980539
 GameObject:
   m_ObjectHideFlags: 0
