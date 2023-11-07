@@ -890,9 +890,7 @@ namespace Pogo
             CurrentSlotDataTracker.Load();
             OnSaveSlotChanged?.Invoke();
 
-            var difficultyId = CurrentSlotDataTracker.PreviewData.difficulty;
-            var difficulty = DifficultyManifest.FindByKey(difficultyId);
-            CurrentDifficulty = difficultyId;
+            CurrentDifficulty = CurrentSlotDataTracker.PreviewData.difficulty;
         }
 
         public void NewGameSlot(

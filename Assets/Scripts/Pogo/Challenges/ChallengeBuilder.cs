@@ -202,7 +202,7 @@ namespace Pogo.Challenges
         {
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
             pogoInstance.FullResetSessionData();
-            pogoInstance.Equip(ChallengeStick);
+            pogoInstance.CurrentDifficulty = Difficulty.Challenge;
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
