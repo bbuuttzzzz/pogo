@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Pogo.Difficulty;
+﻿using Pogo.Difficulties;
 using UnityEngine;
 
 namespace Pogo.Saving
@@ -18,7 +18,7 @@ namespace Pogo.Saving
             DataState = DataStates.Loaded;
         }
 
-        public override void InitializeNew(string name, DifficultyId difficulty)
+        public override void InitializeNew(string name, Difficulty difficulty)
         {
             throw new System.InvalidOperationException();
         }

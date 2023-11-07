@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.Pogo.Difficulty
+namespace Pogo.Difficulties
 {
-    public enum DifficultyId
+    public enum Difficulty
     {
         Normal,
         Assist,
-        Hard
+        Hard,
+        Challenge
     }
 }

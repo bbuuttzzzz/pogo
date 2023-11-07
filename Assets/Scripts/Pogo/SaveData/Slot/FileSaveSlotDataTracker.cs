@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using WizardUtils.Saving;
 using Platforms;
-using Assets.Scripts.Pogo.Difficulty;
+using Pogo.Difficulties;
 
 namespace Pogo.Saving
 {
@@ -52,7 +52,7 @@ namespace Pogo.Saving
             {
                 if (createIfEmpty)
                 {
-                    InitializeNew(SaveSlotConstants.SaveSlotName(slotId), DifficultyId.Normal);
+                    InitializeNew(SaveSlotConstants.SaveSlotName(slotId), Difficulty.Normal);
                     return;
                 }
                 else
@@ -101,7 +101,7 @@ namespace Pogo.Saving
             DataState = DataStates.Loaded;
         }
 
-        public override void InitializeNew(string name, DifficultyId difficulty)
+        public override void InitializeNew(string name, Difficulty difficulty)
         {
             SlotData = SaveSlotData.NewGameData(name, difficulty);
             DataState = DataStates.Loaded;

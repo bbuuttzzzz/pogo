@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using WizardUtils.Saving;
 using Platforms;
-using Assets.Scripts.Pogo.Difficulty;
 
 namespace Pogo.Saving
 {

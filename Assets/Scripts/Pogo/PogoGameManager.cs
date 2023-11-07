@@ -4,6 +4,7 @@ using Platforms;
 using Pogo.Challenges;
 using Pogo.Checkpoints;
 using Pogo.Collectibles;
+using Pogo.Difficulties;
 using Pogo.Levels;
 using Pogo.Saving;
 using System;
@@ -719,19 +720,11 @@ namespace Pogo
 
         public Transform GetRespawnTransform()
         {
-            var point = CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint.transform;
+            var point = CurrentDifficulty == Difficulty.Assist && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint.transform;
             return point == null ? CachedRespawnPoint.transform : point;
         }
 
         public DifficultyManifest DifficultyManifest;
-        public enum Difficulty
-        {
-            Normal,
-            Hard,
-            Freeplay,
-            Expert,
-            Challenge
-        }
         public UnityEvent<DifficultyChangedEventArgs> OnDifficultyChanged;
         private Difficulty currentDifficulty = Difficulty.Normal;
         public Difficulty CurrentDifficulty
@@ -749,7 +742,7 @@ namespace Pogo
 
         public bool RegisterCustomRespawnPoint(Vector3 point, Quaternion forward)
         {
-            if (CurrentDifficulty == Difficulty.Freeplay && CustomCheckpoint.Place(point, forward))
+            if (CurrentDifficulty == Difficulty.Assist && CustomCheckpoint.Place(point, forward))
             {
                 CustomRespawnActive = true;
                 CustomRespawnLevel = levelManager.CurrentLevel;
@@ -762,7 +755,7 @@ namespace Pogo
 
         public bool ResetCustomRespawnPoint(bool force = false)
         {
-            if (force || CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive)
+            if (force || CurrentDifficulty == Difficulty.Assist && CustomRespawnActive)
             {
                 CustomRespawnActive = false;
                 CustomCheckpoint.Hide();
@@ -794,9 +787,9 @@ namespace Pogo
 
         public bool CanRegisterRespawnPoint(Transform newRespawnPointTransform)
         {
-            if (newRespawnPointTransform == PogoInstance.RespawnPoint.transform || CurrentDifficulty == Difficulty.Expert) return false;
+            if (newRespawnPointTransform == PogoInstance.RespawnPoint.transform) return false;
 
-            if (CurrentDifficulty == Difficulty.Normal || CurrentDifficulty == Difficulty.Freeplay)
+            if (CurrentDifficulty == Difficulty.Normal || CurrentDifficulty == Difficulty.Assist)
             {
                 return true;
             }
@@ -899,7 +892,7 @@ namespace Pogo
 
             var difficultyId = CurrentSlotDataTracker.PreviewData.difficulty;
             var difficulty = DifficultyManifest.FindByKey(difficultyId);
-            Equip(difficulty.PogoEquipment);
+            CurrentDifficulty = difficultyId;
         }
 
         public void NewGameSlot(

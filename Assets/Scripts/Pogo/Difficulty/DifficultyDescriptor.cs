@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Pogo.Difficulty;
+﻿using Pogo.Difficulties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace Pogo
     [CreateAssetMenu(fileName = "diff_", menuName = "Pogo/DifficultyDescriptor")]
     public class DifficultyDescriptor : ScriptableObject
     {
-        public DifficultyId DifficultyEnum;
+        public Difficulty DifficultyEnum;
         public string DisplayName;
         public Mesh SkullMesh;
         public Material SkullMaterial;

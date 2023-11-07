@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Difficulties;
+using System;
 using WizardUtils.Equipment;
 
 namespace Pogo
@@ -7,6 +8,6 @@ namespace Pogo
     public class EquipmentDifficulty
     {
         public EquipmentDescriptor Equipment;
-        public PogoGameManager.Difficulty Difficulty;
+        public Difficulty Difficulty;
     }
 }

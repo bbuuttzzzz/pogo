@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Pogo.Difficulties;
+using UnityEngine;
 using WizardUtils.Equipment;
 
 namespace Pogo
@@ -35,10 +36,10 @@ namespace Pogo
                 }
             }
 
-            SetDifficulty(PogoGameManager.Difficulty.Normal);
+            SetDifficulty(Difficulty.Normal);
         }
 
-        public void SetDifficulty(PogoGameManager.Difficulty difficulty)
+        public void SetDifficulty(Difficulty difficulty)
         {
             if (PogoGameManager.GameInstanceIsValid())
                 PogoGameManager.PogoInstance.CurrentDifficulty = difficulty;
