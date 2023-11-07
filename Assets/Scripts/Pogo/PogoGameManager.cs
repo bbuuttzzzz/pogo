@@ -33,6 +33,7 @@ namespace Pogo
             base.Awake();
             if (GameInstance != this) return;
 
+            CurrentDifficultyDescriptor = DifficultyManifest.FindByKey(Difficulty.Normal);
             LoadCheckpointManifest = new CheckpointManifest();
             LoadGlobalSave();
             RespawnPoint = new RespawnPointData(CachedRespawnPoint);
@@ -726,16 +727,17 @@ namespace Pogo
 
         public DifficultyManifest DifficultyManifest;
         public UnityEvent<DifficultyChangedEventArgs> OnDifficultyChanged;
-        private Difficulty currentDifficulty = Difficulty.Normal;
+        public DifficultyDescriptor CurrentDifficultyDescriptor { get; private set; }
         public Difficulty CurrentDifficulty
         {
-            get => currentDifficulty;
+            get => CurrentDifficultyDescriptor.DifficultyEnum;
             set
             {
-                if (value == currentDifficulty) return;
-                Debug.Log($"Changing difficulty {currentDifficulty} -> {value}");
-                OnDifficultyChanged?.Invoke(new DifficultyChangedEventArgs(currentDifficulty, value));
-                currentDifficulty = value;
+                if (value == CurrentDifficultyDescriptor.DifficultyEnum) return;
+                CurrentDifficultyDescriptor = DifficultyManifest.FindByKey(value);
+
+                Debug.Log($"Changing difficulty {CurrentDifficulty} -> {value}");
+                OnDifficultyChanged?.Invoke(new DifficultyChangedEventArgs(CurrentDifficulty, value));
             }
         }
 
