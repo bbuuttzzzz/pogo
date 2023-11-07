@@ -29,6 +29,9 @@ namespace Assets.Scripts.Pogo
             audioSource = GetComponent<AudioSource>();
             UpdateStopwatchTimerText();
             DeathCountText.text = PogoGameManager.PogoInstance.CurrentSlotDataTracker.PreviewData.TotalDeaths.ToString();
+            SkullMesh.sharedMesh = PogoGameManager.PogoInstance.CurrentDifficultyDescriptor.SkullMesh;
+            SkullMeshRenderer.sharedMaterial = PogoGameManager.PogoInstance.CurrentDifficultyDescriptor.SkullMaterial;
+
         }
 
         private void Update()
@@ -51,6 +54,8 @@ namespace Assets.Scripts.Pogo
         public GameObject StopwatchObject;
         public TextMeshProUGUI StopwatchTimerText;
         public TextMeshProUGUI DeathCountText;
+        public MeshFilter SkullMesh;
+        public Renderer SkullMeshRenderer;
 
         private void UpdateStopwatchTimerText()
         {
