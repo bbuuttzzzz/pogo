@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +20,11 @@ namespace Pogo.Tools
         private int currentSceneComponentIndex;
 
         public string CurrentScenePath => scenePaths[currentSceneIndex];
+
+        public MultiSceneComponentEnumerator() : this(GetAllScenes())
+        {
+
+        }
 
         public MultiSceneComponentEnumerator(string[] scenePaths)
         {
@@ -85,5 +91,12 @@ namespace Pogo.Tools
         public IEnumerator<T> GetEnumerator() => this;
 
         IEnumerator IEnumerable.GetEnumerator() => this;
+
+        private static string[] GetAllScenes()
+        {
+            return EditorBuildSettings.scenes
+                .Select(s => s.path)
+                .ToArray();
+        }
     }
 }

@@ -59,8 +59,6 @@ namespace Pogo.Collectibles
             InitializeDifficulty(arg0.FinalDifficulty);
         }
 
-
-
         private void Trigger_OnActivated()
         {
             if (isCollected) return;
