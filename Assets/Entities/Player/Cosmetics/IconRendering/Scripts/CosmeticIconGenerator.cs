@@ -5,8 +5,8 @@ namespace Pogo
     [RequireComponent(typeof(Camera))]
     public class CosmeticIconGenerator : MonoBehaviour
     {
-        private const int IconWidth = 320;
-        private const int IconHeight = 240;
+        private const int IconWidth = 256;
+        private const int IconHeight = 256;
 
         public Sprite Icon;
         public string DefaultPath;
