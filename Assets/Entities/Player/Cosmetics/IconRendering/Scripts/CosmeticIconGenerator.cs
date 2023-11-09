@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Pogo.Cosmetics;
+using UnityEngine;
 
 namespace Pogo
 {
@@ -8,7 +9,7 @@ namespace Pogo
         private const int IconWidth = 256;
         private const int IconHeight = 256;
 
-        public Sprite Icon;
+        public CosmeticDescriptor Cosmetic;
         public string DefaultPath;
 
         private void Awake()

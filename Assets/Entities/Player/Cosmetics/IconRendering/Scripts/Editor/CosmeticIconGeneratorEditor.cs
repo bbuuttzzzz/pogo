@@ -18,18 +18,25 @@ namespace Pogo
 
         public override void OnInspectorGUI()
         {
-            if (GUILayout.Button("Bake Icon"))
+            if (self.Cosmetic != null)
             {
-                BakeIcon();
-            }
+                if (GUILayout.Button("Bake Icon"))
+                {
+                    BakeIcon();
+                }
 
-            if (self.Icon != null)
-            {
-                RenderIcon();
+                if (self.Cosmetic.Icon != null)
+                {
+                    RenderIcon();
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("No Icon generated", MessageType.Warning);
+                }
             }
             else
             {
-                EditorGUILayout.HelpBox("No Icon generated", MessageType.Warning);
+                EditorGUILayout.HelpBox("Select a Cosmetic", MessageType.Error);
             }
 
             base.OnInspectorGUI();
@@ -38,7 +45,7 @@ namespace Pogo
         private void RenderIcon()
         {
             // Get the texture from the sprite
-            Texture2D texture = self.Icon.texture;
+            Texture2D texture = self.Cosmetic.Icon.texture;
 
             // get a rect
             Rect rect = GUILayoutUtility.GetRect(texture.width, texture.height, GUILayout.ExpandWidth(false));
@@ -59,15 +66,15 @@ namespace Pogo
             var sprite = self.RenderToSprite();
 
             string assetPath;
-            if (self.Icon != null)
+            if (self.Cosmetic.Icon != null)
             {
-                assetPath = AssetDatabase.GetAssetPath(self.Icon);
+                assetPath = AssetDatabase.GetAssetPath(self.Cosmetic.Icon);
                 AssetDatabase.DeleteAsset(assetPath);
             }
             else
             {
-                assetPath = self.DefaultPath;
-                assetPath = $"{Path.GetDirectoryName(assetPath)}{Path.DirectorySeparatorChar}icon_new.png";
+                assetPath = AssetDatabase.GetAssetPath(self.Cosmetic);
+                assetPath = $"{Path.GetDirectoryName(assetPath)}{Path.DirectorySeparatorChar}icon_{self.Cosmetic.name}.png";
             }
             File.WriteAllBytes(assetPath, sprite.texture.EncodeToPNG());
             AssetDatabase.Refresh();
@@ -78,9 +85,9 @@ namespace Pogo
             importer.SaveAndReimport();
 
             var reimportedSprite = AssetDatabase.LoadAssetAtPath(assetPath, typeof(Sprite)) as Sprite;
-            self.Icon = reimportedSprite;
-            Undo.RecordObject(self, "Change Level Icon");
-            EditorUtility.SetDirty(self);
+            self.Cosmetic.Icon = reimportedSprite;
+            Undo.RecordObject(self.Cosmetic, "Change Level Icon");
+            EditorUtility.SetDirty(self.Cosmetic);
 
             Undo.CollapseUndoOperations(group);
         }
