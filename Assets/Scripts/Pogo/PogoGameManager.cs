@@ -4,6 +4,7 @@ using Platforms;
 using Pogo.Challenges;
 using Pogo.Checkpoints;
 using Pogo.Collectibles;
+using Pogo.Cosmetics;
 using Pogo.Difficulties;
 using Pogo.Levels;
 using Pogo.Saving;
@@ -604,7 +605,23 @@ namespace Pogo
         }
 
 
-#endregion
+        #endregion
+
+        #region Cosmetics
+
+        public void EquipCosmetic(CosmeticDescriptor cosmetic)
+        {
+
+
+            switch(cosmetic)
+            {
+                case PogoStickDescriptor pogoStick:
+                    Equip(pogoStick.Equipment);
+                    break;
+            }
+        }
+
+        #endregion
 
         #region Equipment
 

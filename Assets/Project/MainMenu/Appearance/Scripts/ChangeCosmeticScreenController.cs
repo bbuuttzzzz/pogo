@@ -34,7 +34,10 @@ namespace Pogo.Challenges
                 else
                 {
                     obj = Instantiate(CosmeticSelectButtonPrefab, CosmeticSelectGridRoot);
-                    obj.GetComponent<Button>().onClick.AddListener(() => ButtonClicked(n));
+
+                    // we allocate a new int here because it's wrapped in as a closure D:
+                    int index = n;
+                    obj.GetComponent<Button>().onClick.AddListener(() => ButtonClicked(index));
                 }
 
                 if (n < manifest.Items.Length)
@@ -51,11 +54,13 @@ namespace Pogo.Challenges
 
         public void ButtonClicked(int buttonIndex)
         {
-            if (buttonIndex >= CurrentManifest.Items.Length)
+            if (buttonIndex < 0 ||
+                buttonIndex >= CurrentManifest.Items.Length)
             {
                 throw new ArgumentOutOfRangeException();
             }
-            Debug.Log($"Selected cosmetic {CurrentManifest.Items[buttonIndex]}");
+
+
         }
     }
 }

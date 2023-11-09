@@ -8,6 +8,7 @@ namespace Pogo.Cosmetics
 {
     public enum CosmeticSlots
     {
+        _None,
         PogoStick
     }
 }

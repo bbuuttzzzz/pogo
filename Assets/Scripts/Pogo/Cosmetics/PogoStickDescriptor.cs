@@ -8,5 +8,8 @@ namespace Pogo.Cosmetics
     public class PogoStickDescriptor : CosmeticDescriptor
     {
         public EquipmentDescriptor Equipment;
+
+        public override CosmeticSlots Slot => CosmeticSlots.PogoStick;
     }
 }
+ 

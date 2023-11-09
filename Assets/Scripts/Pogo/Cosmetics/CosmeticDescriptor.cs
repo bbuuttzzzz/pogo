@@ -21,6 +21,8 @@ namespace Pogo.Cosmetics
         public string DisplayName;
         public Sprite Icon;
 
+        public abstract CosmeticSlots Slot { get; }
+
         public bool AllowRecoloring;
 
         [HideInInspector]
