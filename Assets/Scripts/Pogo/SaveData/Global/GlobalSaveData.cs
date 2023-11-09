@@ -11,6 +11,8 @@ namespace Pogo.Saving
     {
         public CollectibleUnlockData[] collectibleUnlockDatas;
         public ChallengeSaveData[] challengeSaveDatas;
+        public CosmeticEquipData[] cosmeticEquipDatas;
+
         public int CollectedCoins;
 
         public static GlobalSaveData NewData()
@@ -18,7 +20,8 @@ namespace Pogo.Saving
             var data = new GlobalSaveData()
             {
                 collectibleUnlockDatas = new CollectibleUnlockData[0],
-                challengeSaveDatas = new ChallengeSaveData[0]
+                challengeSaveDatas = new ChallengeSaveData[0],
+                cosmeticEquipDatas = new CosmeticEquipData[0],
             };
 
             return data;

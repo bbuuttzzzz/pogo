@@ -1,4 +1,5 @@
 using Pogo;
+using Pogo.Challenges;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,6 +48,7 @@ namespace Pogo.Cosmetics
             if (CurrentScreen != ScreenIds.MainScreen) throw new InvalidOperationException();
 
             OpenScreen(ScreenIds.ChangeCosmeticScreen);
+            ScreenRoots[(int)ScreenIds.ChangeCosmeticScreen].GetComponent<ChangeCosmeticScreenController>().Load(cosmeticType);
         }
 
         private void OpenScreen(ScreenIds id)

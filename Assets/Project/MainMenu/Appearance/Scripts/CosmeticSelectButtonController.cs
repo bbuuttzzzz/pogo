@@ -11,19 +11,14 @@ namespace Pogo.Cosmetics
     [RequireComponent(typeof(Button))]
     public class CosmeticSelectButtonController : MonoBehaviour
     {
-        public Button Button {get; private set;}
-
-        private void Awake()
-        {
-            Button = GetComponent<Button>();
-        }
+        public Button Button => GetComponent<Button>();
 
         public CosmeticDescriptor CurrentCosmetic
         {
             get => currentCosmetic;
             set
             {
-                CurrentCosmetic = value;
+                currentCosmetic = value;
                 UpdateDisplay();
             }
         }
@@ -35,7 +30,17 @@ namespace Pogo.Cosmetics
         [ContextMenu("Update Display")]
         private void UpdateDisplay()
         {
-            IconImage.sprite = CurrentCosmetic.Icon;
+            if (CurrentCosmetic == null)
+            {
+                IconImage.enabled = false;
+                Button.interactable = false;
+            }
+            else
+            {
+                Button.interactable = true;
+                IconImage.enabled = true;
+                IconImage.sprite = CurrentCosmetic.Icon;
+            }
         }
     }
 }
