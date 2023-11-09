@@ -10,33 +10,43 @@ namespace Pogo.Cosmetics
     {
         private enum ScreenIds
         {
-            MainScreen
+            MainScreen,
+            ChangeCosmeticScreen
         }
 
         public PogoMainMenuController parent;
 
-        public GameObject MainScreenRoot;
+        [Tooltip("Just read the code for this bro")]
+        public GameObject[] ScreenRoots;
 
         private ScreenIds CurrentScreen;
 
-        private const int ScreenCount = 1;
-        [NonSerialized]
-        private GameObject[] ScreenRoots;
+        private int ScreenCount => ScreenRoots.Length;
 
-        private void Awake()
+        public void OnEnable()
         {
-            ScreenRoots = new GameObject[ScreenCount];
-            ScreenRoots[(int)ScreenIds.MainScreen] = MainScreenRoot;
+            OpenScreen(ScreenIds.MainScreen);
         }
 
-        public void Return()
+        public void Back()
         {
             switch (CurrentScreen)
             {
                 case ScreenIds.MainScreen:
                     parent.OpenHomeScreen();
                     break;
+                case ScreenIds.ChangeCosmeticScreen:
+                    OpenScreen(ScreenIds.MainScreen);
+                    break;
             }
+        }
+
+
+        public void OpenChangeCosmeticPage(CosmeticManifest cosmeticType)
+        {
+            if (CurrentScreen != ScreenIds.MainScreen) throw new InvalidOperationException();
+
+            OpenScreen(ScreenIds.ChangeCosmeticScreen);
         }
 
         private void OpenScreen(ScreenIds id)

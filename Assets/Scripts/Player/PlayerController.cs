@@ -668,7 +668,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 EyeAngles => internalEyeAngles;
 
     /// <summary>
-    /// Return a rotation along player's aim direction
+    /// Back a rotation along player's aim direction
     /// </summary>
     /// <returns></returns>
     public Quaternion GetAimQuat()
@@ -676,7 +676,7 @@ public class PlayerController : MonoBehaviour
         return Quaternion.Euler(EyeAngles);
     }
     /// <summary>
-    /// Return a rotation of the player's aim direction, flattened
+    /// Back a rotation of the player's aim direction, flattened
     /// </summary>
     /// <returns></returns>
     public Quaternion GetYawQuat()
