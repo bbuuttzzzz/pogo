@@ -19,6 +19,7 @@ namespace Pogo.Cosmetics
 
         public UnlockTypes UnlockType;
         public string DisplayName;
+        public string Key => name;
         public Sprite Icon;
 
         public abstract CosmeticSlots Slot { get; }

@@ -37,6 +37,7 @@ namespace Pogo
             CurrentDifficultyDescriptor = DifficultyManifest.FindByKey(Difficulty.Normal);
             LoadCheckpointManifest = new CheckpointManifest();
             LoadGlobalSave();
+            LoadCosmetics();
             RespawnPoint = new RespawnPointData(CachedRespawnPoint);
             levelManager = GetComponent<PogoLevelManager>();
 
@@ -609,9 +610,61 @@ namespace Pogo
 
         #region Cosmetics
 
-        public void EquipCosmetic(CosmeticDescriptor cosmetic)
-        {
+        public CosmeticManifest CosmeticManifest;
 
+        public void LoadCosmetics()
+        {
+            foreach(var manifest in CosmeticManifest.Slots)
+            {
+                var equipData = CurrentGlobalDataTracker.GetCosmetic(manifest.Slot, manifest.Default.Key);
+
+                if (!ColorUtility.TryParseHtmlString(equipData.ColorCode, out Color color))
+                {
+                    color = Color.white;
+                }
+
+                CosmeticDescriptor descriptor;
+                try
+                {
+                    descriptor = manifest.FindByKey(equipData.Key);
+
+                    if (!CosmeticIsUnlocked(descriptor))
+                    {
+                        descriptor = manifest.Default;
+                    }
+                }
+                catch (KeyNotFoundException)
+                {
+                    descriptor = manifest.Default;
+                }
+
+                EquipCosmetic(descriptor, color);
+            }
+        }
+
+        public bool CosmeticIsUnlocked(CosmeticDescriptor cosmetic)
+        {
+            switch (cosmetic.UnlockType)
+            {
+                case CosmeticDescriptor.UnlockTypes.AlwaysUnlocked:
+                    return true;
+                case CosmeticDescriptor.UnlockTypes.VendingMachine:
+                    throw new NotImplementedException();
+                case CosmeticDescriptor.UnlockTypes.Collectible:
+                    return CurrentGlobalDataTracker.GetCollectible(cosmetic.Collectible.Key).isUnlocked;
+                default:
+                    return false;
+            }
+        }
+
+        public void EquipCosmetic(CosmeticDescriptor cosmetic, Color color = default)
+        {
+            CurrentGlobalDataTracker.SetCosmetic(new CosmeticEquipData()
+            {
+                Slot = cosmetic.Slot,
+                Key = cosmetic.Key,
+                ColorCode = ColorUtility.ToHtmlStringRGB(color)
+            });
 
             switch(cosmetic)
             {

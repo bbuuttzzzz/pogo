@@ -10,23 +10,23 @@ using WizardUtils.ManifestPattern;
 namespace Pogo.Cosmetics
 {
     [CreateAssetMenu(fileName = "CosmeticManifest", menuName = "Pogo/Cosmetics/CosmeticManifest")]
-    public class CosmeticManifest : ScriptableObject, IDescriptorManifest<CosmeticDescriptor>
+    public class CosmeticManifest : ScriptableObject, IDescriptorManifest<CosmeticSlotManifest>
     {
-        public CosmeticDescriptor[] Items;
+        public CosmeticSlotManifest[] Slots;
 
-        public void Add(CosmeticDescriptor descriptor)
+        public void Add(CosmeticSlotManifest descriptor)
         {
-            ArrayHelper.InsertAndResize(ref Items, descriptor);
+            ArrayHelper.InsertAndResize(ref Slots, descriptor);
         }
 
-        public bool Contains(CosmeticDescriptor descriptor)
+        public bool Contains(CosmeticSlotManifest descriptor)
         {
-            return Items.Contains(descriptor);
+            return Slots.Contains(descriptor);
         }
 
-        public void Remove(CosmeticDescriptor descriptor)
+        public void Remove(CosmeticSlotManifest descriptor)
         {
-            ArrayHelper.DeleteAndResize(ref Items, descriptor);
+            ArrayHelper.DeleteAndResize(ref Slots, descriptor);
         }
     }
 }

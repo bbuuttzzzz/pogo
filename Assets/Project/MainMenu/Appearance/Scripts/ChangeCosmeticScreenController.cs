@@ -11,9 +11,9 @@ namespace Pogo.Challenges
         public int GroupSize = 4;
         public GameObject CosmeticSelectButtonPrefab;
         public Transform CosmeticSelectGridRoot;
-        public CosmeticManifest CurrentManifest { get; private set; }
+        public CosmeticSlotManifest CurrentManifest { get; private set; }
 
-        public void Load(CosmeticManifest manifest)
+        public void Load(CosmeticSlotManifest manifest)
         {
             int groupCount = Mathf.CeilToInt(manifest.Items.Length / (float)GroupSize);
 

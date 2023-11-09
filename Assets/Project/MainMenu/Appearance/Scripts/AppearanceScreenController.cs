@@ -43,7 +43,7 @@ namespace Pogo.Cosmetics
         }
 
 
-        public void OpenChangeCosmeticPage(CosmeticManifest cosmeticType)
+        public void OpenChangeCosmeticPage(CosmeticSlotManifest cosmeticType)
         {
             if (CurrentScreen != ScreenIds.MainScreen) throw new InvalidOperationException();
 

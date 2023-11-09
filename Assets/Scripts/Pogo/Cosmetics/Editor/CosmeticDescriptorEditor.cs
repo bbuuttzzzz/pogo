@@ -14,14 +14,14 @@ namespace Pogo.Cosmetics
     {
         private CosmeticDescriptor self;
         private SerializedProperty m_Collectible;
-        private DescriptorManifestAssigner<CosmeticManifest, CosmeticDescriptor> dropdown;
+        private DescriptorManifestAssigner<CosmeticSlotManifest, CosmeticDescriptor> dropdown;
 
 
         public override VisualElement CreateInspectorGUI()
         {
             self = target as PogoStickDescriptor;
             m_Collectible = serializedObject.FindProperty(nameof(self.Collectible));
-            dropdown = new DescriptorManifestAssigner<CosmeticManifest, CosmeticDescriptor>();
+            dropdown = new DescriptorManifestAssigner<CosmeticSlotManifest, CosmeticDescriptor>();
             return base.CreateInspectorGUI();
         }
 
