@@ -9,22 +9,22 @@ using WizardUtils.ManifestPattern;
 
 namespace Pogo.Cosmetics
 {
-    [CreateAssetMenu(fileName = "PogoStickManifest", menuName = "Pogo/Cosmetics/PogoStickManifest")]
-    public class PogoStickManifest : ScriptableObject, IDescriptorManifest<PogoStickDescriptor>
+    [CreateAssetMenu(fileName = "CosmeticManifest", menuName = "Pogo/Cosmetics/CosmeticManifest")]
+    public class CosmeticManifest : ScriptableObject, IDescriptorManifest<CosmeticDescriptor>
     {
-        public PogoStickDescriptor[] Items;
+        public CosmeticDescriptor[] Items;
 
-        public void Add(PogoStickDescriptor descriptor)
+        public void Add(CosmeticDescriptor descriptor)
         {
             ArrayHelper.InsertAndResize(ref Items, descriptor);
         }
 
-        public bool Contains(PogoStickDescriptor descriptor)
+        public bool Contains(CosmeticDescriptor descriptor)
         {
             return Items.Contains(descriptor);
         }
 
-        public void Remove(PogoStickDescriptor descriptor)
+        public void Remove(CosmeticDescriptor descriptor)
         {
             ArrayHelper.DeleteAndResize(ref Items, descriptor);
         }
