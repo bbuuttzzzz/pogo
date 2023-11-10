@@ -9,15 +9,22 @@ namespace Pogo.Cosmetics
     public class CosmeticIconGeneratorEditor : Editor
     {
         CosmeticIconGenerator self;
+        SerializedProperty m_Cosmetic;
 
         public override VisualElement CreateInspectorGUI()
         {
             self = target as CosmeticIconGenerator;
+            m_Cosmetic = serializedObject.FindProperty(nameof(self.Cosmetic));
             return base.CreateInspectorGUI();
         }
 
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
+            var lastCosmetic = self.Cosmetic;
+
+            EditorGUILayout.PropertyField(m_Cosmetic);
+
             if (self.Cosmetic != null)
             {
                 if (GUILayout.Button("Bake Icon"))
@@ -39,7 +46,21 @@ namespace Pogo.Cosmetics
                 EditorGUILayout.HelpBox("Select a Cosmetic", MessageType.Error);
             }
 
-            base.OnInspectorGUI();
+            serializedObject.ApplyModifiedProperties();
+
+            if (lastCosmetic != self.Cosmetic)
+            {
+                self.OnCosmeticChanged?.Invoke(self.Cosmetic);
+                switch(self.Cosmetic)
+                {
+                    case TrailDescriptor trailDescriptor:
+                        self.equipper.EquipInEditor(trailDescriptor.Equipment);
+                        break;
+                    case PogoStickDescriptor pogoStickDescriptor:
+                        self.equipper.EquipInEditor(pogoStickDescriptor.Equipment);
+                        break;
+                }
+            }
         }
 
         private void RenderIcon()

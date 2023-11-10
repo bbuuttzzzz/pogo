@@ -1,6 +1,7 @@
 ﻿using Pogo.Cosmetics;
 using UnityEngine;
 using UnityEngine.Events;
+using WizardUtils.Equipment;
 
 namespace Pogo.Cosmetics
 {
@@ -10,10 +11,17 @@ namespace Pogo.Cosmetics
         private const int IconWidth = 256;
         private const int IconHeight = 256;
 
+        public bool RemapAlphaGradient;
+        public AnimationCurve RemapAlphaCurve;
+
+        [HideInInspector]
         public CosmeticDescriptor Cosmetic;
         public string DefaultPath;
 
+        public Equipper equipper;
+
         public UnityEvent BeforeRender;
+        public UnityEvent<CosmeticDescriptor> OnCosmeticChanged;
 
         private void Awake()
         {
@@ -32,7 +40,20 @@ namespace Pogo.Cosmetics
             camera.targetTexture = renderTexture;
             camera.Render();
 
-            var texture = GetRenderTargetPixels(renderTexture);
+            Texture2D texture = GetRenderTargetPixels(renderTexture);
+
+            if (RemapAlphaGradient)
+            {
+                for(int x = 0; x < texture.width; x++)
+                {
+                    for (int y = 0; y < texture.height; y++)
+                    {
+                        Color color = texture.GetPixel(x, y);
+                        color.a = RemapAlphaCurve.Evaluate(color.a);
+                        texture.SetPixel(x, y, color);
+                    }
+                }
+            }
 
             return Sprite.Create(texture,
                 rect: new Rect(0, 0, IconWidth, IconHeight),
