@@ -19,7 +19,7 @@ namespace Pogo.Cosmetics
 
         public override VisualElement CreateInspectorGUI()
         {
-            self = target as PogoStickDescriptor;
+            self = target as CosmeticDescriptor;
             m_Collectible = serializedObject.FindProperty(nameof(self.Collectible));
             dropdown = new DescriptorManifestAssigner<CosmeticSlotManifest, CosmeticDescriptor>();
             return base.CreateInspectorGUI();

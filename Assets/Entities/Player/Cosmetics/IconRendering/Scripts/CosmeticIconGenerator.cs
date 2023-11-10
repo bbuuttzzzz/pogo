@@ -1,7 +1,8 @@
 ﻿using Pogo.Cosmetics;
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace Pogo
+namespace Pogo.Cosmetics
 {
     [RequireComponent(typeof(Camera))]
     public class CosmeticIconGenerator : MonoBehaviour
@@ -12,6 +13,8 @@ namespace Pogo
         public CosmeticDescriptor Cosmetic;
         public string DefaultPath;
 
+        public UnityEvent BeforeRender;
+
         private void Awake()
         {
             gameObject.SetActive(false);
@@ -19,6 +22,7 @@ namespace Pogo
 
         public Sprite RenderToSprite()
         {
+            BeforeRender?.Invoke();
             Camera camera = GetComponent<Camera>();
 
             // create a new render texture

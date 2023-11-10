@@ -34,7 +34,11 @@ namespace PoseClipboard
 
         public void Copy()
         {
-            GUIUtility.systemCopyBuffer = JsonConvert.SerializeObject(GetData(), new JsonSerializerSettings()
+            TrailData value = GetData();
+            Undo.RecordObject(self, "Copy Pose");
+            self.lastPose = value.Positions;
+
+            GUIUtility.systemCopyBuffer = JsonConvert.SerializeObject(value, new JsonSerializerSettings()
             {
                 Converters = new[]
                 {

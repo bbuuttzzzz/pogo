@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Pogo
+namespace Pogo.Cosmetics
 {
     [CustomEditor(typeof(CosmeticIconGenerator))]
     public class CosmeticIconGeneratorEditor : Editor

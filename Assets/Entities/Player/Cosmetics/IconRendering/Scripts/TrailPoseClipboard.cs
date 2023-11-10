@@ -5,4 +5,6 @@ using UnityEngine;
 public class TrailPoseClipboard : MonoBehaviour
 {
     public TrailRenderer Target;
+
+    public Vector3[] lastPose;
 }
