@@ -11,6 +11,5 @@ namespace Pogo.Saving
     {
         public CosmeticSlots Slot;
         public string Key;
-        public string ColorCode;
     }
 }

@@ -60,7 +60,7 @@ namespace Pogo.Challenges
                 throw new ArgumentOutOfRangeException();
             }
 
-
+            PogoGameManager.PogoInstance.EquipCosmetic(CurrentManifest.Items[buttonIndex]);
         }
     }
 }

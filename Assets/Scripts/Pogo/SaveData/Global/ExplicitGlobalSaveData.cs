@@ -43,8 +43,7 @@ namespace Pogo.Saving
                     data.cosmeticEquipDatas[n] = new CosmeticEquipData()
                     {
                         Key = equippedCosmetics[n].Key,
-                        Slot = equippedCosmetics[n].Slot,
-                        ColorCode = "FFFFFF"
+                        Slot = equippedCosmetics[n].Slot
                     };
                 }
 

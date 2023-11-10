@@ -29,6 +29,11 @@ namespace Pogo.Cosmetics
             OpenScreen(ScreenIds.MainScreen);
         }
 
+        public void OnDisable()
+        {
+            PogoGameManager.PogoInstance.SaveGlobalSave();
+        }
+
         public void Back()
         {
             switch (CurrentScreen)

@@ -618,11 +618,6 @@ namespace Pogo
             {
                 var equipData = CurrentGlobalDataTracker.GetCosmetic(manifest.Slot, manifest.Default.Key);
 
-                if (!ColorUtility.TryParseHtmlString(equipData.ColorCode, out Color color))
-                {
-                    color = Color.white;
-                }
-
                 CosmeticDescriptor descriptor;
                 try
                 {
@@ -638,7 +633,7 @@ namespace Pogo
                     descriptor = manifest.Default;
                 }
 
-                EquipCosmetic(descriptor, color);
+                EquipCosmetic(descriptor);
             }
         }
 
@@ -657,13 +652,12 @@ namespace Pogo
             }
         }
 
-        public void EquipCosmetic(CosmeticDescriptor cosmetic, Color color = default)
+        public void EquipCosmetic(CosmeticDescriptor cosmetic)
         {
             CurrentGlobalDataTracker.SetCosmetic(new CosmeticEquipData()
             {
                 Slot = cosmetic.Slot,
-                Key = cosmetic.Key,
-                ColorCode = ColorUtility.ToHtmlStringRGB(color)
+                Key = cosmetic.Key
             });
 
             switch(cosmetic)

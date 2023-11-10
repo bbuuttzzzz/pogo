@@ -95,8 +95,7 @@ namespace Pogo.Saving
                 return new CosmeticEquipData()
                 {
                     Slot = slot,
-                    Key = defaultKey,
-                    ColorCode = "FFFFFF"
+                    Key = defaultKey
                 };
             }
             else
