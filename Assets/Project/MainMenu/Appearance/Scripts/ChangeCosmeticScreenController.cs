@@ -11,7 +11,18 @@ namespace Pogo.Challenges
         public int GroupSize = 4;
         public GameObject CosmeticSelectButtonPrefab;
         public Transform CosmeticSelectGridRoot;
-        public CosmeticSlotManifest CurrentManifest { get; private set; }
+
+        [SerializeField]
+        private CosmeticSlotManifest currentManifest;
+
+        public CosmeticSlotManifest CurrentManifest
+        {
+            get { return currentManifest; }
+            private set
+            {
+                currentManifest = value;
+            }
+        }
 
         public void Load(CosmeticSlotManifest manifest)
         {

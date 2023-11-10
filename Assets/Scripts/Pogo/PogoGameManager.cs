@@ -665,6 +665,9 @@ namespace Pogo
                 case PogoStickDescriptor pogoStick:
                     Equip(pogoStick.Equipment);
                     break;
+                case TrailDescriptor trail:
+                    Equip(trail.Equipment);
+                    break;
             }
         }
 
