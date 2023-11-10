@@ -1,4 +1,5 @@
 ﻿using Pogo.Collectibles;
+using Pogo.Cosmetics;
 using Pogo.Saving;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Pogo.Saving
     public class ExplicitGlobalSaveData : ScriptableObject
     {
         public CollectibleDescriptor[] unlockedCollectibles;
+        public CosmeticDescriptor[] equippedCosmetics;
 
         public GlobalSaveData Data
         {
@@ -24,6 +26,7 @@ namespace Pogo.Saving
                 {
                     collectibleUnlockDatas = new CollectibleUnlockData[unlockedCollectibles.Length],
                     challengeSaveDatas = new ChallengeSaveData[0],
+                    cosmeticEquipDatas = new CosmeticEquipData[equippedCosmetics.Length],
                 };
 
                 for (int n = 0; n < unlockedCollectibles.Length; n++)
@@ -32,6 +35,16 @@ namespace Pogo.Saving
                     {
                         key = unlockedCollectibles[n].Key,
                         isUnlocked = true
+                    };
+                }
+
+                for (int n = 0; n < equippedCosmetics.Length; n++)
+                {
+                    data.cosmeticEquipDatas[n] = new CosmeticEquipData()
+                    {
+                        Key = equippedCosmetics[n].Key,
+                        Slot = equippedCosmetics[n].Slot,
+                        ColorCode = "FFFFFF"
                     };
                 }
 

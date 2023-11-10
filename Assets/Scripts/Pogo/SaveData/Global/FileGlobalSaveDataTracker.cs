@@ -102,6 +102,10 @@ namespace Pogo.Saving
             {
                 SaveData.challengeSaveDatas = new ChallengeSaveData[0];
             }
+            if (SaveData.cosmeticEquipDatas == null)
+            {
+                SaveData.cosmeticEquipDatas = new CosmeticEquipData[0];
+            }
 
             DataState = DataStates.Loaded;
         }
