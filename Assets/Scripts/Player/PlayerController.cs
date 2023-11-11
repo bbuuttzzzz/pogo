@@ -13,6 +13,7 @@ using UnityEngine.TextCore.LowLevel;
 using WizardPhysics;
 using WizardPhysics.PhysicsTime;
 using WizardUtils;
+using WizardUtils.Equipment;
 using WizardUtils.SceneManagement;
 
 public class PlayerController : MonoBehaviour
@@ -22,7 +23,8 @@ public class PlayerController : MonoBehaviour
     public float AutoRespawnDelay;
     public PlayerJostler Jostler;
     [NonSerialized]
-    public PlayerAttachmentHandler AttachmentHandler;
+    public PlayerModelController CurrentModelController;
+    public EquipmentTypeDescriptor PlayerModelEquipmentType;
 
     public Vector3 PhysicsPosition
     {
@@ -53,7 +55,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        AttachmentHandler = GetComponent<PlayerAttachmentHandler>();
+        GetComponent<Equipper>().OnEquip.AddListener(Equipper_OnEquip);
     }
 
     void Start()
@@ -90,15 +92,29 @@ public class PlayerController : MonoBehaviour
         setControlSceneBehavior(PogoGameManager.GameInstance.InControlScene);
     }
 
-    private static int convertInvertYSetting(float settingValue)
-    {
-        return settingValue == 1 ? -1 : 1;
-    }
 
     private void OnDestroy()
     {
         PogoGameManager.GameInstance.OnPauseStateChanged -= onPauseStateChanged;
         PogoGameManager.GameInstance.OnControlSceneChanged -= onControlSceneChanged;
+    }
+
+
+    private void Equipper_OnEquip(EquipmentSlot arg0)
+    {
+        if (arg0.EquipmentType == PlayerModelEquipmentType)
+        {
+            CurrentModelController = GetComponent<Equipper>()
+                .FindSlot(PlayerModelEquipmentType)
+                .ObjectInstance
+                .GetComponent<PlayerModelController>();
+            CurrentModelController.Link(this);
+        }
+    }
+
+    private static int convertInvertYSetting(float settingValue)
+    {
+        return settingValue == 1 ? -1 : 1;
     }
 
     private void onAutoRespawnDelayChanged(object sender, GameSettingChangedEventArgs e)

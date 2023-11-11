@@ -2873,11 +2873,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 8958448155151738593}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fe5c1fac28f08c4da67a585a5c58163, type: 3}
+  m_Script: {fileID: 11500000, guid: cd5bd6c5ffbc1484eb3b3b52d5b418ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   HeadBone: {fileID: 3956398072000476890}
   BackBone: {fileID: 5629565387095870010}
+  OnDisjoint:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6625416940197248861}
+        m_TargetAssemblyTypeName: WizardUtils.VelocityLookTarget, Assembly-CSharp
+        m_MethodName: Disjoint
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7183586338848726733}
+        m_TargetAssemblyTypeName: WizardUtils.VelocityLookTarget, Assembly-CSharp
+        m_MethodName: Disjoint
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &9018873102568816051
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Assets.Scripts.Player
 {
-    public class PlayerAttachmentHandler : MonoBehaviour
+    public class PlayerModelController : MonoBehaviour
     {
         List<IPlayerModelAttachment> Attachments = new List<IPlayerModelAttachment>();
 
@@ -17,20 +18,46 @@ namespace Assets.Scripts.Player
         public Transform BackBone;
         private PlayerController Parent;
 
+        public UnityEvent OnDisjoint;
+
         private void Awake()
         {
             Parent = GetComponent<PlayerController>();
         }
-
-        public void Link(PlayerController parent)
-        {
-            Parent = parent;
-        }
-
         private void Update()
         {
             UpdateAttachments();
         }
+
+        private void OnDestroy()
+        {
+            if (Parent != null)
+            {
+                UnLink();
+            }
+        }
+
+        public void Link(PlayerController parent)
+        {
+            if (Parent != null)
+            {
+                UnLink();
+            }
+            Parent = parent;
+            Parent.OnDisjoint.AddListener(Parent_OnDisjoint);
+        }
+
+        private void UnLink()
+        {
+            Parent.OnDisjoint.RemoveListener(Parent_OnDisjoint);
+        }
+
+        private void Parent_OnDisjoint()
+        {
+            OnDisjoint?.Invoke();
+        }
+
+        
 
         #region Model Attachments
         private void UpdateAttachments()
@@ -145,5 +172,6 @@ namespace Assets.Scripts.Player
 
 #endif
         #endregion
+
     }
 }

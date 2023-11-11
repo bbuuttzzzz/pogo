@@ -1827,7 +1827,6 @@ GameObject:
   - component: {fileID: 8049285594771530900}
   - component: {fileID: 8049285593714969211}
   - component: {fileID: 219864235}
-  - component: {fileID: 7731658595260326493}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -1868,6 +1867,7 @@ MonoBehaviour:
   CollisionGroup: {fileID: 554370778209730927}
   AutoRespawnDelay: 1
   Jostler: {fileID: 2961679240380001006}
+  PlayerModelEquipmentType: {fileID: 11400000, guid: 2eb70a121118cab46a3ccb0ea449564c, type: 2}
   OnStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1974,20 +1974,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 183b40f166f5cdf4fb1a40c64267f063, type: 2}
   - {fileID: 11400000, guid: 2eb70a121118cab46a3ccb0ea449564c, type: 2}
   EquipOnAwake: 1
---- !u!114 &7731658595260326493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8049285594771530898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fe5c1fac28f08c4da67a585a5c58163, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HeadBone: {fileID: 0}
-  BackBone: {fileID: 0}
 --- !u!1 &8611624002265973140
 GameObject:
   m_ObjectHideFlags: 0
