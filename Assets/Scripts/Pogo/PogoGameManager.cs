@@ -683,7 +683,7 @@ namespace Pogo
         public UnityEvent<NonInstancedEquipmentSlot> OnEquip;
         public void Equip(EquipmentDescriptor equipment)
         {
-            var slot = FindSlot(equipment.SlotType);
+            var slot = FindEquipmentSlot(equipment.SlotType);
 
             if (slot == null)
             {
@@ -695,7 +695,7 @@ namespace Pogo
             OnEquip?.Invoke(slot);
         }
 
-        public NonInstancedEquipmentSlot FindSlot(EquipmentTypeDescriptor slotType)
+        public NonInstancedEquipmentSlot FindEquipmentSlot(EquipmentTypeDescriptor slotType)
         {
             foreach (var slot in Loadout)
             {
