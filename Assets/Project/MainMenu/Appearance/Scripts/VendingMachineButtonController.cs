@@ -10,16 +10,30 @@ namespace Pogo.Cosmetics
     public class VendingMachineButtonController : MonoBehaviour
     {
         public Outline outline;
-        public float OutlineWidth
+
+        public bool Highlighted;
+
+        [Range(0f, 1f)]
+        public float HighlightPower;
+
+        public Color HighlightColor1;
+        public Color HighlightColor2;
+
+        public float HighlightWidth1;
+        public float HighlightWidth2;
+
+        private void LateUpdate()
         {
-            get => outline.OutlineWidth;
-            set => outline.OutlineWidth = value;
-        }
-        
-        public Color OutlineColor
-        {
-            get => outline.OutlineColor;
-            set => outline.OutlineColor = value;
+            if (Highlighted)
+            {
+                outline.OutlineWidth = Mathf.Lerp(HighlightWidth1, HighlightWidth2, HighlightPower);
+                outline.OutlineColor = Color.Lerp(HighlightColor2 , HighlightColor1, HighlightPower);
+            }
+            else
+            {
+                outline.OutlineWidth = 0;
+                outline.OutlineColor = Color.gray;
+            }
         }
     }
 }
