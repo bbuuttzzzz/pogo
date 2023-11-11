@@ -668,6 +668,9 @@ namespace Pogo
                 case TrailDescriptor trail:
                     Equip(trail.Equipment);
                     break;
+                case ModelDescriptor model:
+                    Equip(model.Equipment);
+                    break;
             }
         }
 

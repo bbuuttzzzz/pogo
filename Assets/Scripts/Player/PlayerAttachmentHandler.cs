@@ -9,18 +9,22 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-    [RequireComponent(typeof(PlayerController))]
     public class PlayerAttachmentHandler : MonoBehaviour
     {
         List<IPlayerModelAttachment> Attachments = new List<IPlayerModelAttachment>();
 
         public Transform HeadBone;
         public Transform BackBone;
-        private PlayerController parent;
+        private PlayerController Parent;
 
         private void Awake()
         {
-            parent = GetComponent<PlayerController>();
+            Parent = GetComponent<PlayerController>();
+        }
+
+        public void Link(PlayerController parent)
+        {
+            Parent = parent;
         }
 
         private void Update()

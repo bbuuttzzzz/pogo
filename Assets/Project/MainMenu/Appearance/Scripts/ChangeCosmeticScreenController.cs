@@ -8,6 +8,7 @@ namespace Pogo.Challenges
 {
     public class ChangeCosmeticScreenController : MonoBehaviour
     {
+        public AppearanceScreenController Parent;
         public int GroupSize = 4;
         public GameObject CosmeticSelectButtonPrefab;
         public Transform CosmeticSelectGridRoot;
@@ -72,6 +73,7 @@ namespace Pogo.Challenges
             }
 
             PogoGameManager.PogoInstance.EquipCosmetic(CurrentManifest.Items[buttonIndex]);
+            Parent.Back();
         }
     }
 }

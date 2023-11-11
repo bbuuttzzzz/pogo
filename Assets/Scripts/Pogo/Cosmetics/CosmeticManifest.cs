@@ -28,5 +28,18 @@ namespace Pogo.Cosmetics
         {
             ArrayHelper.DeleteAndResize(ref Slots, descriptor);
         }
+
+        public CosmeticSlotManifest Find(CosmeticSlots slot)
+        {
+            foreach(var slotManifest in Slots)
+            {
+                if (slotManifest.Slot == slot)
+                {
+                    return slotManifest;
+                }
+            }
+
+            throw new KeyNotFoundException($"Manifest missing cosmetic slot {slot}");
+        }
     }
 }

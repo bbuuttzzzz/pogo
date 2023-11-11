@@ -10,6 +10,7 @@ namespace Pogo.Cosmetics
     {
         _None,
         PogoStick,
-        Trail
+        Trail,
+        Model
     }
 }
