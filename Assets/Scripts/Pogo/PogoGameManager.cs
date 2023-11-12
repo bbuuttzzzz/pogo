@@ -617,21 +617,7 @@ namespace Pogo
             foreach(var manifest in CosmeticManifest.Slots)
             {
                 var equipData = CurrentGlobalDataTracker.GetCosmeticSlotEquipData(manifest.Slot, manifest.Default.Key);
-
-                CosmeticDescriptor descriptor;
-                try
-                {
-                    descriptor = manifest.FindByKey(equipData.Key);
-
-                    if (!CosmeticIsUnlocked(descriptor))
-                    {
-                        descriptor = manifest.Default;
-                    }
-                }
-                catch (KeyNotFoundException)
-                {
-                    descriptor = manifest.Default;
-                }
+                CosmeticDescriptor descriptor = FindUnlockedCosmeticByKey(manifest, equipData.Key);
 
                 EquipCosmetic(descriptor, false);
             }
@@ -641,15 +627,7 @@ namespace Pogo
         {
             var equipData = CurrentGlobalDataTracker.GetCosmeticSlotEquipData(slot, defaultKey);
             CosmeticSlotManifest slotManifest = CosmeticManifest.Find(equipData.Slot);
-            var cosmetic = slotManifest.FindByKey(equipData.Key);
-            if (CosmeticIsUnlocked(cosmetic))
-            {
-                return cosmetic;
-            }
-            else
-            {
-                return slotManifest.Default;
-            }
+            return FindUnlockedCosmeticByKey(slotManifest, equipData.Key);
         }
 
         public bool CosmeticIsUnlocked(CosmeticDescriptor cosmetic)
@@ -700,6 +678,27 @@ namespace Pogo
                 case ModelDescriptor model:
                     Equip(model.Equipment);
                     break;
+            }
+        }
+
+        private CosmeticDescriptor FindUnlockedCosmeticByKey(CosmeticSlotManifest manifest, string key)
+        {
+            try
+            {
+                CosmeticDescriptor descriptor = manifest.FindByKey(key);
+
+                if (CosmeticIsUnlocked(descriptor))
+                {
+                    return descriptor;
+                }
+                else
+                {
+                    return manifest.Default;
+                }
+            }
+            catch (KeyNotFoundException)
+            {
+                return manifest.Default;
             }
         }
 
