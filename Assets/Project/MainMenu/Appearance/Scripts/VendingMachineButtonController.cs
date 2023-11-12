@@ -4,12 +4,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Pogo.Cosmetics
 {
     public class VendingMachineButtonController : MonoBehaviour
     {
         public Outline outline;
+
+        private bool buttonCanBeActive;
+        public bool ButtonCanBeActive
+        {
+            get => buttonCanBeActive;
+            set
+            {
+                buttonCanBeActive = value;
+                UpdateActive();
+            }
+        }
+
+        [SerializeField]
+        private bool rewardAvailable;
+        public bool RewardAvailable
+        {
+            get => rewardAvailable;
+            set
+            {
+                rewardAvailable = value;
+                UpdateActive();
+            }
+        }
+
+        public void UpdateActive()
+        {
+            GetComponent<Button>().interactable = ButtonCanBeActive && RewardAvailable;
+        }
 
         public bool Highlighted;
 

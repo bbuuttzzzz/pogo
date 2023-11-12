@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WizardUtils;
 
 namespace Pogo.Cosmetics
 {
@@ -16,6 +17,8 @@ namespace Pogo.Cosmetics
         }
 
         public PogoMainMenuController parent;
+        public VendingMachineButtonController VendingMachineButton;
+        public LocalPositionWaypointer VendingMachineWaypointer;
 
         [Tooltip("Just read the code for this bro")]
         public GameObject[] ScreenRoots;
@@ -27,11 +30,13 @@ namespace Pogo.Cosmetics
         public void OnEnable()
         {
             OpenScreen(ScreenIds.MainScreen);
+            ShowVendingMachine();
         }
 
         public void OnDisable()
         {
             PogoGameManager.PogoInstance.SaveGlobalSave();
+            HideVendingMachine();
         }
 
         public void Back()
@@ -62,6 +67,23 @@ namespace Pogo.Cosmetics
             {
                 ScreenRoots[n].SetActive(n == (int)id);
             }
+
+            UpdateVendingMachineButtonCanBeActive();
+        }
+
+        public void ShowVendingMachine()
+        {
+            VendingMachineWaypointer.GoToWaypoint(-1);
+        }
+
+        public void HideVendingMachine()
+        {
+            VendingMachineWaypointer.SnapToWaypoint(0);
+        }
+
+        private void UpdateVendingMachineButtonCanBeActive()
+        {
+            VendingMachineButton.ButtonCanBeActive = CurrentScreen == ScreenIds.MainScreen;
         }
     }
 }

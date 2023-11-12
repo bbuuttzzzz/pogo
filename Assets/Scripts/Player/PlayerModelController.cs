@@ -18,6 +18,8 @@ namespace Assets.Scripts.Player
         public Transform BackBone;
         private PlayerController Parent;
 
+        public UnityEvent OnLoadAsDisplayModel;
+
         public UnityEvent OnDisjoint;
 
         private void Awake()

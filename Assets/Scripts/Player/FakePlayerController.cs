@@ -1,3 +1,4 @@
+using Assets.Scripts.Player;
 using Pogo.MaterialTypes;
 using System;
 using System.Collections;
@@ -5,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WizardPhysics;
 using WizardUtils;
+using WizardUtils.Equipment;
 
 namespace Pogo
 {
@@ -15,18 +17,33 @@ namespace Pogo
         public AudioController AudioController;
         public float JumpForce = 6f;
         public float GravityScale = 1;
-
+        [NonSerialized]
+        public PlayerModelController CurrentModelController;
+        public EquipmentTypeDescriptor PlayerModelEquipmentType;
 
         private void Awake()
         {
             loadSurfaceProperties();
             collisionGroup = GetComponent<CollisionGroup>();
+            GetComponent<Equipper>().OnEquip.AddListener(Equipper_OnEquip);
         }
 
         private void Update()
         {
             ApplyForce(GravityScale * Physics.gravity * Time.unscaledDeltaTime);
             Move();
+        }
+
+        private void Equipper_OnEquip(EquipmentSlot arg0)
+        {
+            if (arg0.EquipmentType == PlayerModelEquipmentType)
+            {
+                CurrentModelController = GetComponent<Equipper>()
+                    .FindSlot(PlayerModelEquipmentType)
+                    .ObjectInstance
+                    .GetComponent<PlayerModelController>();
+                CurrentModelController.OnLoadAsDisplayModel.Invoke();
+            }
         }
 
         private void Move()
