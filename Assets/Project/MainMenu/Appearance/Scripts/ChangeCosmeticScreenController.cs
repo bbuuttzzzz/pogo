@@ -1,5 +1,6 @@
 ﻿using Pogo.Cosmetics;
 using System;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,7 +28,11 @@ namespace Pogo.Challenges
 
         public void Load(CosmeticSlotManifest manifest)
         {
-            int groupCount = Mathf.CeilToInt(manifest.Items.Length / (float)GroupSize);
+            var unlockedItems = manifest.Items
+                .Where(i => PogoGameManager.PogoInstance.CosmeticIsUnlocked(i))
+                .ToArray();
+
+            int groupCount = Mathf.CeilToInt(unlockedItems.Length / (float)GroupSize);
 
             // remove excess buttons
             for (int n = CosmeticSelectGridRoot.childCount - 1; n >= groupCount * GroupSize; n--)
@@ -52,9 +57,9 @@ namespace Pogo.Challenges
                     obj.GetComponent<Button>().onClick.AddListener(() => ButtonClicked(index));
                 }
 
-                if (n < manifest.Items.Length)
+                if (n < unlockedItems.Length)
                 {
-                    obj.GetComponent<CosmeticSelectButtonController>().CurrentCosmetic = manifest.Items[n];
+                    obj.GetComponent<CosmeticSelectButtonController>().CurrentCosmetic = unlockedItems[n];
                 }
                 else
                 {
