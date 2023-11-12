@@ -654,7 +654,7 @@ namespace Pogo
                 return false;
             }
 
-            return vendingMachineEntry.Cost < CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock.Cost;
+            return vendingMachineEntry.Cost <= CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock.Cost;
         }
 
         public bool TryGetNextVendingUnlock(out VendingMachineUnlockData result)
