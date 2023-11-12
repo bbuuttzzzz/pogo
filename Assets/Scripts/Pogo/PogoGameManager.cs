@@ -616,7 +616,7 @@ namespace Pogo
         {
             foreach(var manifest in CosmeticManifest.Slots)
             {
-                var equipData = CurrentGlobalDataTracker.GetCosmetic(manifest.Slot, manifest.Default.Key);
+                var equipData = CurrentGlobalDataTracker.GetCosmeticSlotEquipData(manifest.Slot, manifest.Default.Key);
 
                 CosmeticDescriptor descriptor;
                 try
@@ -633,7 +633,22 @@ namespace Pogo
                     descriptor = manifest.Default;
                 }
 
-                EquipCosmetic(descriptor);
+                EquipCosmetic(descriptor, false);
+            }
+        }
+
+        public CosmeticDescriptor GetCosmetic(CosmeticSlots slot, string defaultKey)
+        {
+            var equipData = CurrentGlobalDataTracker.GetCosmeticSlotEquipData(slot, defaultKey);
+            CosmeticSlotManifest slotManifest = CosmeticManifest.Find(equipData.Slot);
+            var cosmetic = slotManifest.FindByKey(equipData.Key);
+            if (CosmeticIsUnlocked(cosmetic))
+            {
+                return cosmetic;
+            }
+            else
+            {
+                return slotManifest.Default;
             }
         }
 
@@ -663,13 +678,16 @@ namespace Pogo
             return vendingMachineEntry.UnlockThreshold < CurrentGlobalDataTracker.SaveData.LastUnlockedCosmeticCost;
         }
 
-        public void EquipCosmetic(CosmeticDescriptor cosmetic)
+        public void EquipCosmetic(CosmeticDescriptor cosmetic, bool saveChanges = true)
         {
-            CurrentGlobalDataTracker.SetCosmetic(new CosmeticEquipData()
+            if (saveChanges)
             {
-                Slot = cosmetic.Slot,
-                Key = cosmetic.Key
-            });
+                CurrentGlobalDataTracker.SetCosmetic(new CosmeticEquipData()
+                {
+                    Slot = cosmetic.Slot,
+                    Key = cosmetic.Key
+                });
+            }
 
             switch(cosmetic)
             {

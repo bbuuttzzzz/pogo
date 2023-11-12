@@ -19,8 +19,11 @@ namespace Pogo.Cosmetics
             get => currentCosmetic;
             set
             {
-                currentCosmetic = value;
-                UpdateDisplay();
+                if (currentCosmetic != value)
+                {
+                    currentCosmetic = value;
+                    UpdateDisplay();
+                }
             }
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 
 namespace Pogo.Cosmetics
@@ -24,11 +25,7 @@ namespace Pogo.Cosmetics
                 var button = transform.GetChild(n);
                 var controller = button.GetComponent<CosmeticSelectButtonController>();
 
-                var newCosmetic = PogoGameManager.PogoInstance.CurrentGlobalDataTracker.GetCosmetic(controller.CurrentCosmetic.Slot, controller.CurrentCosmetic.Key);
-                if (controller.CurrentCosmetic.Key != newCosmetic.Key)
-                {
-                    controller.CurrentCosmetic = manifest.Find(newCosmetic.Slot).FindByKey(newCosmetic.Key);
-                }
+                controller.CurrentCosmetic = PogoGameManager.PogoInstance.GetCosmetic(controller.CurrentCosmetic.Slot, controller.CurrentCosmetic.Key);
             }
         }
     }

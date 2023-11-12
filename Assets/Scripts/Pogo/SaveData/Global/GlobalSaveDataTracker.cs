@@ -87,7 +87,7 @@ namespace Pogo.Saving
             }
         }
 
-        public CosmeticEquipData GetCosmetic(CosmeticSlots slot, string defaultKey)
+        public CosmeticEquipData GetCosmeticSlotEquipData(CosmeticSlots slot, string defaultKey)
         {
             int id = IndexOfCosmetic(slot);
             if (id == -1)
