@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using WizardUtils.ManifestPattern;
+using WizardUtils.SerializedObjectHelpers;
 
 namespace Pogo.Collectibles
 {
@@ -98,7 +99,21 @@ namespace Pogo.Collectibles
                 }
             }
 
-            serializedObject.ApplyModifiedProperties();
+            SerializedObjectUpdater updater = new SerializedObjectUpdater(serializedObject);
+            updater.Add(
+                get: () => self.CosmeticDescriptor,
+                onChangedCallback: onCosmeticChanged);
+
+            updater.ApplyModifiedProperties();
+        }
+
+        private void onCosmeticChanged(SerializedPropertyChangedArgs<CosmeticDescriptor> args)
+        {
+            Undo.RecordObject(args.NewValue, "Update Cosmeitc");
+            args.NewValue.UnlockType = CosmeticDescriptor.UnlockTypes.Collectible;
+            args.NewValue.Collectible = self;
+            EditorUtility.SetDirty(args.NewValue);
+            AssetDatabase.SaveAssetIfDirty(args.NewValue);
         }
 
         private CollectibleController FindController()
