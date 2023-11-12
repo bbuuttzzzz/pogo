@@ -23,7 +23,8 @@ namespace Pogo.Collectibles
                 GenericMenu menu = new GenericMenu();
 
                 var manifests = AssetDatabase.FindAssets($"t:{typeof(TManifest).Name}")
-                    .Select(id => AssetDatabase.LoadAssetAtPath<TManifest>(AssetDatabase.GUIDToAssetPath(id)));
+                    .Select(id => AssetDatabase.LoadAssetAtPath<TManifest>(AssetDatabase.GUIDToAssetPath(id)))
+                    .OrderBy(x => x.name);
                 foreach (var manifest in manifests)
                 {
                     bool containsItem = manifest.Contains(item);
@@ -57,7 +58,8 @@ namespace Pogo.Collectibles
             GUILayout.Label(headerText, EditorStyles.boldLabel);
                 EditorGUI.indentLevel++;
             var manifests = AssetDatabase.FindAssets($"t:{typeof(TManifest).Name}")
-                .Select(id => AssetDatabase.LoadAssetAtPath<TManifest>(AssetDatabase.GUIDToAssetPath(id)));
+                .Select(id => AssetDatabase.LoadAssetAtPath<TManifest>(AssetDatabase.GUIDToAssetPath(id)))
+                .OrderBy(x => x.name);
             foreach (var manifest in manifests)
             {
 
