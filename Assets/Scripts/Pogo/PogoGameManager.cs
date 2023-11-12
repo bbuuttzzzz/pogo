@@ -665,7 +665,7 @@ namespace Pogo
                 return false;
             }
 
-            int coinsNeeded = CurrentGlobalDataTracker.SaveData.CollectedCoins - nextUnlock.Cost;
+            int coinsNeeded = nextUnlock.Cost - CurrentGlobalDataTracker.SaveData.CollectedCoins;
             result = new VendingMachineUnlockData()
             {
                 Cosmetic = nextUnlock.Cosmetic,
