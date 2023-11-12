@@ -12,6 +12,7 @@ namespace Pogo.Cosmetics
     [CreateAssetMenu(fileName = "CosmeticManifest", menuName = "Pogo/Cosmetics/CosmeticManifest")]
     public class CosmeticManifest : ScriptableObject, IDescriptorManifest<CosmeticSlotManifest>
     {
+        public VendingMachineManifest Vending;
         public CosmeticSlotManifest[] Slots;
 
         public void Add(CosmeticSlotManifest descriptor)

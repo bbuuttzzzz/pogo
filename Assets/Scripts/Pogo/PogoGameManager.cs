@@ -644,12 +644,23 @@ namespace Pogo
                 case CosmeticDescriptor.UnlockTypes.AlwaysUnlocked:
                     return true;
                 case CosmeticDescriptor.UnlockTypes.VendingMachine:
-                    throw new NotImplementedException();
+                    return VendingCosmeticUnlocked(cosmetic);
                 case CosmeticDescriptor.UnlockTypes.Collectible:
                     return CurrentGlobalDataTracker.GetCollectible(cosmetic.Collectible.Key).isUnlocked;
                 default:
                     return false;
             }
+        }
+
+        public bool VendingCosmeticUnlocked(CosmeticDescriptor cosmetic)
+        {
+            if (!CosmeticManifest.Vending.TryFind(cosmetic, out var vendingMachineEntry))
+            {
+                Debug.LogWarning($"Couldn't find Vending Cosmetic {cosmetic.Key}");
+                return false;
+            }
+
+            return vendingMachineEntry.UnlockThreshold < CurrentGlobalDataTracker.SaveData.LastUnlockedCosmeticCost;
         }
 
         public void EquipCosmetic(CosmeticDescriptor cosmetic)

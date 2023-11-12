@@ -14,6 +14,8 @@ namespace Pogo.Saving
         public CosmeticEquipData[] cosmeticEquipDatas;
 
         public int CollectedCoins;
+        public int LastUnlockedCosmeticCost;
+
 
         public static GlobalSaveData NewData()
         {
