@@ -1213,7 +1213,12 @@ namespace Pogo
 
         private void SpawnCollectibleNotification(CollectibleUnlockedEventArgs args)
         {
-            if (args.Collectible.NotificationPrefab != null)
+            if (args.Collectible.CollectibleType == CollectibleDescriptor.CollectibleTypes.Cosmetic)
+            {
+                var newElement = UIManager.Instance.SpawnUIElement(GenericCosmeticNotificationPrefab);
+                newElement.GetComponent<GenericCosmeticNotificationController>().Initialize(args.Collectible.CosmeticDescriptor);
+            }
+            else if (args.Collectible.NotificationPrefab != null)
             {
                 _ = UIManager.Instance.SpawnUIElement(args.Collectible.NotificationPrefab);
             }
