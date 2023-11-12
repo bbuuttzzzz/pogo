@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 
 namespace WizardUtils.SerializedObjectHelpers
 {
     public class SerializedObjectUpdater
     {
+        private SerializedObject Target;
         private List<SerializedPropertyChangeHandler> Handlers;
 
-        public SerializedObjectUpdater()
+        public SerializedObjectUpdater(SerializedObject target)
         {
+            Target = target;
             Handlers = new List<SerializedPropertyChangeHandler>();
         }
 
@@ -22,8 +21,10 @@ namespace WizardUtils.SerializedObjectHelpers
             Handlers.Add(item);
         }
 
-        public void Check()
+        public void ApplyModifiedProperties()
         {
+            Target.ApplyModifiedProperties();
+
             foreach(var handler in Handlers)
             {
                 handler.Check();

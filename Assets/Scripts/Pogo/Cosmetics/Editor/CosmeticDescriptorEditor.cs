@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using WizardUtils.ManifestPattern;
+using WizardUtils.SerializedObjectHelpers;
 
 namespace Pogo.Cosmetics
 {
@@ -35,7 +36,21 @@ namespace Pogo.Cosmetics
             }
             dropdown.DrawRegisterButtons(self);
 
-            serializedObject.ApplyModifiedProperties();
+            SerializedObjectUpdater updater = new SerializedObjectUpdater(serializedObject);
+            updater.Add(
+                get: () => self.Collectible,
+                onChangedCallback: OnCollectibleChanged);
+
+            updater.ApplyModifiedProperties();
+        }
+
+        private void OnCollectibleChanged(SerializedPropertyChangedArgs<CollectibleDescriptor> args)
+        {
+            Undo.RecordObject(args.NewValue, "Update Collectible");
+            args.NewValue.CollectibleType = CollectibleDescriptor.CollectibleTypes.Cosmetic;
+            args.NewValue.CosmeticDescriptor = self;
+            EditorUtility.SetDirty(args.NewValue);
+            AssetDatabase.SaveAssetIfDirty(args.NewValue);
         }
     }
 }
