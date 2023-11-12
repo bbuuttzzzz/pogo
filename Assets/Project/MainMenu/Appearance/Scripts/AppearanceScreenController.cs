@@ -19,6 +19,7 @@ namespace Pogo.Cosmetics
 
         public PogoMainMenuController parent;
         public VendingMachineButtonController VendingMachineButton;
+        public VendingUnlockPopupController VendingUnlockPopup;
         public LocalPositionWaypointer VendingMachineWaypointer;
         private VendingMachineUnlockData NextReward;
 
@@ -104,9 +105,11 @@ namespace Pogo.Cosmetics
 
         private void VendingMachineButton_OnClick()
         {
-            if (PogoGameManager.PogoInstance.TryUnlockNextVendingUnlock())
+            if (PogoGameManager.PogoInstance.TryUnlockNextVendingUnlock(out CosmeticDescriptor unlockedCosmetic))
             {
                 VendingMachineButton.TriggerUnlock();
+                VendingUnlockPopup.CurrentCosmetic = unlockedCosmetic;
+                VendingUnlockPopup.TriggerUnlock();
                 UpdateVendingMachine();
             }
         }

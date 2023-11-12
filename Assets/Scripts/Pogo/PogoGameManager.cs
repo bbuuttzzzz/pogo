@@ -721,14 +721,14 @@ namespace Pogo
             }
         }
 
-        public bool TryUnlockNextVendingUnlock()
+        public bool TryUnlockNextVendingUnlock(out CosmeticDescriptor unlockedCosmetic)
         {
-            if (!TryGetNextVendingUnlock(out VendingMachineUnlockData unlockData))
+            if (!TryGetNextVendingUnlock(out VendingMachineUnlockData unlockData)
+                || unlockData.CoinsNeeded > 0)
             {
+                unlockedCosmetic = default;
                 return false;
             }
-
-            if (unlockData.CoinsNeeded > 0) return false;
 
             if (unlockData.Cosmetic.UnlockType != CosmeticDescriptor.UnlockTypes.VendingMachine)
             {
@@ -738,6 +738,7 @@ namespace Pogo
             if (!CosmeticManifest.Vending.TryFind(unlockData.Cosmetic, out var result))
             {
                 Debug.LogError($"Tried to do vending machine stuff for a missing cosmetic {unlockData.Cosmetic}.");
+                unlockedCosmetic = default;
                 return false;
             }
 
@@ -750,6 +751,7 @@ namespace Pogo
                 };
             }
 
+            unlockedCosmetic = unlockData.Cosmetic;
             return true;
         }
 
