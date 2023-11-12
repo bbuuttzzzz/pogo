@@ -34,7 +34,10 @@ namespace WizardUtils
         public virtual void Awake()
         {
             initialValue = GetCurrentValue();
-            SnapToWaypoint(InitialWaypointIndex);
+            if (InitialWaypointIndex >= 0)
+            {
+                SnapToWaypoint(InitialWaypointIndex);
+            }
         }
 
         public virtual void Update()
