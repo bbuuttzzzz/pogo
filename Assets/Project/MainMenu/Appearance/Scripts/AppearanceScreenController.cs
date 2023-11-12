@@ -75,6 +75,7 @@ namespace Pogo.Cosmetics
 
         public void UpdateVendingMachine()
         {
+            VendingMachineButton.QuarterCount = PogoGameManager.PogoInstance.CurrentGlobalDataTracker.SaveData.CollectedCoins;
             if (PogoGameManager.PogoInstance.TryGetNextVendingUnlock(out NextReward))
             {
                 VendingMachineButton.NextReward = NextReward;

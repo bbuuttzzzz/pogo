@@ -17,6 +17,7 @@ namespace Pogo.Saving
     {
         public CollectibleDescriptor[] unlockedCollectibles;
         public CosmeticDescriptor[] equippedCosmetics;
+        public VendingMachineLastUnlockSaveData lastUnlockSaveData;
 
         public GlobalSaveData Data
         {
@@ -27,6 +28,7 @@ namespace Pogo.Saving
                     collectibleUnlockDatas = new CollectibleUnlockData[unlockedCollectibles.Length],
                     challengeSaveDatas = new ChallengeSaveData[0],
                     cosmeticEquipDatas = new CosmeticEquipData[equippedCosmetics.Length],
+                    LastVendingMachineUnlock = lastUnlockSaveData
                 };
 
                 for (int n = 0; n < unlockedCollectibles.Length; n++)

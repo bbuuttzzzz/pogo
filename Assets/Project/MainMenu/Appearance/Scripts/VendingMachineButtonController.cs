@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,7 +22,9 @@ namespace Pogo.Cosmetics
 
         public Outline outline;
         public Image CosmeticImage;
-        
+        public TextMeshProUGUI QuarterCountText;
+        public TextMeshProUGUI NextUnlockText;
+
         public bool Highlighted;
 
         private bool buttonCanBeActive;
@@ -47,6 +50,18 @@ namespace Pogo.Cosmetics
             }
         }
         public bool RewardAvailable => NextReward.CoinsNeeded <= 0 && nextReward.Cosmetic != null;
+
+        [SerializeField]
+        private int quarterCount;
+        public int QuarterCount
+        {
+            get => quarterCount;
+            set
+            {
+                quarterCount = value;
+                UpdateDisplay();
+            }
+        }
 
         private void Awake()
         {
@@ -75,11 +90,27 @@ namespace Pogo.Cosmetics
             {
                 CosmeticImage.enabled = true;
                 CosmeticImage.sprite = NextReward.Cosmetic.Icon;
+                if (RewardAvailable)
+                {
+                    NextUnlockText.text = "Click Me!";
+                }
+                else
+                {
+                    NextUnlockText.text = $"{NextReward.CoinsNeeded} More!";
+                }
             }
             else
             {
+                NextUnlockText.text = "";
                 CosmeticImage.enabled = false;
             }
+            QuarterCountText.text = GetQuarterCountText(QuarterCount);
+        }
+
+        private static string GetQuarterCountText(int count)
+        {
+            decimal money = count * 0.25m;
+            return $"{money:0.00}";
         }
     }
 }
