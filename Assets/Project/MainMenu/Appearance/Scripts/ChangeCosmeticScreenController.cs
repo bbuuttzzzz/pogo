@@ -14,9 +14,8 @@ namespace Pogo.Challenges
         public GameObject CosmeticSelectButtonPrefab;
         public Transform CosmeticSelectGridRoot;
 
-        [SerializeField]
         private CosmeticSlotManifest currentManifest;
-
+        private CosmeticDescriptor[] UnlockedItems;
         public CosmeticSlotManifest CurrentManifest
         {
             get { return currentManifest; }
@@ -28,11 +27,11 @@ namespace Pogo.Challenges
 
         public void Load(CosmeticSlotManifest manifest)
         {
-            var unlockedItems = manifest.Items
+            UnlockedItems = manifest.Items
                 .Where(i => PogoGameManager.PogoInstance.CosmeticIsUnlocked(i))
                 .ToArray();
 
-            int groupCount = Mathf.CeilToInt(unlockedItems.Length / (float)GroupSize);
+            int groupCount = Mathf.CeilToInt(UnlockedItems.Length / (float)GroupSize);
 
             // remove excess buttons
             for (int n = CosmeticSelectGridRoot.childCount - 1; n >= groupCount * GroupSize; n--)
@@ -57,9 +56,9 @@ namespace Pogo.Challenges
                     obj.GetComponent<Button>().onClick.AddListener(() => ButtonClicked(index));
                 }
 
-                if (n < unlockedItems.Length)
+                if (n < UnlockedItems.Length)
                 {
-                    obj.GetComponent<CosmeticSelectButtonController>().CurrentCosmetic = unlockedItems[n];
+                    obj.GetComponent<CosmeticSelectButtonController>().CurrentCosmetic = UnlockedItems[n];
                 }
                 else
                 {
@@ -72,12 +71,12 @@ namespace Pogo.Challenges
         public void ButtonClicked(int buttonIndex)
         {
             if (buttonIndex < 0 ||
-                buttonIndex >= CurrentManifest.Items.Length)
+                buttonIndex >= UnlockedItems.Length)
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-            PogoGameManager.PogoInstance.EquipCosmetic(CurrentManifest.Items[buttonIndex]);
+            PogoGameManager.PogoInstance.EquipCosmetic(UnlockedItems[buttonIndex]);
             Parent.Back();
         }
     }
