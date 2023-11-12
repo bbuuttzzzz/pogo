@@ -750,14 +750,7 @@ namespace Pogo
                 };
             }
 
-            SpawnCosmeticUnlockNotification(unlockData.Cosmetic);
             return true;
-        }
-
-        private void SpawnCosmeticUnlockNotification(CosmeticDescriptor cosmetic)
-        {
-            var newElement = UIManager.Instance.SpawnUIElement(GenericCosmeticNotificationPrefab);
-            newElement.GetComponent<GenericCosmeticNotificationController>().Initialize(cosmetic);
         }
 
         #endregion
