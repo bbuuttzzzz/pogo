@@ -21,6 +21,7 @@ namespace Pogo.Cosmetics
         public string DisplayName;
         public string Key => name;
         public Sprite Icon;
+        public string OverrideUnlockText;
 
         public abstract CosmeticSlots Slot { get; }
 

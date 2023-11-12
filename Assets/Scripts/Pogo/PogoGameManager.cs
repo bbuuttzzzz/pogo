@@ -611,6 +611,7 @@ namespace Pogo
         #region Cosmetics
 
         public CosmeticManifest CosmeticManifest;
+        public GameObject GenericCosmeticNotificationPrefab;
 
         public void LoadCosmetics()
         {
@@ -720,6 +721,31 @@ namespace Pogo
             }
         }
 
+        public void UnlockCosmetic(CosmeticDescriptor cosmetic)
+        {
+            if (cosmetic.UnlockType == CosmeticDescriptor.UnlockTypes.VendingMachine)
+            {
+                DoVendingMachineUnlockStuff(cosmetic);
+            }
+        }
+
+        private void DoVendingMachineUnlockStuff(CosmeticDescriptor cosmetic)
+        {
+            if (!CosmeticManifest.Vending.TryFind(cosmetic, out var result))
+            {
+                Debug.LogError($"Tried to do vending machine stuff for a missing cosmetic {cosmetic}.");
+                return;
+            }
+
+            if (result.Cost >= CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock.Cost)
+            {
+                CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock = new VendingMachineLastUnlockSaveData()
+                {
+                    Cost = result.Cost,
+                    Key = cosmetic.Key
+                };
+            }
+        }
         #endregion
 
         #region Equipment
@@ -1176,7 +1202,6 @@ namespace Pogo
             {
                 unlockedInSlot = false;
             }
-
 
 
             OnCollectibleUnlocked?.Invoke(new CollectibleUnlockedEventArgs(collectible, unlockedGlobally, unlockedInSlot));
