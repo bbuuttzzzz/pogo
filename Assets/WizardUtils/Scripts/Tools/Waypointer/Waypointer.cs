@@ -87,6 +87,11 @@ namespace WizardUtils
                 Debug.Log($"{name} GoToWaypoint {waypointIndex}");
             }
 #endif
+            InternalGoToWaypoint(waypointIndex);
+        }
+
+        private void InternalGoToWaypoint(int waypointIndex)
+        {
             lastValue = GetCurrentValue();
             nextValue = GetWaypoint(waypointIndex);
             changeStartTime = Now;
@@ -107,7 +112,7 @@ namespace WizardUtils
                 Debug.Log($"{name} SnapToWaypoint {waypointIndex}");
             }
 #endif
-            GoToWaypoint(waypointIndex);
+            InternalGoToWaypoint(waypointIndex);
             FinishNow();
         }
 
