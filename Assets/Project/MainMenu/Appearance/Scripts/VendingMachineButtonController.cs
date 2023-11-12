@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Pogo.Cosmetics
@@ -20,10 +23,14 @@ namespace Pogo.Cosmetics
         public float HighlightWidth1;
         public float HighlightWidth2;
 
+        private Color NextUnlockBaseColor;
+
         public Outline outline;
         public Image CosmeticImage;
         public TextMeshProUGUI QuarterCountText;
         public TextMeshProUGUI NextUnlockText;
+
+        public UnityEvent OnUnlockTriggered;
 
         public bool Highlighted;
 
@@ -65,6 +72,7 @@ namespace Pogo.Cosmetics
 
         private void Awake()
         {
+            NextUnlockBaseColor = NextUnlockText.color;
             UpdateDisplay();
         }
 
@@ -105,6 +113,45 @@ namespace Pogo.Cosmetics
                 CosmeticImage.enabled = false;
             }
             QuarterCountText.text = GetQuarterCountText(QuarterCount);
+        }
+
+        Coroutine flashHideCoroutine;
+        public void TriggerUnlock()
+        {
+            OnUnlockTriggered.Invoke();
+            GetComponent<Animator>().SetTrigger("Unlock");
+            if (flashHideCoroutine != null) StopCoroutine(flashHideCoroutine);
+            StartCoroutine(DoUnlockAnimationStuff(1, 1));
+        }
+
+        public IEnumerator DoUnlockAnimationStuff(float disappearDuration, float fadeInDuration)
+        {
+            float startTime = Time.unscaledTime;
+            CosmeticImage.gameObject.SetActive(false);
+            Color invisColor = NextUnlockBaseColor;
+            invisColor.a = 0f;
+            NextUnlockText.color = invisColor;
+
+            float t = 0;
+            while (t < 1)
+            {
+                t = (Time.unscaledTime - startTime) / disappearDuration;
+                yield return null;
+            }
+            
+            CosmeticImage.gameObject.SetActive(true);
+            startTime = Time.unscaledTime;
+            t = 0;
+            while (t < 1)
+            {
+                t = (Time.unscaledTime - startTime) / fadeInDuration;
+                CosmeticImage.color = new Color(1, 1, 1, t);
+                NextUnlockText.color = Color.Lerp(invisColor, NextUnlockBaseColor, t);
+                yield return null;
+            }
+
+            CosmeticImage.color = Color.white;
+            NextUnlockText.color = NextUnlockBaseColor;
         }
 
         private static string GetQuarterCountText(int count)

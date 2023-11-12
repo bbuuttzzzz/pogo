@@ -721,20 +721,24 @@ namespace Pogo
             }
         }
 
-        public void UnlockCosmetic(CosmeticDescriptor cosmetic)
+        public bool TryUnlockNextVendingUnlock()
         {
-            if (cosmetic.UnlockType == CosmeticDescriptor.UnlockTypes.VendingMachine)
+            if (!TryGetNextVendingUnlock(out VendingMachineUnlockData unlockData))
             {
-                DoVendingMachineUnlockStuff(cosmetic);
+                return false;
             }
-        }
 
-        private void DoVendingMachineUnlockStuff(CosmeticDescriptor cosmetic)
-        {
-            if (!CosmeticManifest.Vending.TryFind(cosmetic, out var result))
+            if (unlockData.CoinsNeeded > 0) return false;
+
+            if (unlockData.Cosmetic.UnlockType != CosmeticDescriptor.UnlockTypes.VendingMachine)
             {
-                Debug.LogError($"Tried to do vending machine stuff for a missing cosmetic {cosmetic}.");
-                return;
+                throw new ArgumentException($"Cosmetic {unlockData.Cosmetic.name} of bad type {unlockData.Cosmetic.UnlockType}");
+            }
+
+            if (!CosmeticManifest.Vending.TryFind(unlockData.Cosmetic, out var result))
+            {
+                Debug.LogError($"Tried to do vending machine stuff for a missing cosmetic {unlockData.Cosmetic}.");
+                return false;
             }
 
             if (result.Cost >= CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock.Cost)
@@ -742,10 +746,20 @@ namespace Pogo
                 CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock = new VendingMachineLastUnlockSaveData()
                 {
                     Cost = result.Cost,
-                    Key = cosmetic.Key
+                    Key = unlockData.Cosmetic.Key
                 };
             }
+
+            SpawnCosmeticUnlockNotification(unlockData.Cosmetic);
+            return true;
         }
+
+        private void SpawnCosmeticUnlockNotification(CosmeticDescriptor cosmetic)
+        {
+            var newElement = UIManager.Instance.SpawnUIElement(GenericCosmeticNotificationPrefab);
+            newElement.GetComponent<GenericCosmeticNotificationController>().Initialize(cosmetic);
+        }
+
         #endregion
 
         #region Equipment

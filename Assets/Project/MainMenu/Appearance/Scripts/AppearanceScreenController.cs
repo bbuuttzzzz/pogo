@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using WizardUtils;
 
 namespace Pogo.Cosmetics
@@ -27,6 +28,11 @@ namespace Pogo.Cosmetics
         private ScreenIds CurrentScreen;
 
         private int ScreenCount => ScreenRoots.Length;
+
+        private void Awake()
+        {
+            VendingMachineButton.GetComponent<Button>().onClick.AddListener(VendingMachineButton_OnClick);
+        }
 
         public void OnEnable()
         {
@@ -73,7 +79,7 @@ namespace Pogo.Cosmetics
             UpdateVendingMachineButtonCanBeActive();
         }
 
-        public void UpdateVendingMachine()
+        private void UpdateVendingMachine()
         {
             VendingMachineButton.QuarterCount = PogoGameManager.PogoInstance.CurrentGlobalDataTracker.SaveData.CollectedCoins;
             if (PogoGameManager.PogoInstance.TryGetNextVendingUnlock(out NextReward))
@@ -86,14 +92,23 @@ namespace Pogo.Cosmetics
             }
         }
 
-        public void ShowVendingMachine()
+        private void ShowVendingMachine()
         {
             VendingMachineWaypointer.GoToWaypoint(-1);
         }
 
-        public void HideVendingMachine()
+        private void HideVendingMachine()
         {
             VendingMachineWaypointer.SnapToWaypoint(0);
+        }
+
+        private void VendingMachineButton_OnClick()
+        {
+            if (PogoGameManager.PogoInstance.TryUnlockNextVendingUnlock())
+            {
+                VendingMachineButton.TriggerUnlock();
+                UpdateVendingMachine();
+            }
         }
 
         private void UpdateVendingMachineButtonCanBeActive()
