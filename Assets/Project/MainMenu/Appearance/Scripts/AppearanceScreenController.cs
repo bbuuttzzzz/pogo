@@ -19,6 +19,7 @@ namespace Pogo.Cosmetics
         public PogoMainMenuController parent;
         public VendingMachineButtonController VendingMachineButton;
         public LocalPositionWaypointer VendingMachineWaypointer;
+        private VendingMachineUnlockData NextReward;
 
         [Tooltip("Just read the code for this bro")]
         public GameObject[] ScreenRoots;
@@ -30,6 +31,7 @@ namespace Pogo.Cosmetics
         public void OnEnable()
         {
             OpenScreen(ScreenIds.MainScreen);
+            UpdateVendingMachine();
             ShowVendingMachine();
         }
 
@@ -69,6 +71,14 @@ namespace Pogo.Cosmetics
             }
 
             UpdateVendingMachineButtonCanBeActive();
+        }
+
+        public void UpdateVendingMachine()
+        {
+            if (PogoGameManager.PogoInstance.TryGetNextVendingUnlock(out NextReward))
+            {
+                VendingMachineButton.NextReward = NextReward;
+            }
         }
 
         public void ShowVendingMachine()

@@ -14,7 +14,7 @@ namespace Pogo.Cosmetics
         {
             EditorGUI.BeginProperty(position, label, property);
 
-            var thresholdProperty = property.FindPropertyRelative(nameof(VendingMachineEntry.UnlockThreshold));
+            var thresholdProperty = property.FindPropertyRelative(nameof(VendingMachineEntry.Cost));
             var cosmeticProperty = property.FindPropertyRelative(nameof(VendingMachineEntry.Cosmetic));
 
             SplittablePropertyField[] properties = new SplittablePropertyField[2]

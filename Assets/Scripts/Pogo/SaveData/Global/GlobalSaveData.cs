@@ -1,3 +1,4 @@
+using Pogo.Cosmetics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Pogo.Saving
         public CosmeticEquipData[] cosmeticEquipDatas;
 
         public int CollectedCoins;
-        public int LastUnlockedCosmeticCost;
+        public VendingMachineLastUnlockSaveData LastVendingMachineUnlock;
 
 
         public static GlobalSaveData NewData()

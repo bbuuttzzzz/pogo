@@ -67,7 +67,7 @@ namespace Pogo.Cosmetics
                 {
                     foreach (var index in misconfiguredCosmeticIndexes)
                     {
-                        var label = new GUIContent(self.Entries[index].UnlockThreshold.ToString());
+                        var label = new GUIContent(self.Entries[index].Cost.ToString());
                         _ = EditorGUILayout.ObjectField(label, self.Entries[index].Cosmetic, typeof(CosmeticDescriptor), false);
                     }
                 }

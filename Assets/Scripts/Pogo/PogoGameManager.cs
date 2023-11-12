@@ -653,7 +653,25 @@ namespace Pogo
                 return false;
             }
 
-            return vendingMachineEntry.UnlockThreshold < CurrentGlobalDataTracker.SaveData.LastUnlockedCosmeticCost;
+            return vendingMachineEntry.Cost < CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock.Cost;
+        }
+
+        public bool TryGetNextVendingUnlock(out VendingMachineUnlockData result)
+        {
+            int lastCost = CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock.Cost;
+            if (!CosmeticManifest.Vending.TryGetNext(lastCost, out VendingMachineEntry nextUnlock))
+            {
+                result = default;
+                return false;
+            }
+
+            int coinsNeeded = CurrentGlobalDataTracker.SaveData.CollectedCoins - nextUnlock.Cost;
+            result = new VendingMachineUnlockData()
+            {
+                Cosmetic = nextUnlock.Cosmetic,
+                CoinsNeeded = coinsNeeded,
+            };
+            return true;
         }
 
         public void EquipCosmetic(CosmeticDescriptor cosmetic, bool saveChanges = true)

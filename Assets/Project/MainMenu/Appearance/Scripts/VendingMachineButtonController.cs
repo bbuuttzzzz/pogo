@@ -10,38 +10,6 @@ namespace Pogo.Cosmetics
 {
     public class VendingMachineButtonController : MonoBehaviour
     {
-        public Outline outline;
-
-        private bool buttonCanBeActive;
-        public bool ButtonCanBeActive
-        {
-            get => buttonCanBeActive;
-            set
-            {
-                buttonCanBeActive = value;
-                UpdateActive();
-            }
-        }
-
-        [SerializeField]
-        private bool rewardAvailable;
-        public bool RewardAvailable
-        {
-            get => rewardAvailable;
-            set
-            {
-                rewardAvailable = value;
-                UpdateActive();
-            }
-        }
-
-        public void UpdateActive()
-        {
-            GetComponent<Button>().interactable = ButtonCanBeActive && RewardAvailable;
-        }
-
-        public bool Highlighted;
-
         [Range(0f, 1f)]
         public float HighlightPower;
 
@@ -50,6 +18,40 @@ namespace Pogo.Cosmetics
 
         public float HighlightWidth1;
         public float HighlightWidth2;
+
+        public Outline outline;
+        public Image CosmeticImage;
+        
+        public bool Highlighted;
+
+        private bool buttonCanBeActive;
+        public bool ButtonCanBeActive
+        {
+            get => buttonCanBeActive;
+            set
+            {
+                buttonCanBeActive = value;
+                UpdateDisplay();
+            }
+        }
+
+        [NonSerialized]
+        private VendingMachineUnlockData nextReward;
+        public VendingMachineUnlockData NextReward
+        {
+            get => nextReward;
+            set
+            {
+                nextReward = value;
+                UpdateDisplay();
+            }
+        }
+        public bool RewardAvailable => NextReward.CoinsNeeded <= 0;
+
+        private void Awake()
+        {
+            UpdateDisplay();
+        }
 
         private void LateUpdate()
         {
@@ -62,6 +64,21 @@ namespace Pogo.Cosmetics
             {
                 outline.OutlineWidth = 0;
                 outline.OutlineColor = Color.gray;
+            }
+        }
+
+        [ContextMenu("Update Display Now")]
+        public void UpdateDisplay()
+        {
+            GetComponent<Button>().interactable = ButtonCanBeActive && RewardAvailable;
+            if (NextReward.Cosmetic != null)
+            {
+                CosmeticImage.enabled = true;
+                CosmeticImage.sprite = NextReward.Cosmetic.Icon;
+            }
+            else
+            {
+                CosmeticImage.enabled = false;
             }
         }
     }

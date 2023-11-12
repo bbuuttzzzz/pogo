@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 namespace Pogo.Cosmetics
 {
     [System.Serializable]
-    public struct VendingMachineEntry
+    public struct VendingMachineUnlockData
     {
-        public int Cost;
+        public int CoinsNeeded;
         public CosmeticDescriptor Cosmetic;
+
+        public readonly bool RewardAvailable => CoinsNeeded <= 0;
     }
 }

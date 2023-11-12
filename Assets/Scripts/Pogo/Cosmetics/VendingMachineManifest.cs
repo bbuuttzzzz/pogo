@@ -14,7 +14,7 @@ public class VendingMachineManifest : ScriptableObject
 
     public void Sort()
     {
-        Entries = Entries.OrderBy(x => x.UnlockThreshold).ToArray();
+        Entries = Entries.OrderBy(x => x.Cost).ToArray();
     }
 
     public bool TryFind(CosmeticDescriptor cosmetic, out VendingMachineEntry result)
@@ -47,7 +47,7 @@ public class VendingMachineManifest : ScriptableObject
 
     public int GetNextIndex(int lastUnlockedCost)
     {
-        if (Entries[^1].UnlockThreshold < lastUnlockedCost)
+        if (Entries[^1].Cost <= lastUnlockedCost)
         {
             return -1;
         }
@@ -58,7 +58,7 @@ public class VendingMachineManifest : ScriptableObject
         while (low < high)
         {
             int median = low + (high - low) / 2;
-            if (Entries[median].UnlockThreshold > lastUnlockedCost)
+            if (Entries[median].Cost > lastUnlockedCost)
             {
                 high = median;
             }
