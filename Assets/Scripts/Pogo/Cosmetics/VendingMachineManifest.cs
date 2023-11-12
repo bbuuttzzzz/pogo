@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class VendingMachineManifest : ScriptableObject
 {
+    [HideInInspector]
     public VendingMachineEntry[] Entries;
 
     public void Sort()
