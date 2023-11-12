@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,7 +26,10 @@ namespace Pogo.Cosmetics
 
         [SerializeField]
         private CosmeticDescriptor currentCosmetic;
-        public Image IconImage;
+        [SerializeField]
+        private Image IconImage;
+        [SerializeField]
+        private TextMeshProUGUI LabelText;
 
         [ContextMenu("Update Display")]
         private void UpdateDisplay()
@@ -40,6 +44,9 @@ namespace Pogo.Cosmetics
                 Button.interactable = true;
                 IconImage.enabled = true;
                 IconImage.sprite = CurrentCosmetic.Icon;
+
+                // this lets us override LabelText by just unsetting the LabelText field
+                if (LabelText != null) LabelText.text = CurrentCosmetic.DisplayName;
             }
         }
     }
