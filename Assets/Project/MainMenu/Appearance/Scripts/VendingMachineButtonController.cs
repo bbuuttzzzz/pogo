@@ -46,7 +46,7 @@ namespace Pogo.Cosmetics
                 UpdateDisplay();
             }
         }
-        public bool RewardAvailable => NextReward.CoinsNeeded <= 0;
+        public bool RewardAvailable => NextReward.CoinsNeeded <= 0 && nextReward.Cosmetic != null;
 
         private void Awake()
         {

@@ -79,6 +79,10 @@ namespace Pogo.Cosmetics
             {
                 VendingMachineButton.NextReward = NextReward;
             }
+            else
+            {
+                VendingMachineButton.NextReward = default;
+            }
         }
 
         public void ShowVendingMachine()
