@@ -760,7 +760,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.009, y: -0}
+  m_AnchoredPosition: {x: 0.009, y: 0}
   m_SizeDelta: {x: 57, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2347864376577353870
@@ -983,7 +983,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7d6aa38c144567741854e7deecfd20c9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -550
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7d6aa38c144567741854e7deecfd20c9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1074,8 +1074,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Waypoints:
-  - {x: 0, y: -550, z: 0}
-  InitialWaypointIndex: 0
+  - {x: 0, y: 550, z: 0}
+  InitialWaypointIndex: -1
   TransitionDuration: 1
   UseRealTime: 0
   UseCustomCurve: 1
@@ -1103,6 +1103,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  EnableVerboseLogging: 0
 --- !u!114 &8629152559946167677
 MonoBehaviour:
   m_ObjectHideFlags: 0

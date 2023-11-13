@@ -96,8 +96,8 @@ public class Outline : MonoBehaviour {
     LoadSmoothNormals();
 
     // Apply material properties immediately
-    needsUpdate = true;
-  }
+    UpdateMaterialProperties();
+    }
 
   void OnEnable() {
     foreach (var renderer in renderers) {

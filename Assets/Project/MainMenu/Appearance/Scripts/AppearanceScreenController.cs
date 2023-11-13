@@ -95,12 +95,12 @@ namespace Pogo.Cosmetics
 
         private void ShowVendingMachine()
         {
-            VendingMachineWaypointer.GoToWaypoint(-1);
+            VendingMachineWaypointer.GoToWaypoint(0);
         }
 
         private void HideVendingMachine()
         {
-            VendingMachineWaypointer.SnapToWaypoint(0);
+            VendingMachineWaypointer.SnapToWaypoint(-1);
         }
 
         private void VendingMachineButton_OnClick()
