@@ -32,18 +32,18 @@ namespace Pogo.Collectibles
             {
                 EditorGUILayout.HelpBox("Missing Descriptor!", MessageType.Error);
             }
-            DrawDefaultInspector();
-            EditorGUILayout.PropertyField(m_Descriptor);
-
-            if (serializedObject.ApplyModifiedProperties())
+            else if (self.Descriptor != null && self.Descriptor.SceneBuildIndex != self.gameObject.scene.buildIndex)
             {
-                if (self.Descriptor != null)
+                EditorGUILayout.HelpBox("Descriptor points to the wrong scene!", MessageType.Error);
+                if (GUILayout.Button("Fix Now"))
                 {
                     Undo.RecordObject(self.Descriptor, "set Scene Data");
                     self.Descriptor.SceneBuildIndex = self.gameObject.scene.buildIndex;
                     EditorUtility.SetDirty(self.Descriptor);
                 }
             }
+
+            DrawDefaultInspector();
         }
     }
 }
