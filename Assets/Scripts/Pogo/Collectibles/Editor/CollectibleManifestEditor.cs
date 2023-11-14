@@ -20,6 +20,8 @@ namespace Pogo.Collectibles
 
         public override void OnInspectorGUI()
         {
+            DrawDefaultInspector();
+
             EditorGUILayout.LabelField("Collectible Type Counts");
             using (new EditorGUI.IndentLevelScope())
             {
@@ -27,7 +29,7 @@ namespace Pogo.Collectibles
                 {
                     using (new EditorGUI.DisabledScope(true))
                     {
-                        EditorGUILayout.IntField(group.Count(), group.Key.ToString());
+                        EditorGUILayout.IntField(group.Key.ToString(), group.Count());
                     }
                 }
             }

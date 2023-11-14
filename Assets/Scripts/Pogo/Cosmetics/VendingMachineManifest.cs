@@ -1,3 +1,4 @@
+using Pogo.Collectibles;
 using Pogo.Cosmetics;
 using System;
 using System.Collections;

@@ -34,12 +34,13 @@ namespace Pogo.Collectibles
             }
             else if (self.Descriptor != null && self.Descriptor.SceneBuildIndex != self.gameObject.scene.buildIndex)
             {
-                EditorGUILayout.HelpBox("Descriptor points to the wrong scene!", MessageType.Error);
+                EditorGUILayout.HelpBox($"Descriptor points to scene {self.Descriptor.SceneBuildIndex}! (expected {self.gameObject.scene.buildIndex})", MessageType.Error);
                 if (GUILayout.Button("Fix Now"))
                 {
                     Undo.RecordObject(self.Descriptor, "set Scene Data");
                     self.Descriptor.SceneBuildIndex = self.gameObject.scene.buildIndex;
                     EditorUtility.SetDirty(self.Descriptor);
+                    AssetDatabase.SaveAssetIfDirty(self.Descriptor);
                 }
             }
 
