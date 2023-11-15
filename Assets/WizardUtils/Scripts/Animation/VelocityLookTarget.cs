@@ -29,6 +29,9 @@ namespace WizardUtils
             applyAccumulaion();
         }
 
+        // this is so unity inspector can touch this field. scared turning it into a property will reset values
+        public void SetMaxShownRadius(float value) => MaxShownRadius = value;
+
         private void applyAccumulaion()
         {
             target.transform.position = transform.position + accumulation * (MaxShownRadius / MaxTrackedRadius);

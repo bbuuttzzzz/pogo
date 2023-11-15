@@ -13,6 +13,7 @@ using UnityEngine.TextCore.LowLevel;
 using WizardPhysics;
 using WizardPhysics.PhysicsTime;
 using WizardUtils;
+using WizardUtils.Equipment;
 using WizardUtils.SceneManagement;
 
 public class PlayerController : MonoBehaviour
@@ -22,7 +23,8 @@ public class PlayerController : MonoBehaviour
     public float AutoRespawnDelay;
     public PlayerJostler Jostler;
     [NonSerialized]
-    public PlayerAttachmentHandler AttachmentHandler;
+    public PlayerModelController CurrentModelController;
+    public EquipmentTypeDescriptor PlayerModelEquipmentType;
 
     public Vector3 PhysicsPosition
     {
@@ -53,7 +55,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        AttachmentHandler = GetComponent<PlayerAttachmentHandler>();
+        GetComponent<Equipper>().OnEquip.AddListener(Equipper_OnEquip);
     }
 
     void Start()
@@ -90,15 +92,29 @@ public class PlayerController : MonoBehaviour
         setControlSceneBehavior(PogoGameManager.GameInstance.InControlScene);
     }
 
-    private static int convertInvertYSetting(float settingValue)
-    {
-        return settingValue == 1 ? -1 : 1;
-    }
 
     private void OnDestroy()
     {
         PogoGameManager.GameInstance.OnPauseStateChanged -= onPauseStateChanged;
         PogoGameManager.GameInstance.OnControlSceneChanged -= onControlSceneChanged;
+    }
+
+
+    private void Equipper_OnEquip(EquipmentSlot arg0)
+    {
+        if (arg0.EquipmentType == PlayerModelEquipmentType)
+        {
+            CurrentModelController = GetComponent<Equipper>()
+                .FindSlot(PlayerModelEquipmentType)
+                .ObjectInstance
+                .GetComponent<PlayerModelController>();
+            CurrentModelController.Link(this);
+        }
+    }
+
+    private static int convertInvertYSetting(float settingValue)
+    {
+        return settingValue == 1 ? -1 : 1;
     }
 
     private void onAutoRespawnDelayChanged(object sender, GameSettingChangedEventArgs e)
@@ -337,7 +353,7 @@ public class PlayerController : MonoBehaviour
         DelayedRespawnRoutine = StartCoroutine(DelayedRespawn(AutoRespawnDelay));
         if (data.KillType != null)
         {
-            AudioController.PlayOneShot(data.KillType.RandomSound);
+            AudioController.PlayOneShot(data.KillType.RandomSound, true);
         }
 
         if (data.Position.HasValue && data.Normal.HasValue)
@@ -368,7 +384,7 @@ public class PlayerController : MonoBehaviour
         TeleportToSpawnpoint();
     }
 
-    public void TeleportToSpawnpoint()
+    private void TeleportToSpawnpoint()
     {
         TeleportTo(PogoGameManager.PogoInstance.GetRespawnTransform());
     }
@@ -668,7 +684,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 EyeAngles => internalEyeAngles;
 
     /// <summary>
-    /// Return a rotation along player's aim direction
+    /// Back a rotation along player's aim direction
     /// </summary>
     /// <returns></returns>
     public Quaternion GetAimQuat()
@@ -676,7 +692,7 @@ public class PlayerController : MonoBehaviour
         return Quaternion.Euler(EyeAngles);
     }
     /// <summary>
-    /// Return a rotation of the player's aim direction, flattened
+    /// Back a rotation of the player's aim direction, flattened
     /// </summary>
     /// <returns></returns>
     public Quaternion GetYawQuat()

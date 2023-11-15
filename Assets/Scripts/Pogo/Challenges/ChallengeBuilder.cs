@@ -1,8 +1,10 @@
 ﻿using Inputter;
 using Pogo.Checkpoints;
+using Pogo.Difficulties;
 using Pogo.Levels;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.Events;
 using WizardUI;
@@ -57,12 +59,12 @@ namespace Pogo.Challenges
         {
             if (CurrentChallenge == null
                 && PogoGameManager.PogoInstance.CustomRespawnActive
-                && PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Freeplay
+                && PogoGameManager.PogoInstance.CurrentDifficulty == Difficulty.Assist
                 && InputManager.CheckKeyDown(KeyName.Balloon))
             {
                 PromptForNewChallenge();
             }
-            if (PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Challenge
+            if (PogoGameManager.PogoInstance.CurrentDifficulty == Difficulty.Challenge
                 && InputManager.CheckKeyDown(KeyName.Balloon))
             {
                 OpenChallengeMenu();
@@ -180,7 +182,11 @@ namespace Pogo.Challenges
             }
 
             Vector3 endPoint = pogoInstance.Player.PhysicsPosition;
-            return new Challenge(levelState, startTransform, endPoint);
+            if (!Challenge.TryCreate(levelState, startTransform, endPoint, out Challenge newChallenge))
+            {
+                throw new ArgumentOutOfRangeException($"Challenge start or end was out of range. \nlevel: {levelState}, \nstart: {startTransform.position}, \nend: {endPoint}");
+            }
+            return newChallenge;
         }
 
         public void ExitChallenge()
@@ -196,13 +202,13 @@ namespace Pogo.Challenges
         {
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
             pogoInstance.FullResetSessionData();
-            pogoInstance.Equip(ChallengeStick);
+            pogoInstance.CurrentDifficulty = Difficulty.Challenge;
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
-                pogoInstance.CustomCheckpoint.Place(CurrentChallenge.StartPoint, CurrentChallenge.StartRotation);
+                pogoInstance.CustomCheckpoint.Place(CurrentChallenge.WorldStartPoint, CurrentChallenge.StartRotation);
                 pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint, CurrentChallenge.LevelState.Level));
-                ChallengePickup.transform.position = CurrentChallenge.EndPoint;
+                ChallengePickup.transform.position = CurrentChallenge.WorldEndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
                 PogoGameManager.PogoInstance.SpawnPlayer();
                 resetChallenge();
@@ -323,10 +329,10 @@ My Best Time: {1:N3} seconds"
             byte[] completeChallenge = new byte[PayloadLength];
             int offset = 0;
 
-            AddVector3Short(ref completeChallenge, offset, challenge.StartPointCm);
+            AddVector3Short(ref completeChallenge, offset, challenge.ShareStartPointCm);
             offset += sizeof(short) * 3;
 
-            AddVector3Short(ref completeChallenge, offset, challenge.EndPointCm);
+            AddVector3Short(ref completeChallenge, offset, challenge.ShareEndPointCm);
             offset += sizeof(short) * 3;
 
             byte yaw = Convert.ToByte(challenge.StartYaw / 2);
@@ -476,10 +482,10 @@ My Best Time: {1:N3} seconds"
 
             int offset = 0;
 
-            challenge.StartPointCm = GetVector3Short(rawPayload, offset);
+            challenge.ShareStartPointCm = GetVector3Short(rawPayload, offset);
             offset += sizeof(short) * 3;
 
-            challenge.EndPointCm = GetVector3Short(rawPayload, offset);
+            challenge.ShareEndPointCm = GetVector3Short(rawPayload, offset);
             offset += sizeof(short) * 3;
 
             byte yaw = getByte(rawPayload, offset);

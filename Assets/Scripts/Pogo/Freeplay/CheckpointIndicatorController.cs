@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Difficulties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Pogo.Freeplay
 
         private void onCustomCheckpointChanged(object sender, EventArgs e)
         {
-            ShowIndicator = gameManager.CustomRespawnActive && gameManager.CurrentDifficulty == PogoGameManager.Difficulty.Freeplay;
+            ShowIndicator = gameManager.CustomRespawnActive && gameManager.CurrentDifficulty == Difficulty.Assist;
         }
 
         private bool showIndicator;

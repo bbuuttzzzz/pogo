@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Difficulties;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,7 +10,6 @@ namespace Pogo.Collectibles
     [RequireComponent(typeof(Trigger))]
     public class CollectibleController : MonoBehaviour
     {
-        [HideInInspector]
         public CollectibleDescriptor Descriptor;
 
         public AudioVolumeWaypointer AmbienceWaypointer;
@@ -34,9 +34,9 @@ namespace Pogo.Collectibles
             InitializeDifficulty(PogoGameManager.PogoInstance.CurrentDifficulty);
         }
 
-        private void InitializeDifficulty(PogoGameManager.Difficulty newDifficulty)
+        private void InitializeDifficulty(Difficulty newDifficulty)
         {
-            if (newDifficulty == PogoGameManager.Difficulty.Challenge)
+            if (newDifficulty == Difficulty.Challenge)
             {
                 Initialize(CollectibleStates.Collected);
             }
@@ -57,8 +57,6 @@ namespace Pogo.Collectibles
         {
             InitializeDifficulty(arg0.FinalDifficulty);
         }
-
-
 
         private void Trigger_OnActivated()
         {

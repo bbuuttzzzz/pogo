@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using WizardUtils.Math;
 
 namespace Pogo.Levels
 {
@@ -15,6 +16,8 @@ namespace Pogo.Levels
 
         [Tooltip("Loading into this level will set these states, but not override existing states. If you don't supply one for THIS level, defaults to zero")]
         public LevelState[] InitialLevelStates;
+
+        public Vector3 ShareOrigin;
 
         public GameObject PostProcessingPrefab;
 
@@ -53,9 +56,6 @@ namespace Pogo.Levels
 
         public int BuildIndex;
 
-        [Range(0, 255)]
-        public int ShareIndex;
-
 #if UNITY_EDITOR
         [Multiline(8)]
         public string Notes;
@@ -65,5 +65,20 @@ namespace Pogo.Levels
 
         public bool HideInEditor = false;
         public int LevelStatesCount;
+
+        #region SharePosition
+        public bool TryGetSharePositionCm(Vector3 worldPosition, out Vector3Short sharePositionCm)
+        {
+            Vector3 localPosition = (worldPosition - ShareOrigin);
+            if (!(localPosition * 100).FitsInShort())
+            {
+                sharePositionCm = default;
+                return false;
+            }
+
+            sharePositionCm = Vector3Short.FromVector3(localPosition * 100);
+            return true;
+        }
+        #endregion
     }
 }

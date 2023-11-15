@@ -40,6 +40,7 @@ namespace Pogo
             {
                 PogoGameManager gameManager = FindObjectOfType<PogoGameManager>();
 
+                gameManager._CachedCheckpoint = self.Descriptor;
                 PogoGameManagerEditor.SetSpawnPointInEditor(gameManager, self.RespawnPoint);
             }
 

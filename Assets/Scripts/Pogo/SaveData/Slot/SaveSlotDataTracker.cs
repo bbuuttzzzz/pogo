@@ -1,5 +1,5 @@
-using Assets.Scripts.Pogo.Difficulty;
 using Pogo.Collectibles;
+using Pogo.Difficulties;
 using System;
 using WizardUtils;
 
@@ -19,7 +19,7 @@ namespace Pogo.Saving
         public abstract void Save();
         public abstract void Load(bool createIfEmpty = false);
         public abstract void Delete();
-        public abstract void InitializeNew(string name, DifficultyId difficulty);
+        public abstract void InitializeNew(string name, Difficulty difficulty);
 
         public SaveSlotPreviewData PreviewData
         {
