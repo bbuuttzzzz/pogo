@@ -1,5 +1,6 @@
 ﻿using Inputter;
 using Pogo.Checkpoints;
+using Pogo.Difficulties;
 using Pogo.Levels;
 using System;
 using System.Collections.Generic;
@@ -58,12 +59,12 @@ namespace Pogo.Challenges
         {
             if (CurrentChallenge == null
                 && PogoGameManager.PogoInstance.CustomRespawnActive
-                && PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Freeplay
+                && PogoGameManager.PogoInstance.CurrentDifficulty == Difficulty.Assist
                 && InputManager.CheckKeyDown(KeyName.Balloon))
             {
                 PromptForNewChallenge();
             }
-            if (PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Challenge
+            if (PogoGameManager.PogoInstance.CurrentDifficulty == Difficulty.Challenge
                 && InputManager.CheckKeyDown(KeyName.Balloon))
             {
                 OpenChallengeMenu();
@@ -201,7 +202,7 @@ namespace Pogo.Challenges
         {
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
             pogoInstance.FullResetSessionData();
-            pogoInstance.Equip(ChallengeStick);
+            pogoInstance.CurrentDifficulty = Difficulty.Challenge;
             UnityAction finishLoading = null;
             finishLoading = () =>
             {

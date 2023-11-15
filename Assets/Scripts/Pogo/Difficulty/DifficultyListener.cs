@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Difficulties;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -6,7 +7,7 @@ namespace Pogo
 {
     public class DifficultyListener : MonoBehaviour
     {
-        public PogoGameManager.Difficulty TargetDifficulty;
+        public Difficulty TargetDifficulty;
 
         public UnityEvent OnEnter;
         public UnityEvent OnExit;

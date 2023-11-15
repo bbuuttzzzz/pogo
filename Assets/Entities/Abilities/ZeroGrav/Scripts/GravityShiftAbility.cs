@@ -22,7 +22,7 @@ public class GravityShiftAbility : PlayerAbility
 
     protected override void OnApply()
     {
-        Owner.AttachmentHandler.AddAttachment(BackAttachment);
+        Owner.CurrentModelController.AddAttachment(BackAttachment);
         
         EffectData data = new EffectData();
         data.position = Owner.RenderPosition;
@@ -31,7 +31,7 @@ public class GravityShiftAbility : PlayerAbility
 
     protected override void OnCleanse()
     {
-        Owner.AttachmentHandler.RemoveAttachment(BackAttachment);
+        Owner.CurrentModelController.RemoveAttachment(BackAttachment);
 
         EffectData data = new EffectData();
         data.position = Owner.RenderPosition;

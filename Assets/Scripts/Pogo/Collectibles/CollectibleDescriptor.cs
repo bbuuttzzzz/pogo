@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Cosmetics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,16 +32,28 @@ namespace Pogo.Collectibles
             None,
             Key,
             ChallengePack,
-            Coin
+            Coin,
+            Cosmetic
         }
 
         public CollectibleTypes CollectibleType;
+        public bool ExistsInWorld = true;
+
+        [HideInInspector]
+        public CosmeticDescriptor CosmeticDescriptor;
+        [HideInInspector]
         public GameObject NotificationPrefab;
+        [HideInInspector]
         public bool SpawnGenericNotification;
+        [HideInInspector]
         public string GenericNotificationTitle;
+        [HideInInspector]
         public string GenericNotificationTitle_HalfUnlocked;
+        [HideInInspector]
         public string GenericNotificationBody;
+        [HideInInspector]
         public string GenericNotificationBody_HalfUnlocked;
+        [HideInInspector]
         public GameObject GenericNotification3DIcon;
 
         #region Editor Stuff

@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Pogo.Difficulty;
-using UnityEngine;
+﻿using UnityEngine;
 using WizardUtils.Saving;
 
 namespace Pogo.Saving

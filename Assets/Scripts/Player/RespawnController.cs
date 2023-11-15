@@ -1,4 +1,5 @@
 ﻿using Inputter;
+using Pogo.Difficulties;
 using UnityEngine;
 using UnityEngine.Events;
 using WizardUtils;
@@ -48,7 +49,7 @@ namespace Pogo
 
             if (InputManager.CheckKeyDown(KeyName.Checkpoint))
             {
-                if (PogoGameManager.PogoInstance.CurrentDifficulty == PogoGameManager.Difficulty.Freeplay)
+                if (PogoGameManager.PogoInstance.CurrentDifficulty == Difficulty.Assist)
                 {
                     pressQueued = true;
                     lastPress = Time.unscaledTime;

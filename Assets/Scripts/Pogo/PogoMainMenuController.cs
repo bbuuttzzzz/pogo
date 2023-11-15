@@ -127,6 +127,11 @@ namespace Pogo
             MainMenuAnimator.SetTrigger("ShowSaves");
         }
 
+        public void OpenAppearanceScreen()
+        {
+            MainMenuAnimator.SetTrigger("ShowAppearance");
+        }
+
         public void OpenHomeScreen()
         {
             Animator animator = GetComponent<Animator>();

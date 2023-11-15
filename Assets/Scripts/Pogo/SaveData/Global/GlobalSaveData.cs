@@ -1,4 +1,4 @@
-using Assets.Scripts.Pogo.Difficulty;
+using Pogo.Cosmetics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +12,19 @@ namespace Pogo.Saving
     {
         public CollectibleUnlockData[] collectibleUnlockDatas;
         public ChallengeSaveData[] challengeSaveDatas;
+        public CosmeticEquipData[] cosmeticEquipDatas;
+
         public int CollectedCoins;
+        public VendingMachineLastUnlockSaveData LastVendingMachineUnlock;
+
 
         public static GlobalSaveData NewData()
         {
             var data = new GlobalSaveData()
             {
                 collectibleUnlockDatas = new CollectibleUnlockData[0],
-                challengeSaveDatas = new ChallengeSaveData[0]
+                challengeSaveDatas = new ChallengeSaveData[0],
+                cosmeticEquipDatas = new CosmeticEquipData[0],
             };
 
             return data;

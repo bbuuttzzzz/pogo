@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Pogo.Difficulty;
+﻿using Pogo.Difficulties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace Pogo
     {
         public DifficultyDescriptor[] Difficulties;
 
-        public DifficultyDescriptor FindByKey(DifficultyId difficulty)
+        public DifficultyDescriptor FindByKey(Difficulty difficulty)
         {
             foreach(var difficultyDescriptor in Difficulties)
             {
