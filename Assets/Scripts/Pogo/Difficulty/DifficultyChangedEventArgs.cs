@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Difficulties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,10 @@ namespace Pogo
 {
     public class DifficultyChangedEventArgs
     {
-        public PogoGameManager.Difficulty InitialDifficulty;
-        public PogoGameManager.Difficulty FinalDifficulty;
+        public Difficulty InitialDifficulty;
+        public Difficulty FinalDifficulty;
 
-        public DifficultyChangedEventArgs(PogoGameManager.Difficulty initialDifficulty, PogoGameManager.Difficulty finalDifficulty)
+        public DifficultyChangedEventArgs(Difficulty initialDifficulty, Difficulty finalDifficulty)
         {
             InitialDifficulty = initialDifficulty;
             FinalDifficulty = finalDifficulty;

@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Pogo.Difficulty;
+﻿using Pogo.Difficulties;
 
 namespace Pogo.Saving
 {
@@ -10,7 +10,7 @@ namespace Pogo.Saving
         public ChapterSaveData[,] chapterProgressDatas;
         public CollectibleUnlockData[] collectibleUnlockDatas;
 
-        public static SaveSlotData NewGameData(string name, DifficultyId difficulty)
+        public static SaveSlotData NewGameData(string name, Difficulty difficulty)
         {
             var data = new SaveSlotData()
             {

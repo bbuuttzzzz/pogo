@@ -1,13 +1,11 @@
-﻿
-
-using Assets.Scripts.Pogo.Difficulty;
+﻿using Pogo.Difficulties;
 
 namespace Pogo.Saving
 {
     [System.Serializable]
     public struct SaveSlotPreviewData
     {
-        public DifficultyId difficulty;
+        public Difficulty difficulty;
         public string name;
         public int CompletionPerMille;
         public long TotalMilliseconds;

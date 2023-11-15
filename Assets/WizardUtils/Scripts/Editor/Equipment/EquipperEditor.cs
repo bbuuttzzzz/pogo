@@ -135,13 +135,28 @@ namespace WizardUtils.Equipment.Inspector
                     EquipmentSlot slot = self.EquipmentSlots[i];
                     GUILayout.BeginHorizontal();
                     {
-                        slot.EquipmentType = (EquipmentTypeDescriptor)EditorGUILayout.ObjectField(slot.EquipmentType, typeof(EquipmentTypeDescriptor), false);
-                        slot.PrefabInstantiationParent = (Transform)EditorGUILayout.ObjectField(slot.PrefabInstantiationParent, typeof(Transform), true);
+                        var newEquipmentType = (EquipmentTypeDescriptor)EditorGUILayout.ObjectField(slot.EquipmentType, typeof(EquipmentTypeDescriptor), false);
+                        if (newEquipmentType != slot.EquipmentType)
+                        {
+                            Undo.RecordObject(self, "Change Slot EquipmentType");
+                            slot.EquipmentType = newEquipmentType;
+                            EditorUtility.SetDirty(self);
+                        }
+
+                        var newPrefabInstantiationParent = (Transform)EditorGUILayout.ObjectField(slot.PrefabInstantiationParent, typeof(Transform), true);
+                        if (newPrefabInstantiationParent != slot.PrefabInstantiationParent)
+                        {
+                            Undo.RecordObject(self, "Change Slot Parent");
+                            slot.PrefabInstantiationParent = newPrefabInstantiationParent;
+                            EditorUtility.SetDirty(self);
+                        }
+
                         if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                         {
                             // mark this slot to delete after we finish drawing the GUI
                             slotIndexToDelete = i;
                         }
+
                     }
                     GUILayout.EndHorizontal();
                     if (slot.PrefabInstantiationParent == null)

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using WizardUtils.Saving;
 using Platforms;
-using Assets.Scripts.Pogo.Difficulty;
 
 namespace Pogo.Saving
 {
@@ -102,6 +101,10 @@ namespace Pogo.Saving
             if (SaveData.challengeSaveDatas == null)
             {
                 SaveData.challengeSaveDatas = new ChallengeSaveData[0];
+            }
+            if (SaveData.cosmeticEquipDatas == null)
+            {
+                SaveData.cosmeticEquipDatas = new CosmeticEquipData[0];
             }
 
             DataState = DataStates.Loaded;

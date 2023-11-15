@@ -27,8 +27,9 @@ namespace Pogo.Challenges
         public LevelState LevelState;
         public DeveloperChallenge DeveloperChallenge;
 
-        public Vector3 StartPoint => StartPointCm.ToVector3() / 100;
-        public Vector3Short StartPointCm;
+        public Vector3 WorldStartPoint => LevelState.Level.ShareOrigin + ShareStartPoint;
+        public Vector3 ShareStartPoint => ShareStartPointCm.ToVector3() / 100;
+        public Vector3Short ShareStartPointCm;
 
         [SerializeField]
         int startYaw;
@@ -41,9 +42,9 @@ namespace Pogo.Challenges
             }
         }
 
-
-        public Vector3 EndPoint => EndPointCm.ToVector3() / 100;
-        public Vector3Short EndPointCm;
+        public Vector3 WorldEndPoint => LevelState.Level.ShareOrigin + ShareEndPoint;
+        public Vector3 ShareEndPoint => ShareEndPointCm.ToVector3() / 100;
+        public Vector3Short ShareEndPointCm;
 
         public ushort LastAttemptTimeMS;
         public float LastAttemptTime => (LastAttemptTimeMS * 1f) / 1000;
@@ -60,9 +61,29 @@ namespace Pogo.Challenges
         {
             ChallengeType = ChallengeTypes.Create;
             LevelState = levelState;
-            StartPointCm = Vector3Short.FromVector3(start.position * 100);
+            ShareStartPointCm = Vector3Short.FromVector3(start.position * 100);
             StartYaw = (int)start.rotation.eulerAngles.y;
-            EndPointCm = Vector3Short.FromVector3(end * 100);
+            ShareEndPointCm = Vector3Short.FromVector3(end * 100);
+        }
+
+        public static bool TryCreate(LevelState levelState, Transform start, Vector3 end, out Challenge challenge)
+        {
+            if (!levelState.Level.TryGetSharePositionCm(start.position, out Vector3Short shareStartPointCm)
+                || !levelState.Level.TryGetSharePositionCm(end, out Vector3Short shareEndPointCm))
+            {
+                challenge = default;
+                return false;
+            }
+
+            challenge = new Challenge() {
+                ChallengeType = ChallengeTypes.Create,
+                LevelState = levelState,
+                ShareStartPointCm = shareStartPointCm,
+                StartYaw = (int)start.rotation.eulerAngles.y,
+                ShareEndPointCm = shareEndPointCm
+            };
+
+            return true;
         }
 
         public Challenge()

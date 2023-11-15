@@ -1,4 +1,5 @@
 using Pogo;
+using Pogo.Difficulties;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +13,7 @@ public class AssistModeMenuController : MonoBehaviour
 
     public void Refresh()
     {
-        if (PogoGameManager.PogoInstance.CurrentDifficulty != PogoGameManager.Difficulty.Freeplay)
+        if (PogoGameManager.PogoInstance.CurrentDifficulty != Difficulty.Assist)
         {
             AssistModeRoot.SetActive(false);
             return;
@@ -32,7 +33,7 @@ public class AssistModeMenuController : MonoBehaviour
 
     public void Skip()
     {
-        if (PogoGameManager.PogoInstance.CurrentDifficulty != PogoGameManager.Difficulty.Freeplay)
+        if (PogoGameManager.PogoInstance.CurrentDifficulty != Difficulty.Assist)
         {
             Debug.LogError($"Skip button was pressed outside of Assist Mode???");
             AssistModeRoot.SetActive(false);

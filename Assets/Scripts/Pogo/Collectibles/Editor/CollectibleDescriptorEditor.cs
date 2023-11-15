@@ -1,3 +1,4 @@
+using Pogo.Cosmetics;
 using Pogo.Levels;
 using System;
 using UnityEditor;
@@ -5,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using WizardUtils.ManifestPattern;
+using WizardUtils.SerializedObjectHelpers;
 
 namespace Pogo.Collectibles
 {
@@ -16,11 +18,30 @@ namespace Pogo.Collectibles
 
         CollectibleDescriptorManifestAssigner<CollectibleManifest, CollectibleDescriptor> dropdown;
 
+        private SerializedProperty m_CosmeticDescriptor;
+        private SerializedProperty m_NotificationPrefab;
+        private SerializedProperty m_SpawnGenericNotification;
+        private SerializedProperty m_GenericNotificationTitle;
+        private SerializedProperty m_GenericNotificationTitle_HalfUnlocked;
+        private SerializedProperty m_GenericNotificationBody;
+        private SerializedProperty m_GenericNotificationBody_HalfUnlocked;
+        private SerializedProperty m_GenericNotification3DIcon;
+
         public override VisualElement CreateInspectorGUI()
         {
             self = target as CollectibleDescriptor;
             dropdown = new CollectibleDescriptorManifestAssigner<CollectibleManifest, CollectibleDescriptor>();
             dropdown.OnNoSetManifests.AddListener(dropdown_noSetManifests);
+
+            m_CosmeticDescriptor = serializedObject.FindProperty(nameof(self.CosmeticDescriptor));
+            m_NotificationPrefab = serializedObject.FindProperty(nameof(self.NotificationPrefab));
+            m_SpawnGenericNotification = serializedObject.FindProperty(nameof(self.SpawnGenericNotification));
+            m_GenericNotificationTitle = serializedObject.FindProperty(nameof(self.GenericNotificationTitle));
+            m_GenericNotificationTitle_HalfUnlocked = serializedObject.FindProperty(nameof(self.GenericNotificationTitle_HalfUnlocked));
+            m_GenericNotificationBody = serializedObject.FindProperty(nameof(self.GenericNotificationBody));
+            m_GenericNotificationBody_HalfUnlocked = serializedObject.FindProperty(nameof(self.GenericNotificationBody_HalfUnlocked));
+            m_GenericNotification3DIcon = serializedObject.FindProperty(nameof(self.GenericNotification3DIcon));
+
             return base.CreateInspectorGUI();
         }
 
@@ -34,15 +55,36 @@ namespace Pogo.Collectibles
 
         public override void OnInspectorGUI()
         {
-            if (self.SceneBuildIndex == -1)
+            if (self.ExistsInWorld && self.SceneBuildIndex == -1)
             {
                 EditorGUILayout.HelpBox("Lost Connection with Prefab. Please reset descriptor.", MessageType.Error);
             }
 
             DrawDefaultInspector();
 
+            if (self.CollectibleType == CollectibleDescriptor.CollectibleTypes.Cosmetic)
+            {
+                EditorGUILayout.PropertyField(m_CosmeticDescriptor);
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(m_SpawnGenericNotification);
+                if (self.SpawnGenericNotification)
+                {
+                    EditorGUILayout.PropertyField(m_GenericNotificationTitle);
+                    EditorGUILayout.PropertyField(m_GenericNotificationTitle_HalfUnlocked);
+                    EditorGUILayout.PropertyField(m_GenericNotificationBody);
+                    EditorGUILayout.PropertyField(m_GenericNotificationBody_HalfUnlocked);
+                    EditorGUILayout.PropertyField(m_GenericNotification3DIcon);
+                }
+                else
+                {
+                    EditorGUILayout.PropertyField(m_NotificationPrefab);
+                }
+            }
+
             dropdown.DrawRegisterButtons(self);
-            if (self.SceneBuildIndex != -1)
+            if (self.ExistsInWorld && self.SceneBuildIndex != -1)
             {
                 if (GUILayout.Button("Find In World"))
                 {
@@ -56,6 +98,22 @@ namespace Pogo.Collectibles
                     EditorApplication.ExecuteMenuItem("Edit/Frame Selected");
                 }
             }
+
+            SerializedObjectUpdater updater = new SerializedObjectUpdater(serializedObject);
+            updater.Add(
+                get: () => self.CosmeticDescriptor,
+                onChangedCallback: onCosmeticChanged);
+
+            updater.ApplyModifiedProperties();
+        }
+
+        private void onCosmeticChanged(SerializedPropertyChangedArgs<CosmeticDescriptor> args)
+        {
+            Undo.RecordObject(args.NewValue, "Update Cosmeitc");
+            args.NewValue.UnlockType = CosmeticDescriptor.UnlockTypes.Collectible;
+            args.NewValue.Collectible = self;
+            EditorUtility.SetDirty(args.NewValue);
+            AssetDatabase.SaveAssetIfDirty(args.NewValue);
         }
 
         private CollectibleController FindController()

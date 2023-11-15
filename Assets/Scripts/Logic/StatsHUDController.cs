@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Difficulties;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,6 +13,9 @@ namespace Pogo.Logic
 
         public bool ShouldShowStopwatch;
 
+        public MeshFilter SkullMesh;
+        public Renderer SkullMeshRenderer;
+
         Animator animator;
         private void Start()
         {
@@ -23,7 +27,9 @@ namespace Pogo.Logic
             PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(onDeath);
             PogoGameManager.PogoInstance.OnPauseStateChanged += onPauseStateChanged;
             PogoGameManager.PogoInstance.OnStatsReset.AddListener(onStatsReset);
+            PogoGameManager.PogoInstance.OnDifficultyChanged.AddListener(onDifficultyChanged);
         }
+
 
         private void onShowTimerChanged(object sender, WizardUtils.GameSettingChangedEventArgs e)
         {
@@ -34,6 +40,11 @@ namespace Pogo.Logic
         private void onStatsReset()
         {
             OnDeathCountChanged?.Invoke(PogoGameManager.PogoInstance.CurrentSessionDeaths);
+        }
+        private void onDifficultyChanged(DifficultyChangedEventArgs e)
+        {
+            SkullMesh.sharedMesh = PogoGameManager.PogoInstance.CurrentDifficultyDescriptor.SkullMesh;
+            SkullMeshRenderer.sharedMaterial = PogoGameManager.PogoInstance.CurrentDifficultyDescriptor.SkullMaterial;
         }
 
         private void Update()

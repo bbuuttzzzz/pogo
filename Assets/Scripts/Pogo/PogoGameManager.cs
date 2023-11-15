@@ -4,6 +4,8 @@ using Platforms;
 using Pogo.Challenges;
 using Pogo.Checkpoints;
 using Pogo.Collectibles;
+using Pogo.Cosmetics;
+using Pogo.Difficulties;
 using Pogo.Levels;
 using Pogo.Saving;
 using System;
@@ -32,8 +34,10 @@ namespace Pogo
             base.Awake();
             if (GameInstance != this) return;
 
+            CurrentDifficultyDescriptor = DifficultyManifest.FindByKey(Difficulty.Normal);
             LoadCheckpointManifest = new CheckpointManifest();
             LoadGlobalSave();
+            LoadCosmetics();
             RespawnPoint = new RespawnPointData(CachedRespawnPoint);
             levelManager = GetComponent<PogoLevelManager>();
 
@@ -602,7 +606,156 @@ namespace Pogo
         }
 
 
-#endregion
+        #endregion
+
+        #region Cosmetics
+
+        public CosmeticManifest CosmeticManifest;
+        public GameObject GenericCosmeticNotificationPrefab;
+
+        public void LoadCosmetics()
+        {
+            foreach(var manifest in CosmeticManifest.Slots)
+            {
+                var equipData = CurrentGlobalDataTracker.GetCosmeticSlotEquipData(manifest.Slot, manifest.Default.Key);
+                CosmeticDescriptor descriptor = FindUnlockedCosmeticByKey(manifest, equipData.Key);
+
+                EquipCosmetic(descriptor, false);
+            }
+        }
+
+        public CosmeticDescriptor GetCosmetic(CosmeticSlots slot, string defaultKey)
+        {
+            var equipData = CurrentGlobalDataTracker.GetCosmeticSlotEquipData(slot, defaultKey);
+            CosmeticSlotManifest slotManifest = CosmeticManifest.Find(equipData.Slot);
+            return FindUnlockedCosmeticByKey(slotManifest, equipData.Key);
+        }
+
+        public bool CosmeticIsUnlocked(CosmeticDescriptor cosmetic)
+        {
+            switch (cosmetic.UnlockType)
+            {
+                case CosmeticDescriptor.UnlockTypes.AlwaysUnlocked:
+                    return true;
+                case CosmeticDescriptor.UnlockTypes.VendingMachine:
+                    return VendingCosmeticUnlocked(cosmetic);
+                case CosmeticDescriptor.UnlockTypes.Collectible:
+                    return CurrentGlobalDataTracker.GetCollectible(cosmetic.Collectible.Key).isUnlocked;
+                default:
+                    return false;
+            }
+        }
+
+        public bool VendingCosmeticUnlocked(CosmeticDescriptor cosmetic)
+        {
+            if (!CosmeticManifest.Vending.TryFind(cosmetic, out var vendingMachineEntry))
+            {
+                Debug.LogWarning($"Couldn't find Vending Cosmetic {cosmetic.Key}");
+                return false;
+            }
+
+            return vendingMachineEntry.Cost <= CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock.Cost;
+        }
+
+        public bool TryGetNextVendingUnlock(out VendingMachineUnlockData result)
+        {
+            int lastCost = CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock.Cost;
+            if (!CosmeticManifest.Vending.TryGetNext(lastCost, out VendingMachineEntry nextUnlock))
+            {
+                result = default;
+                return false;
+            }
+
+            int coinsNeeded = nextUnlock.Cost - CurrentGlobalDataTracker.SaveData.CollectedCoins;
+            result = new VendingMachineUnlockData()
+            {
+                Cosmetic = nextUnlock.Cosmetic,
+                CoinsNeeded = coinsNeeded,
+            };
+            return true;
+        }
+
+        public void EquipCosmetic(CosmeticDescriptor cosmetic, bool saveChanges = true)
+        {
+            if (saveChanges)
+            {
+                CurrentGlobalDataTracker.SetCosmetic(new CosmeticEquipData()
+                {
+                    Slot = cosmetic.Slot,
+                    Key = cosmetic.Key
+                });
+            }
+
+            switch(cosmetic)
+            {
+                case PogoStickDescriptor pogoStick:
+                    Equip(pogoStick.Equipment);
+                    break;
+                case TrailDescriptor trail:
+                    Equip(trail.Equipment);
+                    break;
+                case ModelDescriptor model:
+                    Equip(model.Equipment);
+                    break;
+            }
+        }
+
+        private CosmeticDescriptor FindUnlockedCosmeticByKey(CosmeticSlotManifest manifest, string key)
+        {
+            try
+            {
+                CosmeticDescriptor descriptor = manifest.FindByKey(key);
+
+                if (CosmeticIsUnlocked(descriptor))
+                {
+                    return descriptor;
+                }
+                else
+                {
+                    return manifest.Default;
+                }
+            }
+            catch (KeyNotFoundException)
+            {
+                return manifest.Default;
+            }
+        }
+
+        public bool TryUnlockNextVendingUnlock(out CosmeticDescriptor unlockedCosmetic)
+        {
+            if (!TryGetNextVendingUnlock(out VendingMachineUnlockData unlockData)
+                || unlockData.CoinsNeeded > 0)
+            {
+                unlockedCosmetic = default;
+                return false;
+            }
+
+            if (unlockData.Cosmetic.UnlockType != CosmeticDescriptor.UnlockTypes.VendingMachine)
+            {
+                throw new ArgumentException($"Cosmetic {unlockData.Cosmetic.name} of bad type {unlockData.Cosmetic.UnlockType}");
+            }
+
+            if (!CosmeticManifest.Vending.TryFind(unlockData.Cosmetic, out var result))
+            {
+                Debug.LogError($"Tried to do vending machine stuff for a missing cosmetic {unlockData.Cosmetic}.");
+                unlockedCosmetic = default;
+                return false;
+            }
+
+            if (result.Cost >= CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock.Cost)
+            {
+                CurrentGlobalDataTracker.SaveData.LastVendingMachineUnlock = new VendingMachineLastUnlockSaveData()
+                {
+                    Cost = result.Cost,
+                    Key = unlockData.Cosmetic.Key
+                };
+            }
+
+            unlockedCosmetic = unlockData.Cosmetic;
+            return true;
+        }
+
+        #endregion
 
         #region Equipment
 
@@ -611,7 +764,7 @@ namespace Pogo
         public UnityEvent<NonInstancedEquipmentSlot> OnEquip;
         public void Equip(EquipmentDescriptor equipment)
         {
-            var slot = FindSlot(equipment.SlotType);
+            var slot = FindEquipmentSlot(equipment.SlotType);
 
             if (slot == null)
             {
@@ -623,7 +776,7 @@ namespace Pogo
             OnEquip?.Invoke(slot);
         }
 
-        public NonInstancedEquipmentSlot FindSlot(EquipmentTypeDescriptor slotType)
+        public NonInstancedEquipmentSlot FindEquipmentSlot(EquipmentTypeDescriptor slotType)
         {
             foreach (var slot in Loadout)
             {
@@ -719,37 +872,30 @@ namespace Pogo
 
         public Transform GetRespawnTransform()
         {
-            var point = CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint.transform;
+            var point = CurrentDifficulty == Difficulty.Assist && CustomRespawnActive ? CustomCheckpoint.transform : RespawnPoint.transform;
             return point == null ? CachedRespawnPoint.transform : point;
         }
 
         public DifficultyManifest DifficultyManifest;
-        public enum Difficulty
-        {
-            Normal,
-            Hard,
-            Freeplay,
-            Expert,
-            Challenge
-        }
         public UnityEvent<DifficultyChangedEventArgs> OnDifficultyChanged;
-        private Difficulty currentDifficulty = Difficulty.Normal;
+        public DifficultyDescriptor CurrentDifficultyDescriptor { get; private set; }
         public Difficulty CurrentDifficulty
         {
-            get => currentDifficulty;
+            get => CurrentDifficultyDescriptor.DifficultyEnum;
             set
             {
-                if (value == currentDifficulty) return;
-                Debug.Log($"Changing difficulty {currentDifficulty} -> {value}");
-                OnDifficultyChanged?.Invoke(new DifficultyChangedEventArgs(currentDifficulty, value));
-                currentDifficulty = value;
+                if (value == CurrentDifficultyDescriptor.DifficultyEnum) return;
+                CurrentDifficultyDescriptor = DifficultyManifest.FindByKey(value);
+
+                Debug.Log($"Changing difficulty {CurrentDifficulty} -> {value}");
+                OnDifficultyChanged?.Invoke(new DifficultyChangedEventArgs(CurrentDifficulty, value));
             }
         }
 
 
         public bool RegisterCustomRespawnPoint(Vector3 point, Quaternion forward)
         {
-            if (CurrentDifficulty == Difficulty.Freeplay && CustomCheckpoint.Place(point, forward))
+            if (CurrentDifficulty == Difficulty.Assist && CustomCheckpoint.Place(point, forward))
             {
                 CustomRespawnActive = true;
                 CustomRespawnLevel = levelManager.CurrentLevel;
@@ -762,7 +908,7 @@ namespace Pogo
 
         public bool ResetCustomRespawnPoint(bool force = false)
         {
-            if (force || CurrentDifficulty == Difficulty.Freeplay && CustomRespawnActive)
+            if (force || CurrentDifficulty == Difficulty.Assist && CustomRespawnActive)
             {
                 CustomRespawnActive = false;
                 CustomCheckpoint.Hide();
@@ -794,9 +940,9 @@ namespace Pogo
 
         public bool CanRegisterRespawnPoint(Transform newRespawnPointTransform)
         {
-            if (newRespawnPointTransform == PogoInstance.RespawnPoint.transform || CurrentDifficulty == Difficulty.Expert) return false;
+            if (newRespawnPointTransform == PogoInstance.RespawnPoint.transform) return false;
 
-            if (CurrentDifficulty == Difficulty.Normal || CurrentDifficulty == Difficulty.Freeplay)
+            if (CurrentDifficulty == Difficulty.Normal || CurrentDifficulty == Difficulty.Assist)
             {
                 return true;
             }
@@ -897,9 +1043,7 @@ namespace Pogo
             CurrentSlotDataTracker.Load();
             OnSaveSlotChanged?.Invoke();
 
-            var difficultyId = CurrentSlotDataTracker.PreviewData.difficulty;
-            var difficulty = DifficultyManifest.FindByKey(difficultyId);
-            Equip(difficulty.PogoEquipment);
+            CurrentDifficulty = CurrentSlotDataTracker.PreviewData.difficulty;
         }
 
         public void NewGameSlot(
@@ -1069,7 +1213,6 @@ namespace Pogo
             }
 
 
-
             OnCollectibleUnlocked?.Invoke(new CollectibleUnlockedEventArgs(collectible, unlockedGlobally, unlockedInSlot));
             if ((unlockedInSlot || unlockedGlobally))
             {
@@ -1079,7 +1222,12 @@ namespace Pogo
 
         private void SpawnCollectibleNotification(CollectibleUnlockedEventArgs args)
         {
-            if (args.Collectible.NotificationPrefab != null)
+            if (args.Collectible.CollectibleType == CollectibleDescriptor.CollectibleTypes.Cosmetic)
+            {
+                var newElement = UIManager.Instance.SpawnUIElement(GenericCosmeticNotificationPrefab);
+                newElement.GetComponent<GenericCosmeticNotificationController>().Initialize(args.Collectible.CosmeticDescriptor);
+            }
+            else if (args.Collectible.NotificationPrefab != null)
             {
                 _ = UIManager.Instance.SpawnUIElement(args.Collectible.NotificationPrefab);
             }

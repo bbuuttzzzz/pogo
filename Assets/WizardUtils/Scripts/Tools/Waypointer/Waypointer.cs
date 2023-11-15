@@ -27,10 +27,17 @@ namespace WizardUtils
         public bool UseCustomCurve;
         public AnimationCurve CustomCurve;
 
+#if UNITY_EDITOR
+        public bool EnableVerboseLogging;
+#endif
+
         public virtual void Awake()
         {
             initialValue = GetCurrentValue();
-            SnapToWaypoint(InitialWaypointIndex);
+            if (InitialWaypointIndex >= 0)
+            {
+                SnapToWaypoint(InitialWaypointIndex);
+            }
         }
 
         public virtual void Update()
@@ -77,6 +84,17 @@ namespace WizardUtils
 
         public void GoToWaypoint(int waypointIndex)
         {
+#if UNITY_EDITOR
+            if (EnableVerboseLogging)
+            {
+                Debug.Log($"{name} GoToWaypoint {waypointIndex}");
+            }
+#endif
+            InternalGoToWaypoint(waypointIndex);
+        }
+
+        private void InternalGoToWaypoint(int waypointIndex)
+        {
             lastValue = GetCurrentValue();
             nextValue = GetWaypoint(waypointIndex);
             changeStartTime = Now;
@@ -91,7 +109,13 @@ namespace WizardUtils
 
         public void SnapToWaypoint(int waypointIndex)
         {
-            GoToWaypoint(waypointIndex);
+#if UNITY_EDITOR
+            if (EnableVerboseLogging)
+            {
+                Debug.Log($"{name} SnapToWaypoint {waypointIndex}");
+            }
+#endif
+            InternalGoToWaypoint(waypointIndex);
             FinishNow();
         }
 

@@ -1,5 +1,6 @@
 ﻿using Pogo.Challenges;
 using Pogo.Collectibles;
+using Pogo.Cosmetics;
 using Pogo.Saving;
 using System;
 using System.Collections.Generic;
@@ -71,6 +72,49 @@ namespace Pogo.Saving
             {
                 SaveData.collectibleUnlockDatas[id] = data;
             }
+        }
+
+        public void SetCosmetic(CosmeticEquipData data)
+        {
+            int id = IndexOfCosmetic(data.Slot);
+            if (id == -1)
+            {
+                ArrayHelper.InsertAndResize(ref SaveData.cosmeticEquipDatas, data);
+            }
+            else
+            {
+                SaveData.cosmeticEquipDatas[id] = data;
+            }
+        }
+
+        public CosmeticEquipData GetCosmeticSlotEquipData(CosmeticSlots slot, string defaultKey)
+        {
+            int id = IndexOfCosmetic(slot);
+            if (id == -1)
+            {
+                return new CosmeticEquipData()
+                {
+                    Slot = slot,
+                    Key = defaultKey
+                };
+            }
+            else
+            {
+                return SaveData.cosmeticEquipDatas[id];
+            }
+        }
+
+        public int IndexOfCosmetic(CosmeticSlots slot)
+        {
+            for (int n = 0; n < SaveData.cosmeticEquipDatas.Length; n++)
+            {
+                if (SaveData.cosmeticEquipDatas[n].Slot == slot)
+                {
+                    return n;
+                }
+            }
+
+            return -1;
         }
 
         public int IndexOfChallenge(string challengeId)
