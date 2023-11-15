@@ -45,6 +45,8 @@ namespace Pogo
 
             updater.Add(() => self.Radius, OnLineShapeChanged);
             updater.Add(() => self.FlagOffset, OnLineShapeChanged);
+
+            updater.ApplyModifiedProperties();
         }
         private bool GetHardModeEnabled()
         {
