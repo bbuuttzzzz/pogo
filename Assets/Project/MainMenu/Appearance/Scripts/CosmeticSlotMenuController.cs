@@ -11,8 +11,6 @@ namespace Pogo.Cosmetics
 {
     public class CosmeticSlotMenuController : MonoBehaviour
     {
-        public CosmeticManifest manifest;
-
         public void OnEnable()
         {
             UpdateButtons();
