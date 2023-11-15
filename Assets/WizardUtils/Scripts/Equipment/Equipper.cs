@@ -63,7 +63,6 @@ namespace WizardUtils.Equipment
                     Destroy(slot.ObjectInstance);
                 else
                 {
-                    UnityEditor.Undo.RecordObject(slot.ObjectInstance, "Destroy Old Equip Instance");
                     DestroyImmediate(slot.ObjectInstance);
                 }
 
@@ -87,16 +86,8 @@ namespace WizardUtils.Equipment
             }
             else
             {
-                using (new UndoScope("ApplySlotInEditor"))
-                {
-                    var result = UnityEditor.PrefabUtility.InstantiatePrefab(slot.Equipment.Prefab, slot.PrefabInstantiationParent);
-                    Undo.RecordObject(this, "");
-
-                    slot.ObjectInstance = result as GameObject;
-                    Undo.RegisterCreatedObjectUndo(result as GameObject, "");
-
-                    EditorUtility.SetDirty(this);
-                }
+                var result = UnityEditor.PrefabUtility.InstantiatePrefab(slot.Equipment.Prefab, slot.PrefabInstantiationParent);
+                slot.ObjectInstance = result as GameObject;
             }
         }
 #endif
@@ -177,24 +168,6 @@ namespace WizardUtils.Equipment
             }
 
             return false;
-        }
-        #endregion
-
-        #region UndoScope
-        public class UndoScope : IDisposable
-        {
-            private int undoGroup;
-
-            public UndoScope(string text)
-            {
-                Undo.SetCurrentGroupName(text);
-                undoGroup = Undo.GetCurrentGroup();
-            }
-
-            public void Dispose()
-            {
-                Undo.CollapseUndoOperations(undoGroup);
-            }
         }
         #endregion
     }

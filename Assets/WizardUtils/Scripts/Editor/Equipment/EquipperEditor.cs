@@ -200,13 +200,20 @@ namespace WizardUtils.Equipment.Inspector
                         {
                             if (GUILayout.Button("Apply Equip"))
                             {
+                                using var undoScope = new UndoScope("Apply Equip In Editor");
+
                                 if (slot.Equipment != null)
                                 {
-                                    self.DeApplySlotInEditor(slot);
+                                    Undo.DestroyObjectImmediate(slot.ObjectInstance);
                                 }
-                                self.ApplySlotInEditor(slot);
+                                else
+                                {
+                                    self.ApplySlotInEditor(slot);
+                                    Undo.RegisterCreatedObjectUndo(slot.ObjectInstance, "");
+                                }
 
                                 Undo.RecordObject(self, "Apply Equipment");
+                                EditorUtility.SetDirty(self);
                                 PrefabUtility.RecordPrefabInstancePropertyModifications(self);
                             }
                         }
