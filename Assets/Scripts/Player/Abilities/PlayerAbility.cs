@@ -89,8 +89,9 @@ namespace Pogo.Abilities
         public void CleanseInstantly() => Cleanse(true);
         public void Cleanse(bool instant)
         {
-
+            if (!isApplied) return;
             isApplied = false;
+
             OnCleanse();
             Owner.OnTouch.RemoveListener(Target_OnTouch);
             Owner.OnDie.RemoveListener(Target_OnSpawn);

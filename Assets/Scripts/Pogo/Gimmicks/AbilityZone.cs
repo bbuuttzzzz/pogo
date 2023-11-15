@@ -16,8 +16,7 @@ namespace Pogo
             if (player == null) return;
             if (cachedAbilityInstance != null)
             {
-                Debug.LogWarning("Tried to double-apply an AbilityZone D:", this);
-                return;
+                cachedAbilityInstance.CleanseInstantly();
             }
 
             var abilityObject = Instantiate(Ability.Prefab, player.RenderTransform);
