@@ -14,6 +14,9 @@ namespace Pogo.Cosmetics
 {
     public class VendingMachineButtonController : MonoBehaviour
     {
+        public string NoMoreUnlocksText;
+        public Sprite NoMoreUnlocksSprite;
+
         [Range(0f, 1f)]
         public float HighlightPower;
 
@@ -110,7 +113,16 @@ namespace Pogo.Cosmetics
             else
             {
                 NextUnlockText.text = "";
-                CosmeticImage.enabled = false;
+                if (NoMoreUnlocksSprite != null)
+                {
+                    CosmeticImage.enabled = true;
+                    CosmeticImage.sprite = NoMoreUnlocksSprite;
+                }
+                else
+                {
+                    CosmeticImage.enabled = false;
+                }
+                NextUnlockText.text = NoMoreUnlocksText;
             }
             QuarterCountText.text = GetQuarterCountText(QuarterCount);
         }

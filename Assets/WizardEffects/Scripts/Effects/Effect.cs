@@ -16,10 +16,16 @@ namespace WizardEffects
         public EffectEvent OnPerform;
         public UnityEvent OnFinish;
 
+        public bool MoveToPosition;
+
         public virtual void Perform(EffectData effectData)
         {
             idle = false;
             finishTime = Time.time + lifetime;
+            if (MoveToPosition)
+            {
+                transform.position = effectData.position;
+            }
             OnPerform?.Invoke(new EffectEventArgs(effectData));
         }
 
