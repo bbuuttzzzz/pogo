@@ -28,7 +28,8 @@ namespace Pogo.Saving
                     collectibleUnlockDatas = new CollectibleUnlockData[unlockedCollectibles.Length],
                     challengeSaveDatas = new ChallengeSaveData[0],
                     cosmeticEquipDatas = new CosmeticEquipData[equippedCosmetics.Length],
-                    LastVendingMachineUnlock = lastUnlockSaveData
+                    LastVendingMachineUnlock = lastUnlockSaveData,
+                    CollectedCoins = unlockedCollectibles.Where(x => x.CollectibleType == CollectibleDescriptor.CollectibleTypes.Coin).Count(),
                 };
 
                 for (int n = 0; n < unlockedCollectibles.Length; n++)

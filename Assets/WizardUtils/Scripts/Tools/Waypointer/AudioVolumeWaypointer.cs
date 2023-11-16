@@ -5,6 +5,8 @@ namespace WizardUtils
     public class AudioVolumeWaypointer : Waypointer<float>
     {
         public AudioSource Target;
+        public bool PauseOnStop;
+
         protected override float GetCurrentValue()
         {
             return Target.volume;
@@ -19,7 +21,14 @@ namespace WizardUtils
             }
             else if (newValue == 0 && Target.volume > 0)
             {
-                Target.Stop();
+                if (PauseOnStop)
+                {
+                    Target.Pause();
+                }
+                else
+                {
+                    Target.Stop();
+                }
             }
             Target.volume = newValue;
         }

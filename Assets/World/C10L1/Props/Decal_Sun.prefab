@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3693676285921813550}
   - component: {fileID: 9085899874565149490}
   - component: {fileID: 3534806966858922331}
-  - component: {fileID: 7323254990356467334}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -84,31 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7323254990356467334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2073894212811023780}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 556c25b7d63e5db4289889b0e24e034a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Waypoints:
-  - {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
-  InitialWaypointIndex: -1
-  TransitionDuration: 15
-  UseRealTime: 0
-  UseCustomCurve: 0
-  CustomCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  renderer: {fileID: 3534806966858922331}
 --- !u!1 &6165869402845677681
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,7 +92,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4523322652056667666}
-  - component: {fileID: 425770438524514889}
   m_Layer: 0
   m_Name: Decal_Sun
   m_TagString: Untagged
@@ -142,15 +115,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!114 &425770438524514889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6165869402845677681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c3a7eb2d117e6647a5e422703fba659, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
