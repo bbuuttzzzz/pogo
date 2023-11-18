@@ -23,7 +23,7 @@ namespace Pogo.Levels.Loading
         #endregion
 
         private PogoLevelManager parent;
-        public LevelDescriptor Level { get; private set; }
+        public readonly LevelDescriptor Level;
 
         public float TaskProgress { get; private set; }
         private Coroutine ActiveCoroutine;
@@ -43,6 +43,10 @@ namespace Pogo.Levels.Loading
             // don't be coy with scene loading on web
             AllowSceneActivation = true;
 #endif
+            if (level == null)
+            {
+                throw new NullReferenceException("Tried to create a LevelSceneLoader with a NULL level");
+            }
 
             this.parent = parent;
             Level = level;
