@@ -133,7 +133,7 @@ namespace Pogo.Levels
             }
             currentLevel = settings.Level;
 
-            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(settings.Level.LoadLevels, CurrentLevelSceneLoaders);
+            (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(settings.Level, CurrentLevelSceneLoaders);
 
             foreach (var sceneLevel in scenesToLoad)
             {
@@ -156,6 +156,12 @@ namespace Pogo.Levels
                 if (loader == null)
                 {
                     LevelDescriptor level = FindLevelBySceneBuildIndex(scene.buildIndex);
+                    if (level == null)
+                    {
+                        Debug.LogError($"LoadLevelAsync Failed to find level with buildIndex {scene.buildIndex}. We are going to unload it unsafely!");
+                        SceneManager.UnloadSceneAsync(scene);
+                        continue;
+                    }
                     loader = new LevelSceneLoader(this, level, true);
                     CurrentLevelSceneLoaders.Add(loader);
                 }
@@ -281,14 +287,29 @@ namespace Pogo.Levels
             10 // Credits
         };
 
-        static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) GetSceneDifference(LevelDescriptor newLevel)
+        static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) GetSceneDifference(LevelDescriptor newLevel,
+            IEnumerable<LevelSceneLoader> loaders = null)
         {
-            return GetSceneDifference(newLevel.LoadLevels, new LevelSceneLoader[0]);
+#if DEBUG
+            var solidLevels = newLevel.LoadLevels.ToList();
+            for (int i = solidLevels.Count - 1; i >= 0; i--)
+            {
+                LevelDescriptor level = solidLevels[i];
+                if (level == null)
+                {
+                    Debug.LogWarning($"One of the Adjacent levels for {newLevel} is NULL!!! (index {i})");
+                    solidLevels.RemoveAt(i);
+                }
+            }
+            return GetSceneDifference(solidLevels, loaders ?? new LevelSceneLoader[0]);
+#else
+            return GetSceneDifference(newLevel.LoadLevels, loaders ?? new LevelSceneLoader[0]);
+#endif
         }
 
         static (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) GetSceneDifference(
-            ICollection<LevelDescriptor> loadLevels,
-            ICollection<LevelSceneLoader> loaders
+            IEnumerable<LevelDescriptor> loadLevels,
+            IEnumerable<LevelSceneLoader> loaders
             )
         {
             List<LevelDescriptor> scenesToLoad = new List<LevelDescriptor>(loadLevels);
@@ -298,6 +319,8 @@ namespace Pogo.Levels
             for (int n = 0; n < SceneManager.sceneCount; n++)
             {
                 Scene scene = SceneManager.GetSceneAt(n);
+                
+                // just ignore the GameScene, Main Menu, and Credits scenes
                 if (GameManager.ignoredScenes.Contains(scene.buildIndex)
                     || ignoredScenes.Contains(scene.buildIndex)) continue;
 
@@ -349,7 +372,7 @@ namespace Pogo.Levels
 
             return (scenesToLoad, scenesToUnload);
         }
-        #endregion
+#endregion
 
         #region Atmosphere
         public Transform AtmosphereParent;

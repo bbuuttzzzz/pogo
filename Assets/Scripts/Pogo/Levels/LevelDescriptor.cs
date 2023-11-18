@@ -24,14 +24,11 @@ namespace Pogo.Levels
         /// <summary>
         /// all levels that should be loaded. this includes itself
         /// </summary>
-        public List<LevelDescriptor> LoadLevels
+        public IEnumerable<LevelDescriptor> LoadLevels
         {
             get
             {
-                var list = new List<LevelDescriptor>(AdjacentLevels.Length + 1);
-                list.AddRange(AdjacentLevels);
-                list.Add(this);
-                return list;
+                return AdjacentLevels.Append(this);
             }
         }
 
