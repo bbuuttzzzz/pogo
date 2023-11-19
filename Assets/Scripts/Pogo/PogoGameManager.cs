@@ -156,7 +156,6 @@ namespace Pogo
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
 #endif
-
             settings.LoadingFromMenu = settings.LoadingFromMenu || CurrentControlScene != null;
             levelManager.LoadLevelAsync(settings);
         }
