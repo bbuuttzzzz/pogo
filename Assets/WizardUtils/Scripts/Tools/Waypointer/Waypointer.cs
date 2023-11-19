@@ -38,6 +38,10 @@ namespace WizardUtils
             {
                 SnapToWaypoint(InitialWaypointIndex);
             }
+            else
+            {
+                arrived = true;
+            }
         }
 
         public virtual void Update()
