@@ -53,7 +53,7 @@ namespace Pogo.AssemblyLines
 
                 var controller = newObject.GetComponent<AssemblyLineEntryController>();
 
-                controller.CycleOffset = (self.CycleOffset + (self.DelaySeconds * n) / length) % 1;
+                controller.CycleOffset = ((self.CycleOffset / goodCount) + (self.DelaySeconds * n) / length) % 1;
                 controller.SetStartingPosition();
 
                 Undo.RegisterCreatedObjectUndo(newObject, "");
