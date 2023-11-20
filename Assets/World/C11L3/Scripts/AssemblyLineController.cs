@@ -9,6 +9,6 @@ namespace Pogo.AssemblyLines
         public AnimationClip TargetAnimationClip;
         public GameObject Prefab;
         public float DelaySeconds;
-
+        public float CycleOffset;
     }
 }
