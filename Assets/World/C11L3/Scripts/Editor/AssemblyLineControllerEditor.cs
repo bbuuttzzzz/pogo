@@ -40,7 +40,7 @@ namespace Pogo.AssemblyLines
             }
 
             float length = self.TargetAnimationClip.length;
-            float roughCount = length % self.DelaySeconds;
+            float roughCount = length / self.DelaySeconds;
             int goodCount = (int)roughCount;
             if (roughCount - goodCount > 0.01f)
             {

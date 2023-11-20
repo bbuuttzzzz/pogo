@@ -10,9 +10,5 @@ namespace Pogo.AssemblyLines
         public GameObject Prefab;
         public float DelaySeconds;
 
-        public void Repopulate()
-        {
-
-        }
     }
 }
