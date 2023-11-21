@@ -62,6 +62,9 @@ namespace Pogo.Cosmetics
                     case ModelDescriptor modelDescriptor:
                         self.equipper.EquipInEditor(modelDescriptor.Equipment);
                         break;
+                    case AccessoryDescriptor accessory:
+                        self.equipper.EquipInEditor(accessory.Equipment);
+                        break;
 
                 }
             }

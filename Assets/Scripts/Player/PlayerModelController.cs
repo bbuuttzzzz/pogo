@@ -33,6 +33,10 @@ namespace Assets.Scripts.Player
 
         private void OnDestroy()
         {
+            foreach(var attachment in Attachments)
+            {
+                attachment.OnDetach();
+            }
             if (Parent != null)
             {
                 UnLink();

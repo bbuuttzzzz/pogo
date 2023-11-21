@@ -22,8 +22,6 @@ public class PlayerController : MonoBehaviour
     public CollisionGroup CollisionGroup;
     public float AutoRespawnDelay;
     public PlayerJostler Jostler;
-    [NonSerialized]
-    public PlayerModelController CurrentModelController;
     public EquipmentTypeDescriptor PlayerModelEquipmentType;
 
     public Vector3 PhysicsPosition
@@ -56,6 +54,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         GetComponent<Equipper>().OnEquip.AddListener(Equipper_OnEquip);
+        OnModelControllerChanged = new UnityEvent<PlayerModelController>();
     }
 
     void Start()
@@ -97,19 +96,6 @@ public class PlayerController : MonoBehaviour
     {
         PogoGameManager.GameInstance.OnPauseStateChanged -= onPauseStateChanged;
         PogoGameManager.GameInstance.OnControlSceneChanged -= onControlSceneChanged;
-    }
-
-
-    private void Equipper_OnEquip(EquipmentSlot arg0)
-    {
-        if (arg0.EquipmentType == PlayerModelEquipmentType)
-        {
-            CurrentModelController = GetComponent<Equipper>()
-                .FindSlot(PlayerModelEquipmentType)
-                .ObjectInstance
-                .GetComponent<PlayerModelController>();
-            CurrentModelController.Link(this);
-        }
     }
 
     private static int convertInvertYSetting(float settingValue)
@@ -200,6 +186,29 @@ public class PlayerController : MonoBehaviour
     private void RenderMove(float t)
     {
         RenderPosition = Vector3.Lerp(lastPhysicsPosition, PhysicsPosition, t);
+    }
+
+    #endregion
+
+    #region Cosmetics
+
+    [NonSerialized]
+    public UnityEvent<PlayerModelController> OnModelControllerChanged;
+
+    [NonSerialized]
+    public PlayerModelController CurrentModelController;
+
+    private void Equipper_OnEquip(EquipmentSlot arg0)
+    {
+        if (arg0.EquipmentType == PlayerModelEquipmentType)
+        {
+            CurrentModelController = GetComponent<Equipper>()
+                .FindSlot(PlayerModelEquipmentType)
+                .ObjectInstance
+                .GetComponent<PlayerModelController>();
+            CurrentModelController.Link(this);
+            OnModelControllerChanged?.Invoke(CurrentModelController);
+        }
     }
 
     #endregion

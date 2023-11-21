@@ -1,5 +1,4 @@
-﻿using Pogo.Collectibles;
-using UnityEngine;
+﻿using UnityEngine;
 using WizardUtils.Equipment;
 
 namespace Pogo.Cosmetics

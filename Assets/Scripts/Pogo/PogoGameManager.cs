@@ -696,6 +696,9 @@ namespace Pogo
                 case ModelDescriptor model:
                     Equip(model.Equipment);
                     break;
+                case AccessoryDescriptor accessory:
+                    Equip(accessory.Equipment);
+                    break;
             }
         }
 
