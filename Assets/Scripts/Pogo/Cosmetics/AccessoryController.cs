@@ -12,15 +12,19 @@ namespace Pogo.Cosmetics
         public void Start()
         {
             var player = GetComponentInParent<PlayerController>(true);
-
             if (player == null)
             {
+                Debug.LogWarning("missing PlayerController above AccessoryController", this);
                 return;
             }
-            player.OnModelControllerChanged?.AddListener(Player_OnModelControllerChanged);
-            if (player.CurrentModelController != null)
+            
+            if (Attachment != null)
             {
-                player.CurrentModelController.AddAttachment(Attachment);
+                player.OnModelControllerChanged?.AddListener(Player_OnModelControllerChanged);
+                if (player.CurrentModelController != null)
+                {
+                    player.CurrentModelController.AddAttachment(Attachment);
+                }
             }
         }
 
