@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Assets.Scripts.Player
+namespace Pogo.Cosmetics
 {
     public class PlayerModelController : MonoBehaviour
     {
@@ -33,7 +33,7 @@ namespace Assets.Scripts.Player
 
         private void OnDestroy()
         {
-            foreach(var attachment in Attachments)
+            foreach (var attachment in Attachments)
             {
                 attachment.OnDetach();
             }
@@ -63,7 +63,7 @@ namespace Assets.Scripts.Player
             OnDisjoint?.Invoke();
         }
 
-        
+
 
         #region Model Attachments
         private void UpdateAttachments()

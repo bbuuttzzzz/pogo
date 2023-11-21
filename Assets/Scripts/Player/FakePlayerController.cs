@@ -1,9 +1,10 @@
-using Assets.Scripts.Player;
+using Pogo.Cosmetics;
 using Pogo.MaterialTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using WizardPhysics;
 using WizardUtils;
 using WizardUtils.Equipment;
@@ -11,7 +12,7 @@ using WizardUtils.Equipment;
 namespace Pogo
 {
     [RequireComponent(typeof(CollisionGroup))]
-    public class FakePlayerController : MonoBehaviour
+    public class FakePlayerController : MonoBehaviour, IPlayerModelControllerProvider
     {
         CollisionGroup collisionGroup;
         public AudioController AudioController;
@@ -19,6 +20,8 @@ namespace Pogo
         public float GravityScale = 1;
         [NonSerialized]
         public PlayerModelController CurrentModelController;
+        [NonSerialized]
+        public UnityEvent<PlayerModelController> OnModelControllerChanged;
         public EquipmentTypeDescriptor PlayerModelEquipmentType;
 
         private void Awake()
@@ -26,6 +29,7 @@ namespace Pogo
             loadSurfaceProperties();
             collisionGroup = GetComponent<CollisionGroup>();
             GetComponent<Equipper>().OnEquip.AddListener(Equipper_OnEquip);
+            OnModelControllerChanged = new UnityEvent<PlayerModelController>();
         }
 
         private void Update()
@@ -43,6 +47,7 @@ namespace Pogo
                     .ObjectInstance
                     .GetComponent<PlayerModelController>();
                 CurrentModelController.OnLoadAsDisplayModel.Invoke();
+                OnModelControllerChanged.Invoke(CurrentModelController);
             }
         }
 
@@ -90,6 +95,13 @@ namespace Pogo
             //since I'm not going too fast, make me go just the right speed in that direction
             Velocity += addSpeed * direction;
         }
+
+        #region IPlayerModelControllerProvider
+        PlayerModelController IPlayerModelControllerProvider.PlayerModelController => CurrentModelController;
+
+        UnityEvent<PlayerModelController> IPlayerModelControllerProvider.OnModelControllerChanged => OnModelControllerChanged;
+
+        #endregion
 
         // TODO pull this up
         #region Surfaces

@@ -2,6 +2,7 @@ using Assets.Scripts.Player;
 using Inputter;
 using Pogo;
 using Pogo.Abilities;
+using Pogo.Cosmetics;
 using Pogo.MaterialTypes;
 using System;
 using System.Collections;
@@ -16,7 +17,7 @@ using WizardUtils;
 using WizardUtils.Equipment;
 using WizardUtils.SceneManagement;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
 {
     public AudioController AudioController;
     public CollisionGroup CollisionGroup;
@@ -191,6 +192,9 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Cosmetics
+    PlayerModelController IPlayerModelControllerProvider.PlayerModelController => CurrentModelController;
+
+    UnityEvent<PlayerModelController> IPlayerModelControllerProvider.OnModelControllerChanged => OnModelControllerChanged;
 
     [NonSerialized]
     public UnityEvent<PlayerModelController> OnModelControllerChanged;

@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Player;
-using Players.Visuals;
+﻿using Players.Visuals;
 using System;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ namespace Pogo.Cosmetics
 
         public void Start()
         {
-            var player = GetComponentInParent<PlayerController>(true);
+            var player = GetComponentInParent<IPlayerModelControllerProvider>(true);
             if (player == null)
             {
                 Debug.LogWarning("missing PlayerController above AccessoryController", this);
@@ -21,9 +20,9 @@ namespace Pogo.Cosmetics
             if (Attachment != null)
             {
                 player.OnModelControllerChanged?.AddListener(Player_OnModelControllerChanged);
-                if (player.CurrentModelController != null)
+                if (player.PlayerModelController != null)
                 {
-                    player.CurrentModelController.AddAttachment(Attachment);
+                    player.PlayerModelController.AddAttachment(Attachment);
                 }
             }
         }
