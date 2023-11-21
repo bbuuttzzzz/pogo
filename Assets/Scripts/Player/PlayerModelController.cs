@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using WizardUtils.Equipment;
 
 namespace Pogo.Cosmetics
 {
-    public class PlayerModelController : MonoBehaviour
+    public class PlayerModelController : MonoBehaviour, IEquipmentRoot
     {
         List<IPlayerModelAttachment> Attachments = new List<IPlayerModelAttachment>();
 
@@ -33,15 +34,21 @@ namespace Pogo.Cosmetics
 
         private void OnDestroy()
         {
-            foreach (var attachment in Attachments)
-            {
-                attachment.OnDetach();
-            }
             if (Parent != null)
             {
                 UnLink();
             }
         }
+
+        public void OnEquipped()
+        {
+        }
+
+        public void OnUnequipped()
+        {
+            RemoveAllAttachments();
+        }
+
 
         public void Link(PlayerController parent)
         {
@@ -121,6 +128,18 @@ namespace Pogo.Cosmetics
 #endif
         }
 
+        private void RemoveAllAttachments()
+        {
+            foreach (var attachment in Attachments)
+            {
+                attachment.OnDetach();
+            }
+            Attachments.Clear();
+#if DEBUG
+            _AttachmentDetails.Clear();
+#endif
+        }
+
         public bool HasAttachment(IPlayerModelAttachment attachment) => Attachments.Contains(attachment);
 
         public void ApplyAttachmentOnce(IPlayerAttachPointSnappable attachment)
@@ -177,7 +196,7 @@ namespace Pogo.Cosmetics
         }
 
 #endif
-        #endregion
+#endregion
 
     }
 }
