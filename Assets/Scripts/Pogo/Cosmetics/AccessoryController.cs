@@ -1,31 +1,57 @@
 ﻿using Players.Visuals;
 using System;
 using UnityEngine;
+using WizardUtils.Equipment;
 
 namespace Pogo.Cosmetics
 {
-    public class AccessoryController : MonoBehaviour
+    public class AccessoryController : MonoBehaviour, IEquipmentRoot
     {
         public PlayerModelAttachment Attachment;
 
-        public void Start()
+        IPlayerModelControllerProvider currentPlayerModel;
+
+        public void OnEquipped()
         {
-            var player = GetComponentInParent<IPlayerModelControllerProvider>(true);
-            if (player == null)
+            AttachToParent();
+        }
+
+        void Start()
+        {
+            if (currentPlayerModel == null)
+            {
+                AttachToParent();
+            }
+        }
+
+        public void OnUnequipped()
+        {
+            if (currentPlayerModel != null
+                && Attachment != null)
+            {
+                currentPlayerModel.PlayerModelController.RemoveAttachment(Attachment);
+            }
+        }
+
+        private void AttachToParent()
+        {
+            currentPlayerModel = GetComponentInParent<IPlayerModelControllerProvider>(true);
+            if (currentPlayerModel == null)
             {
                 Debug.LogWarning("missing PlayerController above AccessoryController", this);
                 return;
             }
-            
+
             if (Attachment != null)
             {
-                player.OnModelControllerChanged?.AddListener(Player_OnModelControllerChanged);
-                if (player.PlayerModelController != null)
+                currentPlayerModel.OnModelControllerChanged?.AddListener(Player_OnModelControllerChanged);
+                if (currentPlayerModel.PlayerModelController != null)
                 {
-                    player.PlayerModelController.AddAttachment(Attachment);
+                    currentPlayerModel.PlayerModelController.AddAttachment(Attachment);
                 }
             }
         }
+
 
         private void Player_OnModelControllerChanged(PlayerModelController arg0)
         {
