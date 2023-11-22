@@ -1,5 +1,6 @@
 ﻿using Pogo.Collectibles;
 using Pogo.Levels;
+using Pogo.Tools;
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -37,7 +38,7 @@ namespace Pogo.Cosmetics
 
             if (GUILayout.Button("Clone..."))
             {
-
+                CosmeticDescriptorCloneWizard.Spawn(self);
             }
 
             dropdown.DrawRegisterButtons(self);
