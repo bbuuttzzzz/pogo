@@ -28,8 +28,6 @@ namespace Pogo.Cosmetics
         public CosmeticSlots Slot;
         public EquipmentDescriptor Equipment;
 
-        public bool AllowRecoloring;
-
         [HideInInspector]
         public CollectibleDescriptor Collectible;
     }

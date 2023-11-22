@@ -12,6 +12,6 @@ namespace Pogo.Cosmetics
         PogoStick,
         Trail,
         Model,
-        Accessory
+        Extra
     }
 }

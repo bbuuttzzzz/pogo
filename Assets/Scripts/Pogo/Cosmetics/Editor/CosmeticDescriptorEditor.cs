@@ -34,6 +34,12 @@ namespace Pogo.Cosmetics
             {
                 EditorGUILayout.PropertyField(m_Collectible);
             }
+
+            if (GUILayout.Button("Clone..."))
+            {
+
+            }
+
             dropdown.DrawRegisterButtons(self);
 
             SerializedObjectUpdater updater = new SerializedObjectUpdater(serializedObject);
