@@ -17,6 +17,7 @@ namespace Pogo.Cosmetics
             ChangeCosmeticScreen
         }
 
+        public FakePlayerController FakePlayer;
         public PogoMainMenuController parent;
         public VendingMachineButtonController VendingMachineButton;
         public VendingUnlockPopupController VendingUnlockPopup;
@@ -46,6 +47,7 @@ namespace Pogo.Cosmetics
         {
             PogoGameManager.PogoInstance.SaveGlobalSave();
             HideVendingMachine();
+            FakePlayer.RotateTo(0);
         }
 
         public void Back()

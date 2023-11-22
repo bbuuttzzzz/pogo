@@ -8,6 +8,7 @@ using UnityEngine.Events;
 using WizardPhysics;
 using WizardUtils;
 using WizardUtils.Equipment;
+using WizardUtils.Extensions;
 
 namespace Pogo
 {
@@ -23,6 +24,8 @@ namespace Pogo
         [NonSerialized]
         public UnityEvent<PlayerModelController> OnModelControllerChanged;
         public EquipmentTypeDescriptor PlayerModelEquipmentType;
+        public Vector3 Velocity;
+        public float DefaultRotationDurationSeconds = 1;
 
         private void Awake()
         {
@@ -30,6 +33,7 @@ namespace Pogo
             collisionGroup = GetComponent<CollisionGroup>();
             GetComponent<Equipper>().OnEquip.AddListener(Equipper_OnEquip);
             OnModelControllerChanged = new UnityEvent<PlayerModelController>();
+            rotationOffset = transform.rotation.eulerAngles.y;
         }
 
         private void Update()
@@ -38,22 +42,46 @@ namespace Pogo
             Move();
         }
 
-        private void Equipper_OnEquip(EquipmentSlot arg0)
+        private float rotationOffset;
+        private float CurrentRawAngle
         {
-            if (arg0.EquipmentType == PlayerModelEquipmentType)
+            get => transform.localEulerAngles.y - rotationOffset;
+            set
             {
-                CurrentModelController = GetComponent<Equipper>()
-                    .FindSlot(PlayerModelEquipmentType)
-                    .ObjectInstance
-                    .GetComponent<PlayerModelController>();
-                CurrentModelController.OnLoadAsDisplayModel.Invoke();
-                OnModelControllerChanged.Invoke(CurrentModelController);
+                transform.localEulerAngles = new Vector3(0, value + rotationOffset, 0);
             }
         }
-
-        private void Move()
+        public void SetRotationInstantly(float angle)
         {
-            collisionGroup.Move(Velocity * Time.deltaTime);
+            if (currentRotationCoroutine != null)
+            {
+                StopCoroutine(currentRotationCoroutine);
+            }
+            CurrentRawAngle = angle;
+        }
+
+        Coroutine currentRotationCoroutine;
+        public void RotateTo(float angle) => RotateTo(angle, DefaultRotationDurationSeconds);
+        public void RotateTo(float angle, float duration)
+        {
+            if (currentRotationCoroutine != null)
+            {
+                StopCoroutine(currentRotationCoroutine);
+            }
+            StartCoroutine(SmoothRotateTo(angle, duration));
+        }
+
+        private IEnumerator SmoothRotateTo(float targetAngle, float duration)
+        {
+            targetAngle = targetAngle.PositiveModulo(360);
+            float initialAngle = CurrentRawAngle;
+            float startTime = Time.unscaledTime;
+            while (Time.unscaledTime < startTime + duration)
+            {
+                CurrentRawAngle = Mathf.LerpAngle(initialAngle, targetAngle, (Time.unscaledTime - startTime) / duration);
+                yield return null;
+            }
+            CurrentRawAngle = targetAngle;
         }
 
         int lastJumpSoundIndex = -1;
@@ -70,9 +98,8 @@ namespace Pogo
             Accelerate(Vector3.up, JumpForce);
         }
 
-        public Vector3 Velocity;
 
-        public void ApplyForce(Vector3 force)
+        private void ApplyForce(Vector3 force)
         {
             Velocity += force;
         }
@@ -82,7 +109,7 @@ namespace Pogo
         /// </summary>
         /// <param name="direction"></param>
         /// <param name="maxSpeed"></param>
-        public void Accelerate(Vector3 direction, float maxSpeed)
+        private void Accelerate(Vector3 direction, float maxSpeed)
         {
             float curSpeed = Vector3.Dot(Velocity, direction);
             float addSpeed = maxSpeed - curSpeed;
@@ -95,6 +122,26 @@ namespace Pogo
             //since I'm not going too fast, make me go just the right speed in that direction
             Velocity += addSpeed * direction;
         }
+
+        private void Equipper_OnEquip(EquipmentSlot arg0)
+        {
+            if (arg0.EquipmentType == PlayerModelEquipmentType)
+            {
+                CurrentModelController = GetComponent<Equipper>()
+                    .FindSlot(PlayerModelEquipmentType)
+                    .ObjectInstance
+                    .GetComponent<PlayerModelController>();
+                CurrentModelController.OnLoadAsDisplayModel.Invoke();
+                OnModelControllerChanged.Invoke(CurrentModelController);
+            }
+        }
+
+
+        private void Move()
+        {
+            collisionGroup.Move(Velocity * Time.deltaTime);
+        }
+
 
         #region IPlayerModelControllerProvider
         PlayerModelController IPlayerModelControllerProvider.PlayerModelController => CurrentModelController;

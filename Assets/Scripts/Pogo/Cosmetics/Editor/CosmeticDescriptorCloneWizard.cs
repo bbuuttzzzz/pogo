@@ -4,9 +4,9 @@ using UnityEngine.UIElements;
 using System.Linq;
 using Pogo.Cosmetics;
 using System;
-using static UnityEngine.Rendering.DebugUI;
 using System.Globalization;
 using System.IO;
+using WizardUtils;
 
 namespace Pogo.Tools
 {
@@ -47,6 +47,7 @@ namespace Pogo.Tools
             Source = (CosmeticDescriptor) EditorGUILayout.ObjectField("Source", Source, typeof(CosmeticDescriptor), false);
 
             NewName = EditorGUILayout.TextField("New Name", NewName);
+            SpawnPrefabAsVariant = EditorGUILayout.Toggle("As Variant", SpawnPrefabAsVariant);
 
             EditorGUILayout.Space();
             NewCosmeticDisplayName = EditorGUILayout.TextField("Display Name", NewCosmeticDisplayName);
@@ -65,30 +66,45 @@ namespace Pogo.Tools
         private void Clone()
         {
             using var undoScope = new UndoScope("Clone CosmeticDescriptor");
-            var directoryPath = Path.GetDirectoryName(AssetDatabase.GetAssetPath(Source));
+            var rootDirectoryPath = PathHelper.GetParentDirectory(Path.GetDirectoryName(AssetDatabase.GetAssetPath(Source)));
+            var directoryPath = $"{rootDirectoryPath}{Path.DirectorySeparatorChar}{CultureInfo.CurrentCulture.TextInfo.ToTitleCase(NewName)}";
+            Directory.CreateDirectory(directoryPath);
+
+            // set up & writeEquipment Prefab
+            string prefabPath = $"{directoryPath}{Path.DirectorySeparatorChar}{NewFileName}.prefab";
+            if (SpawnPrefabAsVariant)
+            {
+                var sceneObject = (GameObject)PrefabUtility.InstantiatePrefab(Source.Equipment.Prefab);
+                PrefabUtility.SaveAsPrefabAsset(sceneObject, prefabPath);
+                DestroyImmediate(sceneObject);
+            }
+            else
+            {
+                PrefabUtility.SaveAsPrefabAsset(Source.Equipment.Prefab, prefabPath);
+            }
+            var newEquipmentPrefab = (GameObject)AssetDatabase.LoadAssetAtPath(prefabPath, typeof(GameObject));
+            newEquipmentPrefab.name = NewFileName;
+            EditorUtility.SetDirty(newEquipmentPrefab);
+            AssetDatabase.SaveAssetIfDirty(newEquipmentPrefab);
+
+            // Clone Descriptors
             var newCosmeticDescriptor = Instantiate(Source);
             var newEquipmentDescriptor = Instantiate(Source.Equipment);
-            var newEquipmentPrefab = PrefabUtility.InstantiatePrefab(Source.Equipment.Prefab) as GameObject;
 
-
+            // Tweak Values
             newCosmeticDescriptor.name = NewFileName;
             newCosmeticDescriptor.DisplayName = NewCosmeticDisplayName;
             newCosmeticDescriptor.Equipment = newEquipmentDescriptor;
+            newCosmeticDescriptor.Icon = null;
 
             newEquipmentDescriptor.name = NewEquipmentFileName;
             newEquipmentDescriptor.Prefab = newEquipmentPrefab;
 
-            newEquipmentPrefab.name = NewFileName;
-
-            if (!SpawnPrefabAsVariant)
-            {
-                PrefabUtility.UnpackPrefabInstance(newEquipmentPrefab, PrefabUnpackMode.OutermostRoot, InteractionMode.UserAction);
-            }
-            PrefabUtility.SaveAsPrefabAsset(newEquipmentPrefab, $"{directoryPath}{Path.DirectorySeparatorChar}{NewFileName}.prefab");
-
+            // Create Files
             AssetDatabase.CreateAsset(newEquipmentDescriptor, $"{directoryPath}{Path.DirectorySeparatorChar}{NewEquipmentFileName}.asset");
             AssetDatabase.CreateAsset(newCosmeticDescriptor, $"{directoryPath}{Path.DirectorySeparatorChar}{NewFileName}.asset");
 
+            Selection.activeObject = newCosmeticDescriptor;
         }
 
         private bool CanClone()
@@ -101,11 +117,11 @@ namespace Pogo.Tools
         private void NewNameChanged()
         {
             if (string.IsNullOrWhiteSpace(OldName) || string.IsNullOrWhiteSpace(NewName)) return;
-            TextInfo info = CultureInfo.CurrentCulture.TextInfo;
 
-            NewCosmeticDisplayName = info.ToTitleCase(NewName);
+            NewCosmeticDisplayName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(NewName);
             NewFileName = Source.name.Replace(OldName, NewName);
         }
+
 
 
 
