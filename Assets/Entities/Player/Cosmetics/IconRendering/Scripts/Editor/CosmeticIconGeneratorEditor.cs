@@ -51,22 +51,7 @@ namespace Pogo.Cosmetics
             if (lastCosmetic != self.Cosmetic)
             {
                 self.OnCosmeticChanged?.Invoke(self.Cosmetic);
-                switch(self.Cosmetic)
-                {
-                    case TrailDescriptor trailDescriptor:
-                        self.equipper.EquipInEditor(trailDescriptor.Equipment);
-                        break;
-                    case PogoStickDescriptor pogoStickDescriptor:
-                        self.equipper.EquipInEditor(pogoStickDescriptor.Equipment);
-                        break;
-                    case ModelDescriptor modelDescriptor:
-                        self.equipper.EquipInEditor(modelDescriptor.Equipment);
-                        break;
-                    case AccessoryDescriptor accessory:
-                        self.equipper.EquipInEditor(accessory.Equipment);
-                        break;
-
-                }
+                self.equipper.EquipInEditor(self.Cosmetic.Equipment);
             }
         }
 

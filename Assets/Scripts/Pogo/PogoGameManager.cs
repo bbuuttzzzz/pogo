@@ -685,21 +685,7 @@ namespace Pogo
                 });
             }
 
-            switch(cosmetic)
-            {
-                case PogoStickDescriptor pogoStick:
-                    Equip(pogoStick.Equipment);
-                    break;
-                case TrailDescriptor trail:
-                    Equip(trail.Equipment);
-                    break;
-                case ModelDescriptor model:
-                    Equip(model.Equipment);
-                    break;
-                case AccessoryDescriptor accessory:
-                    Equip(accessory.Equipment);
-                    break;
-            }
+            Equip(cosmetic.Equipment);
         }
 
         private CosmeticDescriptor FindUnlockedCosmeticByKey(CosmeticSlotManifest manifest, string key)

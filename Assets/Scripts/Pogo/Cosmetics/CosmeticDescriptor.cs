@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using WizardUtils.Equipment;
 
 namespace Pogo.Cosmetics
 {
-    public abstract class CosmeticDescriptor : ScriptableObject
+    [CreateAssetMenu(fileName = "_", menuName = "Pogo/Cosmetics/CosmeticDescriptor", order = 1)]
+    public class CosmeticDescriptor : ScriptableObject
     {
         public enum UnlockTypes
         {
@@ -23,7 +25,8 @@ namespace Pogo.Cosmetics
         public Sprite Icon;
         public string OverrideUnlockText;
 
-        public abstract CosmeticSlots Slot { get; }
+        public CosmeticSlots Slot;
+        public EquipmentDescriptor Equipment;
 
         public bool AllowRecoloring;
 
