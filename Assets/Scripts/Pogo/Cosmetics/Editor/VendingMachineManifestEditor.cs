@@ -49,6 +49,10 @@ namespace Pogo.Cosmetics
             misconfiguredCosmeticIndexes.Clear();
             for (int n = 0; n < self.Entries.Length; n++)
             {
+                if (self.Entries[n].Cosmetic == null)
+                {
+                    continue;
+                }
                 if (self.Entries[n].Cosmetic.UnlockType != CosmeticDescriptor.UnlockTypes.VendingMachine)
                 {
                     misconfiguredCosmeticIndexes.Add(n);
