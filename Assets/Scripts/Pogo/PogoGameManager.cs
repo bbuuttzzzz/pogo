@@ -618,7 +618,7 @@ namespace Pogo
             {
                 var equipData = CurrentGlobalDataTracker.GetCosmeticSlotEquipData(manifest.Slot, manifest.Default.Key);
                 CosmeticDescriptor descriptor = FindUnlockedCosmeticByKey(manifest, equipData.Key);
-
+                    
                 EquipCosmetic(descriptor, false);
             }
         }
@@ -683,6 +683,12 @@ namespace Pogo
                     Slot = cosmetic.Slot,
                     Key = cosmetic.Key
                 });
+            }
+
+            if (cosmetic.Equipment == null)
+            {
+                Debug.LogError($"Missing Equipment for Cosmetic {cosmetic}", cosmetic);
+                return;
             }
 
             Equip(cosmetic.Equipment);
