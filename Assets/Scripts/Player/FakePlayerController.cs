@@ -43,27 +43,38 @@ namespace Pogo
         }
 
         private float rotationOffset;
-        private float CurrentRawAngle
+        public float CurrentRawAngle
         {
             get => transform.localEulerAngles.y - rotationOffset;
-            set
+            private set
             {
                 transform.localEulerAngles = new Vector3(0, value + rotationOffset, 0);
             }
         }
         public void SetRotationInstantly(float angle)
         {
+            StopRotating();
+            CurrentRawAngle = angle;
+        }
+
+        public void StopRotating()
+        {
             if (currentRotationCoroutine != null)
             {
                 StopCoroutine(currentRotationCoroutine);
             }
-            CurrentRawAngle = angle;
         }
 
         Coroutine currentRotationCoroutine;
         public void RotateTo(float angle) => RotateTo(angle, DefaultRotationDurationSeconds);
         public void RotateTo(float angle, float duration)
         {
+            if (!gameObject.activeInHierarchy)
+            {
+                SetRotationInstantly(angle);
+                return;
+            }
+
             if (currentRotationCoroutine != null)
             {
                 StopCoroutine(currentRotationCoroutine);
