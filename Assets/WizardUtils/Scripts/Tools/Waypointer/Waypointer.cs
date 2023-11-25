@@ -27,12 +27,21 @@ namespace WizardUtils
         public bool UseCustomCurve;
         public AnimationCurve CustomCurve;
 
+        private bool initialized;
+
 #if UNITY_EDITOR
         public bool EnableVerboseLogging;
 #endif
 
         public virtual void Awake()
         {
+            SafeInitialize();
+        }
+
+        public void SafeInitialize()
+        {
+            if (initialized) return;
+
             initialValue = GetCurrentValue();
             if (InitialWaypointIndex >= 0)
             {
@@ -42,6 +51,8 @@ namespace WizardUtils
             {
                 arrived = true;
             }
+
+            initialized = true;
         }
 
         public virtual void Update()

@@ -34,6 +34,7 @@ namespace Pogo.Cosmetics
         private void Awake()
         {
             VendingMachineButton.GetComponent<Button>().onClick.AddListener(VendingMachineButton_OnClick);
+            InitializeVendingMachine();
         }
 
         public void OnEnable()
@@ -94,6 +95,13 @@ namespace Pogo.Cosmetics
                 VendingMachineButton.NextReward = default;
             }
         }
+
+        private void InitializeVendingMachine()
+        {
+            VendingMachineWaypointer.SafeInitialize();
+        }
+
+
 
         private void ShowVendingMachine()
         {
