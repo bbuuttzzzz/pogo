@@ -37,6 +37,12 @@ namespace Pogo.Atmospheres
 
         public void SetWeight(float t)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                volume = GetComponent<Volume>();
+            }
+#endif
             volume.weight = t;
             SetLightWeight(t);
         }
@@ -53,6 +59,13 @@ namespace Pogo.Atmospheres
 
         public void DisableAndDestroy()
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                DestroyImmediate(gameObject);
+                return;
+            }
+#endif
             SetWeight(0);
             Destroy(gameObject);
         }

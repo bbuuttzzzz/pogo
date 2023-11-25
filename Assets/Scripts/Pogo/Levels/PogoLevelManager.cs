@@ -450,9 +450,9 @@ namespace Pogo.Levels
             if (atmospheres[0].SelfPrefab == null)
             {
                 // if our initial atmosphere is malformed, let's replace it instantly
+                AtmosphereVerboseLog($"Instant set to {atmospheres[0].name} (Malformed Original Atmo)");
                 atmospheres[0].DisableAndDestroy();
                 SpawnAtmosphere(newAtmospherePrefab).SetWeight(1f);
-                AtmosphereVerboseLog($"Instant set to {atmospheres[0].name} (Malformed Original Atmo)");
                 return;
             }
             else if (atmospheres[0].SelfPrefab == newAtmospherePrefab)
