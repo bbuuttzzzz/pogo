@@ -37,6 +37,8 @@ namespace Pogo.Atmospheres
         {
             CurrentProgress = 1 - Mathf.Clamp01(CurrentProgress);
 
+            VerboseLog("Reversing");
+
             Atmosphere tempAtmosphere = StartAtmosphere;
             StartAtmosphere = EndAtmosphere;
             EndAtmosphere = tempAtmosphere;
@@ -50,9 +52,12 @@ namespace Pogo.Atmospheres
         public void FinishNow()
         {
             parent.StopCoroutine(ActiveCoroutine);
+            // i think since this is not a unity object, it doesn't set this null for us
+            ActiveCoroutine = null;
             StartAtmosphere.SetWeight(0);
             EndAtmosphere.SetWeight(1);
             RenderSettings.ambientLight = EndAtmosphere.AmbientLightColor;
+            VerboseLog("Finish Now");
         }
 
         public void CleanUp()
@@ -63,6 +68,7 @@ namespace Pogo.Atmospheres
         public void BeginTransition()
         {
             ActiveCoroutine = parent.StartCoroutine(TransitionAsync());
+            VerboseLog("Begin Transition");
         }
 
 
@@ -82,12 +88,36 @@ namespace Pogo.Atmospheres
             StartAtmosphere.SetWeight(0);
             EndAtmosphere.SetWeight(1);
             RenderSettings.ambientLight = EndAtmosphere.AmbientLightColor;
+            
+            // i think since this is not a unity object, it doesn't set this null for us
+            ActiveCoroutine = null;
+            VerboseLog("End Transition");
+        }
+
+        private void VerboseLog(string text, bool includeHeader = true)
+        {
+            if (!Settings.VerboseLogging) return;
+
+            if (includeHeader)
+            {
+                Debug.Log($"{this}: {text}");
+            }
+            else
+            {
+                Debug.Log(text);
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"Crossfader {StartAtmosphere.name} -> {EndAtmosphere.name}";
         }
 
         public interface ICrossFaderSettings
         {
             public AnimationCurve TransitionCurve { get; }
             public float TransitionDuration { get; }
+            public bool VerboseLogging { get; }
         }
     }
 }

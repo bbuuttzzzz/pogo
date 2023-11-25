@@ -382,9 +382,11 @@ namespace Pogo.Levels
         private AtmosphereCrossFader CurrentCrossFader;
         public AnimationCurve AtmosphereTransitionCurve;
         public float AtmosphereTransitionDuration;
+        public bool AtmosphereVerboseLogging;
 
         AnimationCurve AtmosphereCrossFader.ICrossFaderSettings.TransitionCurve => AtmosphereTransitionCurve;
         float AtmosphereCrossFader.ICrossFaderSettings.TransitionDuration => AtmosphereTransitionDuration;
+        bool AtmosphereCrossFader.ICrossFaderSettings.VerboseLogging => AtmosphereVerboseLogging;
 
         public void LoadDefaultAtmosphere()
         {
@@ -434,24 +436,57 @@ namespace Pogo.Levels
             {
                 // if we don't have an initial atmosphere to crossfade, set instantly
                 SpawnAtmosphere(newAtmospherePrefab).SetWeight(1f);
+                AtmosphereVerboseLog($"Instant set to {atmospheres[0].name} (Missing Original Atmo)");
+                return;
             }
             
-            // remove excess atmospheres
+            // remove excess atmospheres... (order here looks arbitrary which is bad!)
             for(int i = 1; i < atmospheres.Length; i++)
             {
                 atmospheres[i].DisableAndDestroy();
             }
 
+            if (atmospheres[0].SelfPrefab == null)
+            {
+                // if our initial atmosphere is malformed, let's replace it instantly
+                atmospheres[0].DisableAndDestroy();
+                SpawnAtmosphere(newAtmospherePrefab).SetWeight(1f);
+                AtmosphereVerboseLog($"Instant set to {atmospheres[0].name} (Malformed Original Atmo)");
+                return;
+            }
+            else if (atmospheres[0].SelfPrefab == newAtmospherePrefab)
+            {
+                // it's the same as our existing atmosphere. so it's a noop
+                atmospheres[0].SetWeight(1f);
+                AtmosphereVerboseLog($"noop to {atmospheres[0].name}");
+                return;
+            }
+
             Atmosphere newAtmosphere = SpawnAtmosphere(newAtmospherePrefab);
-
-            CurrentCrossFader = new AtmosphereCrossFader(
-                this,
-                this,
-                atmospheres[0],
-                newAtmosphere);
-
-            CurrentCrossFader.BeginTransition();
+            
+            if (instant)
+            {
+                newAtmosphere.SetWeight(1f);
+                AtmosphereVerboseLog($"Instant set to {newAtmosphere.name}");
+            }
+            else
+            {
+                CurrentCrossFader = new AtmosphereCrossFader(
+                    this,
+                    this,
+                    atmospheres[0],
+                    newAtmosphere);
+                CurrentCrossFader.BeginTransition();
+            }
         }
+
+        private void AtmosphereVerboseLog(string msg)
+        {
+            if (!AtmosphereVerboseLogging) return;
+
+            Debug.Log($"Atmo: {msg}");
+        }
+
         #endregion
         [ContextMenu("Log LevelLoader Status")]
         public void LogLoaders()
