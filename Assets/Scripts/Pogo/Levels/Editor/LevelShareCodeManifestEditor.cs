@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
+using System.Linq;
 
 namespace Pogo.Levels
 {
@@ -28,6 +29,20 @@ namespace Pogo.Levels
         {
             base.OnInspectorGUI();
             collation = self.CollateCodesByLevel();
+
+            int invalidCount = self.ShareCodes.Where(x => x.LevelState.Level == null).Count();
+            if (invalidCount > 0)
+            {
+                EditorGUILayout.HelpBox($"{invalidCount} LevelStates missing a LevelDescriptor!", MessageType.Error);
+                if (GUILayout.Button("Fix Now"))
+                {
+                    Undo.RecordObject(self, "Fix Share Codes Missing LevelDescriptors");
+                    self.ShareCodes = self.ShareCodes
+                        .Where(x => x.LevelState.Level != null)
+                        .ToArray();
+                    EditorUtility.SetDirty(self);
+                }
+            }
 
             foreach (var group in collation)
             {
