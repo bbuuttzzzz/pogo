@@ -23,9 +23,12 @@ namespace Pogo.Cosmetics
 
         public UnityEvent OnDisjoint;
 
+        public bool ForceToDisplayModel;
+
         private void Awake()
         {
             Parent = GetComponent<PlayerController>();
+            if (ForceToDisplayModel) OnLoadAsDisplayModel.Invoke();
         }
         private void Update()
         {
