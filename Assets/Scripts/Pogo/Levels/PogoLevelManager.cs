@@ -1,4 +1,5 @@
-﻿using Pogo.Levels.Loading;
+﻿using Pogo.Atmospheres;
+using Pogo.Levels.Loading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using WizardUtils.SceneManagement;
 
 namespace Pogo.Levels
 {
-    public class PogoLevelManager : MonoBehaviour
+    public class PogoLevelManager : MonoBehaviour, AtmosphereCrossFader.ICrossFaderSettings
     {
         public bool LoadInitialLevelImmediately = true;
         public LevelShareCodeManifest ShareCodeManifest;
@@ -82,7 +83,7 @@ namespace Pogo.Levels
 
             var newAtmosphereObj = UnityEditor.PrefabUtility.InstantiatePrefab(newLevel.PostProcessingPrefab, AtmosphereParent) as GameObject;
             var newAtmosphere = newAtmosphereObj.GetComponent<Atmosphere>();
-            newAtmosphere.SetWeightFromEditor(1);
+            newAtmosphere.SetMaxWeightFromEditor();
             FindFirstObjectByType<PogoGameManager>()._CachedCheckpoint = null;
         }
 #endif
@@ -378,6 +379,12 @@ namespace Pogo.Levels
         #region Atmosphere
         public Transform AtmosphereParent;
         public GameObject DefaultPostProcessingPrefab;
+        private AtmosphereCrossFader CurrentCrossFader;
+        public AnimationCurve AtmosphereTransitionCurve;
+        public float AtmosphereTransitionDuration;
+
+        AnimationCurve AtmosphereCrossFader.ICrossFaderSettings.TransitionCurve => AtmosphereTransitionCurve;
+        float AtmosphereCrossFader.ICrossFaderSettings.TransitionDuration => AtmosphereTransitionDuration;
 
         public void LoadDefaultAtmosphere()
         {
@@ -389,46 +396,61 @@ namespace Pogo.Levels
             return AtmosphereParent.GetComponentsInChildren<Atmosphere>();
         }
 
+        private Atmosphere SpawnAtmosphere(GameObject prefab)
+        {
+            Atmosphere newAtmosphere = Instantiate(prefab, AtmosphereParent).GetComponent<Atmosphere>();
+            newAtmosphere.SelfPrefab = prefab;
+            return newAtmosphere;
+        }
+
         public void TransitionAtmosphere(LevelDescriptor newLevel, bool instant)
         {
             TransitionAtmosphere(newLevel.PostProcessingPrefab, instant);
         }
 
-        public void TransitionAtmosphere(GameObject Prefab, bool instant)
+        public void TransitionAtmosphere(GameObject newAtmospherePrefab, bool instant)
         {
-            // remove existing atmospheres
-            var atmospheres = getExistingAtmospheres();
-            foreach (Atmosphere atmosphere in atmospheres)
+            if (CurrentCrossFader != null)
             {
-#if UNITY_EDITOR
-                if (!UnityEditor.EditorApplication.isPlaying)
+                if (CurrentCrossFader.StartAtmosphere.SelfPrefab == newAtmospherePrefab)
                 {
-                    DestroyImmediate(atmosphere.gameObject);
+                    CurrentCrossFader.Reverse();
+                    if (instant)
+                    {
+                        CurrentCrossFader.FinishNow();
+                    }
+                    return;
                 }
                 else
                 {
-                    atmosphere.DisableAndDestroy(instant);
+                    CurrentCrossFader.FinishNow();
+                    CurrentCrossFader.CleanUp();
+                    CurrentCrossFader = null;
                 }
-#else
-                atmosphere.DisableAndDestroy(instant);
-#endif
             }
 
-            // add new atmosphere
-            var newAtmosphereObj = Instantiate(Prefab, AtmosphereParent);
-            var newAtmosphere = newAtmosphereObj.GetComponent<Atmosphere>();
-#if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            var atmospheres = getExistingAtmospheres();
+            if (atmospheres.Length == 0)
             {
-                newAtmosphere.SetWeightFromEditor(1);
+                // if we don't have an initial atmosphere to crossfade, set instantly
+                SpawnAtmosphere(newAtmospherePrefab).SetWeight(1f);
             }
-            else
+            
+            // remove excess atmospheres
+            for(int i = 1; i < atmospheres.Length; i++)
             {
-                newAtmosphere.SetWeight(1, instant);
+                atmospheres[i].DisableAndDestroy();
             }
-#else
-            newAtmosphere.SetWeight(1, instant);
-#endif
+
+            Atmosphere newAtmosphere = SpawnAtmosphere(newAtmospherePrefab);
+
+            CurrentCrossFader = new AtmosphereCrossFader(
+                this,
+                this,
+                atmospheres[0],
+                newAtmosphere);
+
+            CurrentCrossFader.BeginTransition();
         }
         #endregion
         [ContextMenu("Log LevelLoader Status")]

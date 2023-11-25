@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Pogo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Pogo
+namespace Atmospheres
 {
     public class AtmosphereSetter : MonoBehaviour
     {
