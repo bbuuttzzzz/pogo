@@ -35,14 +35,11 @@ namespace Pogo.Atmospheres
 
         public void Reverse()
         {
+            VerboseLog($"Reversing @ {CurrentProgress} -> {1 - Mathf.Clamp01(CurrentProgress)}");
+
             CurrentProgress = 1 - Mathf.Clamp01(CurrentProgress);
 
-            VerboseLog("Reversing");
-
-            Atmosphere tempAtmosphere = StartAtmosphere;
-            StartAtmosphere = EndAtmosphere;
-            EndAtmosphere = tempAtmosphere;
-
+            (EndAtmosphere, StartAtmosphere) = (StartAtmosphere, EndAtmosphere);
             if (ActiveCoroutine == null)
             {
                 BeginTransition();

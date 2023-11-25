@@ -412,6 +412,7 @@ namespace Pogo.Levels
 
         public void TransitionAtmosphere(GameObject newAtmospherePrefab, bool instant)
         {
+            AtmosphereVerboseLog($"Targetted Atmosphere {newAtmospherePrefab.name}");
             if (CurrentCrossFader != null)
             {
                 if (CurrentCrossFader.StartAtmosphere.SelfPrefab == newAtmospherePrefab)
