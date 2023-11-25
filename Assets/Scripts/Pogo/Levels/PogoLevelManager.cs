@@ -41,6 +41,7 @@ namespace Pogo.Levels
         public void SetCurrentLevelInEditor(LevelDescriptor level)
         {
             currentLevel = level;
+            TransitionAtmosphere(level, true);
         }
 #endif
         public LevelDescriptor CurrentLevel

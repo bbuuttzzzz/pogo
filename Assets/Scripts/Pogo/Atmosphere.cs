@@ -19,6 +19,8 @@ public class Atmosphere : MonoBehaviour
     public Light TargetLight;
     private float DefaultLightIntensity;
 
+    public bool EnableVerboseLogging;
+
     private void Awake()
     {
         if (TargetLight != null)
@@ -35,6 +37,12 @@ public class Atmosphere : MonoBehaviour
 
     public void SetWeight(float weight, bool instant)
     {
+        if (EnableVerboseLogging)
+        {
+            string end = instant ? " instantly" : "";
+            Debug.Log($"{name} Weight set to {weight}{end}, this");
+        }
+
         if (instant)
         {
             setWeight(1);
