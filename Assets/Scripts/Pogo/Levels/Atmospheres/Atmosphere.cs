@@ -18,6 +18,9 @@ namespace Pogo.Atmospheres
         public Light TargetLight;
         private float DefaultLightIntensity;
 
+        public Color FogColor = Color.white;
+        public float FogDensity = 0f;
+
         [NonSerialized]
         public GameObject SelfPrefab;
 
@@ -43,6 +46,9 @@ namespace Pogo.Atmospheres
             volume = GetComponent<Volume>();
             SetWeight(1);
             RenderSettings.ambientLight = AmbientLightColor;
+            RenderSettings.fog = true;
+            RenderSettings.fogColor = FogColor;
+            RenderSettings.fogDensity = FogDensity;
         }
 
         public void DisableAndDestroy()

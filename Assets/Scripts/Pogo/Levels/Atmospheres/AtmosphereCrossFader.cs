@@ -79,13 +79,17 @@ namespace Pogo.Atmospheres
                 StartAtmosphere.SetWeight(1 - t);
                 EndAtmosphere.SetWeight(t);
                 RenderSettings.ambientLight = Color.Lerp(StartAtmosphere.AmbientLightColor, EndAtmosphere.AmbientLightColor, t);
+                RenderSettings.fogColor = Color.Lerp(StartAtmosphere.FogColor, EndAtmosphere.FogColor, t);
+                RenderSettings.fogDensity = Mathf.Lerp(StartAtmosphere.FogDensity, EndAtmosphere.FogDensity, t);
                 yield return null;
             }
 
             StartAtmosphere.SetWeight(0);
             EndAtmosphere.SetWeight(1);
             RenderSettings.ambientLight = EndAtmosphere.AmbientLightColor;
-            
+            RenderSettings.fogColor = EndAtmosphere.FogColor;
+            RenderSettings.fogDensity = EndAtmosphere.FogDensity;
+
             // i think since this is not a unity object, it doesn't set this null for us
             ActiveCoroutine = null;
             VerboseLog("End Transition");
