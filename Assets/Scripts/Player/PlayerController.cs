@@ -92,6 +92,20 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
         setControlSceneBehavior(PogoGameManager.GameInstance.InControlScene);
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        if (CurrentState == PlayerStates.Alive)
+        {
+            DoLook();
+            UpdateDesiredModelPitch(Time.deltaTime);
+            RenderRotation = DesiredModelRotation;
+        }
+        else
+        {
+            CheckForRespawn();
+        }
+    }
 
     private void OnDestroy()
     {
@@ -119,20 +133,6 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
         SENSITIVITY = e.FinalValue;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (CurrentState == PlayerStates.Alive)
-        {
-            DoLook();
-            UpdateDesiredModelPitch(Time.deltaTime);
-            RenderRotation = DesiredModelRotation;
-        }
-        else
-        {
-            CheckForRespawn();
-        }
-    }
 
     void RenderUpdate(RenderArgs e)
     {
@@ -406,7 +406,9 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
     {
         Velocity = Vector3.zero;
         PitchFrac = 0;
-        RenderTransform.rotation = DesiredModelRotation;
+        PhysicsRotation = DesiredModelRotation;
+        RenderRotation = DesiredModelRotation;
+        UpdateCameraRotation();
     }
 
 #if UNITY_EDITOR
