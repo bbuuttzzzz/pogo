@@ -1081,6 +1081,8 @@ namespace Pogo
                 {
                     return false;
                 }
+
+                var checkpoint = worldChapter.Chapter.GetCheckpointDescriptor(data.checkpointId);
             }
             catch (IndexOutOfRangeException e)
             {

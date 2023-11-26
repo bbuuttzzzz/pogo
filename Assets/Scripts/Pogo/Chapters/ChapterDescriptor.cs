@@ -24,10 +24,18 @@ namespace Pogo
         {
             if (checkpointId.CheckpointType == CheckpointTypes.MainPath)
             {
+                if (checkpointId.CheckpointNumber - 1 > MainPathCheckpoints.Length - 1)
+                {
+                    throw new IndexOutOfRangeException($"CheckpointId {checkpointId} out of range for Chapter {name}");
+                }
                 return MainPathCheckpoints[checkpointId.CheckpointNumber - 1];
             }
             else
             {
+                if (checkpointId.CheckpointNumber - 1 > SidePathCheckpoints.Length - 1)
+                {
+                    throw new IndexOutOfRangeException($"CheckpointId {checkpointId} out of range for Chapter {name}");
+                }
                 return SidePathCheckpoints[checkpointId.CheckpointNumber - 1];
             }
         }
