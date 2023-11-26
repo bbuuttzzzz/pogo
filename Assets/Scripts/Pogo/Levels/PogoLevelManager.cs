@@ -468,6 +468,7 @@ namespace Pogo.Levels
             
             if (instant)
             {
+                atmospheres[0].SetVolumeWeight(0);
                 newAtmosphere.FullyApply();
                 AtmosphereVerboseLog($"Instant set to {newAtmosphere.name}");
             }
