@@ -115,7 +115,10 @@ namespace Pogo.Atmospheres
 
         public override string ToString()
         {
-            return $"Crossfader {StartAtmosphere.name} -> {EndAtmosphere.name}";
+
+            string name1 = StartAtmosphere != null ? StartAtmosphere.name : "NULL";
+            string name2 = EndAtmosphere != null ? EndAtmosphere.name : "NULL";
+            return $"Crossfader {name1} -> {name2}";
         }
 
         public interface ICrossFaderSettings
