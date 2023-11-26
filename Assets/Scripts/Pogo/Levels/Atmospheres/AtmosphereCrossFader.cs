@@ -48,9 +48,13 @@ namespace Pogo.Atmospheres
 
         public void FinishNow()
         {
-            parent.StopCoroutine(ActiveCoroutine);
-            // i think since this is not a unity object, it doesn't set this null for us
-            ActiveCoroutine = null;
+            if (ActiveCoroutine != null)
+            {
+                parent.StopCoroutine(ActiveCoroutine);
+
+                // i think since this is not a unity object, it doesn't always set this null for us
+                ActiveCoroutine = null;
+            }
             StartAtmosphere.SetWeight(0);
             EndAtmosphere.SetWeight(1);
             RenderSettings.ambientLight = EndAtmosphere.AmbientLightColor;
