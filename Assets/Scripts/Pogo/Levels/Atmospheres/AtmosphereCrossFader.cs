@@ -55,8 +55,8 @@ namespace Pogo.Atmospheres
                 // i think since this is not a unity object, it doesn't always set this null for us
                 ActiveCoroutine = null;
             }
-            StartAtmosphere.SetWeight(0);
-            EndAtmosphere.SetWeight(1);
+            StartAtmosphere.SetVolumeWeight(0);
+            EndAtmosphere.FullyApply();
             RenderSettings.ambientLight = EndAtmosphere.AmbientLightColor;
             VerboseLog("Finish Now");
         }
@@ -83,19 +83,16 @@ namespace Pogo.Atmospheres
                 CurrentProgress += Time.unscaledDeltaTime / Settings.TransitionDuration;
                 // find t on the transition curve, THEN orient the curve so it goes from start to end
                 float t = Settings.TransitionCurve.Evaluate(CurrentProgress);
-                StartAtmosphere.SetWeight(1 - t);
-                EndAtmosphere.SetWeight(t);
+                StartAtmosphere.SetVolumeWeight(1 - t);
+                EndAtmosphere.SetVolumeWeight(t);
                 RenderSettings.ambientLight = Color.Lerp(StartAtmosphere.AmbientLightColor, EndAtmosphere.AmbientLightColor, t);
                 RenderSettings.fogColor = Color.Lerp(StartAtmosphere.FogColor, EndAtmosphere.FogColor, t);
                 RenderSettings.fogDensity = Mathf.Lerp(StartAtmosphere.FogDensity, EndAtmosphere.FogDensity, t);
                 yield return null;
             }
 
-            StartAtmosphere.SetWeight(0);
-            EndAtmosphere.SetWeight(1);
-            RenderSettings.ambientLight = EndAtmosphere.AmbientLightColor;
-            RenderSettings.fogColor = EndAtmosphere.FogColor;
-            RenderSettings.fogDensity = EndAtmosphere.FogDensity;
+            StartAtmosphere.SetVolumeWeight(0);
+            EndAtmosphere.FullyApply();
 
             // i think since this is not a unity object, it doesn't set this null for us
             ActiveCoroutine = null;

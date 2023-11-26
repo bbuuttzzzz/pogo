@@ -83,7 +83,7 @@ namespace Pogo.Levels
 
             var newAtmosphereObj = UnityEditor.PrefabUtility.InstantiatePrefab(newLevel.PostProcessingPrefab, AtmosphereParent) as GameObject;
             var newAtmosphere = newAtmosphereObj.GetComponent<Atmosphere>();
-            newAtmosphere.SetMaxWeightFromEditor();
+            newAtmosphere.FullyApply();
             FindFirstObjectByType<PogoGameManager>()._CachedCheckpoint = null;
         }
 #endif
@@ -437,7 +437,7 @@ namespace Pogo.Levels
             if (atmospheres.Length == 0)
             {
                 // if we don't have an initial atmosphere to crossfade, set instantly
-                SpawnAtmosphere(newAtmospherePrefab).SetWeight(1f);
+                SpawnAtmosphere(newAtmospherePrefab).FullyApply();
                 AtmosphereVerboseLog($"Instant set to {atmospheres[0].name} (Missing Original Atmo)");
                 return;
             }
@@ -453,13 +453,13 @@ namespace Pogo.Levels
                 // if our initial atmosphere is malformed, let's replace it instantly
                 AtmosphereVerboseLog($"Instant set to {atmospheres[0].name} (Malformed Original Atmo)");
                 atmospheres[0].DisableAndDestroy();
-                SpawnAtmosphere(newAtmospherePrefab).SetWeight(1f);
+                SpawnAtmosphere(newAtmospherePrefab).FullyApply();
                 return;
             }
             else if (atmospheres[0].SelfPrefab == newAtmospherePrefab)
             {
                 // it's the same as our existing atmosphere. so it's a noop
-                atmospheres[0].SetWeight(1f);
+                atmospheres[0].FullyApply();
                 AtmosphereVerboseLog($"noop to {atmospheres[0].name}");
                 return;
             }
@@ -468,7 +468,7 @@ namespace Pogo.Levels
             
             if (instant)
             {
-                newAtmosphere.SetWeight(1f);
+                newAtmosphere.FullyApply();
                 AtmosphereVerboseLog($"Instant set to {newAtmosphere.name}");
             }
             else

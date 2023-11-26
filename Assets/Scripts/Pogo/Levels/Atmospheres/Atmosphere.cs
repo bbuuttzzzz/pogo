@@ -35,7 +35,7 @@ namespace Pogo.Atmospheres
             volume.weight = 0;
         }
 
-        public void SetWeight(float t)
+        public void SetVolumeWeight(float t)
         {
 #if UNITY_EDITOR
             if (!Application.isPlaying)
@@ -47,10 +47,15 @@ namespace Pogo.Atmospheres
             SetLightWeight(t);
         }
 
-        public void SetMaxWeightFromEditor()
+        public void FullyApply()
         {
-            volume = GetComponent<Volume>();
-            SetWeight(1);
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                volume = GetComponent<Volume>();
+            }
+#endif
+            SetVolumeWeight(1);
             RenderSettings.ambientLight = AmbientLightColor;
             RenderSettings.fog = true;
             RenderSettings.fogColor = FogColor;
@@ -66,7 +71,7 @@ namespace Pogo.Atmospheres
                 return;
             }
 #endif
-            SetWeight(0);
+            SetVolumeWeight(0);
             Destroy(gameObject);
         }
 
