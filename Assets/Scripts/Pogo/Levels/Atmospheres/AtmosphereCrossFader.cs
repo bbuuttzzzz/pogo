@@ -63,7 +63,10 @@ namespace Pogo.Atmospheres
 
         public void CleanUp()
         {
-            StartAtmosphere.DisableAndDestroy();
+            if (StartAtmosphere != null)
+            {
+                StartAtmosphere.DisableAndDestroy();
+            }
         }
 
         public void BeginTransition()

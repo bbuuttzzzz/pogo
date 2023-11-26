@@ -428,6 +428,7 @@ namespace Pogo.Levels
                 {
                     CurrentCrossFader.FinishNow();
                     CurrentCrossFader.CleanUp();
+
                     CurrentCrossFader = null;
                 }
             }
