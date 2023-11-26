@@ -639,6 +639,7 @@ namespace Pogo
                 case CosmeticDescriptor.UnlockTypes.VendingMachine:
                     return VendingCosmeticUnlocked(cosmetic);
                 case CosmeticDescriptor.UnlockTypes.Collectible:
+                    if (cosmetic.Collectible == null) return false;
                     return CurrentGlobalDataTracker.GetCollectible(cosmetic.Collectible.Key).isUnlocked;
                 default:
                     return false;
