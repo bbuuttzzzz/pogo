@@ -13,6 +13,8 @@ namespace Platforms.Portable
     {
         public string PersistentDataPath => Application.persistentDataPath;
 
+        public string PlatformURLName => "portable";
+
         public void OnEnable()
         {
 

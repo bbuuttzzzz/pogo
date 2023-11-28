@@ -22,6 +22,8 @@ namespace Platforms.Steam
 
         public string PersistentDataPath { get; private set; }
 
+        public string PlatformURLName => "steam";
+
         public SteamPlatformService()
         {
             try
