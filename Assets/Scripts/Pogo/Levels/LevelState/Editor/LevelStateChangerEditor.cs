@@ -21,17 +21,23 @@ namespace Pogo.Levels
         {
             base.OnInspectorGUI();
 
-            using (new EditorGUI.DisabledScope(!Application.isPlaying))
+            if (self.Level != null)
             {
-                for(int n = 0; n < self.Level.LevelStatesCount; n++)
+                using (new EditorGUI.DisabledScope(!Application.isPlaying))
                 {
-                    if (GUILayout.Button($"Go To State {n}"))
+                    for (int n = 0; n < self.Level.LevelStatesCount; n++)
                     {
-                        self.GoToState(n);
+                        if (GUILayout.Button($"Go To State {n}"))
+                        {
+                            self.GoToState(n);
+                        }
                     }
                 }
             }
-
+            else
+            {
+                EditorGUILayout.HelpBox("No Level Selected", MessageType.Error);
+            }
         }
     }
 }
