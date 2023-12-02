@@ -17,6 +17,8 @@ namespace Pogo
         public override VisualElement CreateInspectorGUI()
         {
             self = target as ChapterDescriptor;
+            if (self.MainPathCheckpoints == null) self.MainPathCheckpoints = new CheckpointDescriptor[0];
+            if (self.SidePathCheckpoints == null) self.SidePathCheckpoints = new CheckpointDescriptor[0];
             return base.CreateInspectorGUI();
         }
 
