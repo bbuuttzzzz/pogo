@@ -218,6 +218,8 @@ namespace Pogo
             OnLevelStateChanged?.Invoke(args);
         }
 
+        public bool TryGetLevelStateForLevel(LevelDescriptor levelDescriptor, out LevelState result) => CurrentLevelStates.TryGetValue(levelDescriptor, out result);
+
         public LevelState? GetLevelStateForLevel(LevelDescriptor levelDescriptor)
         {
             if (CurrentLevelStates.TryGetValue(levelDescriptor, out LevelState currentState))
