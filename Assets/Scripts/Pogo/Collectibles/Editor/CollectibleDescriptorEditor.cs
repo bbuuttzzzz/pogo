@@ -31,7 +31,6 @@ namespace Pogo.Collectibles
         {
             self = target as CollectibleDescriptor;
             dropdown = new CollectibleDescriptorManifestAssigner<CollectibleManifest, CollectibleDescriptor>();
-            dropdown.OnNoSetManifests.AddListener(dropdown_noSetManifests);
 
             m_CosmeticDescriptor = serializedObject.FindProperty(nameof(self.CosmeticDescriptor));
             m_NotificationPrefab = serializedObject.FindProperty(nameof(self.NotificationPrefab));
@@ -43,14 +42,6 @@ namespace Pogo.Collectibles
             m_GenericNotification3DIcon = serializedObject.FindProperty(nameof(self.GenericNotification3DIcon));
 
             return base.CreateInspectorGUI();
-        }
-
-        private void dropdown_noSetManifests()
-        {
-            if (self.SceneBuildIndex == -1) { return; }
-
-            self.SceneBuildIndex = -1;
-            EditorUtility.SetDirty(self);
         }
 
         public override void OnInspectorGUI()
