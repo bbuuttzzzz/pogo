@@ -15,20 +15,5 @@ public class ChallengePackDescriptor : ScriptableObject
 
     public bool IsUnlocked => Collectible == null || Collectible.CollectedInGlobalSave;
 
-    public SaveValueDescriptor UnlockedSaveValue_Legacy;
-
-    public bool IsUnlocked_Legacy
-    {
-        get
-        {
-            return UnlockedSaveValue_Legacy == null
-                || GameManager.GameInstance?.GetMainSaveValue(UnlockedSaveValue_Legacy) == "1";
-        }
-        set
-        {
-            GameManager.GameInstance?.SetMainSaveValue(UnlockedSaveValue_Legacy, value ? "1" : "0");
-        }
-    }
-
     #endregion
 }
