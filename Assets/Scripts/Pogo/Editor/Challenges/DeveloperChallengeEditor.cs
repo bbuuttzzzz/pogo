@@ -10,7 +10,7 @@ using WizardUtils.Saving;
 
 namespace Pogo.Inspector
 {
-    [CustomEditor(typeof(DeveloperChallenge))]
+    [CustomEditor(typeof(DeveloperChallenge)), CanEditMultipleObjects]
     public class DeveloperChallengeEditor : Editor
     {
         DeveloperChallenge self;
@@ -50,28 +50,12 @@ namespace Pogo.Inspector
             }
 
             base.OnInspectorGUI();
-            if (self.PlayerTimeSaveValue_Legacy == null)
-            {
-                EditorGUILayout.HelpBox("Missing Save Value!", MessageType.Error);
-            }
-            if (GUILayout.Button(new GUIContent("Regenerate SaveValueDescriptor")))
+            if (GUILayout.Button(new GUIContent("Delete SaveValueDescriptors")))
             {
                 Undo.SetCurrentGroupName("Generate SaveValueDescriptor");
                 int undoGroup = Undo.GetCurrentGroup();
 
                 RemoveDanglingBestTimes();
-
-                var parentPath = AssetDatabase.GetAssetPath(self);
-                var newSaveValue = ScriptableObject.CreateInstance<SaveValueDescriptor>();
-                newSaveValue.name = "sv_" + self.name;
-                newSaveValue.Key = "time_" + self.name;
-                newSaveValue.DeveloperNote = "Best time in milliseconds";
-                newSaveValue.DefaultValue = Challenge.WORST_TIME.ToString();
-                AssetDatabase.AddObjectToAsset(newSaveValue, parentPath);
-                Undo.RegisterCreatedObjectUndo(newSaveValue, "create");
-
-                self.PlayerTimeSaveValue_Legacy = newSaveValue;
-                Undo.RecordObject(self, "set");
 
                 Undo.CollapseUndoOperations(undoGroup);
             }
@@ -79,14 +63,17 @@ namespace Pogo.Inspector
 
         private void RemoveDanglingBestTimes()
         {
-            var parentPath = UnityEditor.AssetDatabase.GetAssetPath(self);
-
-            var assets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(parentPath);
-            foreach (var asset in assets)
+            foreach(var _target in targets)
             {
-                if (!(asset is SaveValueDescriptor)) continue;
+                var parentPath = UnityEditor.AssetDatabase.GetAssetPath(_target);
 
-                Undo.DestroyObjectImmediate(asset);
+                var assets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(parentPath);
+                foreach (var asset in assets)
+                {
+                    if (!(asset is SaveValueDescriptor)) continue;
+
+                    Undo.DestroyObjectImmediate(asset);
+                }
             }
         }
     }

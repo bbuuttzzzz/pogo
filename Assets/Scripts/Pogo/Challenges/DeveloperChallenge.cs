@@ -25,24 +25,5 @@ public class DeveloperChallenge : ScriptableObject
         }
     }
 
-    public int BestTimeMS_Legacy
-    {
-        get
-        {
-            if (int.TryParse(PlayerTimeSaveValue_Legacy.CurrentValue, out int result))
-            {
-                return result;
-            }
-            return Challenge.WORST_TIME;
-        }
-        set
-        {
-            PlayerTimeSaveValue_Legacy.CurrentValue = value.ToString();
-            GameManager.GameInstance?.SaveData();
-        }
-    }
-
     public float BestTime => (float)BestTimeMS / 1000;
-
-    public SaveValueDescriptor PlayerTimeSaveValue_Legacy;
 }
