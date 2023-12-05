@@ -5,7 +5,7 @@ using UnityEngine;
 using WizardUtils;
 using WizardUtils.Saving;
 
-[CreateAssetMenu(fileName = "DeveloperChallenge", menuName = "Pogo/DeveloperChallenge", order = 1)]
+[CreateAssetMenu(fileName = "DeveloperChallenge", menuName = "Pogo/Challenges/Challenge", order = 1)]
 public class DeveloperChallenge : ScriptableObject
 {
     public string DisplayName;

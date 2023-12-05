@@ -6,7 +6,7 @@ using WizardUtils;
 using WizardUtils.ManifestPattern;
 using WizardUtils.Saving;
 
-[CreateAssetMenu(fileName = "ChallengePack", menuName = "Pogo/ChallengePack", order = 1)]
+[CreateAssetMenu(fileName = "ChallengePack", menuName = "Pogo/Challenges/Pack", order = 1)]
 public class ChallengePackDescriptor : ScriptableObject, IDescriptorManifest<DeveloperChallenge>
 {
     public string PrintName;

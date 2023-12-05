@@ -19,7 +19,7 @@ namespace Pogo
         public Button DecrementButton;
         public ChallengeButtonController[] ChallengeButtons;
 
-        public ChallengePackDescriptor[] Packs;
+        public ChallengePackManifest PackManifest;
         [HideInInspector]
         public ChallengePackDescriptor[] UnlockedPacks;
         private ChallengePackDescriptor CurrentPack => UnlockedPacks[ActivePackIndex];
@@ -68,7 +68,7 @@ namespace Pogo
         private void SetupUnlockedPacks()
         {
             List<ChallengePackDescriptor> unlockedPackList = new List<ChallengePackDescriptor>();
-            foreach (ChallengePackDescriptor pack in Packs)
+            foreach (ChallengePackDescriptor pack in PackManifest.Items)
             {
                 if (pack.IsUnlocked)
                 {

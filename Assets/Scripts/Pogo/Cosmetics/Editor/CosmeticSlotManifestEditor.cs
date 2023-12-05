@@ -1,6 +1,7 @@
 ﻿using Pogo.Collectibles;
 using Pogo.Levels;
 using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,7 +27,7 @@ namespace Pogo.Cosmetics
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            dropdown.DrawRegisterButtons(self);
+            dropdown.DrawRegisterButtons(targets.Cast<CosmeticSlotManifest>().ToArray());
 
             serializedObject.ApplyModifiedProperties();
         }
