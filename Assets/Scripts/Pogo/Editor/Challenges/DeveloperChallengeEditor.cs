@@ -50,31 +50,6 @@ namespace Pogo.Inspector
             }
 
             base.OnInspectorGUI();
-            if (GUILayout.Button(new GUIContent("Delete SaveValueDescriptors")))
-            {
-                Undo.SetCurrentGroupName("Generate SaveValueDescriptor");
-                int undoGroup = Undo.GetCurrentGroup();
-
-                RemoveDanglingBestTimes();
-
-                Undo.CollapseUndoOperations(undoGroup);
-            }
-        }
-
-        private void RemoveDanglingBestTimes()
-        {
-            foreach(var _target in targets)
-            {
-                var parentPath = UnityEditor.AssetDatabase.GetAssetPath(_target);
-
-                var assets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(parentPath);
-                foreach (var asset in assets)
-                {
-                    if (!(asset is SaveValueDescriptor)) continue;
-
-                    Undo.DestroyObjectImmediate(asset);
-                }
-            }
         }
     }
 }
