@@ -3,9 +3,11 @@ using Pogo.Levels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using WizardUtils.ManifestPattern;
 using WizardUtils.Saving;
 
 namespace Pogo.Inspector
@@ -15,11 +17,13 @@ namespace Pogo.Inspector
     {
         DeveloperChallenge self;
         DevelopChallengeEditorPopup popup;
+        private DescriptorManifestAssigner<ChallengePackDescriptor, DeveloperChallenge> dropdown;
 
         public override VisualElement CreateInspectorGUI()
         {
             self = target as DeveloperChallenge;
             popup = new DevelopChallengeEditorPopup(onDecodePressed);
+            dropdown = new DescriptorManifestAssigner<ChallengePackDescriptor, DeveloperChallenge>();
             return base.CreateInspectorGUI();
         }
 
@@ -50,6 +54,9 @@ namespace Pogo.Inspector
             }
 
             base.OnInspectorGUI();
+
+            dropdown.DrawRegisterButtons(targets.Cast<DeveloperChallenge>().ToArray());
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }
