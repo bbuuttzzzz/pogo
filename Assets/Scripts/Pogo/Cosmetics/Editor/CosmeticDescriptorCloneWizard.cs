@@ -78,6 +78,7 @@ namespace Pogo.Tools
                 PrefabUtility.UnpackPrefabInstance(sceneObject, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
             }
             PrefabUtility.SaveAsPrefabAsset(sceneObject, prefabPath);
+            DestroyImmediate(sceneObject);
 
             var newEquipmentPrefab = (GameObject)AssetDatabase.LoadAssetAtPath(prefabPath, typeof(GameObject));
             newEquipmentPrefab.name = NewFileName;
