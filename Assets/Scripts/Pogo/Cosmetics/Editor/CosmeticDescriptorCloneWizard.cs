@@ -72,16 +72,13 @@ namespace Pogo.Tools
 
             // set up & writeEquipment Prefab
             string prefabPath = $"{directoryPath}{Path.DirectorySeparatorChar}{NewFileName}.prefab";
-            if (SpawnPrefabAsVariant)
+            var sceneObject = (GameObject)PrefabUtility.InstantiatePrefab(Source.Equipment.Prefab);
+            if(!SpawnPrefabAsVariant)
             {
-                var sceneObject = (GameObject)PrefabUtility.InstantiatePrefab(Source.Equipment.Prefab);
-                PrefabUtility.SaveAsPrefabAsset(sceneObject, prefabPath);
-                DestroyImmediate(sceneObject);
+                PrefabUtility.UnpackPrefabInstance(sceneObject, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
             }
-            else
-            {
-                PrefabUtility.SaveAsPrefabAsset(Source.Equipment.Prefab, prefabPath);
-            }
+            PrefabUtility.SaveAsPrefabAsset(sceneObject, prefabPath);
+
             var newEquipmentPrefab = (GameObject)AssetDatabase.LoadAssetAtPath(prefabPath, typeof(GameObject));
             newEquipmentPrefab.name = NewFileName;
             EditorUtility.SetDirty(newEquipmentPrefab);
