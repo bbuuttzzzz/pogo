@@ -25,8 +25,11 @@ namespace Pogo.Tools
         {
             get => newName; set
             {
+                if (newName != value)
+                {
+                    NewNameChanged(value);
+                }
                 newName = value;
-                NewNameChanged();
             }
         }
 
@@ -112,12 +115,12 @@ namespace Pogo.Tools
                 && !string.IsNullOrWhiteSpace(NewCosmeticDisplayName);
         }
 
-        private void NewNameChanged()
+        private void NewNameChanged(string newName)
         {
-            if (string.IsNullOrWhiteSpace(OldName) || string.IsNullOrWhiteSpace(NewName)) return;
+            if (string.IsNullOrWhiteSpace(OldName) || string.IsNullOrWhiteSpace(newName)) return;
 
-            NewCosmeticDisplayName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(NewName);
-            NewFileName = Source.name.Replace(OldName, NewName);
+            NewCosmeticDisplayName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(newName);
+            NewFileName = Source.name.Replace(OldName, newName);
         }
 
 
