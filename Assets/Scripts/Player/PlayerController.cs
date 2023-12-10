@@ -2,6 +2,7 @@ using Assets.Scripts.Player;
 using Inputter;
 using Pogo;
 using Pogo.Abilities;
+using Pogo.Cosmetics;
 using Pogo.MaterialTypes;
 using System;
 using System.Collections;
@@ -16,14 +17,12 @@ using WizardUtils;
 using WizardUtils.Equipment;
 using WizardUtils.SceneManagement;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
 {
     public AudioController AudioController;
     public CollisionGroup CollisionGroup;
     public float AutoRespawnDelay;
     public PlayerJostler Jostler;
-    [NonSerialized]
-    public PlayerModelController CurrentModelController;
     public EquipmentTypeDescriptor PlayerModelEquipmentType;
 
     public Vector3 PhysicsPosition
@@ -56,6 +55,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         GetComponent<Equipper>().OnEquip.AddListener(Equipper_OnEquip);
+        OnModelControllerChanged = new UnityEvent<PlayerModelController>();
     }
 
     void Start()
@@ -92,24 +92,25 @@ public class PlayerController : MonoBehaviour
         setControlSceneBehavior(PogoGameManager.GameInstance.InControlScene);
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        if (CurrentState == PlayerStates.Alive)
+        {
+            DoLook();
+            UpdateDesiredModelPitch(Time.deltaTime);
+            RenderRotation = DesiredModelRotation;
+        }
+        else
+        {
+            CheckForRespawn();
+        }
+    }
 
     private void OnDestroy()
     {
         PogoGameManager.GameInstance.OnPauseStateChanged -= onPauseStateChanged;
         PogoGameManager.GameInstance.OnControlSceneChanged -= onControlSceneChanged;
-    }
-
-
-    private void Equipper_OnEquip(EquipmentSlot arg0)
-    {
-        if (arg0.EquipmentType == PlayerModelEquipmentType)
-        {
-            CurrentModelController = GetComponent<Equipper>()
-                .FindSlot(PlayerModelEquipmentType)
-                .ObjectInstance
-                .GetComponent<PlayerModelController>();
-            CurrentModelController.Link(this);
-        }
     }
 
     private static int convertInvertYSetting(float settingValue)
@@ -132,20 +133,6 @@ public class PlayerController : MonoBehaviour
         SENSITIVITY = e.FinalValue;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (CurrentState == PlayerStates.Alive)
-        {
-            DoLook();
-            UpdateDesiredModelPitch(Time.deltaTime);
-            RenderRotation = DesiredModelRotation;
-        }
-        else
-        {
-            CheckForRespawn();
-        }
-    }
 
     void RenderUpdate(RenderArgs e)
     {
@@ -200,6 +187,32 @@ public class PlayerController : MonoBehaviour
     private void RenderMove(float t)
     {
         RenderPosition = Vector3.Lerp(lastPhysicsPosition, PhysicsPosition, t);
+    }
+
+    #endregion
+
+    #region Cosmetics
+    PlayerModelController IPlayerModelControllerProvider.PlayerModelController => CurrentModelController;
+
+    UnityEvent<PlayerModelController> IPlayerModelControllerProvider.OnModelControllerChanged => OnModelControllerChanged;
+
+    [NonSerialized]
+    public UnityEvent<PlayerModelController> OnModelControllerChanged;
+
+    [NonSerialized]
+    public PlayerModelController CurrentModelController;
+
+    private void Equipper_OnEquip(EquipmentSlot arg0)
+    {
+        if (arg0.EquipmentType == PlayerModelEquipmentType)
+        {
+            CurrentModelController = GetComponent<Equipper>()
+                .FindSlot(PlayerModelEquipmentType)
+                .ObjectInstance
+                .GetComponent<PlayerModelController>();
+            CurrentModelController.Link(this);
+            OnModelControllerChanged?.Invoke(CurrentModelController);
+        }
     }
 
     #endregion
@@ -393,7 +406,9 @@ public class PlayerController : MonoBehaviour
     {
         Velocity = Vector3.zero;
         PitchFrac = 0;
-        RenderTransform.rotation = DesiredModelRotation;
+        PhysicsRotation = DesiredModelRotation;
+        RenderRotation = DesiredModelRotation;
+        UpdateCameraRotation();
     }
 
 #if UNITY_EDITOR

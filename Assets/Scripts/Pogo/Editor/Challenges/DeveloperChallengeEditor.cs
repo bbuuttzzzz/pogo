@@ -3,23 +3,27 @@ using Pogo.Levels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using WizardUtils.ManifestPattern;
 using WizardUtils.Saving;
 
 namespace Pogo.Inspector
 {
-    [CustomEditor(typeof(DeveloperChallenge))]
+    [CustomEditor(typeof(DeveloperChallenge)), CanEditMultipleObjects]
     public class DeveloperChallengeEditor : Editor
     {
         DeveloperChallenge self;
         DevelopChallengeEditorPopup popup;
+        private DescriptorManifestAssigner<ChallengePackDescriptor, DeveloperChallenge> dropdown;
 
         public override VisualElement CreateInspectorGUI()
         {
             self = target as DeveloperChallenge;
             popup = new DevelopChallengeEditorPopup(onDecodePressed);
+            dropdown = new DescriptorManifestAssigner<ChallengePackDescriptor, DeveloperChallenge>();
             return base.CreateInspectorGUI();
         }
 
@@ -50,44 +54,9 @@ namespace Pogo.Inspector
             }
 
             base.OnInspectorGUI();
-            if (self.PlayerTimeSaveValue_Legacy == null)
-            {
-                EditorGUILayout.HelpBox("Missing Save Value!", MessageType.Error);
-            }
-            if (GUILayout.Button(new GUIContent("Regenerate SaveValueDescriptor")))
-            {
-                Undo.SetCurrentGroupName("Generate SaveValueDescriptor");
-                int undoGroup = Undo.GetCurrentGroup();
 
-                RemoveDanglingBestTimes();
-
-                var parentPath = AssetDatabase.GetAssetPath(self);
-                var newSaveValue = ScriptableObject.CreateInstance<SaveValueDescriptor>();
-                newSaveValue.name = "sv_" + self.name;
-                newSaveValue.Key = "time_" + self.name;
-                newSaveValue.DeveloperNote = "Best time in milliseconds";
-                newSaveValue.DefaultValue = Challenge.WORST_TIME.ToString();
-                AssetDatabase.AddObjectToAsset(newSaveValue, parentPath);
-                Undo.RegisterCreatedObjectUndo(newSaveValue, "create");
-
-                self.PlayerTimeSaveValue_Legacy = newSaveValue;
-                Undo.RecordObject(self, "set");
-
-                Undo.CollapseUndoOperations(undoGroup);
-            }
-        }
-
-        private void RemoveDanglingBestTimes()
-        {
-            var parentPath = UnityEditor.AssetDatabase.GetAssetPath(self);
-
-            var assets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(parentPath);
-            foreach (var asset in assets)
-            {
-                if (!(asset is SaveValueDescriptor)) continue;
-
-                Undo.DestroyObjectImmediate(asset);
-            }
+            dropdown.DrawRegisterButtons(targets.Cast<DeveloperChallenge>().ToArray());
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }

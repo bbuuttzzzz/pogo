@@ -13,12 +13,13 @@ GameObject:
   - component: {fileID: 8451490571927792747}
   - component: {fileID: 3182034669780665706}
   - component: {fileID: 6102506513276693192}
+  - component: {fileID: 2937415939556692529}
   m_Layer: 0
   m_Name: HiddenDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &6279528945004410117
 Transform:
@@ -43,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2067575868957748000}
-  m_Mesh: {fileID: -3997443864116845904, guid: efca0438bfcee644eb7eb743cce3754a, type: 3}
+  m_Mesh: {fileID: -4622293199245742556, guid: efca0438bfcee644eb7eb743cce3754a, type: 3}
 --- !u!23 &8451490571927792747
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -97,8 +98,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 21.7992, y: 1.9881595, z: 9.819455}
-  m_Center: {x: -0.2851095, y: 1.0718423, z: 0.27263308}
+  m_Size: {x: 7.0819564, y: 1.1856353, z: 6.97756}
+  m_Center: {x: 1.5127375, y: 0.7179285, z: -0.92136866}
 --- !u!114 &6102506513276693192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,6 +113,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OnActivated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2937415939556692529}
+        m_TargetAssemblyTypeName: AnimationEventReplicator, Assembly-CSharp
+        m_MethodName: Call
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2937415939556692529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067575868957748000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e0571693e599e14e8be53d3262369af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnCalled:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3182034669780665706}
@@ -188,15 +216,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5848101723327213549}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.474, z: 0}
+  m_LocalRotation: {x: 0.65119284, y: 0.026620546, z: -0.026620546, w: 0.757978}
+  m_LocalPosition: {x: 1.62, y: -0.34, z: -0.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1831176098200886944}
   m_Father: {fileID: 6279528945004410117}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 81.339, y: 2.164, z: -2.164}
 --- !u!198 &688028782341298412
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -280,7 +308,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 3
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -333,7 +361,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 10
+      scalar: 50
       minScalar: 7
       maxCurve:
         serializedVersion: 2
@@ -449,7 +477,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2
+      scalar: 1
       minScalar: 0.5
       maxCurve:
         serializedVersion: 2
@@ -833,7 +861,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 10.4, y: 4.167598, z: 0.8137641}
+    m_Scale: {x: 3.63, y: 3.26, z: 0.8137641}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -908,7 +936,7 @@ ParticleSystem:
     m_TextureColorAffectsParticles: 1
     m_TextureAlphaAffectsParticles: 1
     m_TextureBilinearFiltering: 0
-    randomDirectionAmount: 0.06
+    randomDirectionAmount: 0.12
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
@@ -1141,7 +1169,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 16
+        scalar: 12
         minScalar: 30
         maxCurve:
           serializedVersion: 2

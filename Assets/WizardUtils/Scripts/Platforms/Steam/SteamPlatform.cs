@@ -1,4 +1,5 @@
 ﻿#if !DISABLESTEAMWORKS
+using Pogo;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,8 @@ namespace Platforms.Steam
         private Callback<GameOverlayActivated_t> m_OnGameOverlayActivated;
 
         public string PersistentDataPath { get; private set; }
+
+        public string PlatformURLName => "steam";
 
         public SteamPlatformService()
         {
@@ -97,6 +100,7 @@ namespace Platforms.Steam
             if (callback.m_bActive != 0)
             {
                 // overlay is active
+                PogoGameManager.PogoInstance.Paused = true;
             }
             else
             {

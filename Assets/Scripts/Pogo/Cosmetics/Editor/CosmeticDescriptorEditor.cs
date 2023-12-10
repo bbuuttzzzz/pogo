@@ -1,5 +1,6 @@
 ﻿using Pogo.Collectibles;
 using Pogo.Levels;
+using Pogo.Tools;
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -34,6 +35,12 @@ namespace Pogo.Cosmetics
             {
                 EditorGUILayout.PropertyField(m_Collectible);
             }
+
+            if (GUILayout.Button("Clone..."))
+            {
+                CosmeticDescriptorCloneWizard.Spawn(self);
+            }
+
             dropdown.DrawRegisterButtons(self);
 
             SerializedObjectUpdater updater = new SerializedObjectUpdater(serializedObject);

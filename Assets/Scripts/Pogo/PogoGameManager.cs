@@ -156,7 +156,6 @@ namespace Pogo
 #if UNITY_EDITOR
             if (DontLoadScenesInEditor) return;
 #endif
-
             settings.LoadingFromMenu = settings.LoadingFromMenu || CurrentControlScene != null;
             levelManager.LoadLevelAsync(settings);
         }
@@ -218,6 +217,8 @@ namespace Pogo
             CurrentLevelStates[newState.Level] = newState;
             OnLevelStateChanged?.Invoke(args);
         }
+
+        public bool TryGetLevelStateForLevel(LevelDescriptor levelDescriptor, out LevelState result) => CurrentLevelStates.TryGetValue(levelDescriptor, out result);
 
         public LevelState? GetLevelStateForLevel(LevelDescriptor levelDescriptor)
         {
@@ -619,7 +620,7 @@ namespace Pogo
             {
                 var equipData = CurrentGlobalDataTracker.GetCosmeticSlotEquipData(manifest.Slot, manifest.Default.Key);
                 CosmeticDescriptor descriptor = FindUnlockedCosmeticByKey(manifest, equipData.Key);
-
+                    
                 EquipCosmetic(descriptor, false);
             }
         }
@@ -640,6 +641,7 @@ namespace Pogo
                 case CosmeticDescriptor.UnlockTypes.VendingMachine:
                     return VendingCosmeticUnlocked(cosmetic);
                 case CosmeticDescriptor.UnlockTypes.Collectible:
+                    if (cosmetic.Collectible == null) return false;
                     return CurrentGlobalDataTracker.GetCollectible(cosmetic.Collectible.Key).isUnlocked;
                 default:
                     return false;
@@ -686,18 +688,13 @@ namespace Pogo
                 });
             }
 
-            switch(cosmetic)
+            if (cosmetic.Equipment == null)
             {
-                case PogoStickDescriptor pogoStick:
-                    Equip(pogoStick.Equipment);
-                    break;
-                case TrailDescriptor trail:
-                    Equip(trail.Equipment);
-                    break;
-                case ModelDescriptor model:
-                    Equip(model.Equipment);
-                    break;
+                Debug.LogError($"Missing Equipment for Cosmetic {cosmetic}", cosmetic);
+                return;
             }
+
+            Equip(cosmetic.Equipment);
         }
 
         private CosmeticDescriptor FindUnlockedCosmeticByKey(CosmeticSlotManifest manifest, string key)
@@ -1086,6 +1083,8 @@ namespace Pogo
                 {
                     return false;
                 }
+
+                var checkpoint = worldChapter.Chapter.GetCheckpointDescriptor(data.checkpointId);
             }
             catch (IndexOutOfRangeException e)
             {

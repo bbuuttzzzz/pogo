@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using WizardUtils.Equipment;
 
-namespace Assets.Scripts.Player
+namespace Pogo.Cosmetics
 {
-    public class PlayerModelController : MonoBehaviour
+    public class PlayerModelController : MonoBehaviour, IEquipmentRoot
     {
         List<IPlayerModelAttachment> Attachments = new List<IPlayerModelAttachment>();
 
@@ -22,9 +23,12 @@ namespace Assets.Scripts.Player
 
         public UnityEvent OnDisjoint;
 
+        public bool ForceToDisplayModel;
+
         private void Awake()
         {
             Parent = GetComponent<PlayerController>();
+            if (ForceToDisplayModel) OnLoadAsDisplayModel.Invoke();
         }
         private void Update()
         {
@@ -38,6 +42,16 @@ namespace Assets.Scripts.Player
                 UnLink();
             }
         }
+
+        public void OnEquipped()
+        {
+        }
+
+        public void OnUnequipped()
+        {
+            RemoveAllAttachments();
+        }
+
 
         public void Link(PlayerController parent)
         {
@@ -59,7 +73,7 @@ namespace Assets.Scripts.Player
             OnDisjoint?.Invoke();
         }
 
-        
+
 
         #region Model Attachments
         private void UpdateAttachments()
@@ -114,6 +128,18 @@ namespace Assets.Scripts.Player
             }
 #else
             Attachments.Remove(attachment);
+#endif
+        }
+
+        private void RemoveAllAttachments()
+        {
+            foreach (var attachment in Attachments)
+            {
+                attachment.OnDetach();
+            }
+            Attachments.Clear();
+#if DEBUG
+            _AttachmentDetails.Clear();
 #endif
         }
 
@@ -173,7 +199,7 @@ namespace Assets.Scripts.Player
         }
 
 #endif
-        #endregion
+#endregion
 
     }
 }

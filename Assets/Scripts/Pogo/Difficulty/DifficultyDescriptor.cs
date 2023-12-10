@@ -19,5 +19,6 @@ namespace Pogo
         [TextArea(4,10)]
         public string Description;
         public EquipmentDescriptor PogoEquipment;
+        public bool Unlisted;
     }
 }

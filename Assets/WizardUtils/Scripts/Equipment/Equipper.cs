@@ -43,12 +43,24 @@ namespace WizardUtils.Equipment
 #endif
             var result = Instantiate(slot.Equipment.Prefab, slot.PrefabInstantiationParent);
             slot.ObjectInstance = result;
+
+            var stateListener = result.GetComponent<IEquipmentRoot>();
+            if (stateListener != null)
+            {
+                stateListener.OnEquipped();
+            }
         }
 
         private void DeApplySlot(EquipmentSlot slot)
         {
             if (slot.ObjectInstance != null)
             {
+                var stateListener = slot.ObjectInstance.GetComponent<IEquipmentRoot>();
+                if (stateListener != null)
+                {
+                    stateListener.OnUnequipped();
+                }
+
                 Destroy(slot.ObjectInstance);
                 slot.ObjectInstance = null;
             }

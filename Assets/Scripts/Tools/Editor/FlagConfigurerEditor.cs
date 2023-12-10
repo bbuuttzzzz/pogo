@@ -73,17 +73,20 @@ namespace Pogo
 
             Undo.RecordObject(respawnPoint, "Set Hard Mode Enabled");
             respawnPoint.EnabledInHardMode = value;
+            EditorUtility.SetDirty(respawnPoint);
 
             var material = value ? self.FlagMaterial_Star : self.FlagMaterial_NoStar;
             if (self.Flag1 != null)
             {
                 Undo.RecordObject(self.Flag1, "");
                 self.Flag1.GetComponent<Renderer>().sharedMaterial = material;
+                EditorUtility.SetDirty(self.Flag1);
             }
             if (self.Flag2 != null)
             {
                 Undo.RecordObject(self.Flag2, "");
                 self.Flag2.GetComponent<Renderer>().sharedMaterial = material;
+                EditorUtility.SetDirty(self.Flag2);
             }
         }
 

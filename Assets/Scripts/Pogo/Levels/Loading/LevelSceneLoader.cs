@@ -142,7 +142,16 @@ namespace Pogo.Levels.Loading
             }
 
             CanCancelActiveCoroutine = false;
-            var unloadTask = SceneManager.UnloadSceneAsync(Level.BuildIndex);
+            AsyncOperation unloadTask = null;
+            try
+            {
+                unloadTask = SceneManager.UnloadSceneAsync(Level.BuildIndex);
+            }
+            catch(ArgumentException e)
+            {
+                Debug.LogError($"Tried to unload an invalid scene: {Level.name} (buildIndex {Level.BuildIndex}). Giving up.");
+            }
+
             if (unloadTask == null)
             {
                 CurrentLoadState = LoadStates.NotLoaded;
