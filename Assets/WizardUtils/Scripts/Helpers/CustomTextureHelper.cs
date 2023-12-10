@@ -18,7 +18,7 @@ namespace WizardUtils
 
             if (!File.Exists(filePath))
             {
-                Debug.Log($"File not found for custom Texture @ {CustomFolderPath}. using default");
+                Debug.Log($"File not found for custom Texture @ {filePath}. using default");
                 return fallbackTexture;
             }
 
@@ -26,7 +26,7 @@ namespace WizardUtils
             Texture2D loadedTexture = new Texture2D(fallbackTexture.width, fallbackTexture.height);
             if (!ImageConversion.LoadImage(loadedTexture, rawFile))
             {
-                Debug.Log($"Failed to load custom Texture @ {CustomFolderPath}. using default");
+                Debug.Log($"Failed to load custom Texture @ {filePath}. using default");
                 return fallbackTexture;
             }
 
