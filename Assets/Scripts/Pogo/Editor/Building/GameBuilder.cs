@@ -103,10 +103,10 @@ namespace Pogo.Building
         }
 
 #else
-        [MenuItem("Pogo/Build (Steam)")]
+        [MenuItem("Pogo/Build Demo (Steam)")]
         public static void BuildSteam()
         {
-            string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build{Path.DirectorySeparatorChar}Steam";
+            string pathRoot = $"{Path.GetDirectoryName(Application.dataPath)}{Path.DirectorySeparatorChar}Build{Path.DirectorySeparatorChar}SteamDemo";
             FileLogger logger = new FileLogger($"{pathRoot}{Path.DirectorySeparatorChar}Logs.txt");
             
             EditorApplication.delayCall += () =>
