@@ -25,8 +25,11 @@ namespace Pogo.Tools
         {
             get => newName; set
             {
+                if (newName != value)
+                {
+                    NewNameChanged(value);
+                }
                 newName = value;
-                NewNameChanged();
             }
         }
 
@@ -72,16 +75,14 @@ namespace Pogo.Tools
 
             // set up & writeEquipment Prefab
             string prefabPath = $"{directoryPath}{Path.DirectorySeparatorChar}{NewFileName}.prefab";
-            if (SpawnPrefabAsVariant)
+            var sceneObject = (GameObject)PrefabUtility.InstantiatePrefab(Source.Equipment.Prefab);
+            if(!SpawnPrefabAsVariant)
             {
-                var sceneObject = (GameObject)PrefabUtility.InstantiatePrefab(Source.Equipment.Prefab);
-                PrefabUtility.SaveAsPrefabAsset(sceneObject, prefabPath);
-                DestroyImmediate(sceneObject);
+                PrefabUtility.UnpackPrefabInstance(sceneObject, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
             }
-            else
-            {
-                PrefabUtility.SaveAsPrefabAsset(Source.Equipment.Prefab, prefabPath);
-            }
+            PrefabUtility.SaveAsPrefabAsset(sceneObject, prefabPath);
+            DestroyImmediate(sceneObject);
+
             var newEquipmentPrefab = (GameObject)AssetDatabase.LoadAssetAtPath(prefabPath, typeof(GameObject));
             newEquipmentPrefab.name = NewFileName;
             EditorUtility.SetDirty(newEquipmentPrefab);
@@ -114,12 +115,12 @@ namespace Pogo.Tools
                 && !string.IsNullOrWhiteSpace(NewCosmeticDisplayName);
         }
 
-        private void NewNameChanged()
+        private void NewNameChanged(string newName)
         {
-            if (string.IsNullOrWhiteSpace(OldName) || string.IsNullOrWhiteSpace(NewName)) return;
+            if (string.IsNullOrWhiteSpace(OldName) || string.IsNullOrWhiteSpace(newName)) return;
 
-            NewCosmeticDisplayName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(NewName);
-            NewFileName = Source.name.Replace(OldName, NewName);
+            NewCosmeticDisplayName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(newName);
+            NewFileName = Source.name.Replace(OldName, newName);
         }
 
 
