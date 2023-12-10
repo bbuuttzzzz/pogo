@@ -175,7 +175,11 @@ namespace Pogo.Challenges
 
             // crunch existing MainLevelState down to a shareable levelState
             LevelDescriptor level = pogoInstance.RealTargetRespawnLevel ?? pogoInstance.LevelManager.CurrentLevel;
-            LevelState levelState = pogoInstance.GetLevelStateForLevel(level) ?? new LevelState(level, 0);
+            if (!pogoInstance.TryGetLevelStateForLevel(level, out LevelState levelState))
+            {
+                Debug.LogError($"Missing LevelState for level {level}. assuming state zero.");
+                levelState = new LevelState(level, 0);
+            }
             if (ShareCodeManifest.TryGetShareCode(levelState, out ShareCode shareCode))
             {
                 levelState = shareCode.LevelState;

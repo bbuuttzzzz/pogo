@@ -40,7 +40,7 @@ namespace WizardUtils.ManifestPattern
             }
         }
 
-        public void DrawRegisterButtons(TDescriptor item, string headerText = "Manifests")
+        public void DrawRegisterButtons(ICollection<TDescriptor> items, string headerText = "Manifests")
         {
             GUILayout.Label(headerText, EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
@@ -49,7 +49,14 @@ namespace WizardUtils.ManifestPattern
                 .OrderBy(x => x.name);
             foreach (var manifest in manifests)
             {
-                bool containsItem = manifest.Contains(item);
+                bool containsNone = true;
+                bool containsAll = true;
+                foreach(var item in items)
+                {
+                    bool containsItem = manifest.Contains(item);
+                    containsAll &= containsItem;
+                    containsNone &= !containsItem;
+                }
 
                 bool toggle;
                 using (new GUILayout.HorizontalScope())
@@ -58,23 +65,53 @@ namespace WizardUtils.ManifestPattern
                     {
                         EditorGUILayout.ObjectField(manifest, typeof(ScriptableObject), false);
                     }
-                    toggle = EditorGUILayout.Toggle(containsItem);
+
+                    EditorGUI.showMixedValue = !(containsNone || containsAll);
+                    toggle = EditorGUILayout.Toggle(containsAll);
+                    EditorGUI.showMixedValue = false;
                 }
 
-                if (!toggle && containsItem)
+                if (!toggle && containsAll)
                 {
-                    manifest.Remove(item);
-                    EditorUtility.SetDirty(manifest);
-                    AssetDatabase.SaveAssetIfDirty(manifest);
+                    RemoveAll(items, manifest);
                 }
-                else if (toggle && !containsItem)
+                else if (toggle && !containsAll)
                 {
-                    manifest.Add(item);
-                    EditorUtility.SetDirty(manifest);
-                    AssetDatabase.SaveAssetIfDirty(manifest);
+                    AddAll(items, manifest);
                 }
             }
             EditorGUI.indentLevel--;
         }
+
+        private static void AddAll(ICollection<TDescriptor> items, TManifest manifest)
+        {
+            Undo.RecordObject(manifest, "Add Descriptors to Manifest");
+            foreach (var item in items)
+            {
+                if (!manifest.Contains(item))
+                {
+                    manifest.Add(item);
+                }
+            }
+            EditorUtility.SetDirty(manifest);
+            AssetDatabase.SaveAssetIfDirty(manifest);
+        }
+
+        private static void RemoveAll(ICollection<TDescriptor> items, TManifest manifest)
+        {
+            Undo.RecordObject(manifest, "Remove Descriptors from Manifest");
+            foreach (var item in items)
+            {
+                if (manifest.Contains(item))
+                {
+                    manifest.Remove(item);
+                }
+            }
+            EditorUtility.SetDirty(manifest);
+            AssetDatabase.SaveAssetIfDirty(manifest);
+        }
+
+        [Obsolete("use DrawRegisterButtons(ICollection<TDescriptor> item...")]
+        public void DrawRegisterButtons(TDescriptor item, string headerText = "Manifests") => DrawRegisterButtons(new TDescriptor[] { item }, headerText);
     }
 }

@@ -202,7 +202,7 @@ namespace WizardUtils.Equipment.Inspector
                             {
                                 using var undoScope = new UndoScope("Apply Equip In Editor");
 
-                                if (slot.Equipment != null)
+                                if (slot.Equipment == null)
                                 {
                                     Undo.DestroyObjectImmediate(slot.ObjectInstance);
                                 }

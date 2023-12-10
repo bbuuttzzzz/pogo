@@ -47,7 +47,12 @@ namespace Pogo.Levels
             for (int i = 0; i < ShareCodes.Length; i++)
             {
                 ShareCode shareCode = ShareCodes[i];
-                if (shareCode.LevelState == levelState)
+                if (shareCode.LevelState.Level != levelState.Level)
+                {
+                    continue;
+                }
+
+                if (shareCode.LevelState.StateId == levelState.StateId)
                 {
                     result = shareCode;
                     return true;

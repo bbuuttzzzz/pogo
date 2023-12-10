@@ -1,11 +1,13 @@
 ﻿using Pogo.Collectibles;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using WizardUtils;
+using WizardUtils.ManifestPattern;
 using WizardUtils.Saving;
 
-[CreateAssetMenu(fileName = "ChallengePack", menuName = "Pogo/ChallengePack", order = 1)]
-public class ChallengePackDescriptor : ScriptableObject
+[CreateAssetMenu(fileName = "ChallengePack", menuName = "Pogo/Challenges/Pack", order = 1)]
+public class ChallengePackDescriptor : ScriptableObject, IDescriptorManifest<DeveloperChallenge>
 {
     public string PrintName;
     public DeveloperChallenge[] Challenges;
@@ -15,19 +17,19 @@ public class ChallengePackDescriptor : ScriptableObject
 
     public bool IsUnlocked => Collectible == null || Collectible.CollectedInGlobalSave;
 
-    public SaveValueDescriptor UnlockedSaveValue_Legacy;
-
-    public bool IsUnlocked_Legacy
+    public void Add(DeveloperChallenge descriptor)
     {
-        get
-        {
-            return UnlockedSaveValue_Legacy == null
-                || GameManager.GameInstance?.GetMainSaveValue(UnlockedSaveValue_Legacy) == "1";
-        }
-        set
-        {
-            GameManager.GameInstance?.SetMainSaveValue(UnlockedSaveValue_Legacy, value ? "1" : "0");
-        }
+        ArrayHelper.InsertAndResize(ref Challenges, descriptor);
+    }
+
+    public bool Contains(DeveloperChallenge descriptor)
+    {
+        return Challenges.Contains(descriptor);
+    }
+
+    public void Remove(DeveloperChallenge descriptor)
+    {
+        ArrayHelper.DeleteAndResize(ref Challenges, descriptor);
     }
 
     #endregion

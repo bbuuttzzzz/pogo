@@ -224,6 +224,7 @@ namespace Pogo.Saving
 
             foreach (var difficulty in PogoGameManager.PogoInstance.DifficultyManifest.Difficulties)
             {
+                if (difficulty.Unlisted) continue;
                 GameObject newObject = Instantiate(DifficultyButtonPrefab, DifficultiesParent);
                 var controller = newObject.GetComponent<DifficultyButtonController>();
                 controller.SetDifficulty(difficulty);

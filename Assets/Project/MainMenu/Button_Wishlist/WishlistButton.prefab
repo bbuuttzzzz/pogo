@@ -89,9 +89,9 @@ GameObject:
   - component: {fileID: 4229816997583808814}
   - component: {fileID: 4229816997583808813}
   - component: {fileID: 1299804911953965914}
-  - component: {fileID: 4229816997583808786}
   - component: {fileID: 4229816997583808788}
   - component: {fileID: 4229816997583808789}
+  - component: {fileID: 4093555281155911688}
   m_Layer: 5
   m_Name: Load
   m_TagString: Untagged
@@ -204,10 +204,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4229816997583808786}
-        m_TargetAssemblyTypeName: WizardUtils.URLOpener, Assembly-CSharp
+      - m_Target: {fileID: 4093555281155911688}
+        m_TargetAssemblyTypeName: Pogo.StorePageLinker, Assembly-CSharp
         m_MethodName: OpenUrl
-        m_Mode: 5
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -237,18 +237,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4229816997583808786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4229816997583808787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 209b3e1141706024fa7860fc37d3832d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4229816997583808788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +295,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sound: {fileID: 0}
+--- !u!114 &4093555281155911688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4229816997583808787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 804f004f8f3935145ae11c3bb03614e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnencodedUTMCampaign: wishlist
 --- !u!1 &4229816997779470803
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,6 +17,7 @@ namespace Pogo.Cosmetics
             ChangeCosmeticScreen
         }
 
+        public FakePlayerController FakePlayer;
         public PogoMainMenuController parent;
         public VendingMachineButtonController VendingMachineButton;
         public VendingUnlockPopupController VendingUnlockPopup;
@@ -33,6 +34,7 @@ namespace Pogo.Cosmetics
         private void Awake()
         {
             VendingMachineButton.GetComponent<Button>().onClick.AddListener(VendingMachineButton_OnClick);
+            InitializeVendingMachine();
         }
 
         public void OnEnable()
@@ -46,6 +48,7 @@ namespace Pogo.Cosmetics
         {
             PogoGameManager.PogoInstance.SaveGlobalSave();
             HideVendingMachine();
+            FakePlayer.RotateTo(0);
         }
 
         public void Back()
@@ -92,6 +95,13 @@ namespace Pogo.Cosmetics
                 VendingMachineButton.NextReward = default;
             }
         }
+
+        private void InitializeVendingMachine()
+        {
+            VendingMachineWaypointer.SafeInitialize();
+        }
+
+
 
         private void ShowVendingMachine()
         {
