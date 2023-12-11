@@ -564,6 +564,7 @@ Transform:
   - {fileID: 431109356}
   - {fileID: 840588588}
   - {fileID: 796095176}
+  - {fileID: 4183215393718058432}
   m_Father: {fileID: 1811260239}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4419,6 +4420,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b41bbbd1a98641643991202b5c86718b, type: 3}
+--- !u!1 &3749222240279184596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4183215393718058432}
+  - component: {fileID: 4672496207130268366}
+  - component: {fileID: 7009452849171179344}
+  m_Layer: 7
+  m_Name: Stop Music Trigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1001 &4000278470814631560
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4480,6 +4499,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 348fe2ff5491a154db2d08014be01bd2, type: 3}
+--- !u!4 &4183215393718058432
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3749222240279184596}
+  m_LocalRotation: {x: -0.5000002, y: 0.4999999, z: 0.49999997, w: 0.50000006}
+  m_LocalPosition: {x: 110.3, y: 2.38, z: -2.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 301347801}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 90}
+--- !u!65 &4672496207130268366
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3749222240279184596}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 67.63573, y: 2, z: 37.3262}
+  m_Center: {x: -14.186641, y: -9.178195e-13, z: -1.4574951}
 --- !u!1001 &4945769961030998909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4537,6 +4584,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
+--- !u!114 &7009452849171179344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3749222240279184596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd910d478cb81a44c82ba366ec5a8767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnActivated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1346408909}
+        m_TargetAssemblyTypeName: Pogo.Levels.LevelStateChanger, Assembly-CSharp
+        m_MethodName: GoToState
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &7951632678718289428 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3097131127063244137, guid: 7b46fd8b92d753a44a220e9140b11a57, type: 3}
