@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7692829222241911126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c9d0684a5d03e84da7722e61a89de97, type: 3}
+  m_Name: sv_Challenge_1_1
+  m_EditorClassIdentifier: 
+  Key: time_Challenge_1_1
+  DefaultValue: 60000
+  HideIfDefault: 1
+  DeveloperNote: Best time in milliseconds
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19,17 +35,19 @@ MonoBehaviour:
     LevelState:
       Level: {fileID: 11400000, guid: ad9dd217ac4e76c4ead61e34322ec8ee, type: 2}
       StateId: 0
+    Level: {fileID: 11400000, guid: ad9dd217ac4e76c4ead61e34322ec8ee, type: 2}
     DeveloperChallenge: {fileID: 11400000}
-    ShareStartPointCm:
+    StartPointCm:
       x: 2079
       y: 236
       z: -4584
     startYaw: 190
-    ShareEndPointCm:
+    EndPointCm:
       x: 2035
       y: 405
       z: -6468
-    LastAttemptTimeMS: 65535
+    LastAttemptTimeMS: 60000
     BestTimeMS: 5486
-    PersonalBestTimeMS: 65535
+    PersonalBestTimeMS: 6433
     AttemptStartTime: 0
+  PlayerTimeSaveValue_Legacy: {fileID: -7692829222241911126}
