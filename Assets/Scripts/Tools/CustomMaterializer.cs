@@ -8,6 +8,7 @@ public class CustomMaterializer : MonoBehaviour
     public Renderer Target;
     public string TextureFileName;
     public Texture2D FallbackTexture;
+    public string ShaderTextureReference = "_MainTex";
 
     public bool LoadOnAwake;
 
@@ -26,7 +27,7 @@ public class CustomMaterializer : MonoBehaviour
 
         Texture2D loadedTexture = CustomTextureHelper.Load(TextureFileName, FallbackTexture);
 
-        instancedMaterial.mainTexture = loadedTexture;
+        instancedMaterial.SetTexture(ShaderTextureReference, loadedTexture);
 
         Target.material = instancedMaterial;
     }
