@@ -66,7 +66,7 @@ namespace Pogo.Saving
             TimeText.text = FormatTime(previewData.TotalMilliseconds);
             TitleText.text = previewData.name;
             DeathsText.text = $"x<b>{previewData.TotalDeaths}</b>";
-            SetProgressBoxes(previewData.LastFinishedChapter);
+            SetProgressBoxes();
             DifficultyNameText.text = difficulty.DisplayName;
             SkullMesh.sharedMesh = difficulty.SkullMesh;
             SkullMeshRenderer.sharedMaterial = difficulty.SkullMaterial;
@@ -101,15 +101,22 @@ namespace Pogo.Saving
             }
         }
 
-        private void SetProgressBoxes(int completedChapters)
+        private void SetProgressBoxes()
         {
             for (int n = 0; n < ProgressBoxesParent.childCount; n++)
             {
-                SaveFileProgressBoxController.States state = n <= completedChapters
-                    ? SaveFileProgressBoxController.States.Finished
-                    : SaveFileProgressBoxController.States.Unfinished;
+                SaveFileProgressBoxController progressBox = ProgressBoxesParent.GetChild(n).GetComponent<SaveFileProgressBoxController>();
 
-                ProgressBoxesParent.GetChild(n).GetComponent<SaveFileProgressBoxController>().SetState(state);
+                if (n <= previewData.LastFinishedChapter)
+                {
+                    progressBox.SetState(SaveFileProgressBoxController.States.Finished);
+                    progressBox.SetProgress(previewData.ChapterProgresses[n]);
+                }
+                else
+                {
+                    progressBox.SetState(SaveFileProgressBoxController.States.Unfinished);
+                    progressBox.SetProgress(0);
+                }
             }
         }
     }
