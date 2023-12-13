@@ -41,13 +41,14 @@ namespace Pogo.Saving
         const int TotalCompletionFromChapters = 900;
         const int TotalCompletionFromCollectibles = 100;
 
-        public void UpdatePreviewData(CollectibleManifest collectibleManifest)
+        public void UpdatePreviewData(CollectibleManifest collectibleManifest, WorldDescriptor world)
         {
             UpdatePreviewDataCollectibleCounts(collectibleManifest);
 
             SaveSlotPreviewData updatedPreviewData = PreviewData;
             updatedPreviewData.TotalDeaths = 0;
             updatedPreviewData.TotalMilliseconds = 0;
+            updatedPreviewData.ChapterProgresses = new float[12];
 
             for (int n = 0; n < 12; n++)
             {
@@ -58,6 +59,7 @@ namespace Pogo.Saving
                 if (!SlotData.chapterProgressDatas[0,n].unlocked) break;
                 updatedPreviewData.TotalDeaths += SlotData.chapterProgressDatas[0, n].deathsTracked;
                 updatedPreviewData.TotalMilliseconds += SlotData.chapterProgressDatas[0, n].millisecondsElapsed;
+                updatedPreviewData.ChapterProgresses[n] = CalculateCollectibleProgress(world.FindChapter(n).Chapter);
             }
 
 
@@ -69,6 +71,21 @@ namespace Pogo.Saving
 
 
             PreviewData = updatedPreviewData;
+        }
+
+        private float CalculateCollectibleProgress(ChapterDescriptor chapter)
+        {
+            int foundCollectibles = 0;
+            foreach (var collectible in chapter.AssociatedCollectibles)
+            {
+                CollectibleUnlockData unlockData = GetCollectible(collectible.Key);
+                if (unlockData.isUnlocked)
+                {
+                    foundCollectibles++;
+                }
+            }
+
+            return (float) foundCollectibles / chapter.AssociatedCollectibles.Length;
         }
 
         private void UpdatePreviewDataCollectibleCounts(CollectibleManifest collectibleManifest)

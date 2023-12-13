@@ -1139,7 +1139,7 @@ namespace Pogo
         {
             if (CurrentSlotDataTracker == null) return;
 
-            CurrentSlotDataTracker.UpdatePreviewData(CollectibleManifest);
+            CurrentSlotDataTracker.UpdatePreviewData(CollectibleManifest, World);
             CurrentSlotDataTracker.Save();
             if (quitAfterSave)
             {

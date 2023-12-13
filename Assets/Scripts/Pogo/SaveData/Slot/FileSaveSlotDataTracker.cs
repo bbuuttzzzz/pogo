@@ -14,7 +14,7 @@ namespace Pogo.Saving
 {
     public class FileSaveSlotDataTracker : SaveSlotDataTracker
     {
-        private const int CurrentSaveDataVersion = 0;
+        private const int CurrentSaveDataVersion = 1;
         private IPlatformService PlatformService;
         private string FilePath => $"{PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}{BaseName}{SaveSlotConstants.SaveSlotPath(slotId)}.sav";
         private string BaseName;
@@ -48,6 +48,8 @@ namespace Pogo.Saving
 
         public override void Load(bool createIfEmpty = false)
         {
+            int version = CurrentSaveDataVersion;
+
             if (!File.Exists(FilePath))
             {
                 if (createIfEmpty)
@@ -69,7 +71,7 @@ namespace Pogo.Saving
                 {
                     // read off the CurrentSaveDataVersion this was written from
                     string versionLine = reader.ReadLine();
-                    int version = int.Parse(versionLine);
+                    version = int.Parse(versionLine);
                     if (version > CurrentSaveDataVersion)
                     {
                         throw new InvalidOperationException($"Incompatible save data of version {version} (expected {CurrentSaveDataVersion})");
@@ -90,6 +92,13 @@ namespace Pogo.Saving
             try
             {
                 SlotData = JsonConvert.DeserializeObject<SaveSlotData>(rawDataSerialized);
+                DataState = DataStates.Loaded;
+
+                if (version == 0)
+                {
+                    UpdatePreviewData(PogoGameManager.PogoInstance.CollectibleManifest, PogoGameManager.PogoInstance.World);
+                    version = 1;
+                }
             }
             catch (Exception e)
             {
@@ -97,8 +106,6 @@ namespace Pogo.Saving
                 UnityEngine.Debug.LogWarning($"SaveSlot load ERROR Failed to deserialize {BaseName}.sav: {e}");
                 return;
             }
-
-            DataState = DataStates.Loaded;
         }
 
         public override void InitializeNew(string name, Difficulty difficulty)

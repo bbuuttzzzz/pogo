@@ -13,5 +13,6 @@ namespace Pogo.Saving
         public int LastFinishedChapter;
         public int TotalCollectibles;
         public int CollectedCoins;
+        public float[] ChapterProgresses;
     }
 }

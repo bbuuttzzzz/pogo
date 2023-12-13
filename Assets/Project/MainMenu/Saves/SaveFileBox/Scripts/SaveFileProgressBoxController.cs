@@ -13,6 +13,7 @@ public class SaveFileProgressBoxController : MonoBehaviour
 
     public Image FillingImage;
     public Image OutlineImage;
+    public Image ProgressImage;
 
     public Color FillingColor_Unfinished;
     public Color OutlineColor_Unfinished;
@@ -35,5 +36,8 @@ public class SaveFileProgressBoxController : MonoBehaviour
         }
     }
 
-
+    public void SetProgress(float progress)
+    {
+        ProgressImage.fillAmount = Mathf.Clamp01(progress);
+    }
 }
