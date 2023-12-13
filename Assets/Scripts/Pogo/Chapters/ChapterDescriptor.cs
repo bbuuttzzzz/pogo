@@ -1,12 +1,8 @@
 ﻿using Pogo.Checkpoints;
+using Pogo.Collectibles;
 using Pogo.Levels;
 using System;
-using System.Collections;
-using System.IO;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using WizardUtils;
-using WizardUtils.Saving;
 
 namespace Pogo
 {
@@ -19,6 +15,8 @@ namespace Pogo
         public string Title;
         public Sprite Icon;
         public string LongTitle => $"Part {Number} - {Title}";
+
+        public CollectibleDescriptor[] AssociatedCollectibles;
 
         public CheckpointDescriptor GetCheckpointDescriptor(CheckpointId checkpointId)
         {
