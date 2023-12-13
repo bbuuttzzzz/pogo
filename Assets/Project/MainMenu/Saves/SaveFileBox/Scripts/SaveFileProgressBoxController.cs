@@ -21,6 +21,13 @@ public class SaveFileProgressBoxController : MonoBehaviour
     public Color FillingColor_Finished;
     public Color OutlineColor_Finished;
 
+    public Color ProgressColor;
+
+    private void OnValidate()
+    {
+        ProgressImage.color = ProgressColor;
+    }
+
     public void SetState(States state)
     {
         switch (state)
