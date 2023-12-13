@@ -114,7 +114,7 @@ namespace Pogo.Saving
                 }
                 else
                 {
-                    progressBox.SetState(SaveFileProgressBoxController.States.Finished);
+                    progressBox.SetState(SaveFileProgressBoxController.States.Unfinished);
                     progressBox.SetProgress(0);
                 }
             }
