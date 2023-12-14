@@ -14,7 +14,7 @@ namespace Pogo.Saving
 {
     public class FileSaveSlotDataTracker : SaveSlotDataTracker
     {
-        private const int CurrentSaveDataVersion = 1;
+        private const int CurrentSaveDataVersion = 2;
         private IPlatformService PlatformService;
         private string FilePath => $"{PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}{BaseName}{SaveSlotConstants.SaveSlotPath(slotId)}.sav";
         private string BaseName;
@@ -94,10 +94,10 @@ namespace Pogo.Saving
                 SlotData = JsonConvert.DeserializeObject<SaveSlotData>(rawDataSerialized);
                 DataState = DataStates.Loaded;
 
-                if (version == 0)
+                if (version <= 2)
                 {
                     UpdatePreviewData(PogoGameManager.PogoInstance.CollectibleManifest, PogoGameManager.PogoInstance.World);
-                    version = 1;
+                    version = 2;
                 }
             }
             catch (Exception e)

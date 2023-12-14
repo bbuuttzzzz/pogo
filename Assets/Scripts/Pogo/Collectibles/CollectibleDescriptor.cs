@@ -39,6 +39,8 @@ namespace Pogo.Collectibles
         public CollectibleTypes CollectibleType;
         public bool ExistsInWorld = true;
 
+        public bool IgnoreForCompletion;
+
         [HideInInspector]
         public CosmeticDescriptor CosmeticDescriptor;
         [HideInInspector]

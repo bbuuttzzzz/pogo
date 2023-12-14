@@ -1,6 +1,7 @@
 using Pogo.Collectibles;
 using Pogo.Difficulties;
 using System;
+using UnityEngine;
 using WizardUtils;
 
 namespace Pogo.Saving
@@ -43,7 +44,6 @@ namespace Pogo.Saving
 
         public void UpdatePreviewData(CollectibleManifest collectibleManifest, WorldDescriptor world)
         {
-            UpdatePreviewDataCollectibleCounts(collectibleManifest);
 
             SaveSlotPreviewData updatedPreviewData = PreviewData;
             updatedPreviewData.TotalDeaths = 0;
@@ -54,7 +54,7 @@ namespace Pogo.Saving
             {
                 if (SlotData.chapterProgressDatas[0,n].complete)
                 {
-                    updatedPreviewData.LastFinishedChapter = n;
+                    updatedPreviewData.LastFinishedChapter = n+1;
                 }
                 if (!SlotData.chapterProgressDatas[0,n].unlocked) break;
                 updatedPreviewData.TotalDeaths += SlotData.chapterProgressDatas[0, n].deathsTracked;
@@ -62,11 +62,12 @@ namespace Pogo.Saving
                 updatedPreviewData.ChapterProgresses[n] = CalculateCollectibleProgress(world.FindChapter(n).Chapter);
             }
 
+            float collectibleCompletion = CalculateCollectibleCompletion(collectibleManifest);
 
             updatedPreviewData.CompletionPerMille = (int)
                 (
                     (updatedPreviewData.LastFinishedChapter / 12f) * TotalCompletionFromChapters
-                    + (updatedPreviewData.TotalCollectibles / (float)collectibleManifest.Collectibles.Length) * TotalCompletionFromCollectibles
+                    + collectibleCompletion * TotalCompletionFromCollectibles
                 );
 
 
@@ -88,28 +89,25 @@ namespace Pogo.Saving
             return (float) foundCollectibles / chapter.AssociatedCollectibles.Length;
         }
 
-        private void UpdatePreviewDataCollectibleCounts(CollectibleManifest collectibleManifest)
+        private float CalculateCollectibleCompletion(CollectibleManifest collectibleManifest)
         {
-            SaveSlotPreviewData data = PreviewData;
-
-            data.CollectedCoins = 0;
-            data.TotalCollectibles = 0;
+            int collected = 0;
+            int total = 0;
 
             foreach(var collectible in collectibleManifest.Collectibles)
             {
+                if (!collectible.IgnoreForCompletion)
+                {
+                    total++;
+                }
                 CollectibleUnlockData unlockData = GetCollectible(collectible.Key);
                 if (unlockData.isUnlocked)
                 {
-                    data.TotalCollectibles++;
-                    if (collectible.CollectibleType == CollectibleDescriptor.CollectibleTypes.Coin)
-                    {
-                        data.CollectedCoins++;
-                    }
+                    collected++;
                 }
             }
 
-            PreviewData = data;
-            
+            return (float)collected / total;
         }
 
         public ChapterSaveData GetChapterProgressData(ChapterId id)
