@@ -11,8 +11,6 @@ namespace Pogo.Saving
         public long TotalMilliseconds;
         public int TotalDeaths;
         public int LastFinishedChapter;
-        public int TotalCollectibles;
-        public int CollectedCoins;
         public float[] ChapterProgresses;
     }
 }
