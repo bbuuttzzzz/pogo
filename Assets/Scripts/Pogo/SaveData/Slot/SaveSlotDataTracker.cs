@@ -54,7 +54,7 @@ namespace Pogo.Saving
             {
                 if (SlotData.chapterProgressDatas[0,n].complete)
                 {
-                    updatedPreviewData.LastFinishedChapter = n;
+                    updatedPreviewData.LastFinishedChapter = n+1;
                 }
                 if (!SlotData.chapterProgressDatas[0,n].unlocked) break;
                 updatedPreviewData.TotalDeaths += SlotData.chapterProgressDatas[0, n].deathsTracked;
