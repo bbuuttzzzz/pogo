@@ -96,14 +96,14 @@ namespace Pogo.Saving
 
             foreach(var collectible in collectibleManifest.Collectibles)
             {
+                CollectibleUnlockData unlockData = GetCollectible(collectible.Key);
                 if (!collectible.IgnoreForCompletion)
                 {
                     total++;
-                }
-                CollectibleUnlockData unlockData = GetCollectible(collectible.Key);
-                if (unlockData.isUnlocked)
-                {
-                    collected++;
+                    if (unlockData.isUnlocked)
+                    {
+                        collected++;
+                    }
                 }
             }
 
