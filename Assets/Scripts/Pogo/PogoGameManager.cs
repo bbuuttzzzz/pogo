@@ -446,7 +446,7 @@ namespace Pogo
                 if (checkpoint.Chapter == chapter && checkpoint.Id == checkpointId)
                 {
                     checkpointFound = true;
-                    RegisterRespawnPoint(new RespawnPointData(checkpoint.RespawnPoint));
+                    RegisterRespawnPoint(new RespawnPointData(checkpoint.SpawnPoint));
                     break;
                 }
             }
@@ -532,11 +532,11 @@ namespace Pogo
 
             switch (CurrentCheckpoint.SkipBehavior)
             {
-                case ExplicitCheckpoint.SkipBehaviors.LevelChange:
+                case Checkpoint.SkipBehaviors.LevelChange:
                     return TrySkipCheckpointByLevelChange(true);
-                case ExplicitCheckpoint.SkipBehaviors.TeleportToTarget:
+                case Checkpoint.SkipBehaviors.TeleportToTarget:
                     return true;
-                case ExplicitCheckpoint.SkipBehaviors.HalfCheckpoint:
+                case Checkpoint.SkipBehaviors.HalfCheckpoint:
                     return true;
                 default:
                     throw new ArgumentOutOfRangeException($"Checkpoint ({CurrentCheckpoint}) has bad SkipBehaviour {CurrentCheckpoint.SkipBehavior}");
@@ -549,13 +549,13 @@ namespace Pogo
 
             switch (CurrentCheckpoint.SkipBehavior)
             {
-                case ExplicitCheckpoint.SkipBehaviors.LevelChange:
+                case Checkpoint.SkipBehaviors.LevelChange:
                     return TrySkipCheckpointByLevelChange();
-                case ExplicitCheckpoint.SkipBehaviors.TeleportToTarget:
+                case Checkpoint.SkipBehaviors.TeleportToTarget:
                     MovePlayerTo(CurrentCheckpoint.SkipTarget);
                     CurrentCheckpoint.OnSkip.Invoke();
                     return true;
-                case ExplicitCheckpoint.SkipBehaviors.HalfCheckpoint:
+                case Checkpoint.SkipBehaviors.HalfCheckpoint:
                     MovePlayerTo(CurrentCheckpoint.SkipTarget, true);
                     CurrentCheckpoint.OnSkip.Invoke();
                     return true;

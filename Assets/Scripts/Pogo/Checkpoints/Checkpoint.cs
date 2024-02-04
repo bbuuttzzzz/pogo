@@ -1,4 +1,5 @@
 ﻿using Pogo.Checkpoints;
+using System;
 using UnityEngine;
 
 namespace Pogo
@@ -7,8 +8,21 @@ namespace Pogo
     {
         public abstract ChapterDescriptor Chapter { get; }
         public abstract CheckpointId CheckpointId { get; }
-        public Transform RespawnPoint { get; }
+        Transform ICheckpoint.SpawnPoint => RespawnPoint;
+        public Transform RespawnPoint;
+
+        public abstract bool CanSkip { get; set; }
 
         CheckpointId ICheckpoint.Id => CheckpointId;
+
+        [Serializable]
+        public enum SkipBehaviors
+        {
+            LevelChange,
+            TeleportToTarget,
+            HalfCheckpoint
+        }
+        [HideInInspector]
+        public SkipBehaviors SkipBehavior;
     }
 }

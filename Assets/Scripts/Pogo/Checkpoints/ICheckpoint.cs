@@ -12,6 +12,7 @@ namespace Pogo
     {
         public ChapterDescriptor Chapter { get; }
         public CheckpointId Id { get; }
-        public Transform RespawnPoint { get; }
+        public Transform SpawnPoint { get; }
+        public bool CanSkip { get; set; }
     }
 }

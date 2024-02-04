@@ -11,16 +11,6 @@ namespace Pogo
         public CheckpointDescriptor Descriptor;
         public UnityEvent OnEnteredNotActivated;
 
-        [Serializable]
-        public enum SkipBehaviors
-        {
-            LevelChange,
-            TeleportToTarget,
-            HalfCheckpoint
-        }
-        [HideInInspector]
-        public SkipBehaviors SkipBehavior;
-
         [HideInInspector]
         public UnityEvent OnSkip;
 
@@ -52,5 +42,13 @@ namespace Pogo
         public override ChapterDescriptor Chapter => Descriptor.Chapter;
 
         public override CheckpointId CheckpointId => Descriptor.CheckpointId;
+        public override bool CanSkip
+        {
+            get => Descriptor.CanSkip;
+            set
+            {
+                Descriptor.CanSkip = value;
+            }
+        }
     }
 }
