@@ -464,7 +464,7 @@ namespace Pogo
 
         #region Checkpoint Shit
         public CheckpointManifest LoadCheckpointManifest { get; private set; }
-        public CheckpointTrigger CurrentCheckpoint;
+        public ExplicitCheckpoint CurrentCheckpoint;
 #if UNITY_EDITOR
         public CheckpointDescriptor _CachedCheckpoint;
 #endif
@@ -532,11 +532,11 @@ namespace Pogo
 
             switch (CurrentCheckpoint.SkipBehavior)
             {
-                case CheckpointTrigger.SkipBehaviors.LevelChange:
+                case ExplicitCheckpoint.SkipBehaviors.LevelChange:
                     return TrySkipCheckpointByLevelChange(true);
-                case CheckpointTrigger.SkipBehaviors.TeleportToTarget:
+                case ExplicitCheckpoint.SkipBehaviors.TeleportToTarget:
                     return true;
-                case CheckpointTrigger.SkipBehaviors.HalfCheckpoint:
+                case ExplicitCheckpoint.SkipBehaviors.HalfCheckpoint:
                     return true;
                 default:
                     throw new ArgumentOutOfRangeException($"Checkpoint ({CurrentCheckpoint}) has bad SkipBehaviour {CurrentCheckpoint.SkipBehavior}");
@@ -549,13 +549,13 @@ namespace Pogo
 
             switch (CurrentCheckpoint.SkipBehavior)
             {
-                case CheckpointTrigger.SkipBehaviors.LevelChange:
+                case ExplicitCheckpoint.SkipBehaviors.LevelChange:
                     return TrySkipCheckpointByLevelChange();
-                case CheckpointTrigger.SkipBehaviors.TeleportToTarget:
+                case ExplicitCheckpoint.SkipBehaviors.TeleportToTarget:
                     MovePlayerTo(CurrentCheckpoint.SkipTarget);
                     CurrentCheckpoint.OnSkip.Invoke();
                     return true;
-                case CheckpointTrigger.SkipBehaviors.HalfCheckpoint:
+                case ExplicitCheckpoint.SkipBehaviors.HalfCheckpoint:
                     MovePlayerTo(CurrentCheckpoint.SkipTarget, true);
                     CurrentCheckpoint.OnSkip.Invoke();
                     return true;
@@ -915,7 +915,7 @@ namespace Pogo
             return false;
         }
 
-        public bool TryRegisterRespawnPoint(CheckpointTrigger trigger)
+        public bool TryRegisterRespawnPoint(ExplicitCheckpoint trigger)
         {
             if (PogoInstance == null || PogoInstance.levelManager == null)
             {

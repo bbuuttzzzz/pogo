@@ -11,10 +11,10 @@ using UnityEngine.UIElements;
 
 namespace Pogo
 {
-    [CustomEditor(typeof(CheckpointTrigger)),CanEditMultipleObjects]
+    [CustomEditor(typeof(ExplicitCheckpoint)),CanEditMultipleObjects]
     public class CheckpointTriggerEditor : Editor
     {
-        CheckpointTrigger self;
+        ExplicitCheckpoint self;
 
         SerializedProperty m_SkipBehavior;
         SerializedProperty m_OnSkip;
@@ -22,7 +22,7 @@ namespace Pogo
 
         public override VisualElement CreateInspectorGUI()
         {
-            self = target as CheckpointTrigger;
+            self = target as ExplicitCheckpoint;
             m_SkipBehavior = serializedObject.FindProperty(nameof(self.SkipBehavior));
             m_OnSkip = serializedObject.FindProperty(nameof(self.OnSkip));
             m_SkipTarget = serializedObject.FindProperty(nameof(self.SkipTarget));
@@ -72,7 +72,7 @@ namespace Pogo
         {
             DrawOverrideCheckpointProperty();
             EditorGUILayout.PropertyField(m_SkipBehavior);
-            if (self.SkipBehavior != CheckpointTrigger.SkipBehaviors.LevelChange)
+            if (self.SkipBehavior != ExplicitCheckpoint.SkipBehaviors.LevelChange)
             {
                 EditorGUILayout.PropertyField(m_OnSkip);
                 EditorGUILayout.PropertyField(m_SkipTarget);
