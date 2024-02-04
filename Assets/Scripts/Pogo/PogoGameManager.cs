@@ -443,7 +443,6 @@ namespace Pogo
 
             foreach (var checkpointTrigger in LoadCheckpointManifest.CheckpointTriggers)
             {
-                checkpointTrigger.NotifyCheckpointLoad(checkpointDescriptor);
                 if (!checkpointFound && checkpointTrigger.Descriptor == checkpointDescriptor)
                 {
                     checkpointFound = true;
