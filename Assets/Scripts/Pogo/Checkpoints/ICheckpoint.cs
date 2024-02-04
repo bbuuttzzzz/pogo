@@ -9,9 +9,5 @@ namespace Pogo
 {
     public interface ICheckpoint
     {
-        public ChapterDescriptor Chapter { get; }
-        public CheckpointId CheckpointId { get; }
-
-        public void NotifyCheckpointLoad(ICheckpoint other);
     }
 }
