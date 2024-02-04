@@ -127,6 +127,11 @@ namespace Pogo
             MainMenuAnimator.SetTrigger("ShowSaves");
         }
 
+        public void OpenCustomMapsScreen()
+        {
+
+        }
+
         public void OpenAppearanceScreen()
         {
             MainMenuAnimator.SetTrigger("ShowAppearance");
