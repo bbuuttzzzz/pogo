@@ -406,7 +406,7 @@ namespace Pogo
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
-                LoadCheckpoint(checkpoint);
+                LoadCheckpoint(checkpoint.Chapter, checkpoint.CheckpointId);
                 StartChapter(newChapter, quickSaveData);
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
@@ -437,22 +437,23 @@ namespace Pogo
             titleInstance.GetComponent<TitleCardController>().DisplayTitle(CurrentChapter.Title, delay);
         }
 
-        private void LoadCheckpoint(CheckpointDescriptor checkpointDescriptor)
+        private void LoadCheckpoint(ChapterDescriptor chapter, CheckpointId checkpointId)
         {
             bool checkpointFound = false;
 
-            foreach (var checkpointTrigger in LoadCheckpointManifest.CheckpointTriggers)
+            foreach (var checkpoint in LoadCheckpointManifest.Checkpoints)
             {
-                if (!checkpointFound && checkpointTrigger.Descriptor == checkpointDescriptor)
+                if (checkpoint.Chapter == chapter && checkpoint.Id == checkpointId)
                 {
                     checkpointFound = true;
-                    RegisterRespawnPoint(new RespawnPointData(checkpointTrigger));
+                    RegisterRespawnPoint(new RespawnPointData(checkpoint.RespawnPoint));
+                    break;
                 }
             }
 
             if (!checkpointFound)
             {
-                throw new MissingReferenceException($"Failed to find Checkpoint trigger for {checkpointDescriptor}. did we load the right levels?");
+                throw new MissingReferenceException($"Failed to find Checkpoint trigger for {chapter} & {checkpointId}. did we load the right levels?");
             }
 
             CurrentGameState = GameStates.InGame;

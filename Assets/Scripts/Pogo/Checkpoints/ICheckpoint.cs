@@ -4,10 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Pogo
 {
     public interface ICheckpoint
     {
+        public ChapterDescriptor Chapter { get; }
+        public CheckpointId Id { get; }
+        public Transform RespawnPoint { get; }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace Pogo
 {
-    public class CheckpointTrigger : Trigger
+    public class CheckpointTrigger : Trigger, ICheckpoint
     {
         public CheckpointDescriptor Descriptor;
         public Transform RespawnPoint;
@@ -49,5 +49,10 @@ namespace Pogo
         {
             PogoGameManager.PogoInstance.LoadCheckpointManifest.Remove(this);
         }
+
+
+        ChapterDescriptor ICheckpoint.Chapter => Descriptor.Chapter;
+        CheckpointId ICheckpoint.Id => Descriptor.CheckpointId;
+        Transform ICheckpoint.RespawnPoint => RespawnPoint;
     }
 }
