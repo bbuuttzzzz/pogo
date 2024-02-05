@@ -14,5 +14,10 @@ namespace Pogo
         public CheckpointId Id { get; }
         public Transform SpawnPoint { get; }
         public bool CanSkip { get; set; }
+
+        public string ToString()
+        {
+            return $"Checkpoint {Id} ({GetType()})";
+        }
     }
 }

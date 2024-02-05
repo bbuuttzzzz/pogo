@@ -76,6 +76,7 @@ namespace Pogo.CustomMaps
         {
             EntityHandlers = new Dictionary<string, CustomMapEntityHandler>();
 
+            // we dont need to handle info_player_respawn. it's handled by trigger_checkpoint
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
         }
 
@@ -83,12 +84,32 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Checkpoint(BSPLoader.EntityInstance instance, List<BSPLoader.EntityInstance> list)
         {
-            if (list.Count == 0)
+            const string Key_CheckpointNumber = "number";
+            const string Key_CheckpointType = "pathtype";
+
+            Checkpoints.CheckpointId id = new()
             {
-                throw new MissingReferenceException($"{instance.entity.ClassName} with ID {instance.entity["id"]} has no defined Target. are you missing a info_player_respawn?");
+                CheckpointType = (Checkpoints.CheckpointTypes)int.Parse(instance.entity[Key_CheckpointType]),
+                CheckpointNumber = int.Parse(instance.entity[Key_CheckpointNumber])
+            };
+
+            if (id.CheckpointType != Checkpoints.CheckpointTypes.MainPath && id.CheckpointType != Checkpoints.CheckpointTypes.SidePath)
+            {
+                throw new FormatException($"{instance.entity.ClassName} with ID {id} has a bad pathtype. It should be either 0 (main) or ");
             }
 
+            if (list.Count == 0)
+            {
+                throw new FormatException($"{instance.entity.ClassName} with ID {id} has no defined Target. are you missing an info_player_respawn?");
+            }
 
+            var collider = instance.gameObject.AddComponent<MeshCollider>();
+            collider.convex = true;
+
+            var checkpoint = instance.gameObject.AddComponent<GeneratedCheckpoint>();
+            checkpoint.FixTriggerSettings();
+            checkpoint.Id = id;
+            checkpoint.RespawnPoint = list[0].gameObject.transform;
         }
         #endregion
     }

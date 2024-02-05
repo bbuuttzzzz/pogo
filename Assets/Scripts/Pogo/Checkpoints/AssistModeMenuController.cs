@@ -41,7 +41,7 @@ public class AssistModeMenuController : MonoBehaviour
         }
         if (!PogoGameManager.PogoInstance.TrySkipCheckpoint())
         {
-            Debug.LogError($"Failed to skip CurrentCheckpoint: {PogoGameManager.PogoInstance.CurrentCheckpoint.Descriptor}");
+            Debug.LogError($"Failed to skip CurrentCheckpoint: {PogoGameManager.PogoInstance.CurrentCheckpoint}");
             SkipButton.interactable = false;
             return;
         }

@@ -321,38 +321,43 @@ namespace Pogo
 
         private bool TrySerializeQuicksaveData(out QuickSaveData newData)
         {
-            if (CurrentCheckpoint == null)
+            if (CurrentCheckpoint is not ExplicitCheckpoint explicitCheckpoint)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (explicitCheckpoint == null)
             {
                 Debug.LogWarning("Failed to quicksave. CurrentCheckpoint is missing!!!");
                 newData = new QuickSaveData();
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor == null)
+            if (explicitCheckpoint.Descriptor == null)
             {
-                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} no descriptor!!!", CurrentCheckpoint);
+                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {explicitCheckpoint.name} no descriptor!!!", explicitCheckpoint);
                 newData = new QuickSaveData();
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.Chapter == null)
+            if (explicitCheckpoint.Descriptor.Chapter == null)
             {
-                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Chapter!!!", CurrentCheckpoint);
+                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {explicitCheckpoint.name} missing Chapter!!!", explicitCheckpoint);
                 newData = new QuickSaveData();
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.MainLevelState.Level == null)
+            if (explicitCheckpoint.Descriptor.MainLevelState.Level == null)
             {
-                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Level!!!", CurrentCheckpoint);
+                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {explicitCheckpoint.name} missing Level!!!", explicitCheckpoint);
                 newData = new QuickSaveData();
                 return false;
             }
 
             newData = new QuickSaveData()
             {
-                ChapterId = ChapterToId(CurrentCheckpoint.Descriptor.Chapter),
-                checkpointId = CurrentCheckpoint.Descriptor.CheckpointId,
+                ChapterId = ChapterToId(explicitCheckpoint.Descriptor.Chapter),
+                checkpointId = explicitCheckpoint.Descriptor.CheckpointId,
                 CurrentState = QuickSaveData.States.InProgress,
                 ChapterProgressDeaths = currentChapterProgressTracker?.TrackedDeaths ?? 0,
                 SessionProgressDeaths = currentSessionProgressTracker.TrackedDeaths,
@@ -464,29 +469,34 @@ namespace Pogo
 
         #region Checkpoint Shit
         public CheckpointManifest LoadCheckpointManifest { get; private set; }
-        public ExplicitCheckpoint CurrentCheckpoint;
+        public ICheckpoint CurrentCheckpoint;
 #if UNITY_EDITOR
         public CheckpointDescriptor _CachedCheckpoint;
 #endif
 
         public bool TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint)
         {
+            if (this.CurrentCheckpoint is not ExplicitCheckpoint explicitCheckpoint)
+            {
+                throw new NotImplementedException();
+            }
+
             // get the easy thing out of the way...
-            if (!CurrentCheckpoint.Descriptor.CanSkip)
+            if (!explicitCheckpoint.CanSkip)
             {
                 nextCheckpoint = null;
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint != null)
+            if (explicitCheckpoint.Descriptor.OverrideSkipToCheckpoint != null)
             {
-                nextCheckpoint = CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint;
+                nextCheckpoint = explicitCheckpoint.Descriptor.OverrideSkipToCheckpoint;
                 return true;
             }
-            else if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
+            else if (explicitCheckpoint.Descriptor.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
             {
 #if UNITY_EDITOR
-                Debug.LogError($"SidePath checkpoint has NO overrideSkipTarget but is marked as skippable!: {CurrentCheckpoint.Descriptor}");
+                Debug.LogError($"SidePath checkpoint has NO overrideSkipTarget but is marked as skippable!: {explicitCheckpoint.Descriptor}");
 #endif
                 nextCheckpoint = null;
                 return false;
@@ -494,13 +504,13 @@ namespace Pogo
 
 
             // checkpoint numbers are one-indexed... for some fucking reason oh god why did I do that. so this looks weird
-            if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 > CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
+            if (explicitCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 > explicitCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
             {
                 // get the first checkpoint in the next chapter
-                int chapterIndex = World.IndexOf(CurrentCheckpoint.Descriptor.Chapter);
+                int chapterIndex = World.IndexOf(explicitCheckpoint.Descriptor.Chapter);
                 if (chapterIndex < 0)
                 {
-                    Debug.LogError($"Tried to skip out of a chapter... Couldn't find current Chapter {CurrentCheckpoint.Descriptor.Chapter} in current world {World}... ????");
+                    Debug.LogError($"Tried to skip out of a chapter... Couldn't find current Chapter {explicitCheckpoint.Descriptor.Chapter} in current world {World}... ????");
                     nextCheckpoint = default;
                     return false;
                 }
@@ -522,12 +532,17 @@ namespace Pogo
             }
 
             // checkpoint numbers are one-indexed... for some fucking reason oh god why did I do that. so this looks weird
-            nextCheckpoint = CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints[CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 0];
+            nextCheckpoint = explicitCheckpoint.Descriptor.Chapter.MainPathCheckpoints[explicitCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 0];
             return true;
         }
 
         public bool CanSkipCheckpoint()
         {
+            if (this.CurrentCheckpoint is not ExplicitCheckpoint CurrentCheckpoint)
+            {
+                throw new NotImplementedException();
+            }
+
             if (CurrentCheckpoint == null) return false;
 
             switch (CurrentCheckpoint.SkipBehavior)
@@ -545,6 +560,10 @@ namespace Pogo
 
         public bool TrySkipCheckpoint()
         {
+            if (this.CurrentCheckpoint is not ExplicitCheckpoint CurrentCheckpoint)
+            {
+                throw new NotImplementedException();
+            }
             if (CurrentCheckpoint == null) return false;
 
             switch (CurrentCheckpoint.SkipBehavior)
