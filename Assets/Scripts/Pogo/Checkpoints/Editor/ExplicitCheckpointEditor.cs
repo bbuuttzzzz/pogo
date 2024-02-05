@@ -1,4 +1,5 @@
-﻿using Pogo.Checkpoints;
+﻿using Codice.Client.Commands;
+using Pogo.Checkpoints;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,16 +30,16 @@ namespace Pogo
             return element;
         }
 
-        public override void OnInspectorGUI()
+        protected override bool TryValidate(out string failReason)
         {
             if (self.Descriptor == null)
             {
-                EditorGUILayout.HelpBox("Missing Descriptor!", MessageType.Error);
-
-                return;
+                failReason = "Missing Descriptor!";
+                return false;
             }
 
-            base.OnInspectorGUI();
+            failReason = default;
+            return true;
         }
 
         protected override void DrawSkipProperties()

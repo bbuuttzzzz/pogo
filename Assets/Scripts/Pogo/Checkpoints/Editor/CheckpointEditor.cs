@@ -25,6 +25,13 @@ namespace Pogo
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+
+            if (!TryValidate(out var failReason))
+            {
+                EditorGUILayout.HelpBox(failReason, MessageType.Error);
+
+                return;
+            }
             
             EditorGUILayout.Space();
 
@@ -55,6 +62,8 @@ namespace Pogo
 
             serializedObject.ApplyModifiedProperties();
         }
+
+        protected abstract bool TryValidate(out string failReason);
 
         protected abstract void DrawSkipProperties();
 
