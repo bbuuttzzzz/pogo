@@ -1,20 +1,20 @@
-using Codice.Utils;
-using Pogo.Checkpoints;
+﻿using Pogo.Checkpoints;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem.iOS;
 using UnityEngine.UIElements;
 
 namespace Pogo
 {
-    [CustomEditor(typeof(ExplicitCheckpoint)),CanEditMultipleObjects]
-    public class CheckpointTriggerEditor : Editor
+
+    [CustomEditor(typeof(ExplicitCheckpoint)), CanEditMultipleObjects]
+    public class ExplicitCheckpointEditor : CheckpointEditor
     {
-        ExplicitCheckpoint self;
+        new protected ExplicitCheckpoint self => base.self as ExplicitCheckpoint;
 
         SerializedProperty m_SkipBehavior;
         SerializedProperty m_OnSkip;
@@ -22,53 +22,26 @@ namespace Pogo
 
         public override VisualElement CreateInspectorGUI()
         {
-            self = target as ExplicitCheckpoint;
+            var element = base.CreateInspectorGUI();
             m_SkipBehavior = serializedObject.FindProperty(nameof(self.SkipBehavior));
             m_OnSkip = serializedObject.FindProperty(nameof(self.OnSkip));
             m_SkipTarget = serializedObject.FindProperty(nameof(self.SkipTarget));
-
-            return base.CreateInspectorGUI();
+            return element;
         }
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
-            
-            EditorGUILayout.Space();
-
-            if (GUILayout.Button("Move Player Here"))
-            {
-                PogoGameManager gameManager = FindObjectOfType<PogoGameManager>();
-
-                gameManager._CachedCheckpoint = self.Descriptor;
-                PogoGameManagerEditor.SetSpawnPointInEditor(gameManager, self.RespawnPoint);
-            }
-
-            EditorGUILayout.Space();
-
             if (self.Descriptor == null)
             {
                 EditorGUILayout.HelpBox("Missing Descriptor!", MessageType.Error);
 
                 return;
             }
-            
-            bool oldCanSkip = self.Descriptor.CanSkip;
-            bool canSkip = EditorGUILayout.Toggle(nameof(self.Descriptor.CanSkip), self.Descriptor.CanSkip);
-            if (oldCanSkip != canSkip)
-            {
-                UpdateCanSkip(canSkip);
-            }
 
-            if (canSkip)
-            {
-                DrawSkipProperties();
-            }
-
-            serializedObject.ApplyModifiedProperties();
+            base.OnInspectorGUI();
         }
 
-        private void DrawSkipProperties()
+        protected override void DrawSkipProperties()
         {
             DrawOverrideCheckpointProperty();
             EditorGUILayout.PropertyField(m_SkipBehavior);
@@ -79,7 +52,6 @@ namespace Pogo
                 DrawSkipSelectDropdown();
             }
         }
-
         private void DrawOverrideCheckpointProperty()
         {
             if (self.Descriptor.OverrideSkipToCheckpoint == null
@@ -146,18 +118,18 @@ namespace Pogo
                             }
                         });
                     }
-                    
+
                 }
                 menu.DropDown(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 0f, 0f));
             }
         }
 
-        private void UpdateCanSkip(bool newValue)
+
+        protected override void UpdateCanSkip(bool newValue)
         {
             Undo.RecordObject(self.Descriptor, "Toggle CanSkip");
             self.Descriptor.CanSkip = newValue;
             EditorUtility.SetDirty(self.Descriptor);
         }
     }
-
 }

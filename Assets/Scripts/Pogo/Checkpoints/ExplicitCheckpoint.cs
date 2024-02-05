@@ -11,12 +11,6 @@ namespace Pogo
         public CheckpointDescriptor Descriptor;
         public UnityEvent OnEnteredNotActivated;
 
-        [HideInInspector]
-        public UnityEvent OnSkip;
-
-        [HideInInspector]
-        public Transform SkipTarget;
-
         public void Awake()
         {
             PogoGameManager.PogoInstance.LoadCheckpointManifest.Add(this);
@@ -33,6 +27,20 @@ namespace Pogo
             else
                 return false;
         }
+
+        [Serializable]
+        public enum SkipBehaviors
+        {
+            LevelChange,
+            TeleportToTarget,
+            HalfCheckpoint
+        }
+        [HideInInspector]
+        public SkipBehaviors SkipBehavior;
+
+        [HideInInspector]
+        public Transform SkipTarget;
+
 
         private void OnDestroy()
         {

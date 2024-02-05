@@ -1,6 +1,7 @@
 ﻿using Pogo.Checkpoints;
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Pogo
 {
@@ -10,19 +11,11 @@ namespace Pogo
         public abstract CheckpointId CheckpointId { get; }
         Transform ICheckpoint.SpawnPoint => RespawnPoint;
         public Transform RespawnPoint;
-
         public abstract bool CanSkip { get; set; }
 
-        CheckpointId ICheckpoint.Id => CheckpointId;
-
-        [Serializable]
-        public enum SkipBehaviors
-        {
-            LevelChange,
-            TeleportToTarget,
-            HalfCheckpoint
-        }
         [HideInInspector]
-        public SkipBehaviors SkipBehavior;
+        public UnityEvent OnSkip;
+
+        CheckpointId ICheckpoint.Id => CheckpointId;
     }
 }
