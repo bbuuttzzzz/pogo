@@ -18,5 +18,11 @@ namespace Pogo
 
         CheckpointId ICheckpoint.Id => CheckpointId;
         UnityEvent ICheckpoint.OnSkip => OnSkip;
+
+        [HideInInspector]
+        public SkipBehaviors SkipBehavior;
+
+        [HideInInspector]
+        public Transform SkipTarget;
     }
 }

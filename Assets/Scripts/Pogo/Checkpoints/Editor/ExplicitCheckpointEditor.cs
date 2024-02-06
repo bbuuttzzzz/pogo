@@ -46,7 +46,7 @@ namespace Pogo
         {
             DrawOverrideCheckpointProperty();
             EditorGUILayout.PropertyField(m_SkipBehavior);
-            if (self.SkipBehavior != ExplicitCheckpoint.SkipBehaviors.LevelChange)
+            if (self.SkipBehavior != SkipBehaviors.LevelChange)
             {
                 EditorGUILayout.PropertyField(m_OnSkip);
                 EditorGUILayout.PropertyField(m_SkipTarget);

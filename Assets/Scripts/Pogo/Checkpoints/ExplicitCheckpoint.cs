@@ -28,18 +28,6 @@ namespace Pogo
                 return false;
         }
 
-        [Serializable]
-        public enum SkipBehaviors
-        {
-            LevelChange,
-            TeleportToTarget
-        }
-        [HideInInspector]
-        public SkipBehaviors SkipBehavior;
-
-        [HideInInspector]
-        public Transform SkipTarget;
-
 
         private void OnDestroy()
         {
