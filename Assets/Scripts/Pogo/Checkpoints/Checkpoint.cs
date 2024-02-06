@@ -17,5 +17,6 @@ namespace Pogo
         public UnityEvent OnSkip;
 
         CheckpointId ICheckpoint.Id => CheckpointId;
+        UnityEvent ICheckpoint.OnSkip => OnSkip;
     }
 }

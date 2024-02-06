@@ -551,8 +551,6 @@ namespace Pogo
                     return TrySkipCheckpointByLevelChange(true);
                 case ExplicitCheckpoint.SkipBehaviors.TeleportToTarget:
                     return true;
-                case ExplicitCheckpoint.SkipBehaviors.HalfCheckpoint:
-                    return true;
                 default:
                     throw new ArgumentOutOfRangeException($"Checkpoint ({CurrentCheckpoint}) has bad SkipBehaviour {CurrentCheckpoint.SkipBehavior}");
             }
@@ -572,10 +570,6 @@ namespace Pogo
                     return TrySkipCheckpointByLevelChange();
                 case ExplicitCheckpoint.SkipBehaviors.TeleportToTarget:
                     MovePlayerTo(CurrentCheckpoint.SkipTarget);
-                    CurrentCheckpoint.OnSkip.Invoke();
-                    return true;
-                case ExplicitCheckpoint.SkipBehaviors.HalfCheckpoint:
-                    MovePlayerTo(CurrentCheckpoint.SkipTarget, true);
                     CurrentCheckpoint.OnSkip.Invoke();
                     return true;
                 default:

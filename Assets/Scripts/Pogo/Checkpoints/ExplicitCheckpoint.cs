@@ -32,8 +32,7 @@ namespace Pogo
         public enum SkipBehaviors
         {
             LevelChange,
-            TeleportToTarget,
-            HalfCheckpoint
+            TeleportToTarget
         }
         [HideInInspector]
         public SkipBehaviors SkipBehavior;

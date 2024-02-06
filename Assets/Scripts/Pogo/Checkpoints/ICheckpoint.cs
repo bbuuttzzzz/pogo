@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Pogo
 {
@@ -14,6 +15,7 @@ namespace Pogo
         public CheckpointId Id { get; }
         public Transform SpawnPoint { get; }
         public bool CanSkip { get; set; }
+        public UnityEvent OnSkip { get; }
 
         public string ToString()
         {
