@@ -1,5 +1,7 @@
 ﻿using BSPImporter;
 using BSPImporter.Textures;
+using Pogo.Checkpoints;
+using Pogo.CustomMaps.Entities;
 using Pogo.Difficulties;
 using Pogo.Levels;
 using System;
@@ -18,6 +20,7 @@ namespace Pogo.CustomMaps
         public LevelDescriptor CustomMapLevel;
         public GameObject CheckpointPrefab;
         public string TexturePath;
+        public CustomMap CurrentCustomMap;
         public Dictionary<string, CustomMapEntityHandler> EntityHandlers { get; private set; }
 
         public void LoadCustomMapLevel(string folderPath, string mapFileName)
@@ -46,6 +49,7 @@ namespace Pogo.CustomMaps
 
         private void SpawnCustomMap(string folderPath, string mapFileName)
         {
+            CurrentCustomMap = new CustomMap();
             string fullMapPath = $"{folderPath}{Path.DirectorySeparatorChar}{mapFileName}";
             Debug.Log($"Tried to spawn customMap at path {fullMapPath} :D");
             BSPLoader.Settings settings = new()
@@ -84,20 +88,9 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Checkpoint(BSPLoader.EntityInstance instance, List<BSPLoader.EntityInstance> list)
         {
-            const string Key_CheckpointNumber = "number";
-            const string Key_CheckpointType = "pathtype";
-
-            Checkpoints.CheckpointId id = new()
-            {
-                CheckpointType = (Checkpoints.CheckpointTypes)int.Parse(instance.entity[Key_CheckpointType]),
-                CheckpointNumber = int.Parse(instance.entity[Key_CheckpointNumber])
-            };
-
-            if (id.CheckpointType != Checkpoints.CheckpointTypes.MainPath && id.CheckpointType != Checkpoints.CheckpointTypes.SidePath)
-            {
-                throw new FormatException($"{instance.entity.ClassName} with ID {id} has a bad pathtype. It should be either 0 (main) or ");
-            }
-
+            Trigger_Checkpoint entity = new Trigger_Checkpoint(instance);
+            CheckpointId id = entity.GetCheckpointId();
+            
             if (list.Count == 0)
             {
                 throw new FormatException($"{instance.entity.ClassName} with ID {id} has no defined Target. are you missing an info_player_respawn?");
@@ -110,6 +103,12 @@ namespace Pogo.CustomMaps
             checkpoint.FixTriggerSettings();
             checkpoint.Id = id;
             checkpoint.RespawnPoint = list[0].gameObject.transform;
+            checkpoint.CanSkip = entity.GetCanSkip();
+            if (checkpoint.CanSkip && !string.IsNullOrEmpty(entity.GetOverrideSkipTarget()))
+            {
+                throw new NotImplementedException();
+            }
+            CurrentCustomMap.RegisterCheckpoint(checkpoint);
         }
         #endregion
     }
