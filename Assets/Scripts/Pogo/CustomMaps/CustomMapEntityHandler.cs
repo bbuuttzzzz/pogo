@@ -10,9 +10,9 @@ namespace Pogo.CustomMaps
     public class CustomMapEntityHandler
     {
         public string ClassName { get; private set; }
-        public Action<BSPLoader.EntityInstance, List<BSPLoader.EntityInstance>> SetupAction { get; private set; }
+        public Action<BSPLoader.EntityCreatedCallbackData> SetupAction { get; private set; }
 
-        public CustomMapEntityHandler(string entityName, Action<BSPLoader.EntityInstance, List<BSPLoader.EntityInstance>> setupAction)
+        public CustomMapEntityHandler(string entityName, Action<BSPLoader.EntityCreatedCallbackData> setupAction)
         {
             ClassName = entityName;
             SetupAction = setupAction;

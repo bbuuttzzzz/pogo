@@ -67,11 +67,11 @@ namespace Pogo.CustomMaps
             loader.LoadBSP();
         }
 
-        private void OnEntityCreated(BSPLoader.EntityInstance instance, List<BSPLoader.EntityInstance> targetList)
+        private void OnEntityCreated(BSPLoader.EntityCreatedCallbackData data)
         {
-            if (EntityHandlers.TryGetValue(instance.entity.ClassName, out var handler))
+            if (EntityHandlers.TryGetValue(data.Instance.entity.ClassName, out var handler))
             {
-                handler.SetupAction.Invoke(instance, targetList);
+                handler.SetupAction.Invoke(data);
             }
         }
 
@@ -86,27 +86,25 @@ namespace Pogo.CustomMaps
 
         private void AddEntityHandler(CustomMapEntityHandler handler) => EntityHandlers.Add(handler.ClassName, handler);
 
-        private void SetupTrigger_Checkpoint(BSPLoader.EntityInstance instance, List<BSPLoader.EntityInstance> list)
+        private void SetupTrigger_Checkpoint(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Checkpoint entity = new Trigger_Checkpoint(instance);
+            Trigger_Checkpoint entity = new Trigger_Checkpoint(data);
             CheckpointId id = entity.GetCheckpointId();
-            
-            if (list.Count == 0)
-            {
-                throw new FormatException($"{instance.entity.ClassName} with ID {id} has no defined Target. are you missing an info_player_respawn?");
-            }
 
-            var collider = instance.gameObject.AddComponent<MeshCollider>();
+            var target = entity.GetSingleTarget();
+
+            var collider = data.Instance.gameObject.AddComponent<MeshCollider>();
             collider.convex = true;
 
-            var checkpoint = instance.gameObject.AddComponent<GeneratedCheckpoint>();
+            var checkpoint = data.Instance.gameObject.AddComponent<GeneratedCheckpoint>();
             checkpoint.FixTriggerSettings();
             checkpoint.Id = id;
-            checkpoint.RespawnPoint = list[0].gameObject.transform;
+            checkpoint.RespawnPoint = target.gameObject.transform;
             checkpoint.CanSkip = entity.GetCanSkip();
-            if (checkpoint.CanSkip && !string.IsNullOrEmpty(entity.GetOverrideSkipTarget()))
+            if (checkpoint.CanSkip && !string.IsNullOrEmpty(entity.GetOverrideSkipTargetName()))
             {
-                throw new NotImplementedException();
+                var skipTarget = entity.GetSingleOverrideSkipTarget();
+                checkpoint.SkipTarget = skipTarget.gameObject.transform;
             }
             CurrentCustomMap.RegisterCheckpoint(checkpoint);
         }
