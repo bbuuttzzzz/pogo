@@ -14,6 +14,13 @@ namespace Pogo.CustomMaps.Entities
         const string Key_CheckpointNumber = "number";
         const string Key_CheckpointType = "pathtype";
         const string Key_SkipTarget = "skiptarget";
+        const string Key_RenderStyle = "renderstyle";
+        public enum RenderStyles
+        {
+            Default = 0,
+            Invisible = 1,
+            UseMapTexture = 2
+        }
 
         public Trigger_Checkpoint(BSPLoader.EntityCreatedCallbackData data) : base(data)
         {
@@ -39,5 +46,6 @@ namespace Pogo.CustomMaps.Entities
         public BSPLoader.EntityInstance GetSingleOverrideSkipTarget() => GetSingleTarget(Key_SkipTarget);
 
         public bool GetCanSkip() => GetSpawnFlag(1u);
+        public int GetRenderStyle() => Data.Instance.entity.GetInt(Key_RenderStyle);
     }
 }

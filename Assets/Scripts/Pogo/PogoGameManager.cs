@@ -5,6 +5,7 @@ using Pogo.Challenges;
 using Pogo.Checkpoints;
 using Pogo.Collectibles;
 using Pogo.Cosmetics;
+using Pogo.CustomMaps;
 using Pogo.Difficulties;
 using Pogo.Levels;
 using Pogo.Saving;
@@ -123,6 +124,7 @@ namespace Pogo
         }
 
         public ChallengeBuilder ChallengeBuilder;
+        public CustomMapBuilder CustomMapBuilder;
 
         #region Level Management
         public enum GameStates

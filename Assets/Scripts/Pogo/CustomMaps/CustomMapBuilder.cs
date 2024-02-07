@@ -65,6 +65,11 @@ namespace Pogo.CustomMaps
             var textureSource = new WadFolderSource(folderPath);
             var loader = new BSPLoader(settings, textureSource);
             loader.LoadBSP();
+
+            foreach(var checkpoint in CurrentCustomMap.Checkpoints.Values)
+            {
+                FinishSettingUpTrigger_Checkpoint(checkpoint);
+            }
         }
 
         private void OnEntityCreated(BSPLoader.EntityCreatedCallbackData data)
@@ -82,6 +87,7 @@ namespace Pogo.CustomMaps
 
             // we dont need to handle info_player_respawn. it's handled by trigger_checkpoint
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
+            AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
         }
 
         private void AddEntityHandler(CustomMapEntityHandler handler) => EntityHandlers.Add(handler.ClassName, handler);
@@ -106,8 +112,31 @@ namespace Pogo.CustomMaps
                 var skipTarget = entity.GetSingleOverrideSkipTarget();
                 checkpoint.SkipTarget = skipTarget.gameObject.transform;
             }
-            CurrentCustomMap.RegisterCheckpoint(checkpoint);
+
+            try
+            {
+                CurrentCustomMap.RegisterCheckpoint(checkpoint);
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentException($"Map contains duplicate checkpoints with pathtype {id.CheckpointType} & number {id.CheckpointNumber}", e);
+            }
+        }
+
+        private void SetupTrigger_Finish(BSPLoader.EntityCreatedCallbackData data)
+        {
+            //throw new NotImplementedException();
         }
         #endregion
+
+        private void FinishSettingUpTrigger_Checkpoint(GeneratedCheckpoint checkpoint)
+        {
+            if (checkpoint.CanSkip
+                && checkpoint.Id.CheckpointType == CheckpointTypes.MainPath
+                && CurrentCustomMap.Checkpoints.TryGetValue(checkpoint.Id + 1, out var nextCheckpoint))
+            {
+                checkpoint.SkipTarget = nextCheckpoint.RespawnPoint;
+            }
+        }
     }
 }

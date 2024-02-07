@@ -47,6 +47,12 @@ namespace Pogo.Checkpoints
             return !left.Equals(right);
         }
 
+        public static CheckpointId operator +(CheckpointId left, int right)
+        {
+            left.CheckpointNumber += right;
+            return left;
+        }
+
         public override bool Equals(object obj)
         {
             return obj is CheckpointId otherId && Equals(otherId);

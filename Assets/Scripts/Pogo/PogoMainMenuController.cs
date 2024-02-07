@@ -129,7 +129,9 @@ namespace Pogo
 
         public void OpenCustomMapsScreen()
         {
-
+            string folderPath = "C:\\Users\\orecr\\Desktop\\pogo3dtestmap";
+            string mapFileName = "pogo3dtestmap.bsp";
+            PogoGameManager.PogoInstance.CustomMapBuilder.LoadCustomMapLevel(folderPath, mapFileName);
         }
 
         public void OpenAppearanceScreen()
