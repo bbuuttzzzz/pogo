@@ -18,9 +18,8 @@ namespace Pogo.CustomMaps
     public class CustomMapBuilder : MonoBehaviour
     {
         public LevelDescriptor CustomMapLevel;
-        public GameObject CheckpointPrefab;
-        public string TexturePath;
         public CustomMap CurrentCustomMap;
+        public Material DefaultMaterial;
         public Dictionary<string, CustomMapEntityHandler> EntityHandlers { get; private set; }
 
         public void LoadCustomMapLevel(string folderPath, string mapFileName)
@@ -99,7 +98,7 @@ namespace Pogo.CustomMaps
 
             var target = entity.GetSingleTarget();
 
-            var collider = data.Instance.gameObject.AddComponent<MeshCollider>();
+            var collider = data.Instance.gameObject.GetComponent<MeshCollider>();
             collider.convex = true;
 
             var checkpoint = data.Instance.gameObject.AddComponent<GeneratedCheckpoint>();
