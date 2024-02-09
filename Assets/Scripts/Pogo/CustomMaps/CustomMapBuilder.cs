@@ -12,15 +12,22 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace Pogo.CustomMaps
 {
     public class CustomMapBuilder : MonoBehaviour
     {
+        private PogoGameManager gameManager;
         public LevelDescriptor CustomMapLevel;
         public CustomMap CurrentCustomMap;
         public Material DefaultMaterial;
         public Dictionary<string, CustomMapEntityHandler> EntityHandlers { get; private set; }
+
+        private void Start()
+        {
+            gameManager = PogoGameManager.PogoInstance;
+        }
 
         public void LoadCustomMapLevel(string folderPath, string mapFileName)
         {
@@ -55,6 +62,7 @@ namespace Pogo.CustomMaps
             {
                 path = fullMapPath,
                 texturePath = folderPath,
+                defaultMaterial = DefaultMaterial,
                 meshCombineOptions = BSPLoader.MeshCombineOptions.PerEntity,
                 assetSavingOptions = BSPLoader.AssetSavingOptions.None,
                 curveTessellationLevel = 3,
@@ -64,11 +72,34 @@ namespace Pogo.CustomMaps
             var textureSource = new WadFolderSource(folderPath);
             var loader = new BSPLoader(settings, textureSource);
             loader.LoadBSP();
+            SceneManager.MoveGameObjectToScene(loader.root, SceneManager.GetSceneByBuildIndex(CustomMapLevel.BuildIndex));
+            
+            if (CurrentCustomMap.FirstCheckpoint == null)
+            {
+                if (CurrentCustomMap.PlayerStart == null)
+                {
+                    throw new FormatException("Map contains no Main Path Checkpoints (an info_player_start works in a pinch!)");
+                }
+                else
+                {
+                    Debug.LogWarning("Map Contains no Main Path Checkpoints. Defaulting to an info_player_start!");
+                }
+                CurrentCustomMap.PlayerStart.AddComponent<BoxCollider>();
+                var checkpoint = CurrentCustomMap.PlayerStart.AddComponent<GeneratedCheckpoint>();
+                checkpoint.FixTriggerSettings();
+                checkpoint.Id = new CheckpointId(CheckpointTypes.MainPath, 0);
+                checkpoint.RespawnPoint = CurrentCustomMap.PlayerStart.transform;
+                CurrentCustomMap.RegisterCheckpoint(checkpoint);
+            }
 
-            foreach(var checkpoint in CurrentCustomMap.Checkpoints.Values)
+            foreach (var checkpoint in CurrentCustomMap.Checkpoints.Values)
             {
                 FinishSettingUpTrigger_Checkpoint(checkpoint);
             }
+
+            gameManager.RegisterRespawnPoint(new RespawnPointData(CurrentCustomMap.FirstCheckpoint.RespawnPoint));
+            PogoGameManager.PogoInstance.SpawnPlayer();                  
+            gameManager.Paused = false;
         }
 
         private void OnEntityCreated(BSPLoader.EntityCreatedCallbackData data)
