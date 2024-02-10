@@ -48,7 +48,7 @@ namespace Pogo.CustomMaps.Entities
         public bool GetCanSkip() => GetSpawnFlag(1u);
         public RenderStyles GetRenderStyle()
         {
-            int key = Data.Instance.entity.GetInt(Key_RenderStyle);
+            int key = Data.Instance.entity.GetInt(Key_RenderStyle, 0);
             if (key < 0 || key > (int)RenderStyles.UseMapTexture)
             {
                 throw new FormatException($"{Data.Instance.entity.ClassName} has bad RenderStyle {key}. expected 0, 1, or 2");

@@ -5,14 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Pogo
 {
     public class GeneratedCheckpoint : Checkpoint
     {
-        public UnityEvent OnBecomeActiveCheckpoint;
-        public UnityEvent OnLoseActiveCheckpoint;
+        public bool Invisible;
+        public ParticleSystem ActivatedParticleSystem;
 
         public override ChapterDescriptor Chapter => null;
 
@@ -31,6 +32,12 @@ namespace Pogo
             PogoGameManager.PogoInstance.OnRespawnPointChanged.RemoveListener(GameManager_OnRespawnPointChanged);
         }
 
+        public void UpdateMesh()
+        {
+            var currentMesh = GetComponent<MeshFilter>().sharedMesh;
+            var shape = ActivatedParticleSystem.shape;
+            shape.mesh = currentMesh;
+        }
 
         private void GameManager_OnRespawnPointChanged(RespawnPointChangedEventArgs arg0)
         {
@@ -39,11 +46,13 @@ namespace Pogo
 
             if (wasLastCheckpoint && !isNewCheckpoint)
             {
-                OnLoseActiveCheckpoint.Invoke();
+                // lose active checkpoint, set renderer enabled if not invisible
+                GetComponent<Renderer>().enabled = !Invisible;
             }
             else if (!wasLastCheckpoint && isNewCheckpoint)
             {
-                OnBecomeActiveCheckpoint.Invoke();
+                // become active checkpoint, set renderer invisible
+                GetComponent<Renderer>().enabled = false;
             }
         }
     }

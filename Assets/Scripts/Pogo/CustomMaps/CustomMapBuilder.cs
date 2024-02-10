@@ -75,7 +75,7 @@ namespace Pogo.CustomMaps
             };
             var textureSource = new WadFolderSource(folderPath);
             var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
-            var loader = new BSPLoader(settings, textureSource);
+            var loader = new BSPLoader(settings, textureSource, templateSource);
             loader.LoadBSP();
             SceneManager.MoveGameObjectToScene(loader.root, SceneManager.GetSceneByBuildIndex(CustomMapLevel.BuildIndex));
             
@@ -144,11 +144,7 @@ namespace Pogo.CustomMaps
 
             var target = entity.GetSingleTarget();
 
-            var collider = data.Instance.gameObject.GetComponent<MeshCollider>();
-            collider.convex = true;
-
-            var checkpoint = data.Instance.gameObject.AddComponent<GeneratedCheckpoint>();
-            checkpoint.FixTriggerSettings();
+            var checkpoint = data.Instance.gameObject.GetComponent<GeneratedCheckpoint>();
             checkpoint.Id = id;
             checkpoint.RespawnPoint = target.gameObject.transform;
             checkpoint.CanSkip = entity.GetCanSkip();
@@ -167,6 +163,7 @@ namespace Pogo.CustomMaps
             else if (renderStyle == Trigger_Checkpoint.RenderStyles.Invisible)
             {
                 checkpoint.GetComponent<Renderer>().enabled = false;
+                checkpoint.Invisible = true;
             }
 
             try
