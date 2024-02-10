@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Progress;
 
 namespace Pogo.CustomMaps
 {
@@ -23,6 +24,7 @@ namespace Pogo.CustomMaps
         public CustomMap CurrentCustomMap;
         public Material DefaultMaterial;
         public Material DefaultCheckpointMaterial;
+        public EntityPrefabManifest EntityPrefabs;
         
         public Dictionary<string, CustomMapEntityHandler> EntityHandlers { get; private set; }
 
@@ -72,6 +74,7 @@ namespace Pogo.CustomMaps
                 scaleFactor = 1f / 32f
             };
             var textureSource = new WadFolderSource(folderPath);
+            var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
             var loader = new BSPLoader(settings, textureSource);
             loader.LoadBSP();
             SceneManager.MoveGameObjectToScene(loader.root, SceneManager.GetSceneByBuildIndex(CustomMapLevel.BuildIndex));
@@ -111,6 +114,16 @@ namespace Pogo.CustomMaps
                 handler.SetupAction.Invoke(data);
             }
         }
+
+        #region Entity Prefabs
+        private IEnumerable<KeyValuePair<string, GameObject>> GetEntityPrefabs()
+        {
+            foreach (var item in EntityPrefabs.Items)
+            {
+                yield return new KeyValuePair<string, GameObject>(item.ClassName, item.Prefab);
+            }
+        }
+        #endregion
 
         #region Entity Handlers
         private void SetupEntityHandlers()

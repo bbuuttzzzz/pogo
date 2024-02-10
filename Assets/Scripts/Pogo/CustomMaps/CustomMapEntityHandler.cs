@@ -1,9 +1,6 @@
 ﻿using BSPImporter;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Pogo.CustomMaps
 {
@@ -11,11 +8,16 @@ namespace Pogo.CustomMaps
     {
         public string ClassName { get; private set; }
         public Action<BSPLoader.EntityCreatedCallbackData> SetupAction { get; private set; }
+        public GameObject Prefab { get; private set; }
 
-        public CustomMapEntityHandler(string entityName, Action<BSPLoader.EntityCreatedCallbackData> setupAction)
+        public CustomMapEntityHandler(
+            string entityName,
+            Action<BSPLoader.EntityCreatedCallbackData> setupAction,
+            GameObject prefab = null)
         {
             ClassName = entityName;
             SetupAction = setupAction;
+            Prefab = prefab;
         }
     }
 }
