@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Player;
+using Assets.Scripts.Pogo.Checkpoints;
 using Inputter;
 using Platforms;
 using Pogo.Challenges;
@@ -855,13 +856,18 @@ namespace Pogo
         #region Respawn Point
 
         public EventHandler OnCustomCheckpointChanged;
-
+        public UnityEvent<RespawnPointChangedEventArgs> OnRespawnPointChanged;
         public Transform CachedRespawnPoint;
         private RespawnPointData respawnPoint;
         public RespawnPointData RespawnPoint
         {
             get => respawnPoint; set
             {
+                OnRespawnPointChanged?.Invoke(new RespawnPointChangedEventArgs()
+                {
+                    OldSpawnPoint = respawnPoint,
+                    NewSpawnPoint = value
+                });
                 respawnPoint = value;
                 if (respawnPoint.transform != null && CachedRespawnPoint.transform != null)
                 {

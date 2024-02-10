@@ -22,6 +22,8 @@ namespace Pogo.CustomMaps
         public LevelDescriptor CustomMapLevel;
         public CustomMap CurrentCustomMap;
         public Material DefaultMaterial;
+        public Material DefaultCheckpointMaterial;
+        
         public Dictionary<string, CustomMapEntityHandler> EntityHandlers { get; private set; }
 
         private void Start()
@@ -141,6 +143,17 @@ namespace Pogo.CustomMaps
             {
                 var skipTarget = entity.GetSingleOverrideSkipTarget();
                 checkpoint.SkipTarget = skipTarget.gameObject.transform;
+            }
+
+            var renderStyle = entity.GetRenderStyle();
+
+            if (renderStyle == Trigger_Checkpoint.RenderStyles.Default)
+            {
+                checkpoint.GetComponent<Renderer>().material = DefaultCheckpointMaterial;
+            }
+            else if (renderStyle == Trigger_Checkpoint.RenderStyles.Invisible)
+            {
+                checkpoint.GetComponent<Renderer>().enabled = false;
             }
 
             try

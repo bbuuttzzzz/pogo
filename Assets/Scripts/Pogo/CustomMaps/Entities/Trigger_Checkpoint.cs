@@ -46,6 +46,15 @@ namespace Pogo.CustomMaps.Entities
         public BSPLoader.EntityInstance GetSingleOverrideSkipTarget() => GetSingleTarget(Key_SkipTarget);
 
         public bool GetCanSkip() => GetSpawnFlag(1u);
-        public int GetRenderStyle() => Data.Instance.entity.GetInt(Key_RenderStyle);
+        public RenderStyles GetRenderStyle()
+        {
+            int key = Data.Instance.entity.GetInt(Key_RenderStyle);
+            if (key < 0 || key > (int)RenderStyles.UseMapTexture)
+            {
+                throw new FormatException($"{Data.Instance.entity.ClassName} has bad RenderStyle {key}. expected 0, 1, or 2");
+            }
+
+            return (RenderStyles)key;
+        }
     }
 }
