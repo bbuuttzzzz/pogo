@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Pogo.CustomMaps
 {
+    [CreateAssetMenu(fileName = "EntityPrefabManifest", menuName = "Pogo/CustomMaps/EntityPrefabManifest")]
     public class EntityPrefabManifest : ScriptableObject
     {
         public EntityPrefabEntry[] Items;

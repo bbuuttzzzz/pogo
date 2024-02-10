@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using WizardUtils;
 
+[CustomPropertyDrawer(typeof(EntityPrefabEntry))]
 public class EntityPrefabEntryDrawer : EasyPropertyDrawer
 {
     protected override float lineCount => 1;
