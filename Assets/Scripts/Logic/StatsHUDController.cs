@@ -9,47 +9,57 @@ namespace Pogo.Logic
 {
     public class StatsHUDController : MonoBehaviour
     {
+        private PogoGameManager gameManager;
         public int QuickDisplayInterval = 10;
 
-        public bool ShouldShowStopwatch;
+        public bool ShowTimerSetting;
+        public bool ForceShowTimer;
+        public bool ShouldShowStopwatch => ShowTimerSetting || gameManager.ForceShowTimer;
 
         public MeshFilter SkullMesh;
         public Renderer SkullMeshRenderer;
 
         Animator animator;
+
         private void Start()
         {
+            gameManager = PogoGameManager.PogoInstance;
             animator = GetComponent<Animator>();
             var showTimerSetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.SETTINGKEY_TIMER);
             showTimerSetting.OnChanged += onShowTimerChanged;
-            ShouldShowStopwatch = showTimerSetting.Value == 1;
+            ShowTimerSetting = showTimerSetting.Value == 1;
 
-            PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(onDeath);
-            PogoGameManager.PogoInstance.OnPauseStateChanged += onPauseStateChanged;
-            PogoGameManager.PogoInstance.OnStatsReset.AddListener(onStatsReset);
-            PogoGameManager.PogoInstance.OnDifficultyChanged.AddListener(onDifficultyChanged);
+            gameManager.OnForceShowTimerChanged.AddListener(GameManager_OnForceShowTimerChanged);
+            gameManager.OnPlayerDeath.AddListener(onDeath);
+            gameManager.OnPauseStateChanged += onPauseStateChanged;
+            gameManager.OnStatsReset.AddListener(onStatsReset);
+            gameManager.OnDifficultyChanged.AddListener(onDifficultyChanged);
         }
 
+        private void GameManager_OnForceShowTimerChanged(bool arg0)
+        {
+            updateDisplay();
+        }
 
         private void onShowTimerChanged(object sender, WizardUtils.GameSettingChangedEventArgs e)
         {
-            ShouldShowStopwatch = e.FinalValue == 1;
+            ShowTimerSetting = e.FinalValue == 1;
             updateDisplay();
         }
 
         private void onStatsReset()
         {
-            OnDeathCountChanged?.Invoke(PogoGameManager.PogoInstance.CurrentSessionDeaths);
+            OnDeathCountChanged?.Invoke(gameManager.CurrentSessionDeaths);
         }
         private void onDifficultyChanged(DifficultyChangedEventArgs e)
         {
-            SkullMesh.sharedMesh = PogoGameManager.PogoInstance.CurrentDifficultyDescriptor.SkullMesh;
-            SkullMeshRenderer.sharedMaterial = PogoGameManager.PogoInstance.CurrentDifficultyDescriptor.SkullMaterial;
+            SkullMesh.sharedMesh = gameManager.CurrentDifficultyDescriptor.SkullMesh;
+            SkullMeshRenderer.sharedMaterial = gameManager.CurrentDifficultyDescriptor.SkullMaterial;
         }
 
         private void Update()
         {
-            if (PogoGameManager.PogoInstance.CurrentGameState != PogoGameManager.GameStates.InGame) return;
+            if (gameManager.CurrentGameState != PogoGameManager.GameStates.InGame) return;
 
             if (ShouldShowStopwatch && Time.timeScale > 0)
             {
@@ -59,7 +69,7 @@ namespace Pogo.Logic
 
         private void UpdateStopwatchTimerText()
         {
-            var time = PogoGameManager.PogoInstance.TrackedSessionTime;
+            var time = gameManager.TrackedSessionTime;
             StopwatchTimerText.text = $"{Math.Floor(time.TotalMinutes)}:{time.Seconds:00}.{time.Milliseconds:000}";
         }
 
@@ -79,7 +89,7 @@ namespace Pogo.Logic
 
         private void onDeath()
         {
-            int deathCount = PogoGameManager.PogoInstance.TrackedSessionDeaths;
+            int deathCount = gameManager.TrackedSessionDeaths;
             OnDeathCountChanged?.Invoke(deathCount);
             if (deathCount % QuickDisplayInterval == 0)
             {

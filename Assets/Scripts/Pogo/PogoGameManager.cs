@@ -1004,7 +1004,18 @@ namespace Pogo
         #region Stats
         private GameProgressTracker currentChapterProgressTracker;
         private GameProgressTracker currentSessionProgressTracker;
+        private bool forceShowTimer;
+        public bool ForceShowTimer
+        {
+            get => forceShowTimer;
+            set
+            {
+                forceShowTimer = value;
+                OnForceShowTimerChanged?.Invoke(value);
+            }
+        }
 
+        public UnityEvent<bool> OnForceShowTimerChanged;
         public UnityEvent OnStatsReset;
         public void ResetStats()
         {

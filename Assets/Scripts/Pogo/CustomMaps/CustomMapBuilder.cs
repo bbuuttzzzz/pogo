@@ -2,9 +2,11 @@
 using BSPImporter.Textures;
 using Pogo.Checkpoints;
 using Pogo.CustomMaps.Entities;
+using Pogo.CustomMaps.UI;
 using Pogo.Difficulties;
 using Pogo.Levels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Progress;
+using WizardUtils;
 
 namespace Pogo.CustomMaps
 {
@@ -21,10 +23,15 @@ namespace Pogo.CustomMaps
     {
         private PogoGameManager gameManager;
         public LevelDescriptor CustomMapLevel;
+
+        public PauseMenuController PauseMenu;
+        public CustomMapClearedMenu MapClearedMenu;
+
         public CustomMap CurrentCustomMap;
         public Material DefaultMaterial;
         public Material DefaultCheckpointMaterial;
         public EntityPrefabManifest EntityPrefabs;
+        public MapAttemptData LastAttemptData;
         
         public Dictionary<string, CustomMapEntityHandler> EntityHandlers { get; private set; }
 
@@ -97,14 +104,49 @@ namespace Pogo.CustomMaps
                 CurrentCustomMap.RegisterCheckpoint(checkpoint);
             }
 
+            if (CurrentCustomMap.Finish != null)
+            {
+                CurrentCustomMap.Finish.OnActivated.AddListener(FinishMap);
+            }
+
             foreach (var checkpoint in CurrentCustomMap.Checkpoints.Values)
             {
                 FinishSettingUpTrigger_Checkpoint(checkpoint);
             }
-
-            gameManager.RegisterRespawnPoint(new RespawnPointData(CurrentCustomMap.FirstCheckpoint.RespawnPoint));
-            PogoGameManager.PogoInstance.SpawnPlayer();                  
+            
+            StartMap();
             gameManager.Paused = false;
+        }
+
+        private void StartMap()
+        {
+            gameManager.ResetStats();
+            gameManager.RegisterRespawnPoint(new RespawnPointData(CurrentCustomMap.FirstCheckpoint.RespawnPoint));
+            PogoGameManager.PogoInstance.SpawnPlayer();
+        }
+
+        private void FinishMap()
+        {
+            LastAttemptData = new()
+            {
+                CompletionTimeMS = (int)gameManager.TrackedSessionTime.TotalMilliseconds,
+                Deaths = gameManager.CurrentSessionDeaths
+            };
+
+            StartCoroutine(FinishMapRoutine());
+        }
+
+        private IEnumerator FinishMapRoutine()
+        {
+            yield return new WaitForSeconds(1);
+            OpenMapClearedMenu();
+        }
+
+        private void OpenMapClearedMenu()
+        {
+            PauseMenu.OverrideMenu = MapClearedMenu;
+            gameManager.Paused = true;
+            PauseMenu.OverrideMenu = null;
         }
 
         private void OnEntityCreated(BSPLoader.EntityCreatedCallbackData data)
