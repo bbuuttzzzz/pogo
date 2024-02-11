@@ -14,6 +14,7 @@ namespace Pogo
     {
         public bool Invisible;
         public ParticleSystem ActivatedParticleSystem;
+        public Material DefaultMaterial;
 
         public override ChapterDescriptor Chapter => null;
 

@@ -29,7 +29,6 @@ namespace Pogo.CustomMaps
 
         public CustomMap CurrentCustomMap;
         public Material DefaultMaterial;
-        public Material DefaultCheckpointMaterial;
         public EntityPrefabManifest EntityPrefabs;
         public MapAttemptData LastAttemptData;
         
@@ -118,6 +117,13 @@ namespace Pogo.CustomMaps
             gameManager.Paused = false;
         }
 
+        public void RestartMap()
+        {
+            if (CurrentCustomMap == null) throw new InvalidOperationException("Tried to Restart with no Custom Map loaded");
+
+            StartMap();
+        }
+
         private void StartMap()
         {
             gameManager.ResetStats();
@@ -201,7 +207,7 @@ namespace Pogo.CustomMaps
 
             if (renderStyle == Trigger_Checkpoint.RenderStyles.Default)
             {
-                checkpoint.GetComponent<Renderer>().material = DefaultCheckpointMaterial;
+                checkpoint.GetComponent<Renderer>().material = checkpoint.DefaultMaterial;
             }
             else if (renderStyle == Trigger_Checkpoint.RenderStyles.Invisible)
             {
@@ -228,7 +234,7 @@ namespace Pogo.CustomMaps
             var renderStyle = entity.GetRenderStyle();
             if (renderStyle == Trigger_Finish.RenderStyles.Default)
             {
-                trigger.GetComponent<Renderer>().material = DefaultCheckpointMaterial;
+                trigger.GetComponent<Renderer>().material = trigger.DefaultMaterial;
             }
             else if (renderStyle == Trigger_Finish.RenderStyles.Invisible)
             {

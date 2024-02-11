@@ -4958,10 +4958,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6161914078121597054}
+  - component: {fileID: 6161914078121597055}
   - component: {fileID: 6161914078121597053}
   - component: {fileID: 6161914078121597052}
   - component: {fileID: 6161914078121597048}
-  - component: {fileID: 6161914078121597055}
   m_Layer: 7
   m_Name: trigger_checkpoint
   m_TagString: Untagged
@@ -4986,6 +4986,60 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6161914078121597055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6161914078121597042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4840e9a301ba7ab48a61e25182ab44c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnActivated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6161914076210533648}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3050013725342119700}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  RespawnPoint: {fileID: 0}
+  OnEnteredNotActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSkip:
+    m_PersistentCalls:
+      m_Calls: []
+  SkipBehavior: 0
+  SkipTarget: {fileID: 0}
+  Invisible: 0
+  ActivatedParticleSystem: {fileID: 3050013725342119700}
+  DefaultMaterial: {fileID: 2100000, guid: 26976bc22c99cf24eb73189ea698df4c, type: 2}
+  Id:
+    CheckpointType: 0
+    CheckpointNumber: 2
 --- !u!33 &6161914078121597053
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5050,56 +5104,3 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &6161914078121597055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6161914078121597042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4840e9a301ba7ab48a61e25182ab44c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivated:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6161914076210533648}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3050013725342119700}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  RespawnPoint: {fileID: 0}
-  OnEnteredNotActivated:
-    m_PersistentCalls:
-      m_Calls: []
-  OnSkip:
-    m_PersistentCalls:
-      m_Calls: []
-  SkipBehavior: 0
-  SkipTarget: {fileID: 0}
-  Invisible: 0
-  ActivatedParticleSystem: {fileID: 3050013725342119700}
-  Id:
-    CheckpointType: 0
-    CheckpointNumber: 2
