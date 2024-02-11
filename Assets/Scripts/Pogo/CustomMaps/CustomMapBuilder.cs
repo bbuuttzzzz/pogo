@@ -173,13 +173,27 @@ namespace Pogo.CustomMaps
             }
             catch (ArgumentException e)
             {
-                throw new ArgumentException($"Map contains duplicate checkpoints with pathtype {id.CheckpointType} & number {id.CheckpointNumber}", e);
+                throw new FormatException($"Map contains duplicate checkpoints with pathtype {id.CheckpointType} & number {id.CheckpointNumber}", e);
             }
         }
 
         private void SetupTrigger_Finish(BSPLoader.EntityCreatedCallbackData data)
         {
-            //throw new NotImplementedException();
+            Trigger_Finish entity = new Trigger_Finish(data);
+
+            var trigger = data.Instance.gameObject.GetComponent<TriggerFinish>();
+
+            var renderStyle = entity.GetRenderStyle();
+            if (renderStyle == Trigger_Finish.RenderStyles.Default)
+            {
+                trigger.GetComponent<Renderer>().material = DefaultCheckpointMaterial;
+            }
+            else if (renderStyle == Trigger_Finish.RenderStyles.Invisible)
+            {
+                trigger.GetComponent<Renderer>().enabled = false;
+            }
+
+            CurrentCustomMap.RegisterFinish(trigger);
         }
         #endregion
 

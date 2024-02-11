@@ -13,6 +13,7 @@ namespace Pogo.CustomMaps
         public Dictionary<CheckpointId, GeneratedCheckpoint> Checkpoints;
         public GameObject PlayerStart;
         public GeneratedCheckpoint FirstCheckpoint;
+        public TriggerFinish Finish;
 
         public CustomMap()
         {
@@ -28,6 +29,16 @@ namespace Pogo.CustomMaps
             {
                 FirstCheckpoint = checkpoint;
             }
+        }
+
+        public void RegisterFinish(TriggerFinish finish)
+        {
+            if (Finish != null)
+            {
+                throw new FormatException("Map contains multiple Trigger_Finish! it should have at MOST 1!!!");
+            }
+
+            Finish = finish;
         }
     }
 }
