@@ -148,6 +148,7 @@ namespace Pogo.CustomMaps
             checkpoint.Id = id;
             checkpoint.RespawnPoint = target.gameObject.transform;
             checkpoint.CanSkip = entity.GetCanSkip();
+            checkpoint.UpdateMesh();
             if (checkpoint.CanSkip && !string.IsNullOrEmpty(entity.GetOverrideSkipTargetName()))
             {
                 var skipTarget = entity.GetSingleOverrideSkipTarget();
