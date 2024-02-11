@@ -229,19 +229,22 @@ namespace Pogo.CustomMaps
         {
             Trigger_Finish entity = new Trigger_Finish(data);
 
-            var trigger = data.Instance.gameObject.GetComponent<TriggerFinish>();
+            var checkpoint = data.Instance.gameObject.GetComponent<TriggerFinish>();
+            checkpoint.RespawnPoint = checkpoint.transform;
+            checkpoint.UpdateMesh();
 
             var renderStyle = entity.GetRenderStyle();
             if (renderStyle == Trigger_Finish.RenderStyles.Default)
             {
-                trigger.GetComponent<Renderer>().material = trigger.DefaultMaterial;
+                checkpoint.GetComponent<Renderer>().material = checkpoint.DefaultMaterial;
             }
             else if (renderStyle == Trigger_Finish.RenderStyles.Invisible)
             {
-                trigger.GetComponent<Renderer>().enabled = false;
+                checkpoint.GetComponent<Renderer>().enabled = false;
+                checkpoint.Invisible = true;
             }
 
-            CurrentCustomMap.RegisterFinish(trigger);
+            CurrentCustomMap.RegisterFinish(checkpoint);
         }
         #endregion
 
