@@ -84,7 +84,7 @@ namespace Pogo.CustomMaps
             var loader = new BSPLoader(settings, textureSource, templateSource);
             loader.LoadBSP();
             SceneManager.MoveGameObjectToScene(loader.root, SceneManager.GetSceneByBuildIndex(CustomMapLevel.BuildIndex));
-            
+
             if (CurrentCustomMap.FirstCheckpoint == null)
             {
                 if (CurrentCustomMap.PlayerStart == null)
@@ -230,7 +230,6 @@ namespace Pogo.CustomMaps
             Trigger_Finish entity = new Trigger_Finish(data);
 
             var checkpoint = data.Instance.gameObject.GetComponent<TriggerFinish>();
-            checkpoint.RespawnPoint = checkpoint.transform;
             checkpoint.UpdateMesh();
 
             var renderStyle = entity.GetRenderStyle();
