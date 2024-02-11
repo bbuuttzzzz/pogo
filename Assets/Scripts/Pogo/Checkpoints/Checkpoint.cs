@@ -12,6 +12,7 @@ namespace Pogo
         Transform ICheckpoint.SpawnPoint => RespawnPoint;
         public Transform RespawnPoint;
         public abstract bool CanSkip { get; set; }
+        public UnityEvent OnEnteredNotActivated;
 
         [HideInInspector]
         public UnityEvent OnSkip;
@@ -24,5 +25,17 @@ namespace Pogo
 
         [HideInInspector]
         public Transform SkipTarget;
+
+        public override bool ColliderCanTrigger(Collider other)
+        {
+            if (WizardUtils.GameManager.GameInstanceIsValid())
+            {
+                bool success = PogoGameManager.PogoInstance.TryRegisterRespawnPoint(this);
+                if (!success) OnEnteredNotActivated?.Invoke();
+                return success;
+            }
+            else
+                return false;
+        }
     }
 }

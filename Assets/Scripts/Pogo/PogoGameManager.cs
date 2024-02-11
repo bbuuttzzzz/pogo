@@ -874,9 +874,9 @@ namespace Pogo
                     CachedRespawnPoint.position = respawnPoint.transform.position;
                     CachedRespawnPoint.rotation = respawnPoint.transform.rotation;
                 }
-                if (respawnPoint.Trigger != null)
+                if (respawnPoint.Checkpoint != null)
                 {
-                    CurrentCheckpoint = respawnPoint.Trigger;
+                    CurrentCheckpoint = respawnPoint.Checkpoint;
                 }
             }
         }
@@ -936,7 +936,7 @@ namespace Pogo
             return false;
         }
 
-        public bool TryRegisterRespawnPoint(ExplicitCheckpoint trigger)
+        public bool TryRegisterRespawnPoint(Checkpoint checkpoint)
         {
             if (PogoInstance == null || PogoInstance.levelManager == null)
             {
@@ -944,9 +944,9 @@ namespace Pogo
                 return false;
             }
 
-            if (!CanRegisterRespawnPoint(trigger.RespawnPoint)) return false;
+            if (!CanRegisterRespawnPoint(checkpoint.RespawnPoint)) return false;
 
-            RegisterRespawnPoint(new RespawnPointData(trigger));
+            RegisterRespawnPoint(new RespawnPointData(checkpoint));
             return true;
         }
 
