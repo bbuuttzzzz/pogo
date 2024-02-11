@@ -15,7 +15,7 @@ namespace Pogo.Saving
     {
         private const int CurrentSaveDataVersion = 0;
         private IPlatformService PlatformService;
-        private string FilePath => $"{PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}{BaseName}.sav";
+        private string FilePath => $"{PlatformService.SaveDataPath}{Path.DirectorySeparatorChar}{BaseName}.sav";
         private string BaseName => "global";
 
         public FileGlobalSaveDataTracker(IPlatformService platformService)

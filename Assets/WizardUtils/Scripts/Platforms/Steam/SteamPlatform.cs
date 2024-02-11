@@ -21,6 +21,7 @@ namespace Platforms.Steam
         private SteamAPIWarningMessageHook_t SteamAPIWarningMessageHook;
         private Callback<GameOverlayActivated_t> m_OnGameOverlayActivated;
 
+        public string SaveDataPath { get; private set; }
         public string PersistentDataPath { get; private set; }
 
         public string PlatformURLName => "steam";
@@ -92,8 +93,9 @@ namespace Platforms.Steam
         {
             AccountID_t steamId = SteamUser.GetSteamID().GetAccountID();
 
+            PersistentDataPath = Application.persistentDataPath;
             // %home%/steamsaves/steam64id
-            PersistentDataPath = $"{Application.persistentDataPath}{Path.DirectorySeparatorChar}steamsaves{Path.DirectorySeparatorChar}{steamId}";
+            SaveDataPath = $"{Application.persistentDataPath}{Path.DirectorySeparatorChar}steamsaves{Path.DirectorySeparatorChar}{steamId}";
         }
         private void OnGameOverlayActivated(GameOverlayActivated_t callback)
         {

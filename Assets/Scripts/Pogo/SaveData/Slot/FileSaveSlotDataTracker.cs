@@ -16,7 +16,7 @@ namespace Pogo.Saving
     {
         private const int CurrentSaveDataVersion = 2;
         private IPlatformService PlatformService;
-        private string FilePath => $"{PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}{BaseName}{SaveSlotConstants.SaveSlotPath(slotId)}.sav";
+        private string FilePath => $"{PlatformService.SaveDataPath}{Path.DirectorySeparatorChar}{BaseName}{SaveSlotConstants.SaveSlotPath(slotId)}.sav";
         private string BaseName;
         private SaveSlotIds slotId;
 

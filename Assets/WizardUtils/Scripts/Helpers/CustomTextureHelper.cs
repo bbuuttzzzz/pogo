@@ -10,7 +10,7 @@ namespace WizardUtils
 {
     public static class CustomTextureHelper
     {
-        public static string CustomFolderPath => $"{GameManager.GameInstance.PersistentDataPath}{Path.DirectorySeparatorChar}custom";
+        public static string CustomFolderPath => $"{GameManager.GameInstance.SaveDataPath}{Path.DirectorySeparatorChar}custom";
         public static Texture2D Load(string name, Texture2D fallbackTexture)
         {
             Directory.CreateDirectory(CustomFolderPath);

@@ -24,6 +24,7 @@ namespace WizardUtils
         public UnityEvent OnQuitToMenu = new UnityEvent();
         [NonSerialized]
         public UnityEvent OnQuitToDesktop = new UnityEvent();
+        public string SaveDataPath => PlatformService.SaveDataPath;
         public string PersistentDataPath => PlatformService.PersistentDataPath;
         public AudioManager AudioManager => GetComponent<AudioManager>();
 

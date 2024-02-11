@@ -11,6 +11,7 @@ namespace Platforms
     public interface IPlatformService
     {
         public string PlatformURLName { get; }
+        public string SaveDataPath { get; }
         public string PersistentDataPath { get; }
         public void OnEnable();
         public void OnDestroy();
