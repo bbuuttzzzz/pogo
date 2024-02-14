@@ -2,6 +2,7 @@
 using BSPImporter.Textures;
 using Pogo.Checkpoints;
 using Pogo.CustomMaps.Entities;
+using Pogo.CustomMaps.Indexing;
 using Pogo.CustomMaps.UI;
 using Pogo.Difficulties;
 using Pogo.Levels;
@@ -31,12 +32,18 @@ namespace Pogo.CustomMaps
         public Material DefaultMaterial;
         public EntityPrefabManifest EntityPrefabs;
         public MapAttemptData LastAttemptData;
-        
+
+        private List<string> CustomMapRootPaths;
+
         public Dictionary<string, CustomMapEntityHandler> EntityHandlers { get; private set; }
 
         private void Start()
         {
             gameManager = PogoGameManager.PogoInstance;
+            CustomMapRootPaths = new List<string>
+            {
+                $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps"
+            };
         }
 
         public void LoadCustomMapLevel(string folderPath, string mapFileName)
@@ -140,6 +147,15 @@ namespace Pogo.CustomMaps
             };
 
             StartCoroutine(FinishMapRoutine());
+        }
+
+        public IEnumerable<MapHeader> GetMapHeaders()
+        {
+            return CustomMapRootPaths
+                .SelectMany(path => Directory.GetDirectories(path))
+                .Select(path => IndexingHelper.GenerateMapHeader(path, true))
+                .Where(r => r.Success)
+                .Select(r => r.Data);
         }
 
         private IEnumerator FinishMapRoutine()
