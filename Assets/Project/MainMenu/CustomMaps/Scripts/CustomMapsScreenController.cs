@@ -4,13 +4,15 @@ using Pogo.CustomMaps.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WizardUI;
 
 public class CustomMapsScreenController : MonoBehaviour
 {
     private PogoGameManager gameManager;
     public Transform ButtonsRoot;
     public GameObject ButtonPrefab;
-
+    public LoadMoreScroller ButtonsScroller;
+    public int LoadMoreCount = 5;
 
     private IEnumerator<MapHeader> UnloadedHeaders;
     private bool CanLoadMore;
@@ -20,6 +22,7 @@ public class CustomMapsScreenController : MonoBehaviour
     private void Awake()
     {
         gameManager = PogoGameManager.PogoInstance;
+        ButtonsScroller.OnShouldLoadMore.AddListener(() => LoadMore(LoadMoreCount));
     }
 
     private void OnEnable()
@@ -58,8 +61,10 @@ public class CustomMapsScreenController : MonoBehaviour
         Buttons.Add(button);
     }
 
-    public void LoadMore(int count = 5)
+    public void LoadMore(int count = -1)
     {
+        if (count < 0) count = LoadMoreCount;
+
         if (!CanLoadMore)
         {
             return;
