@@ -1,16 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace WizardUI
 {
-    public class MapsScrollerController : MonoBehaviour
+    public class ScrollerLoadMore : MonoBehaviour, IScrollHandler
     {
         private float lastLoadMore;
 
         public float LoadMoreThreshold = 50f;
         public float RepeatDelay = 0.1f;
         public UnityEvent OnShouldLoadMore;
+
+        public float ScrollSensitivity = 0.1f;
 
         public RectTransform Viewport;
         public RectTransform Content;
@@ -30,8 +35,10 @@ namespace WizardUI
                 Content.anchoredPosition = temp;
             }
         }
+
+        public float ScrollableHeight => ContentHeight - ViewportHeight;
         public float DistanceFromTop => ContentPosition;
-        public float DistanceFromBottom => ContentHeight - DistanceFromTop - ViewportHeight;
+        public float DistanceFromBottom => ScrollableHeight - DistanceFromTop;
 
         private void Awake()
         {
@@ -46,6 +53,12 @@ namespace WizardUI
                 lastLoadMore = Time.unscaledTime;
                 OnShouldLoadMore?.Invoke();
             }
+        }
+
+        public void OnScroll(PointerEventData eventData)
+        {
+            ContentPosition -= eventData.scrollDelta.y * ScrollSensitivity;
+            ContentPosition = Mathf.Clamp(ContentPosition, 0, ScrollableHeight);
         }
     }
 }

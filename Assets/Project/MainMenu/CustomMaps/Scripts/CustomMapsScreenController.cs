@@ -11,7 +11,7 @@ public class CustomMapsScreenController : MonoBehaviour
     private PogoGameManager gameManager;
     public Transform ButtonsRoot;
     public GameObject ButtonPrefab;
-    public MapsScrollerController ButtonsScroller;
+    public ScrollerLoadMore Scroller;
     public int LoadMoreCount = 5;
 
     private IEnumerator<MapHeader> UnloadedHeaders;
@@ -22,7 +22,7 @@ public class CustomMapsScreenController : MonoBehaviour
     private void Awake()
     {
         gameManager = PogoGameManager.PogoInstance;
-        ButtonsScroller.OnShouldLoadMore.AddListener(() => LoadMore(LoadMoreCount));
+        Scroller.OnShouldLoadMore.AddListener(() => LoadMore(LoadMoreCount));
     }
 
     private void OnEnable()
@@ -53,6 +53,8 @@ public class CustomMapsScreenController : MonoBehaviour
     {
         var obj = Instantiate(ButtonPrefab, ButtonsRoot);
         var button = obj.GetComponent<CustomMapButton>();
+        var scrollThrough = button.UIButton.gameObject.AddComponent<ScrollPassThrough>();
+        scrollThrough.ParentScrollHandler = Scroller;
         button.Header = header;
         button.UIButton.onClick.AddListener(() =>
         {
