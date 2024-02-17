@@ -76,7 +76,7 @@ namespace Pogo.CustomMaps
 
             if (!exit)
             {
-                mapHeader.MapName = Path.GetFileNameWithoutExtension(mapHeader.CfgPath);
+                mapHeader.MapName = Path.GetFileNameWithoutExtension(mapHeader.BspPath);
                 result = new GenerateMapHeaderResult(folderPath, mapHeader);
             }
             

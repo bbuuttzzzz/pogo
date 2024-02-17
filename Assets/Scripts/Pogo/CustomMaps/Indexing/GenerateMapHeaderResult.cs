@@ -11,8 +11,8 @@ namespace Pogo.CustomMaps.Indexing
 
         public enum FailReasons
         {
-            None = -1,
-            Custom = -2,
+            None,
+            Custom ,
             MissingCfg,
             MissingBSP,
         }

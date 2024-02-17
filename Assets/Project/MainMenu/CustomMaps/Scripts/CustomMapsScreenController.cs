@@ -58,7 +58,7 @@ public class CustomMapsScreenController : MonoBehaviour
         button.Header = header;
         button.UIButton.onClick.AddListener(() =>
         {
-            SelectMap(button.Header);
+            SelectMap(header);
         });
         Buttons.Add(button);
     }
