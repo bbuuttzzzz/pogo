@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UnityEngine.UI;
 using WizardUtils;
 
@@ -11,9 +12,16 @@ namespace Pogo.CustomMaps.UI
         public Button RestartButton;
         public Button QuitButton;
 
-        private void Start()
+        public IntegerFormatter DeathsFormatter;
+        public TextMeshProUGUI StopwatchText;
+
+        private void Awake()
         {
             gameManager = PogoGameManager.PogoInstance;
+        }
+
+        private void Start()
+        {
             OnOpen.AddListener(Base_OnOpen);
             OnClose.AddListener(Base_OnClose);
             RestartButton.onClick.AddListener(Restart);
@@ -27,18 +35,23 @@ namespace Pogo.CustomMaps.UI
 
         private void Quit()
         {
+            gameManager.Paused = false;
             gameManager.Quit(false);
         }
 
 
         private void Base_OnOpen()
         {
-            gameManager.ForceShowTimer = true;
+            gameManager.HideStatsPopup = true;
+            DeathsFormatter.FormatInt(gameManager.CustomMapBuilder.LastAttemptData.Deaths);
+            var time = TimeSpan.FromMilliseconds(gameManager.CustomMapBuilder.LastAttemptData.CompletionTimeMS);
+            StopwatchText.text = $"{Math.Floor(time.TotalMinutes)}:{time.Seconds:00}.{time.Milliseconds:000}";
+
         }
 
         private void Base_OnClose()
         {
-            gameManager.ForceShowTimer = false;
+            gameManager.HideStatsPopup = false;
         }
     }
 }

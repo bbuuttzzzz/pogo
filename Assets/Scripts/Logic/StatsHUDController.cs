@@ -13,8 +13,7 @@ namespace Pogo.Logic
         public int QuickDisplayInterval = 10;
 
         public bool ShowTimerSetting;
-        public bool ForceShowTimer;
-        public bool ShouldShowStopwatch => ShowTimerSetting || gameManager.ForceShowTimer;
+        public bool HideStats;
 
         public MeshFilter SkullMesh;
         public Renderer SkullMeshRenderer;
@@ -29,15 +28,16 @@ namespace Pogo.Logic
             showTimerSetting.OnChanged += onShowTimerChanged;
             ShowTimerSetting = showTimerSetting.Value == 1;
 
-            gameManager.OnForceShowTimerChanged.AddListener(GameManager_OnForceShowTimerChanged);
+            gameManager.OnHideStatsChanged.AddListener(GameManager_OnHideStatsChanged);
             gameManager.OnPlayerDeath.AddListener(onDeath);
             gameManager.OnPauseStateChanged += onPauseStateChanged;
             gameManager.OnStatsReset.AddListener(onStatsReset);
             gameManager.OnDifficultyChanged.AddListener(onDifficultyChanged);
         }
 
-        private void GameManager_OnForceShowTimerChanged(bool arg0)
+        private void GameManager_OnHideStatsChanged(bool arg0)
         {
+            HideStats = arg0;
             updateDisplay();
         }
 
@@ -61,7 +61,7 @@ namespace Pogo.Logic
         {
             if (gameManager.CurrentGameState != PogoGameManager.GameStates.InGame) return;
 
-            if (ShouldShowStopwatch && Time.timeScale > 0)
+            if (ShowTimerSetting && Time.timeScale > 0)
             {
                 UpdateStopwatchTimerText();
             }
@@ -82,8 +82,8 @@ namespace Pogo.Logic
 
         private void updateDisplay()
         {
-            animator.SetBool("DisplayDeaths", isPaused);
-            animator.SetBool("DisplayTimer", isPaused && ShouldShowStopwatch);
+            animator.SetBool("DisplayDeaths", !HideStats && isPaused);
+            animator.SetBool("DisplayTimer", !HideStats && isPaused && ShowTimerSetting);
             UpdateStopwatchTimerText();
         }
 
