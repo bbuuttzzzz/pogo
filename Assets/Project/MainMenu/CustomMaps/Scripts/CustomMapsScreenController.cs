@@ -11,7 +11,7 @@ public class CustomMapsScreenController : MonoBehaviour
     private PogoGameManager gameManager;
     public Transform ButtonsRoot;
     public GameObject ButtonPrefab;
-    public LoadMoreScroller ButtonsScroller;
+    public MapsScrollerController ButtonsScroller;
     public int LoadMoreCount = 5;
 
     private IEnumerator<MapHeader> UnloadedHeaders;
