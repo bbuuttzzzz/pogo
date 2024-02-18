@@ -134,14 +134,20 @@ namespace Pogo.Building
 
             List<PogoBuildResult> Results = new List<PogoBuildResult>();
 
-            foreach (var pogoTarget in targets)
+            for (int i = 0; i < targets.Length; i++)
             {
-
+                PogoBuildTarget pogoTarget = targets[i];
                 BuildReport report = Build(
                     $"{pathRoot}{Path.DirectorySeparatorChar}{pogoTarget.BuildName}{Path.DirectorySeparatorChar}pogo{Path.DirectorySeparatorChar}{pogoTarget.FileName}",
                     pogoTarget.Target,
                     logger.WriteLine);
                 Results.Add(new PogoBuildResult(pogoTarget, report));
+
+                if (i != targets.Length - 1)
+                {
+                    new CopyBuildEmbedPostProcessor().OnPostprocessBuild(report);
+                    new DeleteBurstDebugFolderPostProcessor().OnPostprocessBuild(report);
+                }
             }
 
             logger.WriteLine("Final Results: ");
