@@ -15,7 +15,7 @@ namespace Pogo.Building
         public void OnPostprocessBuild(BuildReport report)
         {
             string folderPrefix = "pogo";
-            string buildPath = report.summary.outputPath;
+            string buildPath = Path.GetDirectoryName(report.summary.outputPath);
 
             if (report.summary.platform == BuildTarget.WebGL)
             {
@@ -24,8 +24,6 @@ namespace Pogo.Building
             }
             else if (report.summary.platform == BuildTarget.StandaloneLinux64)
             {
-                // linux build points to the executable instead of the root folder :^)
-                buildPath = Path.GetDirectoryName(buildPath);
                 folderPrefix = "pogo.x86";
             }
 
