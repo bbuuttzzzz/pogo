@@ -6,6 +6,11 @@ namespace WizardUtils
 {
     public static class ArrayHelper
     {
+        public static bool ContainsIndex<T>(T[] array, int index)
+        {
+            return index > 0 && index < array.Length;
+        }
+
         /// <summary>
         /// Delete the first instance of <paramref name="memberToDelete"/> if it exists, reducing the array size by one<br/>
         /// If it doesn't exist, the array will keep the same size

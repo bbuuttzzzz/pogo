@@ -11,7 +11,6 @@ namespace Pogo.CustomMaps.UI
 
         public Button RestartButton;
         public Button QuitButton;
-
         public IntegerFormatter DeathsFormatter;
         public TextMeshProUGUI StopwatchText;
 

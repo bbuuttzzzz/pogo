@@ -8,6 +8,7 @@ public class KillTrigger : MonoBehaviour
     public UnityEvent OnTriggered;
     public KillTypeDescriptor Type;
     public bool DoExpensiveOriginStuff;
+    public Material DefaultMaterial;
 
     private void OnTriggerEnter(Collider other)
     {

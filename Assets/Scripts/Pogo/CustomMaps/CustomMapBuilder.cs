@@ -33,6 +33,8 @@ namespace Pogo.CustomMaps
         public EntityPrefabManifest EntityPrefabs;
         public MapAttemptData LastAttemptData;
 
+        public KillTypeDescriptor[] KillTypes;
+
         private List<string> CustomMapRootPaths;
 
         public Dictionary<string, CustomMapEntityHandler> EntityHandlers { get; private set; }
@@ -197,6 +199,7 @@ namespace Pogo.CustomMaps
             // we dont need to handle info_player_respawn. it's handled by trigger_checkpoint
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
+            AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
         }
 
         private void AddEntityHandler(CustomMapEntityHandler handler) => EntityHandlers.Add(handler.ClassName, handler);
@@ -260,6 +263,31 @@ namespace Pogo.CustomMaps
             }
 
             CurrentCustomMap.RegisterFinish(checkpoint);
+        }
+
+        private void SetupTrigger_Kill(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Trigger_Kill entity = new Trigger_Kill(data);
+
+            var killTrigger = data.Instance.gameObject.GetComponent<KillTrigger>();
+            killTrigger.DoExpensiveOriginStuff = true;
+
+            int killTypeId = entity.GetKillTypeId();
+            if (!ArrayHelper.ContainsIndex(KillTypes, killTypeId))
+            {
+                killTypeId = 0;
+            }
+            killTrigger.Type = KillTypes[killTypeId];
+
+            var renderStyle = entity.GetRenderStyle();
+            if (renderStyle == Trigger_Kill.RenderStyles.Default)
+            {
+                killTrigger.GetComponent<Renderer>().material = killTrigger.DefaultMaterial;
+            }
+            else if (renderStyle == Trigger_Kill.RenderStyles.Invisible)
+            {
+                killTrigger.GetComponent<Renderer>().enabled = false;
+            }
         }
         #endregion
 
