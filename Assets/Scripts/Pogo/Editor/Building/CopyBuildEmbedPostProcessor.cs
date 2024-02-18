@@ -1,25 +1,44 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
 namespace Pogo.Building
 {
-    public static class CopyBuildEmbedPostProcessor
+    public class CopyBuildEmbedPostProcessor : IPostprocessBuildWithReport
     {
-        [PostProcessBuild(1)]
-        public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+        public int callbackOrder => 1;
+        public void OnPostprocessBuild(BuildReport report)
         {
-            if (target == BuildTarget.WebGL) return;
+            string folderPrefix = "pogo";
+            string buildPath = report.summary.outputPath;
+
+            if (report.summary.platform == BuildTarget.WebGL)
+            {
+                // we don't care about this on webgl
+                return;
+            }
+            else if (report.summary.platform == BuildTarget.StandaloneLinux64)
+            {
+                // linux build points to the executable instead of the root folder :^)
+                buildPath = Path.GetDirectoryName(buildPath);
+                folderPrefix = "pogo.x86";
+            }
 
             string sourcePath = $"{Application.dataPath}{Path.DirectorySeparatorChar}BuildEmbedRoot";
-            string destinationPath = $"{pathToBuiltProject}{Path.DirectorySeparatorChar}pogo_Data";
-            CopyFilesRecursively(sourcePath, pathToBuiltProject);
+            string destinationPath = $"{buildPath}{Path.DirectorySeparatorChar}{folderPrefix}_Data";
+            CopyFilesRecursivelyIgnoringMetaFiles(sourcePath, destinationPath);
         }
 
-        private static void CopyFilesRecursively(string sourceDir, string destDir)
+        //DONT JUST COPY PASTE!!! THIS IGNORES .meta files!!!
+        private static void CopyFilesRecursivelyIgnoringMetaFiles(string sourceDir, string destDir)
         {
+            Regex regex = new Regex(".*\\.meta", RegexOptions.Compiled);
+
             // Check if the source directory exists
             if (!Directory.Exists(sourceDir))
             {
@@ -36,6 +55,12 @@ namespace Pogo.Building
             string[] files = Directory.GetFiles(sourceDir);
             foreach (string file in files)
             {
+                // ignore meta files
+                if (regex.Match(file).Success)
+                {
+                    continue;
+                }
+
                 string fileName = Path.GetFileName(file);
                 string destFile = Path.Combine(destDir, fileName);
                 File.Copy(file, destFile, true);
@@ -47,7 +72,7 @@ namespace Pogo.Building
             {
                 string subDirName = Path.GetFileName(subDir);
                 string destSubDir = Path.Combine(destDir, subDirName);
-                CopyFilesRecursively(subDir, destSubDir);
+                CopyFilesRecursivelyIgnoringMetaFiles(subDir, destSubDir);
             }
         }
     }
