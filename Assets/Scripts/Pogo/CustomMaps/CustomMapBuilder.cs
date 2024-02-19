@@ -57,7 +57,8 @@ namespace Pogo.CustomMaps
             gameManager = PogoGameManager.PogoInstance;
             CustomMapRootPaths = new List<string>
             {
-                $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps"
+                $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps",
+                $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps"
             };
         }
 
