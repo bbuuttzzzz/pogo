@@ -14,7 +14,6 @@ namespace Pogo.Building
         public int callbackOrder => 1;
         public void OnPostprocessBuild(BuildReport report)
         {
-            string folderPrefix = "pogo";
             string buildPath = Path.GetDirectoryName(report.summary.outputPath);
 
             if (report.summary.platform == BuildTarget.WebGL)
@@ -22,17 +21,12 @@ namespace Pogo.Building
                 // we don't care about this on webgl
                 return;
             }
-            else if (report.summary.platform == BuildTarget.StandaloneLinux64)
-            {
-                folderPrefix = "pogo.x86";
-            }
 
             string sourcePath = $"{Application.dataPath}{Path.DirectorySeparatorChar}BuildEmbedRoot";
-            string destinationPath = $"{buildPath}{Path.DirectorySeparatorChar}{folderPrefix}_Data";
+            string destinationPath = buildPath;
             CopyFilesRecursivelyIgnoringMetaFiles(sourcePath, destinationPath);
         }
 
-        //DONT JUST COPY PASTE!!! THIS IGNORES .meta files!!!
         private static void CopyFilesRecursivelyIgnoringMetaFiles(string sourceDir, string destDir)
         {
             Regex regex = new Regex(".*\\.meta", RegexOptions.Compiled);

@@ -38,6 +38,17 @@ namespace Pogo.CustomMaps
 
         private List<string> CustomMapRootPaths;
         private string WadFolderRootPath => $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}wads";
+        private string BuiltInCustomFolder
+        {
+            get
+            {
+#if UNITY_EDITOR
+                return $"{Application.dataPath}{Path.DirectorySeparatorChar}BuildEmbedRoot{Path.DirectorySeparatorChar}custom";
+#else
+                return $"{AppDomain.CurrentDomain.BaseDirectory}{Path.DirectorySeparatorChar}custom";
+#endif
+            }
+        }
 
         public Dictionary<string, CustomMapEntityHandler> EntityHandlers { get; private set; }
 
@@ -91,8 +102,9 @@ namespace Pogo.CustomMaps
                 scaleFactor = 1f / 32f
             };
             WadSource textureSource = new WadSource();
-            throw new NotImplementedException();
-            //textureSource.AddWad(asdf.)
+
+            // add built-in wad folder
+            textureSource.AddWadFolder($"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}wads");
             textureSource.AddWadFolder(WadFolderRootPath);
             textureSource.AddWadFolder(folderPath);
             var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
