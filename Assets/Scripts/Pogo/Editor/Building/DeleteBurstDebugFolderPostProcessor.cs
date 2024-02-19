@@ -28,8 +28,11 @@ namespace Pogo.Building
             }
 
             string path = $"{buildPath}{Path.DirectorySeparatorChar}{folderPrefix}_BurstDebugInformation_DoNotShip";
-            Debug.Log($"Trying to delete {path}");
-            Directory.Delete(path, true);
+            Debug.Log($"deleting {path}");
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
         }
     }
 }
