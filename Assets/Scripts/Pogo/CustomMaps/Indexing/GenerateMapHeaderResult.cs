@@ -13,7 +13,7 @@ namespace Pogo.CustomMaps.Indexing
         {
             None,
             Custom ,
-            MissingCfg,
+            MissingMapDefinition,
             MissingBSP,
         }
 
@@ -47,8 +47,8 @@ namespace Pogo.CustomMaps.Indexing
         {
             switch(FailReason)
             {
-                case FailReasons.MissingCfg:
-                    Debug.LogWarning($"Couldn't find a .cfg for map {Path} D:");
+                case FailReasons.MissingMapDefinition:
+                    Debug.LogWarning($"Couldn't find a mapdefinition.txt for map {Path} D:");
                     break;
                 case FailReasons.MissingBSP:
                     Debug.LogWarning($"Couldn't find a .bsp for map {Path} D:");

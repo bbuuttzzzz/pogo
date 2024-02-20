@@ -29,7 +29,7 @@ namespace Pogo.CustomMaps
             if (mapHeader.CfgPath == null)
             {
                 exit = true;
-                result = new GenerateMapHeaderResult(folderPath, GenerateMapHeaderResult.FailReasons.MissingCfg);
+                result = new GenerateMapHeaderResult(folderPath, GenerateMapHeaderResult.FailReasons.MissingMapDefinition);
             }
 
             if (!exit)
