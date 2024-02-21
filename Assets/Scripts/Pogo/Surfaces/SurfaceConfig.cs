@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Pogo.MaterialTypes
+namespace Pogo.Surfaces
 {
     [CreateAssetMenu(fileName = "new SurfaceConfig", menuName = "ScriptableObjects/SurfaceConfig", order = 1)]
     public class SurfaceConfig : ScriptableObject

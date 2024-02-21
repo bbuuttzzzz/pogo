@@ -3,7 +3,7 @@ using Inputter;
 using Pogo;
 using Pogo.Abilities;
 using Pogo.Cosmetics;
-using Pogo.MaterialTypes;
+using Pogo.Surfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -268,12 +268,12 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
     {
         Material material = null;
 
-        var specifier = hitInfo.collider.GetComponent<SurfaceConfigSpecifier>();
+        var specifier = hitInfo.collider.GetComponent<ISurfaceConfigOverride>();
         if (specifier != null)
         {
             surfaceCache.Collider = hitInfo.collider;
-            surfaceCache.SurfaceConfig = specifier.SurfaceConfig;
-            return specifier.SurfaceConfig;
+            surfaceCache.SurfaceConfig = specifier.CheckSurface(hitInfo);
+            return surfaceCache.SurfaceConfig;
         }
         if (hitInfo.collider is MeshCollider)
         {
