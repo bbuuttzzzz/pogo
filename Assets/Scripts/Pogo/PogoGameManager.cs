@@ -36,6 +36,8 @@ namespace Pogo
             base.Awake();
             if (GameInstance != this) return;
 
+            MaterialSurfaceService = new Surfaces.MaterialSurfaceService(DefaultSurfaceConfig)
+                .AddSource(new Surfaces.AssetSurfaceSource(), 10);
             CurrentDifficultyDescriptor = DifficultyManifest.FindByKey(Difficulty.Normal);
             LoadCheckpointManifest = new CheckpointManifest();
             LoadGlobalSave();
@@ -126,6 +128,13 @@ namespace Pogo
 
         public ChallengeBuilder ChallengeBuilder;
         public CustomMapBuilder CustomMapBuilder;
+
+        #region Surfaces
+        public Surfaces.SurfaceConfig DefaultSurfaceConfig;
+
+        [NonSerialized]
+        public Surfaces.MaterialSurfaceService MaterialSurfaceService;
+        #endregion
 
         #region Level Management
         public enum GameStates
