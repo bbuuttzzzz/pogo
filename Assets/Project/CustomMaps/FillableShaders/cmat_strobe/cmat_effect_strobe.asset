@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82483527c4b32d74fba019d7fe03d691, type: 3}
+  m_Name: cmat_effect_strobe
+  m_EditorClassIdentifier: 
+  ShaderName: effect_strobe
+  BaseMaterial: {fileID: 2100000, guid: aefb6b36c1bbb9041824089c14958504, type: 2}
+  Properties:
+  - PropertyName: Color1
+    ParameterName: _Color1
+    ParameterType: 1
+  - PropertyName: Color2
+    ParameterName: _Color2
+    ParameterType: 1
+  - PropertyName: Alpha
+    ParameterName: _Alpha
+    ParameterType: 0
+  - PropertyName: AlphaStrobe
+    ParameterName: _AlphaStrobe
+    ParameterType: 0
+  - PropertyName: AlphaStrobeRate
+    ParameterName: _AlphaStrobeRate
+    ParameterType: 0

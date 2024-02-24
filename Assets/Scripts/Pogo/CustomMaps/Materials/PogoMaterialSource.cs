@@ -10,11 +10,20 @@ namespace Pogo.CustomMaps.Materials
     {
         public bool EnableLogging = true;
         private Material BaseMaterial;
-        private Dictionary<string, FillableShaderDescriptor> FillableShaders;
+        private Dictionary<string, IFillableShader> ShadersDictionary;
+
+        public PogoMaterialSource(IEnumerable<IFillableShader> fillableShaders)
+        {
+            ShadersDictionary = new Dictionary<string, IFillableShader>();
+            foreach(var shader in fillableShaders)
+            {
+                ShadersDictionary.Add(shader.ShaderName, shader);
+            }
+        }
 
         public Material BuildMaterial(WadTextureData textureData)
         {
-            if (FillableShaders.TryGetValue(textureData.ShaderName, out FillableShaderDescriptor descriptor))
+            if (ShadersDictionary.TryGetValue(textureData.ShaderName, out IFillableShader descriptor))
             {
                 return BuildFillableShaderMaterial(textureData, descriptor);
             }
@@ -30,12 +39,12 @@ namespace Pogo.CustomMaps.Materials
             }
         }
 
-        private Material BuildFillableShaderMaterial(WadTextureData textureData, FillableShaderDescriptor descriptor)
+        private Material BuildFillableShaderMaterial(WadTextureData textureData, IFillableShader descriptor)
         {
             Material newMaterial = new Material(descriptor.BaseMaterial);
             foreach(var property in descriptor.Properties)
             {
-                if (textureData.Metadata.TryGetValue(property.PropertyName, out string value))
+                if (textureData.Metadata.TryGetValue(property.PropertyName.ToLowerInvariant(), out string value))
                 {
                     bool success = true;
                     switch (property.ParameterType)

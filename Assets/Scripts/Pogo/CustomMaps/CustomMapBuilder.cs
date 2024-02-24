@@ -32,6 +32,7 @@ namespace Pogo.CustomMaps
         public CustomMap CurrentCustomMap;
         public Material DefaultMaterial;
         public EntityPrefabManifest EntityPrefabs;
+        public Materials.FillableShaderManifest FillableShaderManifest;
         public MapAttemptData LastAttemptData;
 
         public KillTypeDescriptor[] KillTypes;
@@ -110,6 +111,7 @@ namespace Pogo.CustomMaps
             textureSource.AddWadFolder(WadFolderRootPath);
             textureSource.AddWadFolder(folderPath);
             var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
+            var materialSource = new Materials.PogoMaterialSource(FillableShaderManifest.Items);
             var loader = new BSPLoader(settings, textureSource, templateSource);
 
             loader.LoadBSP();
