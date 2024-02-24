@@ -1,4 +1,5 @@
-﻿using Pogo.Checkpoints;
+﻿using BSPImporter;
+using Pogo.Checkpoints;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,12 @@ namespace Pogo.CustomMaps
         public GameObject PlayerStart;
         public GeneratedCheckpoint FirstCheckpoint;
         public TriggerFinish Finish;
+        public Surfaces.SurfaceSource SurfaceSource { get; private set; }
 
         public CustomMap()
         {
             Checkpoints = new Dictionary<CheckpointId, GeneratedCheckpoint>();
+            SurfaceSource = new Surfaces.SurfaceSource();
         }
 
         public void RegisterCheckpoint(GeneratedCheckpoint checkpoint)

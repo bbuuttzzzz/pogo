@@ -17,6 +17,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using WizardUtils;
+using WizardUtils.SceneManagement;
 
 namespace Pogo.CustomMaps
 {
@@ -33,7 +34,6 @@ namespace Pogo.CustomMaps
         public EntityPrefabManifest EntityPrefabs;
         public MapAttemptData LastAttemptData;
 
-        public TextAsset asdf;
         public KillTypeDescriptor[] KillTypes;
 
         private List<string> CustomMapRootPaths;
@@ -104,12 +104,14 @@ namespace Pogo.CustomMaps
             };
             WadSource textureSource = new WadSource();
 
+
             // add built-in wad folder
             textureSource.AddWadFolder($"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}wads");
             textureSource.AddWadFolder(WadFolderRootPath);
             textureSource.AddWadFolder(folderPath);
             var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
             var loader = new BSPLoader(settings, textureSource, templateSource);
+
             loader.LoadBSP();
             SceneManager.MoveGameObjectToScene(loader.root, SceneManager.GetSceneByBuildIndex(CustomMapLevel.BuildIndex));
 
@@ -141,8 +143,18 @@ namespace Pogo.CustomMaps
                 FinishSettingUpTrigger_Checkpoint(checkpoint);
             }
             
+
             StartMap();
             gameManager.Paused = false;
+        }
+
+        public IEnumerable<MapHeader> GetMapHeaders()
+        {
+            return CustomMapRootPaths
+                .SelectMany(path => Directory.GetDirectories(path))
+                .Select(path => IndexingHelper.GenerateMapHeader(path, true))
+                .Where(r => r.Success)
+                .Select(r => r.Data);
         }
 
         public void RestartMap()
@@ -170,13 +182,19 @@ namespace Pogo.CustomMaps
             StartCoroutine(FinishMapRoutine());
         }
 
-        public IEnumerable<MapHeader> GetMapHeaders()
+        private void DisposeCurrentMap()
         {
-            return CustomMapRootPaths
-                .SelectMany(path => Directory.GetDirectories(path))
-                .Select(path => IndexingHelper.GenerateMapHeader(path, true))
-                .Where(r => r.Success)
-                .Select(r => r.Data);
+            if (CurrentCustomMap == null)
+            {
+                return;
+            }
+
+            if (CurrentCustomMap.SurfaceSource != null)
+            {
+                gameManager.MaterialSurfaceService.RemoveSource(CurrentCustomMap.SurfaceSource);
+            }
+
+            CurrentCustomMap = null;
         }
 
         private IEnumerator FinishMapRoutine()
@@ -199,6 +217,7 @@ namespace Pogo.CustomMaps
                 handler.SetupAction.Invoke(data);
             }
         }
+
 
         #region Entity Prefabs
         private IEnumerable<KeyValuePair<string, GameObject>> GetEntityPrefabs()
