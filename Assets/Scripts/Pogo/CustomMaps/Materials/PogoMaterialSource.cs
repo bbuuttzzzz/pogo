@@ -12,8 +12,9 @@ namespace Pogo.CustomMaps.Materials
         private Material BaseMaterial;
         private Dictionary<string, IFillableShader> ShadersDictionary;
 
-        public PogoMaterialSource(IEnumerable<IFillableShader> fillableShaders)
+        public PogoMaterialSource(Material baseMaterial, IEnumerable<IFillableShader> fillableShaders)
         {
+            BaseMaterial = baseMaterial;
             ShadersDictionary = new Dictionary<string, IFillableShader>();
             foreach(var shader in fillableShaders)
             {
@@ -23,20 +24,22 @@ namespace Pogo.CustomMaps.Materials
 
         public Material BuildMaterial(WadTextureData textureData)
         {
+            if (string.IsNullOrEmpty(textureData.ShaderName))
+            {
+                return BuildBaseMaterial(textureData);
+            }
+
             if (ShadersDictionary.TryGetValue(textureData.ShaderName, out IFillableShader descriptor))
             {
                 return BuildFillableShaderMaterial(textureData, descriptor);
             }
 
-            switch (textureData.ShaderName)
+            if (EnableLogging)
             {
-                case null:
-                case "":
-                    return BuildBaseMaterial(textureData);
-                default:
-                    if (EnableLogging) Debug.LogWarning($"Couldn't find shader with name \'{textureData.ShaderName}\' for texture {textureData.Name}");
-                    return BuildBaseMaterial(textureData);
+                Debug.LogWarning($"Couldn't find shader with name \'{textureData.ShaderName}\' for texture {textureData.Name}");
             }
+
+            return BuildBaseMaterial(textureData);
         }
 
         private Material BuildFillableShaderMaterial(WadTextureData textureData, IFillableShader descriptor)

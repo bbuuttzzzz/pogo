@@ -3,9 +3,11 @@ using BSPImporter.Textures;
 using Pogo.Checkpoints;
 using Pogo.CustomMaps.Entities;
 using Pogo.CustomMaps.Indexing;
+using Pogo.CustomMaps.Materials;
 using Pogo.CustomMaps.UI;
 using Pogo.Difficulties;
 using Pogo.Levels;
+using Pogo.Surfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using WizardUtils;
 using WizardUtils.SceneManagement;
@@ -34,6 +37,9 @@ namespace Pogo.CustomMaps
         public EntityPrefabManifest EntityPrefabs;
         public Materials.FillableShaderManifest FillableShaderManifest;
         public MapAttemptData LastAttemptData;
+
+        public Dictionary<string, SurfaceConfig> SurfaceConfigDictionary;
+        public SurfaceConfig DefaultSurfaceConfig;
 
         public KillTypeDescriptor[] KillTypes;
 
@@ -61,6 +67,13 @@ namespace Pogo.CustomMaps
                 $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps",
                 $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps"
             };
+            SurfaceConfigDictionary = new Dictionary<string, SurfaceConfig>();
+            foreach(var config in Resources.LoadAll<SurfaceConfig>("Surfaces"))
+            {
+                if (string.IsNullOrWhiteSpace(config.WadKey)) continue;
+
+                SurfaceConfigDictionary.Add(config.WadKey, config);
+            }
         }
 
         public void LoadCustomMapLevel(string folderPath, string mapFileName)
@@ -111,11 +124,12 @@ namespace Pogo.CustomMaps
             textureSource.AddWadFolder(WadFolderRootPath);
             textureSource.AddWadFolder(folderPath);
             var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
-            var materialSource = new Materials.PogoMaterialSource(FillableShaderManifest.Items);
-            var loader = new BSPLoader(settings, textureSource, templateSource);
+            var materialSource = new Materials.PogoMaterialSource(DefaultMaterial, FillableShaderManifest.Items);
+            var loader = new BSPLoader(settings, textureSource, templateSource, materialSource);
 
             loader.LoadBSP();
             SceneManager.MoveGameObjectToScene(loader.root, SceneManager.GetSceneByBuildIndex(CustomMapLevel.BuildIndex));
+            SetupMapSurfaceSource(loader);
 
             if (CurrentCustomMap.FirstCheckpoint == null)
             {
@@ -149,6 +163,7 @@ namespace Pogo.CustomMaps
             StartMap();
             gameManager.Paused = false;
         }
+
 
         public IEnumerable<MapHeader> GetMapHeaders()
         {
@@ -220,6 +235,23 @@ namespace Pogo.CustomMaps
             }
         }
 
+        private void SetupMapSurfaceSource(BSPLoader loader)
+        {
+            foreach(var kv in loader.materialDirectory)
+            {
+                SurfaceConfig surfaceConfig;
+                string key = kv.Value.GetSurfaceType();
+                if (!string.IsNullOrEmpty(key))
+                {
+                    surfaceConfig = SurfaceConfigDictionary.GetValueOrDefault(key, DefaultSurfaceConfig);
+                }
+                else
+                {
+                    surfaceConfig = DefaultSurfaceConfig;
+                }
+                CurrentCustomMap.SurfaceSource.RegisterMaterial(kv.Value.Material, surfaceConfig);
+            }
+        }
 
         #region Entity Prefabs
         private IEnumerable<KeyValuePair<string, GameObject>> GetEntityPrefabs()

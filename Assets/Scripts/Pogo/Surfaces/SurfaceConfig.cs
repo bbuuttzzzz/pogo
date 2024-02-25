@@ -6,6 +6,9 @@ namespace Pogo.Surfaces
     [CreateAssetMenu(fileName = "new SurfaceConfig", menuName = "ScriptableObjects/SurfaceConfig", order = 1)]
     public class SurfaceConfig : ScriptableObject
     {
+        [Tooltip("If defined, select this surfaace in the .metawad for custom textures using this value")]
+        public string WadKey;
+
         public Material[] Materials;
         public AudioClip[] Sounds;
 
