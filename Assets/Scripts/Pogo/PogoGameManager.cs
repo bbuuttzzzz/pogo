@@ -37,7 +37,7 @@ namespace Pogo
             if (GameInstance != this) return;
 
             MaterialSurfaceService = new Surfaces.MaterialSurfaceService(DefaultSurfaceConfig)
-                .AddSource(new Surfaces.AssetSurfaceSource(), 10);
+                .AddSource(new Surfaces.AssetSurfaceSource(), 0);
             CurrentDifficultyDescriptor = DifficultyManifest.FindByKey(Difficulty.Normal);
             LoadCheckpointManifest = new CheckpointManifest();
             LoadGlobalSave();

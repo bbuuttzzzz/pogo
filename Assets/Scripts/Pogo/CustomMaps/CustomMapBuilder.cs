@@ -130,6 +130,7 @@ namespace Pogo.CustomMaps
             loader.LoadBSP();
             SceneManager.MoveGameObjectToScene(loader.root, SceneManager.GetSceneByBuildIndex(CustomMapLevel.BuildIndex));
             SetupMapSurfaceSource(loader);
+            gameManager.MaterialSurfaceService.AddSource(CurrentCustomMap.SurfaceSource, -1);
 
             if (CurrentCustomMap.FirstCheckpoint == null)
             {
@@ -216,7 +217,7 @@ namespace Pogo.CustomMaps
 
         private IEnumerator FinishMapRoutine()
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.4f);
             OpenMapClearedMenu();
         }
 
