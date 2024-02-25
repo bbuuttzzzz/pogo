@@ -25,8 +25,9 @@ public class KillTrigger : MonoBehaviour
 
         FindOriginResult result;
 
-        if (!DoExpensiveOriginStuff || !TryFindOriginFrom(other.bounds.center, out result))
+        if (!DoExpensiveOriginStuff || !TryFindOriginFrom(other, out result))
         {
+            // this is fallback
             result.origin = GetComponent<Collider>().ClosestPointOnBounds(other.bounds.center);
             result.normal = (other.bounds.center - result.origin).normalized;
         }
@@ -34,17 +35,23 @@ public class KillTrigger : MonoBehaviour
         PogoGameManager.PogoInstance.KillPlayer(new PlayerDeathData(Type, transform, result.origin, result.normal));
     }
 
-    private bool TryFindOriginFrom(Vector3 testPoint, out FindOriginResult result)
+    private bool TryFindOriginFrom(Collider other, out FindOriginResult result)
     {
         Collider myCollider = GetComponent<Collider>();
-        Ray ray = new Ray(testPoint, myCollider.bounds.center - testPoint);
-        if (myCollider.Raycast(ray, out RaycastHit hitInfo, int.MaxValue))
+
+        if (Physics.ComputePenetration(
+            other, other.transform.position, other.transform.rotation,
+            myCollider, myCollider.transform.position, myCollider.transform.rotation,
+            out Vector3 direction,
+            out float distance))
         {
-            result.normal = hitInfo.normal;
-            result.origin = hitInfo.point;
+            result = new FindOriginResult
+            {
+                normal = direction,
+                origin = other.ClosestPointOnBounds(other.bounds.center - 100 * distance * direction)
+            };
             return true;
         }
-
         result = default;
         return false;
     }

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 337637581098560614}
   - component: {fileID: 337637581098560615}
   - component: {fileID: 337637581098560618}
+  - component: {fileID: 1290592857969270819}
   m_Layer: 7
   m_Name: GravZone8
   m_TagString: Untagged
@@ -139,6 +140,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1290592857969270819}
+        m_TargetAssemblyTypeName: Pogo.Gimmicks.ColliderSplashEffect, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnExit:
     m_PersistentCalls:
       m_Calls:
@@ -154,3 +167,28 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1290592857969270819}
+        m_TargetAssemblyTypeName: Pogo.Gimmicks.ColliderSplashEffect, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1290592857969270819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607684986476713821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 969714eddf71446428e3edbea1b36757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: {fileID: 11400000, guid: bc2012b9c52b8904eb381aafe4049f10, type: 2}
