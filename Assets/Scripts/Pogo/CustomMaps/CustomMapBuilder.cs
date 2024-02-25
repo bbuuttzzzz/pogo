@@ -62,6 +62,7 @@ namespace Pogo.CustomMaps
         private void Start()
         {
             gameManager = PogoGameManager.PogoInstance;
+            gameManager.OnQuitToMenu.AddListener(GameManager_OnQuitToMenu);
             CustomMapRootPaths = new List<string>
             {
                 $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps",
@@ -74,6 +75,11 @@ namespace Pogo.CustomMaps
 
                 SurfaceConfigDictionary.Add(config.WadKey, config);
             }
+        }
+
+        private void GameManager_OnQuitToMenu()
+        {
+            DisposeCurrentMap();
         }
 
         public void LoadCustomMapLevel(string folderPath, string mapFileName)
