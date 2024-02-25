@@ -1,85 +1,71 @@
 using Pogo;
 using Pogo.CustomMaps.Indexing;
-using Pogo.CustomMaps.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using WizardUI;
 
-public class CustomMapsScreenController : MonoBehaviour
+namespace Pogo.CustomMaps.UI
 {
-    private PogoGameManager gameManager;
-    public Transform ButtonsRoot;
-    public GameObject ButtonPrefab;
-    public ScrollerLoadMore Scroller;
-    public int LoadMoreCount = 5;
-
-    private IEnumerator<MapHeader> UnloadedHeaders;
-    private bool CanLoadMore;
-    private List<CustomMapButton> Buttons;
-
-
-    private void Awake()
+    public class CustomMapsScreenController : MonoBehaviour
     {
-        gameManager = PogoGameManager.PogoInstance;
-        Scroller.OnShouldLoadMore.AddListener(() => LoadMore(LoadMoreCount));
-    }
-
-    private void OnEnable()
-    {
-        ResetButtons();
-    }
-
-    private void ResetButtons()
-    {
-        if (Buttons != null)
+        private enum ScreenIds
         {
-            foreach( var button in Buttons)
+            MainScreen,
+            UploadScreen
+        }
+
+        public PogoMainMenuController parent;
+        private PogoGameManager gameManager;
+        public Button UploadButton;
+
+        [Tooltip("Just read the code for this bro")]
+        public GameObject[] ScreenRoots;
+        private ScreenIds CurrentScreen;
+        private int ScreenCount => ScreenRoots.Length;
+
+
+
+
+        private void Awake()
+        {
+            gameManager = PogoGameManager.PogoInstance;
+
+            if (!gameManager.PlatformService.SupportsWorkshop)
             {
-                Destroy(button.gameObject);
+                UploadButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                UploadButton.onClick.AddListener(() => OpenScreen(ScreenIds.UploadScreen));
             }
         }
-        Buttons = new List<CustomMapButton>();
-        UnloadedHeaders = gameManager.CustomMapBuilder.GetMapHeaders().GetEnumerator();
-        CanLoadMore = true;
-    }
 
-    private void SelectMap(MapHeader header)
-    {
-        gameManager.CustomMapBuilder.LoadCustomMapLevel(header.FolderPath, $"{header.MapName}.bsp");
-    }
+        #region Menu Navigation
 
-    private void AddButton(MapHeader header)
-    {
-        var obj = Instantiate(ButtonPrefab, ButtonsRoot);
-        var button = obj.GetComponent<CustomMapButton>();
-        var scrollThrough = button.UIButton.gameObject.AddComponent<ScrollPassThrough>();
-        scrollThrough.ParentScrollHandler = Scroller;
-        button.Header = header;
-        button.UIButton.onClick.AddListener(() =>
+        public void Back()
         {
-            SelectMap(header);
-        });
-        Buttons.Add(button);
-    }
-
-    public void LoadMore(int count = -1)
-    {
-        if (count < 0) count = LoadMoreCount;
-
-        if (!CanLoadMore)
-        {
-            return;
-        }
-
-        for (int n = 0; n < count; n++)
-        {   
-            if (!UnloadedHeaders.MoveNext())
+            switch (CurrentScreen)
             {
-                CanLoadMore = false;
-                break;
+                case ScreenIds.MainScreen:
+                    parent.OpenHomeScreen();
+                    break;
+                case ScreenIds.UploadScreen:
+                    OpenScreen(ScreenIds.MainScreen);
+                    break;
             }
-            AddButton(UnloadedHeaders.Current);
         }
+
+        private void OpenScreen(ScreenIds id)
+        {
+            CurrentScreen = id;
+            for (int n = 0; n < ScreenCount; n++)
+            {
+                ScreenRoots[n].SetActive(n == (int)id);
+            }
+        }
+        #endregion
     }
 }

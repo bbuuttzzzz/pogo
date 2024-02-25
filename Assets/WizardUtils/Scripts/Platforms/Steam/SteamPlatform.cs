@@ -24,6 +24,8 @@ namespace Platforms.Steam
         public string SaveDataPath { get; private set; }
         public string PersistentDataPath { get; private set; }
 
+        public bool SupportsWorkshop => true;
+
         public string PlatformURLName => "steam";
 
         public SteamPlatformService()

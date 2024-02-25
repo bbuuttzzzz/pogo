@@ -13,6 +13,7 @@ namespace Platforms
         public string PlatformURLName { get; }
         public string SaveDataPath { get; }
         public string PersistentDataPath { get; }
+        public bool SupportsWorkshop { get; }
         public void OnEnable();
         public void OnDestroy();
         public IGameSettingService BuildGameSettingService(IEnumerable<GameSettingFloat> settings);
