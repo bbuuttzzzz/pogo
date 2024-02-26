@@ -1,4 +1,5 @@
-﻿using Steamworks;
+﻿using Pogo.CustomMaps.Steam;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,25 +8,40 @@ using System.Threading.Tasks;
 
 namespace Platforms.Steam
 {
-    public class APICall<TSteamCallResult, TResult>
+    public class APICall<TSteamCallResult>
     {
-        private RawAPICall<TSteamCallResult> RawAPICall;
+        private CallResult<TSteamCallResult> CallResult;
 
-        private Func<APICallResult<TSteamCallResult>, TResult> ProcessFunc;
+        private Action<APICallResult<TSteamCallResult>> Callback;
 
-        public APICall(Func<APICallResult<TSteamCallResult>, TResult> process)
+        public APICall()
         {
-            RawAPICall = new RawAPICall<TSteamCallResult>();
-            ProcessFunc = process;
+            CallResult = new CallResult<TSteamCallResult>(CallResult_Receive);
         }
 
-        public void Set(SteamAPICall_t call, Action<TResult> callback)
+        private void CallResult_Receive(TSteamCallResult param, bool bIOFailure)
         {
-            RawAPICall.Set(call, (result) =>
+            if (Callback == null)
             {
-                var processedResult = ProcessFunc(result);
-                callback(processedResult);
+                throw new InvalidOperationException($"Missing Cached Parameters for APICall");
+            }
+
+            Callback.Invoke(new APICallResult<TSteamCallResult>()
+            {
+                CallResult = param,
+                IOFailure = bIOFailure,
             });
         }
+
+        public void Set(SteamAPICall_t call, Action<APICallResult<TSteamCallResult>> callback)
+        {
+            CallResult.Set(call);
+        }
+    }
+
+    public struct APICallResult<TSteamCallResult>
+    {
+        public TSteamCallResult CallResult;
+        public bool IOFailure;
     }
 }
