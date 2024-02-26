@@ -2,11 +2,13 @@
 using Assets.Scripts.Pogo.Checkpoints;
 using Inputter;
 using Platforms;
+using Platforms.Steam;
 using Pogo.Challenges;
 using Pogo.Checkpoints;
 using Pogo.Collectibles;
 using Pogo.Cosmetics;
 using Pogo.CustomMaps;
+using Pogo.CustomMaps.Steam;
 using Pogo.Difficulties;
 using Pogo.Levels;
 using Pogo.Saving;
@@ -35,6 +37,9 @@ namespace Pogo
         {
             base.Awake();
             if (GameInstance != this) return;
+#if !DISABLESTEAMWORKS
+            CreateWorkshopUploadService();
+#endif
 
             MaterialSurfaceService = new Surfaces.MaterialSurfaceService(DefaultSurfaceConfig)
                 .AddSource(new Surfaces.AssetSurfaceSource(), 0);
@@ -134,6 +139,19 @@ namespace Pogo
 
         [NonSerialized]
         public Surfaces.MaterialSurfaceService MaterialSurfaceService;
+        #endregion
+
+        #region Workshop
+#if !DISABLESTEAMWORKS
+        public WorkshopUploadService WorkshopUploadService;
+
+        private void CreateWorkshopUploadService()
+        {
+            WorkshopUploadService = new WorkshopUploadService((SteamPlatformService)PlatformService, PogoInstance);
+        }
+
+
+#endif
         #endregion
 
         #region Level Management

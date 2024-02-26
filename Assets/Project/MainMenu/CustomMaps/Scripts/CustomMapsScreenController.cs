@@ -14,7 +14,7 @@ namespace Pogo.CustomMaps.UI
         private enum ScreenIds
         {
             MainScreen,
-            UploadScreen
+            UploadSelectScreen
         }
 
         public PogoMainMenuController parent;
@@ -26,9 +26,6 @@ namespace Pogo.CustomMaps.UI
         private ScreenIds CurrentScreen;
         private int ScreenCount => ScreenRoots.Length;
 
-
-
-
         private void Awake()
         {
             gameManager = PogoGameManager.PogoInstance;
@@ -39,7 +36,7 @@ namespace Pogo.CustomMaps.UI
             }
             else
             {
-                UploadButton.onClick.AddListener(() => OpenScreen(ScreenIds.UploadScreen));
+                UploadButton.onClick.AddListener(() => OpenScreen(ScreenIds.UploadSelectScreen));
             }
         }
 
@@ -52,7 +49,7 @@ namespace Pogo.CustomMaps.UI
                 case ScreenIds.MainScreen:
                     parent.OpenHomeScreen();
                     break;
-                case ScreenIds.UploadScreen:
+                case ScreenIds.UploadSelectScreen:
                     OpenScreen(ScreenIds.MainScreen);
                     break;
             }

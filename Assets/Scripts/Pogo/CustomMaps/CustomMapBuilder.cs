@@ -1,4 +1,5 @@
-﻿using BSPImporter;
+﻿using Assets.Scripts.Pogo.CustomMaps;
+using BSPImporter;
 using BSPImporter.Textures;
 using Pogo.Checkpoints;
 using Pogo.CustomMaps.Entities;
@@ -43,7 +44,7 @@ namespace Pogo.CustomMaps
 
         public KillTypeDescriptor[] KillTypes;
 
-        private List<string> CustomMapRootPaths;
+        private List<MapSourceFolder> MapSourceFolders;
         private string WadFolderRootPath => $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}wads";
         private string BuiltInCustomFolder
         {
@@ -63,10 +64,10 @@ namespace Pogo.CustomMaps
         {
             gameManager = PogoGameManager.PogoInstance;
             gameManager.OnQuitToMenu.AddListener(GameManager_OnQuitToMenu);
-            CustomMapRootPaths = new List<string>
+            MapSourceFolders = new List<MapSourceFolder>
             {
-                $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps",
-                $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps"
+                new MapSourceFolder(true, $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps"),
+                new MapSourceFolder(false, $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps")
             };
             SurfaceConfigDictionary = new Dictionary<string, SurfaceConfig>();
             foreach(var config in Resources.LoadAll<SurfaceConfig>("Surfaces"))
@@ -172,9 +173,17 @@ namespace Pogo.CustomMaps
         }
 
 
-        public IEnumerable<MapHeader> GetMapHeaders()
+        public IEnumerable<MapHeader> GetMapHeaders(bool localOnly = false)
         {
-            return CustomMapRootPaths
+            IEnumerable<MapSourceFolder> sources = MapSourceFolders;
+            if (localOnly)
+            {
+                sources = sources
+                    .Where(s => s.IsLocalPath);
+            }
+
+            return sources
+                .Select(s => s.Path)
                 .SelectMany(path => Directory.GetDirectories(path))
                 .Select(path => IndexingHelper.GenerateMapHeader(path, true))
                 .Where(r => r.Success)

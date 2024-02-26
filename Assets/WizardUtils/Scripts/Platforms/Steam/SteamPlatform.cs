@@ -2,6 +2,7 @@
 using Pogo;
 using Steamworks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -51,9 +52,20 @@ namespace Platforms.Steam
             if (!initialized)
             {
                 Debug.LogError("[Steamworks.NET] SteamAPI_Init() failed.");
+                Application.Quit();
             }
 
             SetupPersistentDataPath();
+            PogoGameManager.PogoInstance.StartCoroutine(SpawnRunCallbacksCoroutine());
+        }
+
+        private IEnumerator SpawnRunCallbacksCoroutine()
+        {
+            while(initialized)
+            {
+                SteamAPI.RunCallbacks();
+                yield return null;
+            }
         }
 
         public IGameSettingService BuildGameSettingService(IEnumerable<GameSettingFloat> settings)
