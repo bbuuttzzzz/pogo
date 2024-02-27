@@ -9,17 +9,20 @@ using WizardUI;
 
 namespace Pogo.CustomMaps.UI
 {
-    public class CustomMapsScreenController : MonoBehaviour
+    public class CustomMapsRoot : MonoBehaviour
     {
         private enum ScreenIds
         {
-            MainScreen,
-            UploadSelectScreen
+            MapSelect,
+            UploadSelect,
+            UploadDialog,
         }
 
         public PogoMainMenuController parent;
         private PogoGameManager gameManager;
         public Button UploadButton;
+
+        public MapHeader SelectedMap;
 
         [Tooltip("Just read the code for this bro")]
         public GameObject[] ScreenRoots;
@@ -36,8 +39,14 @@ namespace Pogo.CustomMaps.UI
             }
             else
             {
-                UploadButton.onClick.AddListener(() => OpenScreen(ScreenIds.UploadSelectScreen));
+                UploadButton.onClick.AddListener(() => OpenScreen(ScreenIds.UploadSelect));
             }
+        }
+
+        public void OpenUploadDialog(MapHeader selectedMap)
+        {
+            SelectedMap = selectedMap;
+            OpenScreen(ScreenIds.UploadDialog);
         }
 
         #region Menu Navigation
@@ -46,11 +55,14 @@ namespace Pogo.CustomMaps.UI
         {
             switch (CurrentScreen)
             {
-                case ScreenIds.MainScreen:
+                case ScreenIds.MapSelect:
                     parent.OpenHomeScreen();
                     break;
-                case ScreenIds.UploadSelectScreen:
-                    OpenScreen(ScreenIds.MainScreen);
+                case ScreenIds.UploadSelect:
+                    OpenScreen(ScreenIds.MapSelect);
+                    break;
+                case ScreenIds.UploadDialog:
+                    OpenScreen(ScreenIds.UploadSelect);
                     break;
             }
         }

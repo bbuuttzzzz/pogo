@@ -149,9 +149,8 @@ namespace Pogo
         {
             WorkshopUploadService = new WorkshopUploadService((SteamPlatformService)PlatformService, PogoInstance);
         }
-
-
 #endif
+
         #endregion
 
         #region Level Management

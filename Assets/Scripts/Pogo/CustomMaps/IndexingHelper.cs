@@ -14,6 +14,11 @@ namespace Pogo.CustomMaps
         const string mapDefinitionFileName = "mapdefinition.txt";
         const string previewSpriteFileName = "thumbnail.png";
 
+        public static void SaveMapHeaderConfig(MapHeader header)
+        {
+            CfgFileSerializationHelper.Serialize(header.CfgPath, header.WriteCfgData());   
+        }
+
         public static GenerateMapHeaderResult GenerateMapHeader(string folderPath, bool logWarnings = true)
         {
             bool exit = false;

@@ -1,5 +1,4 @@
 ﻿using Pogo.CustomMaps.Indexing;
-using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Pogo.CustomMaps.Steam
 {
-    public class CreateMapResult
+    public class UpdateMapResult
     {
-        public PublishedFileId_t NewFileId;
+        public MapHeader UpdatedHeader;
         public bool Success;
         public string ErrorMessage;
     }

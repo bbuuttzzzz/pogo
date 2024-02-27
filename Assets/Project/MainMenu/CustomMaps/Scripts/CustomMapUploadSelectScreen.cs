@@ -1,5 +1,8 @@
 ﻿using Pogo.CustomMaps.Indexing;
+using Pogo.CustomMaps.Steam;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using WizardUI;
 using WizardUtils;
@@ -9,6 +12,7 @@ namespace Pogo.CustomMaps.UI
     public class CustomMapUploadSelectScreen : MonoBehaviour
     {
         private PogoGameManager gameManager;
+        public CustomMapsRoot parent;
 
         public int LoadMoreCount = 5;
         private bool CanLoadMore;
@@ -47,10 +51,34 @@ namespace Pogo.CustomMaps.UI
             CanLoadMore = true;
         }
 
-
-        private void SelectMap(MapHeader header)
+        private void UploadMap(MapHeader header)
         {
-            gameManager.CustomMapBuilder.LoadCustomMapLevel(header.FolderPath, $"{header.MapName}.bsp");
+#if !DISABLESTEAMWORKS
+            if (header.WorkshopId == null)
+            {
+                gameManager.WorkshopUploadService.CreateAndUpdateMap(header, UploadMap_Callback);
+            }
+            else
+            {
+                gameManager.WorkshopUploadService.UpdateMap(header, UploadMap_Callback);
+            }
+#endif
+        }
+
+        private void UploadMap_Callback(UpdateMapResult result)
+        {
+            if (!result.Success)
+            {
+                Debug.LogError($"STEAMWORKS issue Creating a new map: {result.ErrorMessage}");
+                return;
+            }
+
+            OpenUploadMapDialog(result.UpdatedHeader);
+        }
+
+        private void OpenUploadMapDialog(MapHeader header)
+        {
+
         }
 
         private void AddButton(MapHeader header)
@@ -62,7 +90,7 @@ namespace Pogo.CustomMaps.UI
             button.Header = header;
             button.UIButton.onClick.AddListener(() =>
             {
-                SelectMap(header);
+                OpenUploadMapDialog(header);
             });
             Buttons.Add(button);
         }
