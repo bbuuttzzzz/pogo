@@ -81,6 +81,11 @@ namespace Pogo.CustomMaps.Steam
             UGCUpdateHandle_t handle = SteamUGC.StartItemUpdate(SteamPlatformService.AppId, (PublishedFileId_t)header.WorkshopId);
 
             SteamUGC.SetItemTitle(handle, header.MapName);
+
+            if (header.PreviewImagePath != null)
+            {
+                SteamUGC.SetItemPreview(handle, header.PreviewImagePath);
+            }
             SteamUGC.SetItemContent(handle, header.FolderPath);
 
             SteamAPICall_t call = SteamUGC.SubmitItemUpdate(handle, null);

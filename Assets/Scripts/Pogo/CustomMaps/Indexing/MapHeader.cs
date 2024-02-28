@@ -10,6 +10,7 @@ namespace Pogo.CustomMaps.Indexing
         public string Version;
         public string AuthorName;
         public string CfgPath;
+        public string PreviewImagePath;
         public string BspPath;
         public string MapName;
         public Sprite PreviewSprite;

@@ -11,8 +11,8 @@ namespace Pogo.CustomMaps
 {
     public static class IndexingHelper
     {
-        const string mapDefinitionFileName = "mapdefinition.txt";
-        const string previewSpriteFileName = "thumbnail.png";
+        public const string mapDefinitionFileName = "mapdefinition.txt";
+        public const string previewSpriteFileName = "thumbnail.png";
 
         public static void SaveMapHeaderConfig(MapHeader header)
         {
@@ -35,6 +35,12 @@ namespace Pogo.CustomMaps
             {
                 exit = true;
                 result = new GenerateMapHeaderResult(folderPath, GenerateMapHeaderResult.FailReasons.MissingMapDefinition);
+            }
+
+            if (!exit)
+            {
+                mapHeader.PreviewImagePath = Directory.GetFiles(folderPath, previewSpriteFileName)
+                    .FirstOrDefault();
             }
 
             if (!exit)

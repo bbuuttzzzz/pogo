@@ -22,7 +22,7 @@ namespace Pogo.CustomMaps.UI
         private PogoGameManager gameManager;
         public Button UploadButton;
 
-        public MapHeader SelectedMap;
+        public MapHeader CurrentMap;
 
         [Tooltip("Just read the code for this bro")]
         public GameObject[] ScreenRoots;
@@ -45,7 +45,7 @@ namespace Pogo.CustomMaps.UI
 
         public void OpenUploadDialog(MapHeader selectedMap)
         {
-            SelectedMap = selectedMap;
+            CurrentMap = selectedMap;
             OpenScreen(ScreenIds.UploadDialog);
         }
 

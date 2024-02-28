@@ -9,7 +9,8 @@ using WizardUtils;
 
 namespace Pogo.CustomMaps.UI
 {
-    public class CustomMapUploadSelectScreen : MonoBehaviour
+    [AddComponentMenu("Pogo.CustomMaps.UI.UploadSelectScreen")]
+    public class UploadSelectScreen : MonoBehaviour
     {
         private PogoGameManager gameManager;
         public CustomMapsRoot parent;
