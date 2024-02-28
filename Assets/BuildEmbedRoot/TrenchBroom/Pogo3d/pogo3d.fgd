@@ -1,0 +1,90 @@
+// FGD file for pogo3D! this is one of the tools you need to make custom levels!
+@SolidClass = worldspawn : "World Entity"
+[
+    mapname(string) : "Map Title"
+]
+
+@baseclass = Targetname [ targetname(target_source) : "Name" ]
+@baseclass = Target [ target(target_destination) : "Target" ]
+@baseclass = RenderStyle [
+	renderstyle(choices) : "Render Style" : 0 =
+	[
+		0: "Default"
+		1: "Invisible"
+		2: "Use Map Texture"
+	]
+]
+
+@baseclass size(-12 -12 0, 12 12 48) = PlayerClass []
+
+@PointClass base(PlayerClass, Targetname)
+    model({
+        "path" : "gameconfig/info_player_respawn.mdl"
+    })
+     = info_player_respawn : "Respawn Point" []
+
+@SolidClass base(Target, RenderStyle) = trigger_checkpoint : "Checkpoint"
+[
+	spawnflags(Flags) =
+	[
+		1 : "Can Skip" : 1
+	]
+	number(integer) : "Checkpoint Number" : 1
+	pathtype(choices) : "Checkpoint Type" : 0 =
+	[
+		0: "Main Path"
+		1: "Side Path"
+	]
+	skiptarget(target_destination) : "Override Skip Target"
+]
+
+@SolidClass base(RenderStyle) = trigger_finish : "Finish Line" []
+
+@SolidClass base(RenderStyle) = trigger_kill : "Trigger Kill"
+[
+	killtype(choices) : "Kill Type" =
+	[
+		0: "Surface"
+		1: "Water"
+		2: "Space"
+	]
+]
+
+//
+// lights - straight from quake 1 but no AppearFlags
+//
+
+@baseclass color(255 255 40) = Light [
+	light(integer) : "Brightness" : 300
+	wait(integer) : "Fade distance multiplier" : 1
+	delay(choices) : "Attenuation" =
+	[
+		0 : "Linear falloff (Default)"
+		1 : "Inverse distance falloff"
+		2 : "Inverse distance squared"
+		3 : "No falloff"
+		4 : "Local minlight"
+		5 : "Inverse distance squared B"
+	]
+	mangle(string) : "Spotlight angle"
+	style(Choices) : "Appearance" : 0 =
+	[
+		0 : "Normal"
+		10: "Fluorescent flicker"
+		2 : "Slow, strong pulse"
+		11: "Slow pulse, noblack"
+		5 : "Gentle pulse"
+		1 : "Flicker A"
+		6 : "Flicker B"
+		3 : "Candle A"
+		7 : "Candle B"
+		8 : "Candle C"
+		4 : "Fast strobe"
+		9 : "Slow strobe"
+	]
+]
+
+@PointClass size(-8 -8 -8, 8 8 8) base(Light, Target, Targetname) =
+	light : "Invisible light source"
+	[
+	]
