@@ -4,6 +4,10 @@
     mapname(string) : "Map Title"
 ]
 
+@baseClass = Angles
+[
+	angles(string) : "Pitch Yaw Roll (Y Z X)" : "0 0 0"
+]
 @baseclass = Targetname [ targetname(target_source) : "Name" ]
 @baseclass = Target [ target(target_destination) : "Target" ]
 @baseclass = RenderStyle [
@@ -49,6 +53,12 @@
 		2: "Space"
 	]
 ]
+
+//
+// Cameras
+//
+
+@PointClass base(Angles) = info_camera_preview : "Preview Image Camera" []
 
 //
 // lights - straight from quake 1 but no AppearFlags
