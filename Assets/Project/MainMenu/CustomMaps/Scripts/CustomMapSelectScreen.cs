@@ -1,6 +1,7 @@
 ﻿using Pogo.CustomMaps.Indexing;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using WizardUI;
 using WizardUtils;
 
@@ -14,21 +15,20 @@ namespace Pogo.CustomMaps.UI
         private bool CanLoadMore;
         public GameObject ButtonPrefab;
         public Transform ButtonsRoot;
-        public ScrollerLoadMore Scroller;
+        public ScrollView Scroller;
         private List<CustomMapButton> Buttons;
         private IEnumerator<MapHeader> UnloadedHeaders;
 
         private void Awake()
         {
             gameManager = PogoGameManager.PogoInstance;
-
-            Scroller.OnShouldLoadMore.AddListener(() => LoadMore(LoadMoreCount));
         }
 
 
         private void OnEnable()
         {
             ResetButtons();
+            LoadMore(100);
         }
 
         private void ResetButtons()

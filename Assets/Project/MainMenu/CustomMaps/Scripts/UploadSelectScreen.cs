@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 using WizardUI;
 using WizardUtils;
 
@@ -19,15 +20,13 @@ namespace Pogo.CustomMaps.UI
         private bool CanLoadMore;
         public GameObject ButtonPrefab;
         public Transform ButtonsRoot;
-        public ScrollerLoadMore Scroller;
+        public ScrollView Scroller;
         private List<CustomMapButton> Buttons;
         private IEnumerator<MapHeader> UnloadedHeaders;
 
         private void Awake()
         {
             gameManager = PogoGameManager.PogoInstance;
-
-            Scroller.OnShouldLoadMore.AddListener(() => LoadMore(LoadMoreCount));
         }
 
 
@@ -50,6 +49,7 @@ namespace Pogo.CustomMaps.UI
                 .GetMapHeaders(localOnly: true)
                 .GetEnumerator();
             CanLoadMore = true;
+            LoadMore(100);
         }
 
         private void UploadMap(MapHeader header)
