@@ -55,8 +55,6 @@ namespace Pogo.CustomMaps.UI
         {
             var obj = Instantiate(ButtonPrefab, ButtonsRoot);
             var button = obj.GetComponent<CustomMapButton>();
-            var scrollThrough = button.UIButton.gameObject.AddComponent<ScrollPassThrough>();
-            scrollThrough.ParentScrollHandler = Scroller;
             button.Header = header;
             button.UIButton.onClick.AddListener(() =>
             {

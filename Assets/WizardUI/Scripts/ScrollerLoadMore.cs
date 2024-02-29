@@ -19,6 +19,7 @@ namespace WizardUI
 
         public RectTransform Viewport;
         public RectTransform Content;
+        public ScrollEventListener Coverer;
 
         public float ViewportHeight => Viewport.rect.height;
         public float ContentHeight => Content.rect.height;
@@ -43,6 +44,10 @@ namespace WizardUI
         private void Awake()
         {
             lastLoadMore = Time.unscaledTime - RepeatDelay;
+            if (Coverer != null)
+            {
+                Coverer.OnScrolled.AddListener(OnScroll);
+            }
         }
 
         private void Update()
