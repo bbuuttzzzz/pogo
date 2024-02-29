@@ -44,7 +44,6 @@ namespace Pogo.CustomMaps
 
         public KillTypeDescriptor[] KillTypes;
 
-        private List<MapSourceFolder> MapSourceFolders;
         private string WadFolderRootPath => $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}wads";
         private string BuiltInCustomFolder
         {
@@ -64,18 +63,22 @@ namespace Pogo.CustomMaps
         {
             gameManager = PogoGameManager.PogoInstance;
             gameManager.OnQuitToMenu.AddListener(GameManager_OnQuitToMenu);
-            MapSourceFolders = new List<MapSourceFolder>
-            {
-                new MapSourceFolder(true, $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps"),
-                new MapSourceFolder(false, $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps")
-            };
             SurfaceConfigDictionary = new Dictionary<string, SurfaceConfig>();
-            foreach(var config in Resources.LoadAll<SurfaceConfig>("Surfaces"))
+            foreach (var config in Resources.LoadAll<SurfaceConfig>("Surfaces"))
             {
                 if (string.IsNullOrWhiteSpace(config.WadKey)) continue;
 
                 SurfaceConfigDictionary.Add(config.WadKey, config);
             }
+        }
+
+        private IEnumerable<MapSourceFolder> GetMapSourceFolders()
+        {
+            return new MapSourceFolder[]
+            {
+                new MapSourceFolder(true, $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps"),
+                new MapSourceFolder(false, $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps")
+            };
         }
 
         private void GameManager_OnQuitToMenu()
@@ -175,7 +178,7 @@ namespace Pogo.CustomMaps
 
         public IEnumerable<MapHeader> GetMapHeaders(bool localOnly = false)
         {
-            IEnumerable<MapSourceFolder> sources = MapSourceFolders;
+            IEnumerable<MapSourceFolder> sources = GetMapSourceFolders();
             if (localOnly)
             {
                 sources = sources
