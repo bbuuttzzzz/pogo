@@ -11,11 +11,11 @@ namespace Pogo.MainMenu
         public string Title;
         public string Body;
 
-        public bool ShowOkButton;
+        public readonly bool ShowOkButton => !string.IsNullOrEmpty(OkText);
         public string OkText;
         public Action OkPressedCallback;
 
-        public bool ShowCancelButton;
+        public readonly bool ShowCancelButton => !string.IsNullOrEmpty(CancelText);
         public string CancelText;
         public Action CancelPressedCallback;
     }

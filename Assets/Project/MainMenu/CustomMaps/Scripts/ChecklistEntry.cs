@@ -1,6 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Pogo.CustomMaps.UI
@@ -10,9 +11,10 @@ namespace Pogo.CustomMaps.UI
         public TextMeshProUGUI TitleText;
         public Button HintButton;
         public Button AutoCompleteButton;
-        private Action<string> ShowHintAction;
+        public UnityEvent<ChecklistEntryData> OnShowHint;
+        private ChecklistEntryData _Data;
 
-        private ChecklistEntryData Data;
+        public ChecklistEntryData Data { get => _Data; private set => _Data = value; }
 
         private void Awake()
         {
@@ -20,27 +22,46 @@ namespace Pogo.CustomMaps.UI
             AutoCompleteButton.onClick.AddListener(AutoComplete);
         }
 
-        public void Set(ChecklistEntryData data, Action<string> showHintAction)
+        public void SetComplete(bool isComplete)
         {
-            Data = data;
-            ShowHintAction = showHintAction;
-
-            TitleText.text = data.Title;
-            HintButton.gameObject.SetActive(!string.IsNullOrEmpty(data.HintBody));
+            _Data.IsComplete = isComplete;
             AutoCompleteButton.gameObject.SetActive(
                 Data.AutoCompleteAction != null
                 && (!Data.IsComplete || Data.AllowAutoCompleteWhenCompleted)
             );
         }
 
+        public void Set(ChecklistEntryData data)
+        {
+            Data = data;
+
+            TitleText.text = data.Title;
+            HintButton.gameObject.SetActive(!string.IsNullOrEmpty(data.HintBody));
+            SetComplete(data.IsComplete);
+        }
+
         private void ShowHint()
         {
-            ShowHintAction?.Invoke(Data.HintBody);
+            OnShowHint?.Invoke(_Data);
         }
 
         private void AutoComplete()
         {
             Data.AutoCompleteAction?.Invoke();
         }
+
+        #region Styles
+        public enum Styles
+        {
+            Info,
+            Warn,
+            Error
+        }
+
+        public void SetStyle(Styles style)
+        {
+
+        }
+        #endregion
     }
 }

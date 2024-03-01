@@ -3,8 +3,10 @@ using Pogo.CustomMaps.Indexing;
 using Pogo.CustomMaps.Steam;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Pogo.CustomMaps.UI
 {
@@ -16,12 +18,16 @@ namespace Pogo.CustomMaps.UI
         public Transform ChecklistEntriesParent;
         public GameObject ChecklistEntryPrefab;
 
-        private List<ChecklistEntry> ChecklistEntries;
+        public Button UploadButton;
+        private bool ChecklistComplete;
+
+        private Dictionary<ChecklistEntryIds, ChecklistEntry> ChecklistEntries;
 
         private void Awake()
         {
             gameManager = PogoGameManager.PogoInstance;
-            
+            UploadButton.onClick.AddListener(UploadCurrentMap);
+            GenerateChecklistItems();
         }
 
         private void OnEnable()
@@ -31,8 +37,17 @@ namespace Pogo.CustomMaps.UI
 
         private void UpdateMap()
         {
-            RegenerateChecklistItems();
+            ChecklistEntries[ChecklistEntryIds.BspFile].SetComplete(parent.CurrentMap.BspPath != null);
+            ChecklistEntries[ChecklistEntryIds.PreviewSprite].SetComplete(parent.CurrentMap.PreviewImagePath != null);
+            ChecklistEntries[ChecklistEntryIds.Author].SetComplete(!string.IsNullOrEmpty(parent.CurrentMap.AuthorName));
+            ChecklistEntries[ChecklistEntryIds.Version].SetComplete(!string.IsNullOrEmpty(parent.CurrentMap.Version));
+            ChecklistEntries[ChecklistEntryIds.WorshopId].SetComplete(parent.CurrentMap.WorkshopId != null);
+
+            ChecklistComplete = ChecklistEntries.Values.Any(entry => entry.Data.IsRequired && !entry.Data.IsComplete);
+            UploadButton.interactable = ChecklistComplete;
         }
+
+        private void UploadCurrentMap() => UploadMap(parent.CurrentMap);
 
         private void UploadMap(MapHeader header)
         {
@@ -57,7 +72,6 @@ namespace Pogo.CustomMaps.UI
                 {
                     Title = "There was an error uploading your map!",
                     Body = result.ErrorMessage,
-                    ShowOkButton = true,
                     OkText = "Ok",
                 });
                 return;
@@ -68,13 +82,11 @@ namespace Pogo.CustomMaps.UI
             {
                 Title = "Success!",
                 Body = "Would you like to view the workshop page?",
-                ShowOkButton = true,
                 OkText = "Open Link",
                 OkPressedCallback = () =>
                 {
                     gameManager.WorkshopUploadService.OpenMapWebpage(result.UpdatedHeader);
                 },
-                ShowCancelButton = true,
                 CancelText = "Close"
             });
 #endif
@@ -82,69 +94,71 @@ namespace Pogo.CustomMaps.UI
 
         #region Checklist
 
-        private void RegenerateChecklistItems()
+        public enum ChecklistEntryIds
         {
-            if (ChecklistEntries != null)
-            {
-                foreach(var item in ChecklistEntries)
-                {
-                    Destroy(item.gameObject);
-                }
-            }
+            BspFile,
+            PreviewSprite,
+            Author,
+            Version,
+            WorshopId
+        }
 
-            ChecklistEntries = new List<ChecklistEntry>();
-            AddChecklistItem(new ChecklistEntryData()
+        private void GenerateChecklistItems()
+        {
+            ChecklistEntries = new Dictionary<ChecklistEntryIds, ChecklistEntry>();
+            AddChecklistItem(ChecklistEntryIds.BspFile, new ChecklistEntryData()
             {
                 Title = ".bsp file",
                 IsRequired = true,
-                IsComplete = parent.CurrentMap.BspPath != null,
                 HintBody = ".bsp files contain the map's geometry and data. .map files must be compiled into .bsp"
             });
-            AddChecklistItem(new ChecklistEntryData()
+            AddChecklistItem(ChecklistEntryIds.PreviewSprite, new ChecklistEntryData()
             {
                 Title = IndexingHelper.previewSpriteFileName,
                 IsRequired = false,
-                IsComplete = parent.CurrentMap.PreviewImagePath != null,
                 HintBody = "a 4x3 .png preview image for the map. use an info_camera_preview to generate an ingame thumbnail",
                 AllowAutoCompleteWhenCompleted = true,
                 AutoCompleteAction = GeneratePreviewImage
             });
             // CFG file stuff
-            AddChecklistItem(new ChecklistEntryData()
+            AddChecklistItem(ChecklistEntryIds.Author, new ChecklistEntryData()
             {
                 Title = "Author Name",
                 IsRequired = false,
-                IsComplete = !string.IsNullOrEmpty(parent.CurrentMap.AuthorName),
                 HintBody = $"Specify this in the {IndexingHelper.mapDefinitionFileName} as \'Author: <name>\'"
             });
-            AddChecklistItem(new ChecklistEntryData()
+            AddChecklistItem(ChecklistEntryIds.Version, new ChecklistEntryData()
             {
                 Title = "Version",
                 IsRequired = false,
-                IsComplete = !string.IsNullOrEmpty(parent.CurrentMap.Version),
                 HintBody = $"Specify this in the {IndexingHelper.mapDefinitionFileName} as \'Version: <X.Y.Z>\' where x y z are major, minor, and revision numbers"
             });
-            AddChecklistItem(new ChecklistEntryData()
+            AddChecklistItem(ChecklistEntryIds.WorshopId, new ChecklistEntryData()
             {
                 Title = "Workshop ID",
                 IsRequired = true,
-                IsComplete = parent.CurrentMap.WorkshopId != null,
                 AutoCompleteAction = GenerateWorkshopId
             });
 
         }
 
-        private void AddChecklistItem(ChecklistEntryData item)
+        private void AddChecklistItem(ChecklistEntryIds id, ChecklistEntryData item)
         {
-            var newEntry = Instantiate(ChecklistEntryPrefab, ChecklistEntriesParent).GetComponent<ChecklistEntry>();
-            newEntry.Set(item, ShowHint);
+            ChecklistEntry newEntry = Instantiate(ChecklistEntryPrefab, ChecklistEntriesParent).GetComponent<ChecklistEntry>();
+            newEntry.Set(item);
+            newEntry.OnShowHint.AddListener(ShowHint);
 
-            ChecklistEntries.Add(newEntry);
+            ChecklistEntries.Add(id, newEntry);
         }
 
-        private void ShowHint(string obj)
+        private void ShowHint(ChecklistEntryData entryData)
         {
-            throw new NotImplementedException();
+            parent.parent.OpenPopup(new MainMenu.MenuPopupData()
+            { 
+                Title = entryData.Title,
+                Body = entryData.HintBody,
+                OkText = "Close"
+            });
         }
 
         #endregion
