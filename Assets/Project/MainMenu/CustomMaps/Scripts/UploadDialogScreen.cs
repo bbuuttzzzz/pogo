@@ -1,5 +1,6 @@
 ﻿using Pogo;
 using Pogo.CustomMaps.Indexing;
+using Pogo.CustomMaps.Steam;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -31,6 +32,52 @@ namespace Pogo.CustomMaps.UI
         private void UpdateMap()
         {
             RegenerateChecklistItems();
+        }
+
+        private void UploadMap(MapHeader header)
+        {
+#if !DISABLESTEAMWORKS
+            if (header.WorkshopId == null)
+            {
+                gameManager.WorkshopUploadService.CreateAndUpdateMap(header, UploadMap_Callback);
+            }
+            else
+            {
+                gameManager.WorkshopUploadService.UpdateMap(header, UploadMap_Callback);
+            }
+#endif
+        }
+
+        private void UploadMap_Callback(UpdateMapResult result)
+        {
+            if (!result.Success)
+            {
+                Debug.LogError($"STEAMWORKS issue Creating a new map: {result.ErrorMessage}");
+                parent.parent.OpenPopup(new MainMenu.MenuPopupData()
+                {
+                    Title = "There was an error uploading your map!",
+                    Body = result.ErrorMessage,
+                    ShowOkButton = true,
+                    OkText = "Ok",
+                });
+                return;
+            }
+
+#if !DISABLESTEAMWORKS
+            parent.parent.OpenPopup(new MainMenu.MenuPopupData()
+            {
+                Title = "Success!",
+                Body = "Would you like to view the workshop page?",
+                ShowOkButton = true,
+                OkText = "Open Link",
+                OkPressedCallback = () =>
+                {
+                    gameManager.WorkshopUploadService.OpenMapWebpage(result.UpdatedHeader);
+                },
+                ShowCancelButton = true,
+                CancelText = "Close"
+            });
+#endif
         }
 
         #region Checklist

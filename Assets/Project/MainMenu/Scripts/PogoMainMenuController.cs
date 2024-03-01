@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using WizardUtils;
 using WizardUtils.Saving;
 
-namespace Pogo
+namespace Pogo.MainMenu
 {
     public class PogoMainMenuController : MonoBehaviour
     {
@@ -81,15 +81,17 @@ namespace Pogo
         #endregion
 
         #region Options
-        [System.Serializable]
+        [Serializable]
         public enum OptionsMenus
         {
             Disambiguation = 0,
             GameOptions = 1,
             SoundOptions = 2,
-            VideoOptions = 3
+            VideoOptions = 3,
+            Popup = 4
         }
 
+        public MenuPopup MenuPopup;
         public GameObject MainMenuOccluder;
         public ToggleableUIElement[] OptionsScreens;
 
@@ -97,10 +99,16 @@ namespace Pogo
         public void OpenOptionsScreen_GameOptions() => OpenOptionsScreen(OptionsMenus.GameOptions);
         public void OpenOptionsScreen_SoundOptions() => OpenOptionsScreen(OptionsMenus.SoundOptions);
         public void OpenOptionsScreen_VideoOptions() => OpenOptionsScreen(OptionsMenus.VideoOptions);
+        public void OpenPopup(MenuPopupData PopupData)
+        {
+            OpenOptionsScreen(OptionsMenus.Popup);
+            MenuPopup.Set(PopupData);
+            MainMenuOccluder.SetActive(true);
+        }
 
         public void OpenOptionsScreen(OptionsMenus optionsMenu)
         {
-            for(int n = 0; n < OptionsScreens.Length; n++)
+            for (int n = 0; n < OptionsScreens.Length; n++)
             {
                 OptionsScreens[n].SetOpen((int)optionsMenu == n);
             }

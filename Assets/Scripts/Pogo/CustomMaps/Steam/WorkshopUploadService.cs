@@ -30,6 +30,16 @@ namespace Pogo.CustomMaps.Steam
             UpdateMap_Call = new APICall<SubmitItemUpdateResult_t>(nameof(UpdateMap_Call));
         }
 
+        public void OpenMapWebpage(MapHeader header)
+        {
+            if (!header.WorkshopId.HasValue)
+            {
+                throw new ArgumentException($"missing Workshop ID for map {header.MapName}");
+            }
+
+            SteamFriends.ActivateGameOverlayToWebPage($"steam://url/CommunityFilePage/{header.WorkshopId}");
+        }
+
         #region CreateMap
 
 
@@ -56,7 +66,7 @@ namespace Pogo.CustomMaps.Steam
             {
                 return new UpdateMapResult()
                 {
-                    Success = false,
+                    ResultType = UpdateMapResult.ResultTypes.Failure,
                     ErrorMessage = $"There was a problem creating this workshop item ({result.CallResult.m_eResult})",
                     UpdatedHeader = null
                 };
@@ -67,7 +77,7 @@ namespace Pogo.CustomMaps.Steam
 
             return new UpdateMapResult()
             {
-                Success = true,
+                ResultType = UpdateMapResult.ResultTypes.Success,
                 UpdatedHeader = header
             };
         }
@@ -102,7 +112,7 @@ namespace Pogo.CustomMaps.Steam
             {
                 return new UpdateMapResult()
                 {
-                    Success = false,
+                    ResultType = UpdateMapResult.ResultTypes.Failure,
                     ErrorMessage = $"There was a problem creating this workshop item ({result.CallResult.m_eResult})",
                     UpdatedHeader = null
                 };
@@ -113,7 +123,7 @@ namespace Pogo.CustomMaps.Steam
 
             return new UpdateMapResult()
             {
-                Success = true,
+                ResultType = UpdateMapResult.ResultTypes.Success,
                 UpdatedHeader = header
             };
         }

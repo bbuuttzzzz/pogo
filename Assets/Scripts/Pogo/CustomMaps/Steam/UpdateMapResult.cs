@@ -9,8 +9,16 @@ namespace Pogo.CustomMaps.Steam
 {
     public class UpdateMapResult
     {
+        public enum ResultTypes
+        {
+            Success,
+            CheckLegalAgreement,
+            Failure
+        }
+
         public MapHeader UpdatedHeader;
-        public bool Success;
+        public ResultTypes ResultType;
+        public bool Success => ResultType == ResultTypes.Success;
         public string ErrorMessage;
     }
 }

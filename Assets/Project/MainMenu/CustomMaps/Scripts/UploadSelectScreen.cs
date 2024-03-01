@@ -52,34 +52,11 @@ namespace Pogo.CustomMaps.UI
             LoadMore(100);
         }
 
-        private void UploadMap(MapHeader header)
-        {
-#if !DISABLESTEAMWORKS
-            if (header.WorkshopId == null)
-            {
-                gameManager.WorkshopUploadService.CreateAndUpdateMap(header, UploadMap_Callback);
-            }
-            else
-            {
-                gameManager.WorkshopUploadService.UpdateMap(header, UploadMap_Callback);
-            }
-#endif
-        }
 
-        private void UploadMap_Callback(UpdateMapResult result)
-        {
-            if (!result.Success)
-            {
-                Debug.LogError($"STEAMWORKS issue Creating a new map: {result.ErrorMessage}");
-                return;
-            }
-
-            OpenUploadMapDialog(result.UpdatedHeader);
-        }
 
         private void OpenUploadMapDialog(MapHeader header)
         {
-
+            parent.OpenUploadDialog(header);
         }
 
         private void AddButton(MapHeader header)
