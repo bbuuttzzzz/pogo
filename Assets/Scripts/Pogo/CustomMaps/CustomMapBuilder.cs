@@ -188,7 +188,7 @@ namespace Pogo.CustomMaps
             return sources
                 .Select(s => s.Path)
                 .SelectMany(path => Directory.GetDirectories(path))
-                .Select(path => IndexingHelper.GenerateMapHeader(path, true))
+                .Select(path => MapHeaderHelper.GenerateMapHeader(path, true))
                 .Where(r => r.Success)
                 .Select(r => r.Data);
         }

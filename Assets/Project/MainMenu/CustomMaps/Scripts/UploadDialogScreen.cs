@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 namespace Pogo.CustomMaps.UI
 {
@@ -32,18 +33,41 @@ namespace Pogo.CustomMaps.UI
 
         private void OnEnable()
         {
-            UpdateMap();
+            if (parent != null && parent.CurrentMap != null)
+            {
+                UpdateMap();
+            }
         }
 
         private void UpdateMap()
         {
-            ChecklistEntries[ChecklistEntryIds.BspFile].SetComplete(parent.CurrentMap.BspPath != null);
-            ChecklistEntries[ChecklistEntryIds.PreviewSprite].SetComplete(parent.CurrentMap.PreviewImagePath != null);
-            ChecklistEntries[ChecklistEntryIds.Author].SetComplete(!string.IsNullOrEmpty(parent.CurrentMap.AuthorName));
-            ChecklistEntries[ChecklistEntryIds.Version].SetComplete(!string.IsNullOrEmpty(parent.CurrentMap.Version));
-            ChecklistEntries[ChecklistEntryIds.WorshopId].SetComplete(parent.CurrentMap.WorkshopId != null);
+            ChecklistEntries[ChecklistEntryIds.BspFile].SetStatus(new ChecklistEntryStatus()
+            {
+                IsComplete = parent.CurrentMap.BspPath != null,
+                Value = parent.CurrentMap.BspPath != null ? $"{parent.CurrentMap.MapName}.bsp" : "missing"
+            });
+            ChecklistEntries[ChecklistEntryIds.PreviewSprite].SetStatus(new ChecklistEntryStatus()
+            {
+                IsComplete = parent.CurrentMap.PreviewImagePath != null,
+                Value = parent.CurrentMap.PreviewImagePath != null ? "thumbnail.png" : "no thumbnail"
+            });
+            ChecklistEntries[ChecklistEntryIds.Author].SetStatus(new ChecklistEntryStatus()
+            {
+                IsComplete = !string.IsNullOrEmpty(parent.CurrentMap.AuthorName),
+                Value = parent.CurrentMap.AuthorName ?? "default (anonymous)"
+            });
+            ChecklistEntries[ChecklistEntryIds.Version].SetStatus(new ChecklistEntryStatus()
+            {
+                IsComplete = !string.IsNullOrEmpty(parent.CurrentMap.Version),
+                Value = parent.CurrentMap.Version ?? "default (0.1.0)"
+            });
+            ChecklistEntries[ChecklistEntryIds.WorshopId].SetStatus(new ChecklistEntryStatus()
+            {
+                IsComplete = parent.CurrentMap.WorkshopId != null,
+                Value = parent.CurrentMap.WorkshopId?.ToString() ?? "missing"
+            });
 
-            ChecklistComplete = ChecklistEntries.Values.Any(entry => entry.Data.IsRequired && !entry.Data.IsComplete);
+            ChecklistComplete = ChecklistEntries.Values.Any(entry => entry.Data.IsRequired && !entry.Data.Status.IsComplete);
             UploadButton.interactable = ChecklistComplete;
         }
 
@@ -108,15 +132,15 @@ namespace Pogo.CustomMaps.UI
             ChecklistEntries = new Dictionary<ChecklistEntryIds, ChecklistEntry>();
             AddChecklistItem(ChecklistEntryIds.BspFile, new ChecklistEntryData()
             {
-                Title = ".bsp file",
+                Title = "\'.bsp\' File",
                 IsRequired = true,
-                HintBody = ".bsp files contain the map's geometry and data. .map files must be compiled into .bsp"
+                HintBody = "Contains the map's geometry and data.\n Compiled from the \'.map\' file."
             });
             AddChecklistItem(ChecklistEntryIds.PreviewSprite, new ChecklistEntryData()
             {
-                Title = IndexingHelper.previewSpriteFileName,
+                Title = MapHeaderHelper.previewSpriteFileName,
                 IsRequired = false,
-                HintBody = "a 4x3 .png preview image for the map. use an info_camera_preview to generate an ingame thumbnail",
+                HintBody = "A 4x3 \'.png\' preview image for the map.\nIf your map has an info_camera_preview entity, you can generate it using the refresh button",
                 AllowAutoCompleteWhenCompleted = true,
                 AutoCompleteAction = GeneratePreviewImage
             });
@@ -125,19 +149,20 @@ namespace Pogo.CustomMaps.UI
             {
                 Title = "Author Name",
                 IsRequired = false,
-                HintBody = $"Specify this in the {IndexingHelper.mapDefinitionFileName} as \'Author: <name>\'"
+                HintBody = $"Define this in the {MapHeaderHelper.mapDefinitionFileName} as \'Author: <name>\'"
             });
             AddChecklistItem(ChecklistEntryIds.Version, new ChecklistEntryData()
             {
                 Title = "Version",
                 IsRequired = false,
-                HintBody = $"Specify this in the {IndexingHelper.mapDefinitionFileName} as \'Version: <X.Y.Z>\' where x y z are major, minor, and revision numbers"
+                HintBody = $"Define this in {MapHeaderHelper.mapDefinitionFileName} as \'Version: <x.y.z>\'"
             });
             AddChecklistItem(ChecklistEntryIds.WorshopId, new ChecklistEntryData()
             {
                 Title = "Workshop ID",
                 IsRequired = true,
-                AutoCompleteAction = GenerateWorkshopId
+                AutoCompleteAction = GenerateWorkshopId,
+                HintBody = "Uniquely identifies this map on the steam workshop.\nGenerate it using the refresh button."
             });
 
         }

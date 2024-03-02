@@ -73,7 +73,7 @@ namespace Pogo.CustomMaps.Steam
             }
 
             header.WorkshopId = (ulong)result.CallResult.m_nPublishedFileId;
-            IndexingHelper.SaveMapHeaderConfig(header);
+            MapHeaderHelper.SaveMapHeaderConfig(header);
 
             return new UpdateMapResult()
             {
@@ -119,7 +119,7 @@ namespace Pogo.CustomMaps.Steam
             }
 
             header.WorkshopId = (ulong)result.CallResult.m_nPublishedFileId;
-            IndexingHelper.SaveMapHeaderConfig(header);
+            MapHeaderHelper.SaveMapHeaderConfig(header);
 
             return new UpdateMapResult()
             {

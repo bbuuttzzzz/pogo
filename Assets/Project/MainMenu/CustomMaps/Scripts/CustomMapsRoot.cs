@@ -43,6 +43,11 @@ namespace Pogo.CustomMaps.UI
             }
         }
 
+        private void OnEnable()
+        {
+            OpenScreen(ScreenIds.MapSelect);
+        }
+
         public void OpenUploadDialog(MapHeader selectedMap)
         {
             CurrentMap = selectedMap;

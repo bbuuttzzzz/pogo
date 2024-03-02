@@ -9,7 +9,7 @@ using WizardUtils.Helpers;
 
 namespace Pogo.CustomMaps
 {
-    public static class IndexingHelper
+    public static class MapHeaderHelper
     {
         public const string mapDefinitionFileName = "mapdefinition.txt";
         public const string previewSpriteFileName = "thumbnail.png";

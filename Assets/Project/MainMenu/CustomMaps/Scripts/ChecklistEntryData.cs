@@ -10,7 +10,8 @@ namespace Pogo.CustomMaps
     {
         public string Title;
         public bool IsRequired;
-        public bool IsComplete;
+
+        public ChecklistEntryStatus Status;
 
         public bool AllowAutoCompleteWhenCompleted;
         public Action AutoCompleteAction;

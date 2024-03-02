@@ -9,10 +9,15 @@ namespace Pogo.CustomMaps.UI
     public class ChecklistEntry : MonoBehaviour
     {
         public TextMeshProUGUI TitleText;
+        public TextMeshProUGUI ValueText;
+        public Image BodyImage;
         public Button HintButton;
         public Button AutoCompleteButton;
         public UnityEvent<ChecklistEntryData> OnShowHint;
         private ChecklistEntryData _Data;
+
+        [Tooltip("Complete / IncompleteOptional / IncompleteRequired")]
+        public StyleData[] StyleDatas = new StyleData[3];
 
         public ChecklistEntryData Data { get => _Data; private set => _Data = value; }
 
@@ -22,12 +27,13 @@ namespace Pogo.CustomMaps.UI
             AutoCompleteButton.onClick.AddListener(AutoComplete);
         }
 
-        public void SetComplete(bool isComplete)
+        public void SetStatus(ChecklistEntryStatus status)
         {
-            _Data.IsComplete = isComplete;
+            _Data.Status = status;
+            ValueText.text = status.Value ?? "";
             AutoCompleteButton.gameObject.SetActive(
                 Data.AutoCompleteAction != null
-                && (!Data.IsComplete || Data.AllowAutoCompleteWhenCompleted)
+                && (!Data.Status.IsComplete || Data.AllowAutoCompleteWhenCompleted)
             );
         }
 
@@ -37,7 +43,7 @@ namespace Pogo.CustomMaps.UI
 
             TitleText.text = data.Title;
             HintButton.gameObject.SetActive(!string.IsNullOrEmpty(data.HintBody));
-            SetComplete(data.IsComplete);
+            SetStatus(data.Status);
         }
 
         private void ShowHint()
@@ -53,14 +59,21 @@ namespace Pogo.CustomMaps.UI
         #region Styles
         public enum Styles
         {
-            Info,
-            Warn,
-            Error
+            Complete,
+            IncompleteOptional,
+            IncompleteRequired
+        }
+
+        [System.Serializable]
+        public struct StyleData
+        {
+            public Color BodyImageColor;
         }
 
         public void SetStyle(Styles style)
         {
-
+            StyleData data = StyleDatas[(int)style];
+            BodyImage.color = data.BodyImageColor;
         }
         #endregion
     }
