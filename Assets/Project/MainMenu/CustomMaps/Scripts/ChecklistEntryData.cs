@@ -10,6 +10,7 @@ namespace Pogo.CustomMaps
     {
         public string Title;
         public bool IsRequired;
+        public string DefaultDisplayValue;
 
         public ChecklistEntryStatus Status;
 

@@ -44,27 +44,27 @@ namespace Pogo.CustomMaps.UI
             ChecklistEntries[ChecklistEntryIds.BspFile].SetStatus(new ChecklistEntryStatus()
             {
                 IsComplete = parent.CurrentMap.BspPath != null,
-                Value = parent.CurrentMap.BspPath != null ? $"{parent.CurrentMap.MapName}.bsp" : "missing"
+                Value = parent.CurrentMap.BspPath != null ? $"{parent.CurrentMap.MapName}.bsp" : null
             });
             ChecklistEntries[ChecklistEntryIds.PreviewSprite].SetStatus(new ChecklistEntryStatus()
             {
                 IsComplete = parent.CurrentMap.PreviewImagePath != null,
-                Value = parent.CurrentMap.PreviewImagePath != null ? "thumbnail.png" : "no thumbnail"
+                Value = parent.CurrentMap.PreviewImagePath != null ? "thumbnail.png" : null
             });
             ChecklistEntries[ChecklistEntryIds.Author].SetStatus(new ChecklistEntryStatus()
             {
                 IsComplete = !string.IsNullOrEmpty(parent.CurrentMap.AuthorName),
-                Value = parent.CurrentMap.AuthorName ?? "default (anonymous)"
+                Value = parent.CurrentMap.AuthorName
             });
             ChecklistEntries[ChecklistEntryIds.Version].SetStatus(new ChecklistEntryStatus()
             {
                 IsComplete = !string.IsNullOrEmpty(parent.CurrentMap.Version),
-                Value = parent.CurrentMap.Version ?? "default (0.1.0)"
+                Value = parent.CurrentMap.Version
             });
             ChecklistEntries[ChecklistEntryIds.WorshopId].SetStatus(new ChecklistEntryStatus()
             {
                 IsComplete = parent.CurrentMap.WorkshopId != null,
-                Value = parent.CurrentMap.WorkshopId?.ToString() ?? "missing"
+                Value = parent.CurrentMap.WorkshopId?.ToString()
             });
 
             ChecklistComplete = ChecklistEntries.Values.Any(entry => entry.Data.IsRequired && !entry.Data.Status.IsComplete);
@@ -134,7 +134,8 @@ namespace Pogo.CustomMaps.UI
             {
                 Title = "\'.bsp\' File",
                 IsRequired = true,
-                HintBody = "Contains the map's geometry and data.\n Compiled from the \'.map\' file using an external tool."
+                HintBody = "Contains the map's geometry and data.\n Compiled from the \'.map\' file using an external tool.",
+                DefaultDisplayValue = "Missing"
             });
             AddChecklistItem(ChecklistEntryIds.PreviewSprite, new ChecklistEntryData()
             {
@@ -142,27 +143,31 @@ namespace Pogo.CustomMaps.UI
                 IsRequired = false,
                 HintBody = "A 4x3 \'.png\' preview image for the map.\nIf your map has an info_camera_preview entity, you can generate it using the refresh button",
                 AllowAutoCompleteWhenCompleted = true,
-                AutoCompleteAction = GeneratePreviewImage
+                AutoCompleteAction = GeneratePreviewImage,
+                DefaultDisplayValue = "No Thumbnail"
             });
             // CFG file stuff
             AddChecklistItem(ChecklistEntryIds.Author, new ChecklistEntryData()
             {
                 Title = "Author Name",
                 IsRequired = false,
-                HintBody = $"Define this in {MapHeaderHelper.mapDefinitionFileName} as \'Author: <name>\'"
+                HintBody = $"Define this in {MapHeaderHelper.mapDefinitionFileName} as \'Author: <name>\'",
+                DefaultDisplayValue = "Default (Anonymous)"
             });
             AddChecklistItem(ChecklistEntryIds.Version, new ChecklistEntryData()
             {
                 Title = "Version",
                 IsRequired = false,
-                HintBody = $"Define this in {MapHeaderHelper.mapDefinitionFileName} as \'Version: <x.y.z>\'"
+                HintBody = $"Define this in {MapHeaderHelper.mapDefinitionFileName} as \'Version: <x.y.z>\'",
+                DefaultDisplayValue = "Default (0.1.0)"
             });
             AddChecklistItem(ChecklistEntryIds.WorshopId, new ChecklistEntryData()
             {
                 Title = "Workshop ID",
-                IsRequired = true,
+                IsRequired = false,
                 AutoCompleteAction = GenerateWorkshopId,
-                HintBody = "Uniquely identifies this map on the steam workshop.\nGenerate it using the refresh button."
+                HintBody = "Uniquely identifies this map on the steam workshop.\nGenerate it using the refresh button.",
+                DefaultDisplayValue = "Generate On Upload"
             });
 
         }
@@ -197,7 +202,7 @@ namespace Pogo.CustomMaps.UI
 
         private void GenerateWorkshopId()
         {
-            throw new NotImplementedException();
+
         }
     }
 }

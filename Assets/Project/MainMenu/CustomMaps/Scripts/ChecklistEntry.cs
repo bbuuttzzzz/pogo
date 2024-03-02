@@ -31,7 +31,7 @@ namespace Pogo.CustomMaps.UI
         public void SetStatus(ChecklistEntryStatus status)
         {
             _Data.Status = status;
-            ValueText.text = status.Value ?? "";
+            ValueText.text = status.Value ?? _Data.DefaultDisplayValue;
             AutoCompleteButton.gameObject.SetActive(
                 Data.AutoCompleteAction != null
                 && (!Data.Status.IsComplete || Data.AllowAutoCompleteWhenCompleted)
