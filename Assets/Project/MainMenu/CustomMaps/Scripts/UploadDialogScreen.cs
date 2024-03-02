@@ -134,7 +134,7 @@ namespace Pogo.CustomMaps.UI
             {
                 Title = "\'.bsp\' File",
                 IsRequired = true,
-                HintBody = "Contains the map's geometry and data.\n Compiled from the \'.map\' file."
+                HintBody = "Contains the map's geometry and data.\n Compiled from the \'.map\' file using an external tool."
             });
             AddChecklistItem(ChecklistEntryIds.PreviewSprite, new ChecklistEntryData()
             {
@@ -149,7 +149,7 @@ namespace Pogo.CustomMaps.UI
             {
                 Title = "Author Name",
                 IsRequired = false,
-                HintBody = $"Define this in the {MapHeaderHelper.mapDefinitionFileName} as \'Author: <name>\'"
+                HintBody = $"Define this in {MapHeaderHelper.mapDefinitionFileName} as \'Author: <name>\'"
             });
             AddChecklistItem(ChecklistEntryIds.Version, new ChecklistEntryData()
             {
