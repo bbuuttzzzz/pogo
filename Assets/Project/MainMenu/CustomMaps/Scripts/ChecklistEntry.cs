@@ -1,5 +1,6 @@
 ﻿using System;
 using TMPro;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -35,7 +36,22 @@ namespace Pogo.CustomMaps.UI
                 Data.AutoCompleteAction != null
                 && (!Data.Status.IsComplete || Data.AllowAutoCompleteWhenCompleted)
             );
+            Styles style = status.IsComplete
+                ? Styles.Complete
+                : _Data.IsRequired
+                    ? Styles.IncompleteRequired
+                    : Styles.IncompleteOptional;
+
+            Debug.Log($"setting style to {style} for checklist entry {_Data.Title}");
+            SetStyle(style);
         }
+
+        [ContextMenu("Style Complete")]
+        public void StyleComplete() => SetStyle(Styles.Complete);
+        [ContextMenu("Style IncompleteRequired")]
+        public void StyleIncompleteRequired() => SetStyle(Styles.IncompleteRequired);
+        [ContextMenu("Style IncompleteOptional")]
+        public void StyleIncompleteOptional() => SetStyle(Styles.IncompleteOptional);
 
         public void Set(ChecklistEntryData data)
         {

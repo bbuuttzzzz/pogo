@@ -170,6 +170,7 @@ namespace Pogo.CustomMaps.UI
         private void AddChecklistItem(ChecklistEntryIds id, ChecklistEntryData item)
         {
             ChecklistEntry newEntry = Instantiate(ChecklistEntryPrefab, ChecklistEntriesParent).GetComponent<ChecklistEntry>();
+            newEntry.gameObject.name = $"ChecklistEntry {item.Title}";
             newEntry.Set(item);
             newEntry.OnShowHint.AddListener(ShowHint);
 
