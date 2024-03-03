@@ -1,5 +1,6 @@
 ﻿using Inputter;
 using Platforms;
+using Pogo.Levels.Loading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,6 +29,7 @@ namespace WizardUtils
         public string PersistentDataPath => PlatformService.PersistentDataPath;
         public AudioManager AudioManager => GetComponent<AudioManager>();
 
+
         protected virtual void Awake()
         {
             if (GameInstance != null)
@@ -45,6 +47,8 @@ namespace WizardUtils
             PlatformService = new Platforms.Portable.PortablePlatformService();
 #endif
             GameSettingService = PlatformService.BuildGameSettingService(LoadGameSettings());
+
+            CurrentSceneLoaders = new List<SceneLoader>();
 
             SetupSaveData();
         }
@@ -125,9 +129,11 @@ namespace WizardUtils
         public bool InControlScene => CurrentControlScene != null;
         public bool InGameScene => CurrentControlScene == null;
 
+        private List<SceneLoader> CurrentSceneLoaders;
         public ControlSceneDescriptor MainMenuControlScene;
         [HideInInspector]
         public ControlSceneDescriptor CurrentControlScene;
+        private SceneLoadingData CurrentSceneLoadingData;
 
 #if UNITY_EDITOR
         public void UnloadControlSceneInEditor()
@@ -189,54 +195,172 @@ namespace WizardUtils
         }
 #endif
 
-        public virtual void LoadControlScene(ControlSceneDescriptor newScene, Action callback = null)
+        public virtual void LoadControlSceneAsync(ControlSceneDescriptor newControlScene, Action callback = null)
         {
             if (DontLoadScenesInEditor) return;
             var initialScene = CurrentControlScene;
-            List<AsyncOperation> tasks = new List<AsyncOperation>();
 
-            bool newSceneAlreadyLoaded = false;
+            if (CurrentSceneLoadingData != null)
+            {
+                Debug.LogWarning($"Overriding old ControlScene Loading Data {CurrentSceneLoadingData.InitialScene.name} -> {CurrentSceneLoadingData.FinalScene.name}");
+            }
+            CurrentSceneLoadingData = new SceneLoadingData()
+            {
+                InitialScene = initialScene,
+                FinalScene = newControlScene,
+                Callback = callback
+            };
+
+            (List <Scene> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(SceneManager.GetSceneByBuildIndex(newControlScene.BuildIndex), CurrentSceneLoaders);
+
+            foreach(var scene in scenesToLoad)
+            {
+                var loader = CurrentSceneLoaders.Find(l => l.Scene.buildIndex == scene.buildIndex);
+                if (loader == null)
+                {
+                    loader = new SceneLoader(this, scene, false);
+                }
+                loader.MarkNeeded();
+                loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingControlScene);
+                loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
+            }
+
+            foreach(var scene in scenesToUnload)
+            {
+                var loader = CurrentSceneLoaders.Find(l => l.Scene.buildIndex == scene.buildIndex);
+
+                if (loader == null)
+                {
+                    loader = new SceneLoader(this, scene, true);
+                    CurrentSceneLoaders.Add(loader);
+                }
+                loader.MarkNotNeeded();
+                loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingControlScene);
+                loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
+            }
+
+            CurrentControlScene = newControlScene;
+        }
+
+        private void FinishLoadingControlScene()
+        {
+            CurrentSceneLoadingData.Callback?.Invoke();
+            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(CurrentSceneLoadingData.InitialScene, CurrentSceneLoadingData.FinalScene));
+            CurrentSceneLoadingData = null;
+        }
+
+        private void RecalculateFinishedLoadingControlScene()
+        {
+            for (int i = CurrentSceneLoaders.Count - 1; i >= 0; i--)
+            {
+                SceneLoader loader = CurrentSceneLoaders[i];
+                if (loader.IsIdle)
+                {
+                    loader.OnReadyToActivate.RemoveAllListeners();
+                    loader.OnIdle.RemoveAllListeners();
+                    CurrentSceneLoaders.RemoveAt(i);
+                }
+            }
+
+            if (AllLoadingLevelsAreReady())
+            {
+                ActivateAllRemainingLoaders();
+            }
+
+            if (AllLoadingLevelsFinished())
+            {
+                FinishLoadingControlScene();
+            }
+        }
+
+        private void ActivateAllRemainingLoaders()
+        {
+            foreach (var sceneLoader in CurrentSceneLoaders)
+            {
+                if (sceneLoader.CurrentLoadState == SceneLoader.LoadStates.Loading)
+                {
+                    sceneLoader.AllowSceneActivation = true;
+                }
+            }
+        }
+
+        private bool AllLoadingLevelsAreReady()
+        {
+            foreach (var sceneLoader in CurrentSceneLoaders)
+            {
+                if (sceneLoader.CurrentLoadState == SceneLoader.LoadStates.Loading
+                    && sceneLoader.TaskProgress < 0.9f)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        private bool AllLoadingLevelsFinished()
+        {
+            foreach (var sceneLoader in CurrentSceneLoaders)
+            {
+                if (sceneLoader.CurrentLoadState == SceneLoader.LoadStates.Loading)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static (List<Scene> scenesToLoad, List<Scene> scenesToUnload) GetSceneDifference(
+            Scene newScene,
+            IEnumerable<SceneLoader> loaders = null)
+        {
+            List<Scene> scenesToLoad = new List<Scene>();
             List<Scene> scenesToUnload = new List<Scene>();
+
+            scenesToLoad.Add(newScene);
+
+            // for each currently loaded scene
             for (int n = 0; n < SceneManager.sceneCount; n++)
             {
                 Scene scene = SceneManager.GetSceneAt(n);
-                if (!ignoredScenes.Contains(scene.buildIndex))
+
+                // just ignore the GameScene, Main Menu, and Credits scenes
+                if (GameManager.ignoredScenes.Contains(scene.buildIndex)
+                    || ignoredScenes.Contains(scene.buildIndex)) continue;
+
+                Scene? matchingToLoadScene = null;
+                foreach (Scene sceneToLoad in scenesToLoad)
                 {
-                    if (scene.buildIndex == newScene.BuildIndex)
+                    if (sceneToLoad.buildIndex == scene.buildIndex)
                     {
-                        newSceneAlreadyLoaded = true;
+                        matchingToLoadScene = sceneToLoad;
+                    }
+                }
+
+                // if we want to have it loaded
+                if (matchingToLoadScene != null)
+                {
+                    SceneLoader existingLoader = loaders.FirstOrDefault(l => l.Scene.buildIndex == matchingToLoadScene.Value.buildIndex);
+
+                    // if this level is marked as not needed
+                    if (existingLoader != null && !existingLoader.CurrentlyNeeded)
+                    {
+                        // keep it in our scenesToLoad list, so we know to mark it needed
                     }
                     else
                     {
-                        scenesToUnload.Add(scene);
+                        // Scene already exists, so we don't need to load it
+                        scenesToLoad.Remove(matchingToLoadScene.Value);
                     }
-                }
-            }
-
-            // load the control scene
-            if (!newSceneAlreadyLoaded)
-            {
-                tasks.Add(SceneManager.LoadSceneAsync(newScene.BuildIndex, LoadSceneMode.Additive));
-                CurrentControlScene = newScene;
-            }
-
-            // unload all non-ignored scenes
-            foreach (Scene scene in scenesToUnload)
-            {
-                AsyncOperation task = SceneManager.UnloadSceneAsync(scene);
-                if (task != null)
-                {
-                    tasks.Add(task);
                 }
                 else
                 {
-                    Debug.LogWarning($"error unloading scene {scene.name}");
+                    // Scene no longer exists. so we need to get rid of it
+                    scenesToUnload.Add(scene);
                 }
             }
 
-            CurrentControlScene = newScene;
-            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, newScene));
-            StartCoroutine(AfterTasksFinish(tasks, callback));
+            return (scenesToLoad, scenesToUnload);
         }
 
         IEnumerator AfterTasksFinish(List<AsyncOperation> tasks, Action callback)
@@ -282,7 +406,7 @@ namespace WizardUtils
             else
             {
                 OnQuitToMenu?.Invoke();
-                LoadControlScene(MainMenuControlScene);
+                LoadControlSceneAsync(MainMenuControlScene);
             }
         }
         #endregion

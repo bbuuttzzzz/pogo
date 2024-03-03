@@ -37,6 +37,11 @@ namespace Pogo.MainMenu
             }
         }
 
+        private void OnEnable()
+        {
+            Debug.Log("Main Menu OnEnable");
+        }
+
         public void AdventureTapped()
         {
             OpenSavesScreen();

@@ -36,7 +36,7 @@ namespace Assets.Scripts.Pogo
         {
             yield return new WaitForSecondsRealtime(levelChangeDelay);
 
-            GameManager.GameInstance.LoadControlScene(CreditsScene);
+            GameManager.GameInstance.LoadControlSceneAsync(CreditsScene);
         }
     }
 }

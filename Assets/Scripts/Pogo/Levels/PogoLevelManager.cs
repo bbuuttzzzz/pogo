@@ -120,9 +120,9 @@ namespace Pogo.Levels
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="newLevel">the Level to load</param>
+        /// <param name="newLevel">the Scene to load</param>
         /// <param name="settings"></param>
-        /// <returns>FALSE if Level is already loaded</returns>
+        /// <returns>FALSE if Scene is already loaded</returns>
         public bool LoadLevelAsync(LevelLoadingSettings settings)
         {
             if (currentLevel == settings.Level && !settings.ForceReload)
@@ -347,13 +347,13 @@ namespace Pogo.Levels
                     }
                     else
                     {
-                        // Level already exists, so we don't need to load it
+                        // Scene already exists, so we don't need to load it
                         scenesToLoad.Remove(matchingToLoadLevel);
                     }
                 }
                 else
                 {
-                    // Level no longer exists. so we need to get rid of it
+                    // Scene no longer exists. so we need to get rid of it
                     scenesToUnload.Add(scene);
                 }
             }

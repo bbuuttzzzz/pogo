@@ -1000,7 +1000,7 @@ namespace Pogo
             return (CurrentDifficulty == Difficulty.Hard && respawnPoint.EnabledInHardMode);
         }
 
-        public override void LoadControlScene(ControlSceneDescriptor newScene, Action callback = null)
+        public override void LoadControlSceneAsync(ControlSceneDescriptor newScene, Action callback = null)
         {
             if (levelManager != null)
             {
@@ -1010,7 +1010,7 @@ namespace Pogo
             {
                 Player.CurrentState = PlayerStates.Alive;
             }
-            base.LoadControlScene(newScene, callback);
+            base.LoadControlSceneAsync(newScene, callback);
             CurrentGameState = GameStates.InMenu;
         }
 

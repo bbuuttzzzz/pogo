@@ -215,7 +215,7 @@ namespace Pogo.CustomMaps.UI
 
         private void OnAfterGeneratePreviewImage(GenerateMapThumbnailResult result)
         {
-            gameManager.LoadControlScene(gameManager.MainMenuControlScene, () =>
+            gameManager.LoadControlSceneAsync(gameManager.MainMenuControlScene, () =>
             {
                 gameManager.OnMainMenuLoadAction = (mainMenu) =>
                 {
