@@ -163,7 +163,7 @@ namespace Pogo.Levels.Loading
             {
                 TaskProgress = unloadTask.isDone ? 1 : unloadTask.progress;
 
-                if (unloadTask.isDone)
+                if (unloadTask.isDone && !SceneIsLoaded(Level.BuildIndex))
                 {
                     break;
                 }
@@ -208,6 +208,18 @@ namespace Pogo.Levels.Loading
             }
 
             FinishLoading();
+        }
+
+        private static bool SceneIsLoaded(int buildIndex)
+        {
+            for (int n = 0; n < SceneManager.sceneCount; n++)
+            {
+                if (SceneManager.GetSceneAt(n).buildIndex == buildIndex)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override string ToString()
