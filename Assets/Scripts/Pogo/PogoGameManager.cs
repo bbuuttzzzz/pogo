@@ -353,16 +353,16 @@ namespace Pogo
 
         private bool TrySerializeQuicksaveData(out QuickSaveData newData)
         {
-            if (CurrentCheckpoint is not ExplicitCheckpoint explicitCheckpoint)
-            {
-                throw new NotImplementedException();
-            }
-
-            if (explicitCheckpoint == null)
+            if (CurrentCheckpoint == null)
             {
                 Debug.LogWarning("Failed to quicksave. CurrentCheckpoint is missing!!!");
                 newData = new QuickSaveData();
                 return false;
+            }
+
+            if (CurrentCheckpoint is not ExplicitCheckpoint explicitCheckpoint)
+            {
+                throw new NotImplementedException();
             }
 
             if (explicitCheckpoint.Descriptor == null)
