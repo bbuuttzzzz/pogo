@@ -165,6 +165,11 @@ namespace Pogo.MainMenu
             MainMenuAnimator.SetTrigger("ShowCustomChallenge");
         }
 
+        public void OpenCustomChallengeScreenInstantly()
+        {
+            MainMenuAnimator.SetTrigger("ShowCustomChallengeInstantly");
+        }
+
         public void HideCustomChallengeScreen()
         {
             MainMenuAnimator.SetTrigger("HideCustomChallenge");

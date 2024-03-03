@@ -11,7 +11,7 @@ namespace Pogo.CustomMaps.UI
 {
     public class CustomMapsRoot : MonoBehaviour
     {
-        private enum ScreenIds
+        public enum ScreenIds
         {
             MapSelect,
             UploadSelect,
@@ -21,6 +21,8 @@ namespace Pogo.CustomMaps.UI
         public PogoMainMenuController parent;
         private PogoGameManager gameManager;
         public Button UploadButton;
+        [HideInInspector]
+        public ScreenIds? OverrideOpenMapScreen;
 
         public MapHeader CurrentMap;
 
@@ -45,7 +47,8 @@ namespace Pogo.CustomMaps.UI
 
         private void OnEnable()
         {
-            OpenScreen(ScreenIds.MapSelect);
+            OpenScreen(OverrideOpenMapScreen.GetValueOrDefault(ScreenIds.MapSelect));
+            OverrideOpenMapScreen = null;
         }
 
         public void OpenUploadDialog(MapHeader selectedMap)

@@ -38,6 +38,7 @@ namespace Pogo.CustomMaps
         public EntityPrefabManifest EntityPrefabs;
         public Materials.FillableShaderManifest FillableShaderManifest;
         public MapAttemptData LastAttemptData;
+        public GameObject InfoCameraPreviewPrefab;
 
         public Dictionary<string, SurfaceConfig> SurfaceConfigDictionary;
         public SurfaceConfig DefaultSurfaceConfig;
@@ -86,7 +87,7 @@ namespace Pogo.CustomMaps
             DisposeCurrentMap();
         }
 
-        public void LoadCustomMapLevel(string folderPath, string mapFileName)
+        public void LoadCustomMapLevel(MapHeader header, Action callback = null)
         {
             if (EntityHandlers == null) SetupEntityHandlers();
             PogoGameManager pogoInstance = PogoGameManager.PogoInstance;
@@ -96,7 +97,8 @@ namespace Pogo.CustomMaps
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
-                SpawnCustomMap(folderPath, mapFileName);
+                SpawnCustomMap(header);
+                callback?.Invoke();
                 pogoInstance.OnLevelLoaded.RemoveListener(finishLoading);
             };
             pogoInstance.OnLevelLoaded.AddListener(finishLoading);
@@ -110,10 +112,41 @@ namespace Pogo.CustomMaps
             });
         }
 
-        private void SpawnCustomMap(string folderPath, string mapFileName)
+        public void LoadMapAndGenerateThumbnail(MapHeader header, Action<GenerateMapThumbnailResult> callback)
         {
+            LoadCustomMapLevel(header, () =>
+            {
+                var result = GenerateThumbnailForCurrentMap();
+                callback?.Invoke(result);
+            });
+        }
+
+        private GenerateMapThumbnailResult GenerateThumbnailForCurrentMap()
+        {
+            if (CurrentCustomMap.InfoCameraThumbnailObject == null)
+            {
+                return new GenerateMapThumbnailResult()
+                {
+                    ResultType = GenerateMapThumbnailResult.ResultTypes.FailureMissingEntity
+                };
+            }
+
+            var newCamera = Instantiate(InfoCameraPreviewPrefab, CurrentCustomMap.InfoCameraThumbnailObject.transform)
+                .GetComponent<CustomMapIconGenerator>();
+
+            Sprite sprite = newCamera.RenderToSprite();
+            MapHeaderHelper.SaveThumbnail(CurrentCustomMap.Header, sprite);
+            return new GenerateMapThumbnailResult()
+            {
+                ResultType = GenerateMapThumbnailResult.ResultTypes.Success
+            };
+        }
+
+        private void SpawnCustomMap(MapHeader header)
+        {
+            string folderPath = header.FolderPath;
             CurrentCustomMap = new CustomMap();
-            string fullMapPath = $"{folderPath}{Path.DirectorySeparatorChar}{mapFileName}";
+            string fullMapPath = $"{folderPath}{Path.DirectorySeparatorChar}{header.MapName}.bsp";
             Debug.Log($"Tried to spawn customMap at path {fullMapPath} :D");
             BSPLoader.Settings settings = new()
             {
@@ -174,7 +207,6 @@ namespace Pogo.CustomMaps
             StartMap();
             gameManager.Paused = false;
         }
-
 
         public IEnumerable<MapHeader> GetMapHeaders(bool localOnly = false)
         {
@@ -291,6 +323,12 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
+            AddEntityHandler(new CustomMapEntityHandler("info_camera_preview", SetupInfo_Camera_Preview));
+        }
+
+        private void SetupInfo_Camera_Preview(BSPLoader.EntityCreatedCallbackData data)
+        {
+            CurrentCustomMap.InfoCameraThumbnailObject = data.Instance.gameObject;
         }
 
         private void AddEntityHandler(CustomMapEntityHandler handler) => EntityHandlers.Add(handler.ClassName, handler);

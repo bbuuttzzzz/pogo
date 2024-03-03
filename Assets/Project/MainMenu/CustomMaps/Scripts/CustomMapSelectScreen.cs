@@ -48,7 +48,7 @@ namespace Pogo.CustomMaps.UI
 
         private void SelectMap(MapHeader header)
         {
-            gameManager.CustomMapBuilder.LoadCustomMapLevel(header.FolderPath, $"{header.MapName}.bsp");
+            gameManager.CustomMapBuilder.LoadCustomMapLevel(header);
         }
 
         private void AddButton(MapHeader header)

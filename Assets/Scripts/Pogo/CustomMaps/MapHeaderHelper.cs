@@ -19,6 +19,15 @@ namespace Pogo.CustomMaps
             CfgFileSerializationHelper.Serialize(header.CfgPath, header.WriteCfgData());   
         }
 
+        public static void SaveThumbnail(this MapHeader header, Sprite sprite)
+        {
+            string path = $"{header.FolderPath}{Path.DirectorySeparatorChar}{previewSpriteFileName}";
+
+            File.WriteAllBytes(path, sprite.texture.EncodeToPNG());
+            header.PreviewSprite = sprite;
+            header.PreviewImagePath = path;
+        }
+
         public static GenerateMapHeaderResult GenerateMapHeader(string folderPath, bool logWarnings = true)
         {
             bool exit = false;

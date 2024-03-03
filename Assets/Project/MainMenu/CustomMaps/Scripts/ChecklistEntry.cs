@@ -30,19 +30,23 @@ namespace Pogo.CustomMaps.UI
 
         public void SetStatus(ChecklistEntryStatus status)
         {
-            _Data.Status = status;
-            ValueText.text = status.Value ?? _Data.DefaultDisplayValue;
-            AutoCompleteButton.gameObject.SetActive(
-                Data.AutoCompleteAction != null
-                && (!Data.Status.IsComplete || Data.AllowAutoCompleteWhenCompleted)
-            );
+            bool showAutoCompleteButton = Data.AutoCompleteMode switch
+            {
+                ChecklistEntryData.AutoCompleteModes.Hide => false,
+                ChecklistEntryData.AutoCompleteModes.Show => true,
+                ChecklistEntryData.AutoCompleteModes.ShowWhenComplete => status.IsComplete,
+                ChecklistEntryData.AutoCompleteModes.ShowWhenIncomplete => !status.IsComplete,
+                _ => throw new NotImplementedException()
+            };
             Styles style = status.IsComplete
                 ? Styles.Complete
                 : _Data.IsRequired
                     ? Styles.IncompleteRequired
                     : Styles.IncompleteOptional;
 
-            Debug.Log($"setting style to {style} for checklist entry {_Data.Title}");
+            _Data.Status = status;
+            ValueText.text = status.Value ?? _Data.DefaultDisplayValue;
+            AutoCompleteButton.gameObject.SetActive(showAutoCompleteButton);
             SetStyle(style);
         }
 

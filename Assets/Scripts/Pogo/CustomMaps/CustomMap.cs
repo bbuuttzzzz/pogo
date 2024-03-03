@@ -1,5 +1,6 @@
 ﻿using BSPImporter;
 using Pogo.Checkpoints;
+using Pogo.CustomMaps.Indexing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace Pogo.CustomMaps
 {
     public class CustomMap
     {
+        public MapHeader Header;
         public Dictionary<CheckpointId, GeneratedCheckpoint> Checkpoints;
         public GameObject PlayerStart;
         public GeneratedCheckpoint FirstCheckpoint;
         public TriggerFinish Finish;
+        public GameObject InfoCameraThumbnailObject;
         public Surfaces.SurfaceSource SurfaceSource { get; private set; }
 
         public CustomMap()

@@ -1,6 +1,7 @@
 ﻿using Pogo;
 using Pogo.CustomMaps.Indexing;
 using Pogo.CustomMaps.Steam;
+using Pogo.MainMenu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,11 +36,11 @@ namespace Pogo.CustomMaps.UI
         {
             if (parent != null && parent.CurrentMap != null)
             {
-                UpdateMap();
+                UpdateChecklist();
             }
         }
 
-        private void UpdateMap()
+        private void UpdateChecklist()
         {
             ChecklistEntries[ChecklistEntryIds.BspFile].SetStatus(new ChecklistEntryStatus()
             {
@@ -142,8 +143,8 @@ namespace Pogo.CustomMaps.UI
                 Title = MapHeaderHelper.previewSpriteFileName,
                 IsRequired = false,
                 HintBody = "A 4x3 \'.png\' preview image for the map.\nIf your map has an info_camera_preview entity, you can generate it using the refresh button",
-                AllowAutoCompleteWhenCompleted = true,
-                AutoCompleteAction = GeneratePreviewImage,
+                AutoCompleteAction = PromptGeneratePreviewImage,
+                AutoCompleteMode = ChecklistEntryData.AutoCompleteModes.Show,
                 DefaultDisplayValue = "No Thumbnail"
             });
             // CFG file stuff
@@ -165,8 +166,9 @@ namespace Pogo.CustomMaps.UI
             {
                 Title = "Workshop ID",
                 IsRequired = false,
-                AutoCompleteAction = GenerateWorkshopId,
-                HintBody = "Uniquely identifies this map on the steam workshop.\nGenerate it using the refresh button.",
+                AutoCompleteAction = PromptToResetWorkshopId,
+                AutoCompleteMode = ChecklistEntryData.AutoCompleteModes.ShowWhenComplete,
+                HintBody = "Uniquely identifies this map on the steam workshop.",
                 DefaultDisplayValue = "Generate On Upload"
             });
 
@@ -194,15 +196,69 @@ namespace Pogo.CustomMaps.UI
 
         #endregion
 
-        private void GeneratePreviewImage()
+        private void PromptGeneratePreviewImage()
         {
-            throw new NotImplementedException();
+            parent.parent.OpenPopup(new MainMenu.MenuPopupData()
+            {
+                Title = "Really Regenerate Preview Image?",
+                Body = "This will load the map",
+                OkText = "Yes",
+                OkPressedCallback = GeneratePreviewImage,
+                CancelText = "Nevermind"
+            });
         }
 
-
-        private void GenerateWorkshopId()
+        private void GeneratePreviewImage()
         {
+            gameManager.CustomMapBuilder.LoadMapAndGenerateThumbnail(parent.CurrentMap, OnAfterGeneratePreviewImage);
+        }
 
+        private void OnAfterGeneratePreviewImage(GenerateMapThumbnailResult result)
+        {
+            gameManager.LoadControlScene(gameManager.MainMenuControlScene, () =>
+            {
+                parent.parent.OpenCustomChallengeScreenInstantly();
+                parent.OverrideOpenMapScreen = CustomMapsRoot.ScreenIds.UploadDialog;
+
+                MenuPopupData popupData = new MainMenu.MenuPopupData()
+                {
+                    OkText = "Close",
+                };
+
+                popupData.Title = result.ResultType switch
+                {
+                    GenerateMapThumbnailResult.ResultTypes.Success => "Success!",
+                    _ => "Failure!"
+                };
+
+                popupData.Body = result.ResultType switch
+                {
+                    GenerateMapThumbnailResult.ResultTypes.Success => "Thumbnail image successfully updated",
+                    GenerateMapThumbnailResult.ResultTypes.FailureMissingEntity => "No info_camera_default was found.",
+                    _ => "Failed for an unknown reason. See more in Player.Log"
+                };
+
+                parent.parent.OpenPopup(popupData);
+            });
+        }
+
+        private void PromptToResetWorkshopId()
+        {
+            parent.parent.OpenPopup(new MainMenu.MenuPopupData()
+            {
+                Title = "Really Reset Workshop ID?",
+                Body = "This will upload the map to the steam workshop as a new listing",
+                OkText = "Yes",
+                OkPressedCallback = ResetWorkshopId,
+                CancelText = "Nevermind"
+            });
+        }
+
+        private void ResetWorkshopId()
+        {
+            parent.CurrentMap.WorkshopId = null;
+            MapHeaderHelper.SaveMapHeaderConfig(parent.CurrentMap);
+            UpdateChecklist();
         }
     }
 }
