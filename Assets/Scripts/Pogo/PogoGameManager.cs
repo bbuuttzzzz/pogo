@@ -478,12 +478,12 @@ namespace Pogo
         {
             bool checkpointFound = false;
 
-            foreach (var checkpoint in LoadCheckpointManifest.Checkpoints)
+            foreach (ICheckpoint checkpoint in LoadCheckpointManifest.Checkpoints)
             {
                 if (checkpoint.Chapter == chapter && checkpoint.Id == checkpointId)
                 {
                     checkpointFound = true;
-                    RegisterRespawnPoint(new RespawnPointData(checkpoint.SpawnPoint));
+                    RegisterRespawnPoint(new RespawnPointData(checkpoint));
                     break;
                 }
             }

@@ -179,7 +179,7 @@ namespace WizardUtils
 
             if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
-                // load the control scene
+                // load the control sceneIndex
                 if (!newSceneAlreadyLoaded)
                 {
                     UnityEditor.SceneManagement.EditorSceneManager.OpenScene(newScene.ScenePath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
@@ -211,27 +211,27 @@ namespace WizardUtils
                 Callback = callback
             };
 
-            (List <Scene> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(SceneManager.GetSceneByBuildIndex(newControlScene.BuildIndex), CurrentSceneLoaders);
+            (List <int> scenesToLoad, List<int> scenesToUnload) = GetSceneDifference(newControlScene.BuildIndex, CurrentSceneLoaders);
 
-            foreach(var scene in scenesToLoad)
+            foreach(var sceneIndex in scenesToLoad)
             {
-                var loader = CurrentSceneLoaders.Find(l => l.Scene.buildIndex == scene.buildIndex);
+                var loader = CurrentSceneLoaders.Find(l => l.SceneIndex == sceneIndex);
                 if (loader == null)
                 {
-                    loader = new SceneLoader(this, scene, false);
+                    loader = new SceneLoader(this, sceneIndex, false);
                 }
                 loader.MarkNeeded();
                 loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingControlScene);
                 loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
             }
 
-            foreach(var scene in scenesToUnload)
+            foreach(var sceneIndex in scenesToUnload)
             {
-                var loader = CurrentSceneLoaders.Find(l => l.Scene.buildIndex == scene.buildIndex);
+                var loader = CurrentSceneLoaders.Find(l => l.SceneIndex == sceneIndex);
 
                 if (loader == null)
                 {
-                    loader = new SceneLoader(this, scene, true);
+                    loader = new SceneLoader(this, sceneIndex, true);
                     CurrentSceneLoaders.Add(loader);
                 }
                 loader.MarkNotNeeded();
@@ -310,28 +310,28 @@ namespace WizardUtils
             return true;
         }
 
-        private static (List<Scene> scenesToLoad, List<Scene> scenesToUnload) GetSceneDifference(
-            Scene newScene,
+        private static (List<int> scenesToLoad, List<int> scenesToUnload) GetSceneDifference(
+            int newScene,
             IEnumerable<SceneLoader> loaders = null)
         {
-            List<Scene> scenesToLoad = new List<Scene>();
-            List<Scene> scenesToUnload = new List<Scene>();
+            List<int> scenesToLoad = new List<int>();
+            List<int> scenesToUnload = new List<int>();
 
             scenesToLoad.Add(newScene);
 
-            // for each currently loaded scene
+            // for each currently loaded sceneIndex
             for (int n = 0; n < SceneManager.sceneCount; n++)
             {
-                Scene scene = SceneManager.GetSceneAt(n);
+                int sceneIndex = SceneManager.GetSceneAt(n).buildIndex;
 
                 // just ignore the GameScene, Main Menu, and Credits scenes
-                if (GameManager.ignoredScenes.Contains(scene.buildIndex)
-                    || ignoredScenes.Contains(scene.buildIndex)) continue;
+                if (GameManager.ignoredScenes.Contains(sceneIndex)
+                    || ignoredScenes.Contains(sceneIndex)) continue;
 
-                Scene? matchingToLoadScene = null;
-                foreach (Scene sceneToLoad in scenesToLoad)
+                int? matchingToLoadScene = null;
+                foreach (int sceneToLoad in scenesToLoad)
                 {
-                    if (sceneToLoad.buildIndex == scene.buildIndex)
+                    if (sceneToLoad == sceneIndex)
                     {
                         matchingToLoadScene = sceneToLoad;
                     }
@@ -340,7 +340,7 @@ namespace WizardUtils
                 // if we want to have it loaded
                 if (matchingToLoadScene != null)
                 {
-                    SceneLoader existingLoader = loaders.FirstOrDefault(l => l.Scene.buildIndex == matchingToLoadScene.Value.buildIndex);
+                    SceneLoader existingLoader = loaders.FirstOrDefault(l => l.SceneIndex == matchingToLoadScene.Value);
 
                     // if this level is marked as not needed
                     if (existingLoader != null && !existingLoader.CurrentlyNeeded)
@@ -349,14 +349,14 @@ namespace WizardUtils
                     }
                     else
                     {
-                        // Scene already exists, so we don't need to load it
+                        // SceneIndex already exists, so we don't need to load it
                         scenesToLoad.Remove(matchingToLoadScene.Value);
                     }
                 }
                 else
                 {
-                    // Scene no longer exists. so we need to get rid of it
-                    scenesToUnload.Add(scene);
+                    // SceneIndex no longer exists. so we need to get rid of it
+                    scenesToUnload.Add(sceneIndex);
                 }
             }
 

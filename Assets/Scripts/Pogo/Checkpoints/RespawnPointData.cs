@@ -11,7 +11,7 @@ namespace Pogo.Checkpoints
     public struct RespawnPointData
     {
         public Transform transform;
-        public Checkpoint Checkpoint;
+        public ICheckpoint Checkpoint;
         public CustomCheckpointController CustomCheckpoint;
         public LevelDescriptor OverrideLevel;
 
@@ -23,10 +23,10 @@ namespace Pogo.Checkpoints
             OverrideLevel = overrideLevel;
         }
 
-        public RespawnPointData(Checkpoint trigger, LevelDescriptor overrideLevel = null)
+        public RespawnPointData(ICheckpoint checkpoint, LevelDescriptor overrideLevel = null)
         {
-            transform = trigger.RespawnPoint;
-            Checkpoint = trigger;
+            transform = checkpoint.SpawnPoint;
+            Checkpoint = checkpoint;
             CustomCheckpoint = null;
             OverrideLevel = overrideLevel;
         }

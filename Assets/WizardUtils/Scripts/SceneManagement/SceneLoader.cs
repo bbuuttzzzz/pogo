@@ -23,7 +23,7 @@ namespace WizardUtils.SceneManagement
         #endregion
 
         private GameManager Parent;
-        public readonly Scene Scene;
+        public readonly int SceneIndex;
 
         public float TaskProgress { get; private set; }
         private Coroutine ActiveCoroutine;
@@ -37,19 +37,19 @@ namespace WizardUtils.SceneManagement
         public UnityEvent OnReadyToActivate;
         public bool IsIdle => CurrentLoadState == LoadStates.Loaded || CurrentLoadState == LoadStates.NotLoaded;
 
-        public SceneLoader(GameManager parent, Scene scene, bool currentlyLoaded)
+        public SceneLoader(GameManager parent, int sceneIndex, bool currentlyLoaded)
         {
 #if UNITY_WEBGL
             // don't be coy with scene loading on web
             AllowSceneActivation = true;
 #endif
-            if (scene == null)
+            if (sceneIndex < 0)
             {
-                throw new NullReferenceException("Tried to create a SceneLoader with a NULL scene");
+                throw new ArgumentException($"Tried to create a SceneLoader for invalid scene {sceneIndex}");
             }
 
             Parent = parent;
-            Scene = scene;
+            SceneIndex = sceneIndex;
             CurrentLoadState = currentlyLoaded ? LoadStates.Loaded : LoadStates.NotLoaded;
             OnIdle = new UnityEvent();
             OnReadyToActivate = new UnityEvent();
@@ -145,11 +145,11 @@ namespace WizardUtils.SceneManagement
             AsyncOperation unloadTask = null;
             try
             {
-                unloadTask = SceneManager.UnloadSceneAsync(Scene.buildIndex);
+                unloadTask = SceneManager.UnloadSceneAsync(SceneIndex);
             }
             catch(ArgumentException e)
             {
-                Debug.LogError($"Tried to unload an invalid scene: {Scene.name} (buildIndex {Scene.buildIndex}). Giving up.");
+                Debug.LogError($"Tried to unload an invalid scene (buildIndex {SceneIndex}). Giving up.");
             }
 
             if (unloadTask == null)
@@ -163,7 +163,7 @@ namespace WizardUtils.SceneManagement
             {
                 TaskProgress = unloadTask.isDone ? 1 : unloadTask.progress;
 
-                if (unloadTask.isDone && !SceneIsLoaded(Scene))
+                if (unloadTask.isDone && !SceneIsLoaded(SceneIndex))
                 {
                     break;
                 }
@@ -177,7 +177,7 @@ namespace WizardUtils.SceneManagement
         private IEnumerator LoadAsync()
         {
             CanCancelActiveCoroutine = false;
-            AsyncOperation loadTask = SceneManager.LoadSceneAsync(Scene.buildIndex, LoadSceneMode.Additive);
+            AsyncOperation loadTask = SceneManager.LoadSceneAsync(SceneIndex, LoadSceneMode.Additive);
             loadTask.allowSceneActivation = AllowSceneActivation;
 
             while (true)
@@ -210,11 +210,11 @@ namespace WizardUtils.SceneManagement
             FinishLoading();
         }
 
-        private static bool SceneIsLoaded(Scene scene)
+        private static bool SceneIsLoaded(int sceneIndex)
         {
             for (int n = 0; n < SceneManager.sceneCount; n++)
             {
-                if (SceneManager.GetSceneAt(n).buildIndex == scene.buildIndex)
+                if (SceneManager.GetSceneAt(n).buildIndex == sceneIndex)
                 {
                     return true;
                 }
@@ -224,8 +224,7 @@ namespace WizardUtils.SceneManagement
 
         public override string ToString()
         {
-            string levelName = Scene != null ? Scene.name : "NULL LEVEL";
-            return $"LOADER {levelName} | {CurrentLoadState}";
+            return $"LOADER {SceneIndex} | {CurrentLoadState}";
         }
     }
 }
