@@ -217,28 +217,31 @@ namespace Pogo.CustomMaps.UI
         {
             gameManager.LoadControlScene(gameManager.MainMenuControlScene, () =>
             {
-                parent.parent.OpenCustomChallengeScreenInstantly();
-                parent.OverrideOpenMapScreen = CustomMapsRoot.ScreenIds.UploadDialog;
-
-                MenuPopupData popupData = new MainMenu.MenuPopupData()
+                gameManager.OnMainMenuLoadAction = (mainMenu) =>
                 {
-                    OkText = "Close",
-                };
+                    mainMenu.OpenCustomChallengeScreenInstantly();
+                    mainMenu.MapsRoot.OverrideOpenMapScreen = CustomMapsRoot.ScreenIds.UploadDialog;
 
-                popupData.Title = result.ResultType switch
-                {
-                    GenerateMapThumbnailResult.ResultTypes.Success => "Success!",
-                    _ => "Failure!"
-                };
+                    MenuPopupData popupData = new MainMenu.MenuPopupData()
+                    {
+                        OkText = "Close",
+                    };
 
-                popupData.Body = result.ResultType switch
-                {
-                    GenerateMapThumbnailResult.ResultTypes.Success => "Thumbnail image successfully updated",
-                    GenerateMapThumbnailResult.ResultTypes.FailureMissingEntity => "No info_camera_default was found.",
-                    _ => "Failed for an unknown reason. See more in Player.Log"
-                };
+                    popupData.Title = result.ResultType switch
+                    {
+                        GenerateMapThumbnailResult.ResultTypes.Success => "Success!",
+                        _ => "Failure!"
+                    };
 
-                parent.parent.OpenPopup(popupData);
+                    popupData.Body = result.ResultType switch
+                    {
+                        GenerateMapThumbnailResult.ResultTypes.Success => "Thumbnail image successfully updated",
+                        GenerateMapThumbnailResult.ResultTypes.FailureMissingEntity => "No info_camera_default was found.",
+                        _ => "Failed for an unknown reason. See more in Player.Log"
+                    };
+
+                    parent.parent.OpenPopup(popupData);
+                };
             });
         }
 

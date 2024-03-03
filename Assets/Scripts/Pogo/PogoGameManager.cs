@@ -11,6 +11,7 @@ using Pogo.CustomMaps;
 using Pogo.CustomMaps.Steam;
 using Pogo.Difficulties;
 using Pogo.Levels;
+using Pogo.MainMenu;
 using Pogo.Saving;
 using System;
 using System.Collections;
@@ -133,6 +134,8 @@ namespace Pogo
 
         public ChallengeBuilder ChallengeBuilder;
         public CustomMapBuilder CustomMapBuilder;
+
+        public Action<PogoMainMenuController> OnMainMenuLoadAction;
 
         #region Surfaces
         public Surfaces.SurfaceConfig DefaultSurfaceConfig;

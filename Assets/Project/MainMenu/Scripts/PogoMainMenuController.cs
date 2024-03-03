@@ -1,4 +1,5 @@
 ﻿using Pogo.Challenges;
+using Pogo.CustomMaps.UI;
 using Pogo.Saving;
 using System;
 using System.Collections.Generic;
@@ -13,15 +14,27 @@ namespace Pogo.MainMenu
     public class PogoMainMenuController : MonoBehaviour
     {
         public PogoChapterSelectorController ChapterSelector;
+        public CustomMapsRoot MapsRoot;
+        private PogoGameManager gameManager;
 
         public Animator MainMenuAnimator;
         public Animator ChallengeButtonAnimator;
 
         private void Start()
         {
-            UnlockChecker unlockChecker = GetComponent<UnlockChecker>();
-            bool value = unlockChecker.Check();
-            ChallengeButtonAnimator.SetBool("Flash", value);
+            gameManager = PogoGameManager.PogoInstance;
+
+            if (gameManager.OnMainMenuLoadAction != null)
+            {
+                gameManager.OnMainMenuLoadAction(this);
+                gameManager.OnMainMenuLoadAction = null;
+            }
+            else
+            {
+                UnlockChecker unlockChecker = GetComponent<UnlockChecker>();
+                bool value = unlockChecker.Check();
+                ChallengeButtonAnimator.SetBool("Flash", value);
+            }
         }
 
         public void AdventureTapped()
