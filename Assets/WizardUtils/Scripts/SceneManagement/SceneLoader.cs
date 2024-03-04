@@ -19,7 +19,7 @@ namespace WizardUtils.SceneManagement
         /// <summary>
         /// wait this many seconds before unloading when marked not needed
         /// </summary>
-        const float UnloadDelaySeconds = 0.25f;
+        const float UnloadDelaySeconds = 5f;
         #endregion
 
         private GameManager Parent;
@@ -142,7 +142,16 @@ namespace WizardUtils.SceneManagement
             AsyncOperation unloadTask = null;
             try
             {
-                unloadTask = SceneManager.UnloadSceneAsync(SceneIndex);
+                Scene scene = SceneManager.GetSceneByBuildIndex(SceneIndex);
+                if (!scene.IsValid())
+                {
+                    Debug.LogError($"Tried to unload an unloaded scene (buildIndex {SceneIndex}). Giving up.");
+                }
+                else
+                {
+                    SceneHelper.DeactivateScene(scene);
+                    unloadTask = SceneManager.UnloadSceneAsync(scene);
+                }
             }
             catch(ArgumentException e)
             {

@@ -257,7 +257,7 @@ namespace WizardUtils
                     loader = new SceneLoader(this, sceneIndex, true);
                     CurrentSceneLoaders.Add(loader);
                 }
-                loader.MarkNotNeeded();
+                loader.MarkNotNeeded(true);
                 loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingControlScene);
                 loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
             }
