@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WizardUtils;
+using WizardUtils.GameSettings;
 using WizardUtils.SceneManagement;
 
 namespace Pogo.Levels
@@ -135,17 +136,12 @@ namespace Pogo.Levels
                 return false;
             }
 
+            CurrentLevelLoadSettings = settings;
+
             if (settings.LoadingFromMenu)
             {
-                gameManager.LoadingRoot.SetOpen(true);
-                if (gameManager.CurrentControlScene != null)
-                {
-                    gameManager.UnloadControlScene(() =>
-                    {
-                        LoadLevelAsync(settings);
-                    });
-                    return true;
-                }
+                gameManager.LoadScenesAsync(settings.Level.LoadLevels.Select(l => l.BuildIndex), FinishLoadingLevel);
+                return true;
             }
 
             currentLevel = settings.Level;
@@ -185,7 +181,6 @@ namespace Pogo.Levels
                 loader.MarkNotNeeded(settings.Instantly);
             }
 
-            CurrentLevelLoadSettings = settings;
             RecalculateFinishedLoadingLevel();
 
             return true;
@@ -421,6 +416,11 @@ namespace Pogo.Levels
 
         public void TransitionAtmosphere(LevelDescriptor newLevel, bool instant)
         {
+            if (newLevel == null)
+            {
+                Debug.LogError("Can't transition atmosphere to NULL level");
+                return;
+            }
             TransitionAtmosphere(newLevel.PostProcessingPrefab, instant);
         }
 
