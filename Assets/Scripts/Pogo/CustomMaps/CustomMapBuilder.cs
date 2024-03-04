@@ -114,8 +114,10 @@ namespace Pogo.CustomMaps
 
         public void LoadMapAndGenerateThumbnail(MapHeader header, Action<GenerateMapThumbnailResult> callback)
         {
+            Debug.Log($"Loading Map {header.MapName} to generate thumbnail...");
             LoadCustomMapLevel(header, () =>
             {
+                Debug.Log($"generating thumbnail...");
                 var result = GenerateThumbnailForCurrentMap();
                 callback?.Invoke(result);
             });
