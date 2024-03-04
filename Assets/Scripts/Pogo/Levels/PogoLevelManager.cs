@@ -15,6 +15,7 @@ namespace Pogo.Levels
     {
         public bool LoadInitialLevelImmediately = true;
         public LevelShareCodeManifest ShareCodeManifest;
+        private PogoGameManager gameManager;
 
         private List<LevelSceneLoader> CurrentLevelSceneLoaders;
         private LevelLoadingSettings? CurrentLevelLoadSettings;
@@ -22,11 +23,11 @@ namespace Pogo.Levels
         void Start()
         {
             CurrentLevelSceneLoaders = new List<LevelSceneLoader>();
-            PogoGameManager game = GetComponent<PogoGameManager>();
-            game.OnControlSceneChanged += onControlSceneChanged;
-            if (LoadInitialLevelImmediately && !game.DontLoadScenesInEditor && game.InitialLevel != null)
+            gameManager = GetComponent<PogoGameManager>();
+            gameManager.OnControlSceneChanged += onControlSceneChanged;
+            if (LoadInitialLevelImmediately && !gameManager.DontLoadScenesInEditor && gameManager.InitialLevel != null)
             {
-                LoadLevelInstantly(game.InitialLevel);
+                LoadLevelInstantly(gameManager.InitialLevel);
             }
         }
 
@@ -133,6 +134,11 @@ namespace Pogo.Levels
                 }
                 return false;
             }
+            if (settings.LoadingFromMenu)
+            {
+                gameManager.LoadingRoot.SetOpen(true);
+            }
+
             currentLevel = settings.Level;
 
             (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(settings.Level, CurrentLevelSceneLoaders);
@@ -242,6 +248,7 @@ namespace Pogo.Levels
         {
             if (!CurrentLevelLoadSettings.HasValue) return;
             LevelLoadingSettings settings = CurrentLevelLoadSettings.Value;
+            gameManager.LoadingRoot.SetOpen(false);
 
             TransitionAtmosphere(CurrentLevel, settings.Instantly);
             PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();

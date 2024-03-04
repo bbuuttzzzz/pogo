@@ -134,6 +134,7 @@ namespace WizardUtils
         [HideInInspector]
         public ControlSceneDescriptor CurrentControlScene;
         private SceneLoadingData CurrentSceneLoadingData;
+        public ToggleableUIElement LoadingRoot;
 
 #if UNITY_EDITOR
         public void UnloadControlSceneInEditor()
@@ -210,6 +211,7 @@ namespace WizardUtils
                 FinalScene = newControlScene,
                 Callback = callback
             };
+            LoadingRoot.SetOpen(true);
 
             (List <int> scenesToLoad, List<int> scenesToUnload) = GetSceneDifference(newControlScene.BuildIndex, CurrentSceneLoaders);
 
@@ -247,6 +249,7 @@ namespace WizardUtils
             CurrentSceneLoadingData.Callback?.Invoke();
             OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(CurrentSceneLoadingData.InitialScene, CurrentSceneLoadingData.FinalScene));
             CurrentSceneLoadingData = null;
+            LoadingRoot.SetOpen(false);
         }
 
         private void RecalculateFinishedLoadingControlScene()
