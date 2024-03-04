@@ -20,7 +20,7 @@ namespace Pogo
             PogoGameManager.PogoInstance.LoadCheckpointManifest.Remove(this);
         }
 
-        public override ChapterDescriptor Chapter => Descriptor.Chapter;
+        public override ChapterDescriptor Chapter => Descriptor != null ? Descriptor.Chapter : null;
 
         public override CheckpointId CheckpointId => Descriptor.CheckpointId;
         public override bool CanSkip
