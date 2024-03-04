@@ -265,46 +265,18 @@ namespace WizardUtils
                 }
             }
 
-            if (AllLoadingLevelsAreReady())
-            {
-                ActivateAllRemainingLoaders();
-            }
-
             if (AllLoadingLevelsFinished())
             {
                 FinishLoadingControlScene();
             }
         }
 
-        private void ActivateAllRemainingLoaders()
-        {
-            foreach (var sceneLoader in CurrentSceneLoaders)
-            {
-                if (sceneLoader.CurrentLoadState == SceneLoader.LoadStates.Loading)
-                {
-                    sceneLoader.AllowSceneActivation = true;
-                }
-            }
-        }
-
-        private bool AllLoadingLevelsAreReady()
-        {
-            foreach (var sceneLoader in CurrentSceneLoaders)
-            {
-                if (sceneLoader.CurrentLoadState == SceneLoader.LoadStates.Loading
-                    && sceneLoader.TaskProgress < 0.9f)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
         private bool AllLoadingLevelsFinished()
         {
             foreach (var sceneLoader in CurrentSceneLoaders)
             {
-                if (sceneLoader.CurrentLoadState == SceneLoader.LoadStates.Loading)
+                if (sceneLoader.CurrentLoadState == SceneLoader.LoadStates.Loading
+                    || sceneLoader.CurrentLoadState == SceneLoader.LoadStates.Unloading)
                 {
                     return false;
                 }
