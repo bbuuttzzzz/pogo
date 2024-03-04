@@ -19,7 +19,7 @@ namespace WizardUtils.SceneManagement
         /// <summary>
         /// wait this many seconds before unloading when marked not needed
         /// </summary>
-        const float UnloadDelaySeconds = 5f;
+        const float UnloadDelaySeconds = 0.25f;
         #endregion
 
         private GameManager Parent;

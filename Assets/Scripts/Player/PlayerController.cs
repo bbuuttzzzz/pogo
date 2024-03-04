@@ -409,7 +409,6 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
 
     void setControlSceneBehavior(bool inControlScene)
     {
-        Debug.Log($"Player setControlSceneBehavior {inControlScene}");
         gameObject.SetActive(!inControlScene);
         UpdateCursorLock(inControlScene);
     }
