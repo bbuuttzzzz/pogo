@@ -134,9 +134,18 @@ namespace Pogo.Levels
                 }
                 return false;
             }
+
             if (settings.LoadingFromMenu)
             {
                 gameManager.LoadingRoot.SetOpen(true);
+                if (gameManager.CurrentControlScene != null)
+                {
+                    gameManager.UnloadControlScene(() =>
+                    {
+                        LoadLevelAsync(settings);
+                    });
+                    return true;
+                }
             }
 
             currentLevel = settings.Level;
@@ -249,7 +258,6 @@ namespace Pogo.Levels
             if (!CurrentLevelLoadSettings.HasValue) return;
             LevelLoadingSettings settings = CurrentLevelLoadSettings.Value;
             gameManager.LoadingRoot.SetOpen(false);
-
             TransitionAtmosphere(CurrentLevel, settings.Instantly);
             PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
             if (settings.MainLevelState.HasValue)
@@ -271,7 +279,6 @@ namespace Pogo.Levels
 
             if (settings.LoadingFromMenu)
             {
-                PogoGameManager.PogoInstance.UnloadControlScene();
                 PogoGameManager.PogoInstance.ResetStats();
             }
 

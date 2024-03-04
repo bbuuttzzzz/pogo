@@ -198,24 +198,45 @@ namespace WizardUtils
 
         public virtual void LoadControlSceneAsync(ControlSceneDescriptor newControlScene, Action callback = null)
         {
+            InternalLoadScenesAsync(new SceneLoadingData()
+            {
+                InitialScene = CurrentControlScene,
+                Callback = callback,
+                TargetControlScene = newControlScene,
+                TargetSceneBuildIds = new int[]
+                {
+                    newControlScene.BuildIndex
+                }
+        });
+        }
+
+        public virtual void LoadScenesAsync(IEnumerable<int> targetScenes, Action callback = null)
+        {
+            InternalLoadScenesAsync(new SceneLoadingData()
+            {
+                InitialScene = CurrentControlScene,
+                Callback = callback,
+                TargetControlScene = null,
+                TargetSceneBuildIds = targetScenes.ToArray()
+            });
+        }
+
+        private void InternalLoadScenesAsync(SceneLoadingData sceneLoadingData)
+        {
             if (DontLoadScenesInEditor) return;
             var initialScene = CurrentControlScene;
 
             if (CurrentSceneLoadingData != null)
             {
-                Debug.LogWarning($"Overriding old ControlScene Loading Data {CurrentSceneLoadingData.InitialScene.name} -> {CurrentSceneLoadingData.FinalScene.name}");
+                Debug.LogWarning($"Overriding old ControlScene Loading Data {CurrentSceneLoadingData}");
             }
-            CurrentSceneLoadingData = new SceneLoadingData()
-            {
-                InitialScene = initialScene,
-                FinalScene = newControlScene,
-                Callback = callback
-            };
+            CurrentSceneLoadingData = sceneLoadingData;
+
             LoadingRoot.SetOpen(true);
 
-            (List <int> scenesToLoad, List<int> scenesToUnload) = GetSceneDifference(newControlScene.BuildIndex, CurrentSceneLoaders);
+            (List<int> scenesToLoad, List<int> scenesToUnload) = GetSceneDifference(sceneLoadingData.TargetSceneBuildIds, CurrentSceneLoaders);
 
-            foreach(var sceneIndex in scenesToLoad)
+            foreach (var sceneIndex in scenesToLoad)
             {
                 var loader = CurrentSceneLoaders.Find(l => l.SceneIndex == sceneIndex);
                 if (loader == null)
@@ -227,7 +248,7 @@ namespace WizardUtils
                 loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
             }
 
-            foreach(var sceneIndex in scenesToUnload)
+            foreach (var sceneIndex in scenesToUnload)
             {
                 var loader = CurrentSceneLoaders.Find(l => l.SceneIndex == sceneIndex);
 
@@ -241,13 +262,12 @@ namespace WizardUtils
                 loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
             }
 
-            CurrentControlScene = newControlScene;
         }
 
         private void FinishLoadingControlScene()
         {
             CurrentSceneLoadingData.Callback?.Invoke();
-            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(CurrentSceneLoadingData.InitialScene, CurrentSceneLoadingData.FinalScene));
+            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(CurrentSceneLoadingData.InitialScene, CurrentSceneLoadingData.TargetControlScene));
             CurrentSceneLoadingData = null;
             LoadingRoot.SetOpen(false);
         }
@@ -286,13 +306,11 @@ namespace WizardUtils
         }
 
         private static (List<int> scenesToLoad, List<int> scenesToUnload) GetSceneDifference(
-            int newScene,
+            IEnumerable<int> targetScenes,
             IEnumerable<SceneLoader> loaders = null)
         {
-            List<int> scenesToLoad = new List<int>();
+            List<int> scenesToLoad = new List<int>(targetScenes);
             List<int> scenesToUnload = new List<int>();
-
-            scenesToLoad.Add(newScene);
 
             // for each currently loaded sceneIndex
             for (int n = 0; n < SceneManager.sceneCount; n++)
@@ -355,12 +373,9 @@ namespace WizardUtils
             callback?.Invoke();
         }
 
-        public void UnloadControlScene()
+        public void UnloadControlScene(Action callback = null)
         {
-            SceneManager.UnloadSceneAsync(CurrentControlScene.BuildIndex);
-            var initialScene = CurrentControlScene;
-            CurrentControlScene = null;
-            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(initialScene, null));
+            LoadControlSceneAsync(null, callback);
         }
 
         public void Quit(bool quitToDesktop)
