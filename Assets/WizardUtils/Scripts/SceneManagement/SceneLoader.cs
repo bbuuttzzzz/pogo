@@ -39,10 +39,7 @@ namespace WizardUtils.SceneManagement
 
         public SceneLoader(GameManager parent, int sceneIndex, bool currentlyLoaded)
         {
-#if UNITY_WEBGL
-            // don't be coy with scene loading on web
             AllowSceneActivation = true;
-#endif
             if (sceneIndex < 0)
             {
                 throw new ArgumentException($"Tried to create a SceneLoader for invalid scene {sceneIndex}");
