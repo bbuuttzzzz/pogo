@@ -266,6 +266,7 @@ namespace WizardUtils
 
         private void FinishLoadingControlScene()
         {
+            CurrentControlScene = CurrentSceneLoadingData.TargetControlScene;
             CurrentSceneLoadingData.Callback?.Invoke();
             OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(CurrentSceneLoadingData.InitialScene, CurrentSceneLoadingData.TargetControlScene));
             CurrentSceneLoadingData = null;
@@ -354,23 +355,6 @@ namespace WizardUtils
             }
 
             return (scenesToLoad, scenesToUnload);
-        }
-
-        IEnumerator AfterTasksFinish(List<AsyncOperation> tasks, Action callback)
-        {
-            bool finished = false;
-            while (!finished)
-            {
-                finished = true;
-                foreach (AsyncOperation Task in tasks)
-                {
-                    finished = finished && Task.isDone;
-                }
-
-                yield return new WaitForSecondsRealtime(0.02f);
-            }
-
-            callback?.Invoke();
         }
 
         public void UnloadControlScene(Action callback = null)

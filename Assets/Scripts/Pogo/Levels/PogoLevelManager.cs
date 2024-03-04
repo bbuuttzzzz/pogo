@@ -137,14 +137,13 @@ namespace Pogo.Levels
             }
 
             CurrentLevelLoadSettings = settings;
+            currentLevel = settings.Level;
 
             if (settings.LoadingFromMenu)
             {
                 gameManager.LoadScenesAsync(settings.Level.LoadLevels.Select(l => l.BuildIndex), FinishLoadingLevel);
                 return true;
             }
-
-            currentLevel = settings.Level;
 
             (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(settings.Level, CurrentLevelSceneLoaders);
 
