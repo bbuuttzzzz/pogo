@@ -8,8 +8,6 @@ namespace Pogo
         private const int IconWidth = 640;
         private const int IconHeight = 480;
 
-        public ChapterDescriptor Chapter;
-
         private void Awake()
         {
             gameObject.SetActive(false);
