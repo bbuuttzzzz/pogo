@@ -247,7 +247,7 @@ namespace Pogo.CustomMaps.UI
                 popupData.Body = result.ResultType switch
                 {
                     GenerateMapThumbnailResult.ResultTypes.Success => "Thumbnail image successfully updated",
-                    GenerateMapThumbnailResult.ResultTypes.FailureMissingEntity => "No info_camera_default was found.",
+                    GenerateMapThumbnailResult.ResultTypes.FailureMissingEntity => "No info_camera_preview was found.",
                     _ => "Failed for an unknown reason. See more in Player.Log"
                 };
 
