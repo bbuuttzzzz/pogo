@@ -129,6 +129,7 @@ namespace Pogo.CustomMaps
             {
                 return new GenerateMapThumbnailResult()
                 {
+                    MapHeader = CurrentCustomMap.Header,
                     ResultType = GenerateMapThumbnailResult.ResultTypes.FailureMissingEntity
                 };
             }
@@ -140,6 +141,7 @@ namespace Pogo.CustomMaps
             MapHeaderHelper.SaveThumbnail(CurrentCustomMap.Header, sprite);
             return new GenerateMapThumbnailResult()
             {
+                MapHeader = CurrentCustomMap.Header,
                 ResultType = GenerateMapThumbnailResult.ResultTypes.Success
             };
         }
@@ -147,7 +149,10 @@ namespace Pogo.CustomMaps
         private void SpawnCustomMap(MapHeader header)
         {
             string folderPath = header.FolderPath;
-            CurrentCustomMap = new CustomMap();
+            CurrentCustomMap = new CustomMap()
+            {
+                Header = header,
+            };
             string fullMapPath = $"{folderPath}{Path.DirectorySeparatorChar}{header.MapName}.bsp";
             Debug.Log($"Tried to spawn customMap at path {fullMapPath} :D");
             BSPLoader.Settings settings = new()

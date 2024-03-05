@@ -19,6 +19,7 @@ namespace Pogo.CustomMaps.UI
         }
 
         public PogoMainMenuController parent;
+        public UploadDialogScreen UploadScreen;
         private PogoGameManager gameManager;
         public Button UploadButton;
         [HideInInspector]

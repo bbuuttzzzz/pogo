@@ -228,7 +228,9 @@ namespace Pogo.CustomMaps.UI
             gameManager.DoMainMenuAction((mainMenu) =>
             {
                 Debug.Log("Returning to upload map dialog after generating map thumbnail...");
-                mainMenu.OpenCustomChallengeScreenInstantly();
+                mainMenu.OpenCustomMapsScreenInstantly();
+                mainMenu.MapsRoot.CurrentMap = result.MapHeader;
+                //mainMenu.MapsRoot.UploadScreen.UpdateChecklist();
                 mainMenu.MapsRoot.OverrideOpenMapScreen = CustomMapsRoot.ScreenIds.UploadDialog;
 
                 MenuPopupData popupData = new MainMenu.MenuPopupData()

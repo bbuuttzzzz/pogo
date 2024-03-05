@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.CustomMaps.Indexing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace Pogo.CustomMaps
             FailureMissingEntity
         }
 
+        public MapHeader MapHeader;
         public ResultTypes ResultType;
     }
 }
