@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace WizardUtils.SceneManagement
 {
@@ -12,6 +13,9 @@ namespace WizardUtils.SceneManagement
         public ControlSceneDescriptor TargetControlScene;
         public int[] TargetSceneBuildIds;
         public Action Callback;
+        public float StartTime;
+        public float MinimumLoadTime;
+        public Coroutine DelayedFinishLoadCoroutine;
 
         public override string ToString()
         {

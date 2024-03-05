@@ -11,6 +11,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using WizardUtils.Extensions;
 using WizardUtils.GameSettings;
 using WizardUtils.Saving;
 using WizardUtils.SceneManagement;
@@ -129,6 +130,7 @@ namespace WizardUtils
         public bool InControlScene => CurrentControlScene != null;
         public bool InGameScene => CurrentControlScene == null;
 
+        private const float MinimumSceneLoadTimeSeconds = 1f;
         private List<SceneLoader> CurrentSceneLoaders;
         public ControlSceneDescriptor MainMenuControlScene;
         [HideInInspector]
@@ -203,6 +205,8 @@ namespace WizardUtils
                 InitialScene = CurrentControlScene,
                 Callback = callback,
                 TargetControlScene = newControlScene,
+                StartTime = Time.unscaledTime,
+                MinimumLoadTime = MinimumSceneLoadTimeSeconds,
                 TargetSceneBuildIds = new int[]
                 {
                     newControlScene.BuildIndex
@@ -217,6 +221,8 @@ namespace WizardUtils
                 InitialScene = CurrentControlScene,
                 Callback = callback,
                 TargetControlScene = null,
+                StartTime = Time.unscaledTime,
+                MinimumLoadTime = MinimumSceneLoadTimeSeconds,
                 TargetSceneBuildIds = targetScenes.ToArray()
             });
         }
@@ -228,7 +234,11 @@ namespace WizardUtils
 
             if (CurrentSceneLoadingData != null)
             {
-                Debug.LogWarning($"Overriding old ControlScene Loading Data {CurrentSceneLoadingData}");
+                Debug.LogWarning($"Overriding old ControlScene Loading Data {CurrentSceneLoadingData} with {sceneLoadingData}. pray to god nothing explodes!!!");
+                if (CurrentSceneLoadingData.DelayedFinishLoadCoroutine != null)
+                {
+                    StopCoroutine(CurrentSceneLoadingData.DelayedFinishLoadCoroutine);
+                }
             }
             CurrentSceneLoadingData = sceneLoadingData;
 
@@ -266,11 +276,17 @@ namespace WizardUtils
 
         private void FinishLoadingControlScene()
         {
-            CurrentControlScene = CurrentSceneLoadingData.TargetControlScene;
-            CurrentSceneLoadingData.Callback?.Invoke();
-            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(CurrentSceneLoadingData.InitialScene, CurrentSceneLoadingData.TargetControlScene));
+            SceneLoadingData lastSceneLoadingData = CurrentSceneLoadingData;
             CurrentSceneLoadingData = null;
+            
+            CurrentControlScene = lastSceneLoadingData.TargetControlScene;
+            if (lastSceneLoadingData.DelayedFinishLoadCoroutine != null)
+            {
+                StopCoroutine(lastSceneLoadingData.DelayedFinishLoadCoroutine);
+            }
             LoadingRoot.SetOpen(false);
+            OnControlSceneChanged?.Invoke(this, new ControlSceneEventArgs(lastSceneLoadingData.InitialScene, lastSceneLoadingData.TargetControlScene));
+            lastSceneLoadingData.Callback?.Invoke();
         }
 
         private void RecalculateFinishedLoadingControlScene()
@@ -288,7 +304,15 @@ namespace WizardUtils
 
             if (AllLoadingLevelsFinished())
             {
-                FinishLoadingControlScene();
+                float remainingTime = CurrentSceneLoadingData.MinimumLoadTime - (Time.unscaledTime - CurrentSceneLoadingData.StartTime);
+                if (remainingTime > 0)
+                {
+                    CurrentSceneLoadingData.DelayedFinishLoadCoroutine = this.StartDelayCoroutineUnscaled(remainingTime, FinishLoadingControlScene);
+                }
+                else
+                {
+                    FinishLoadingControlScene();
+                }
             }
         }
 
