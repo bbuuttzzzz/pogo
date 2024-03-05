@@ -63,7 +63,7 @@ namespace Pogo.CustomMaps
         private void Start()
         {
             gameManager = PogoGameManager.PogoInstance;
-            gameManager.OnQuitToMenu.AddListener(GameManager_OnQuitToMenu);
+            gameManager.OnControlSceneChanged += GameManager_OnControlSceneChanged;
             SurfaceConfigDictionary = new Dictionary<string, SurfaceConfig>();
             foreach (var config in Resources.LoadAll<SurfaceConfig>("Surfaces"))
             {
@@ -73,6 +73,11 @@ namespace Pogo.CustomMaps
             }
         }
 
+        private void GameManager_OnControlSceneChanged(object sender, ControlSceneEventArgs e)
+        {
+            DisposeCurrentMap();
+        }
+
         private IEnumerable<MapSourceFolder> GetMapSourceFolders()
         {
             return new MapSourceFolder[]
@@ -80,11 +85,6 @@ namespace Pogo.CustomMaps
                 new MapSourceFolder(true, $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps"),
                 new MapSourceFolder(false, $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps")
             };
-        }
-
-        private void GameManager_OnQuitToMenu()
-        {
-            DisposeCurrentMap();
         }
 
         public void LoadCustomMapLevel(MapHeader header, Action callback = null)
