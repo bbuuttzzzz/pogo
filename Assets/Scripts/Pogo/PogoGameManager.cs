@@ -21,6 +21,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.SceneManagement;
 using WizardPhysics.PhysicsTime;
 using WizardUI;
 using WizardUtils;
@@ -135,7 +136,38 @@ namespace Pogo
         public ChallengeBuilder ChallengeBuilder;
         public CustomMapBuilder CustomMapBuilder;
 
-        public Action<PogoMainMenuController> OnMainMenuLoadAction;
+        #region Main Menu Action
+        private Action<PogoMainMenuController> OnMainMenuLoadAction;
+
+        public bool TryGetMainMenuLoadAction(out Action<PogoMainMenuController> action)
+        {
+            action = OnMainMenuLoadAction;
+            OnMainMenuLoadAction = null;
+            return action != null;
+        }
+
+        public void DoMainMenuAction(Action<PogoMainMenuController> action)
+        {
+            var mainMenuScene = SceneManager.GetSceneByName("MainMenu");
+            if (mainMenuScene.IsValid())
+            {
+                foreach(var rootObject in mainMenuScene.GetRootGameObjects())
+                {
+                    if (rootObject.TryGetComponent<PogoMainMenuController>(out var menu))
+                    {
+                        action(menu);
+                        return;
+                    }
+                }
+                throw new MissingComponentException();
+            }
+            else
+            {
+                OnMainMenuLoadAction = action;
+            }
+        }
+
+        #endregion
 
         #region Surfaces
         public Surfaces.SurfaceConfig DefaultSurfaceConfig;

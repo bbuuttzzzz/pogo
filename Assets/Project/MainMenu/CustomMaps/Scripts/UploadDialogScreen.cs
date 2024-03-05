@@ -218,33 +218,38 @@ namespace Pogo.CustomMaps.UI
             Debug.Log($"Returning to main menu after generating map thumbnail... (result: {result.ResultType})");
             gameManager.LoadControlSceneAsync(gameManager.MainMenuControlScene, () =>
             {
-                Debug.Log("Waiting for MainMenu to load to return to Upload Map Dialog...");
-                gameManager.OnMainMenuLoadAction = (mainMenu) =>
+                ReturnToUploadDialogAndShowThumbnailResult(gameManager, result);
+            });
+        }
+
+        private static void ReturnToUploadDialogAndShowThumbnailResult(PogoGameManager gameManager, GenerateMapThumbnailResult result)
+        {
+            Debug.Log("Waiting for MainMenu to load to return to Upload Map Dialog...");
+            gameManager.DoMainMenuAction((mainMenu) =>
+            {
+                Debug.Log("Returning to upload map dialog after generating map thumbnail...");
+                mainMenu.OpenCustomChallengeScreenInstantly();
+                mainMenu.MapsRoot.OverrideOpenMapScreen = CustomMapsRoot.ScreenIds.UploadDialog;
+
+                MenuPopupData popupData = new MainMenu.MenuPopupData()
                 {
-                    Debug.Log("Returning to upload map dialog after generating map thumbnail...");
-                    mainMenu.OpenCustomChallengeScreenInstantly();
-                    mainMenu.MapsRoot.OverrideOpenMapScreen = CustomMapsRoot.ScreenIds.UploadDialog;
-
-                    MenuPopupData popupData = new MainMenu.MenuPopupData()
-                    {
-                        OkText = "Close",
-                    };
-
-                    popupData.Title = result.ResultType switch
-                    {
-                        GenerateMapThumbnailResult.ResultTypes.Success => "Success!",
-                        _ => "Failure!"
-                    };
-
-                    popupData.Body = result.ResultType switch
-                    {
-                        GenerateMapThumbnailResult.ResultTypes.Success => "Thumbnail image successfully updated",
-                        GenerateMapThumbnailResult.ResultTypes.FailureMissingEntity => "No info_camera_default was found.",
-                        _ => "Failed for an unknown reason. See more in Player.Log"
-                    };
-
-                    parent.parent.OpenPopup(popupData);
+                    OkText = "Close",
                 };
+
+                popupData.Title = result.ResultType switch
+                {
+                    GenerateMapThumbnailResult.ResultTypes.Success => "Success!",
+                    _ => "Failure!"
+                };
+
+                popupData.Body = result.ResultType switch
+                {
+                    GenerateMapThumbnailResult.ResultTypes.Success => "Thumbnail image successfully updated",
+                    GenerateMapThumbnailResult.ResultTypes.FailureMissingEntity => "No info_camera_default was found.",
+                    _ => "Failed for an unknown reason. See more in Player.Log"
+                };
+
+                mainMenu.OpenPopup(popupData);
             });
         }
 

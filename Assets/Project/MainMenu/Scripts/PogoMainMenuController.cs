@@ -24,10 +24,9 @@ namespace Pogo.MainMenu
         {
             gameManager = PogoGameManager.PogoInstance;
 
-            if (gameManager.OnMainMenuLoadAction != null)
+            if (gameManager.TryGetMainMenuLoadAction(out var action))
             {
-                gameManager.OnMainMenuLoadAction(this);
-                gameManager.OnMainMenuLoadAction = null;
+                action(this);
             }
             else
             {
@@ -39,7 +38,10 @@ namespace Pogo.MainMenu
 
         private void OnEnable()
         {
-            Debug.Log("Main Menu OnEnable");
+            if (gameManager != null && gameManager.TryGetMainMenuLoadAction(out var action))
+            {
+                action(this);
+            }
         }
 
         public void AdventureTapped()
