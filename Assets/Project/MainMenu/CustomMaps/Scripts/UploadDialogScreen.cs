@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Windows;
+using static Pogo.CustomMaps.UI.UploadDialogScreen;
 
 namespace Pogo.CustomMaps.UI
 {
@@ -68,7 +69,7 @@ namespace Pogo.CustomMaps.UI
                 Value = parent.CurrentMap.WorkshopId?.ToString()
             });
 
-            ChecklistComplete = ChecklistEntries.Values.Any(entry => entry.Data.IsRequired && !entry.Data.Status.IsComplete);
+            ChecklistComplete = !ChecklistEntries.Values.Any(entry => entry.Data.IsRequired && !entry.Data.Status.IsComplete);
             UploadButton.interactable = ChecklistComplete;
         }
 
