@@ -18,6 +18,8 @@ namespace Pogo.CustomMaps.UI
     {
         private PogoGameManager gameManager;
         public CustomMapsRoot parent;
+        public Sprite DefaultPreviewSprite;
+        public Image PreviewImage;
         public Transform ChecklistEntriesParent;
         public GameObject ChecklistEntryPrefab;
 
@@ -43,6 +45,7 @@ namespace Pogo.CustomMaps.UI
 
         private void UpdateChecklist()
         {
+            PreviewImage.sprite = parent.CurrentMap.PreviewSprite != null ? parent.CurrentMap.PreviewSprite : DefaultPreviewSprite;
             ChecklistEntries[ChecklistEntryIds.BspFile].SetStatus(new ChecklistEntryStatus()
             {
                 IsComplete = parent.CurrentMap.BspPath != null,
