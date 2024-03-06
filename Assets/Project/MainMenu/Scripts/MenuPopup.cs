@@ -25,11 +25,17 @@ namespace Pogo.MainMenu
         private void Awake()
         {
             OKButton.onClick.AddListener(OKButton_OnClick);
+            CancelButton.onClick.AddListener(CancelButton_OnClick);
         }
 
         private void OKButton_OnClick()
         {
             OkPressedCallback?.Invoke();
+            parent.CloseOptionsScreen();
+        }
+        private void CancelButton_OnClick()
+        {
+            CancelPressedCallback?.Invoke();
             parent.CloseOptionsScreen();
         }
 
