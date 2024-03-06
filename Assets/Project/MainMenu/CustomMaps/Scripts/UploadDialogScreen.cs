@@ -77,6 +77,7 @@ namespace Pogo.CustomMaps.UI
 
         private void UploadMap(MapHeader header)
         {
+            gameManager.LoadingRoot.SetOpen(true);
 #if !DISABLESTEAMWORKS
             if (header.WorkshopId == null)
             {
@@ -91,6 +92,8 @@ namespace Pogo.CustomMaps.UI
 
         private void UploadMap_Callback(UpdateMapResult result)
         {
+            gameManager.LoadingRoot.SetOpen(false);
+
             if (!result.Success)
             {
                 Debug.LogError($"STEAMWORKS issue Creating a new map: {result.ErrorMessage}");
@@ -116,6 +119,8 @@ namespace Pogo.CustomMaps.UI
                 CancelText = "Close"
             });
 #endif
+
+            UpdateChecklist();
         }
 
         #region Checklist
@@ -261,10 +266,10 @@ namespace Pogo.CustomMaps.UI
             parent.parent.OpenPopup(new MainMenu.MenuPopupData()
             {
                 Title = "Really Reset Workshop ID?",
-                Body = "This will upload the map to the steam workshop as a new listing",
+                Body = "This will allow you to upload this map as a new item",
                 OkText = "Yes",
                 OkPressedCallback = ResetWorkshopId,
-                CancelText = "Nevermind"
+                CancelText = "No"
             });
         }
 
