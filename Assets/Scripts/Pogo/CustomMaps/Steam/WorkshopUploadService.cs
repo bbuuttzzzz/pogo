@@ -42,7 +42,6 @@ namespace Pogo.CustomMaps.Steam
 
         #region CreateMap
 
-
         public void CreateAndUpdateMap(MapHeader header, Action<UpdateMapResult> callback)
         {
             CurrentMap = header;
@@ -84,7 +83,7 @@ namespace Pogo.CustomMaps.Steam
 
         #endregion
 
-        #region
+        #region UpdateMap
         
         public void UpdateMap(MapHeader header, Action<UpdateMapResult> callback)
         {

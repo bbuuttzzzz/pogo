@@ -46,7 +46,7 @@ namespace Pogo.CustomMaps.UI
             }
             Buttons = new List<CustomMapButton>();
             UnloadedHeaders = gameManager.CustomMapBuilder
-                .GetMapHeaders(localOnly: true)
+                .GetMapHeaders(uploadableOnly: true)
                 .GetEnumerator();
             CanLoadMore = true;
             LoadMore(100);

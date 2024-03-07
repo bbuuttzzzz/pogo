@@ -4,6 +4,7 @@ using BSPImporter.Textures;
 using Pogo.Checkpoints;
 using Pogo.CustomMaps.Entities;
 using Pogo.CustomMaps.Indexing;
+using Pogo.CustomMaps.MapSources;
 using Pogo.CustomMaps.Materials;
 using Pogo.CustomMaps.UI;
 using Pogo.Difficulties;
@@ -78,12 +79,15 @@ namespace Pogo.CustomMaps
             DisposeCurrentMap();
         }
 
-        private IEnumerable<MapSourceFolder> GetMapSourceFolders()
+        private IEnumerable<IMapSource> GetMapSources()
         {
-            return new MapSourceFolder[]
+            return new IMapSource[]
             {
                 new MapSourceFolder(true, $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps"),
-                new MapSourceFolder(false, $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps")
+                new MapSourceFolder(false, $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps"),
+#if !DISABLESTEAMWORKS
+                new Steam.WorkshopSubscriptionSource()
+#endif
             };
         }
 
@@ -215,18 +219,17 @@ namespace Pogo.CustomMaps
             gameManager.Paused = false;
         }
 
-        public IEnumerable<MapHeader> GetMapHeaders(bool localOnly = false)
+        public IEnumerable<MapHeader> GetMapHeaders(bool uploadableOnly = false)
         {
-            IEnumerable<MapSourceFolder> sources = GetMapSourceFolders();
-            if (localOnly)
+            IEnumerable<IMapSource> sources = GetMapSources();
+            if (uploadableOnly)
             {
                 sources = sources
-                    .Where(s => s.IsLocalPath);
+                    .Where(s => s.AllowUpload);
             }
 
             return sources
-                .Select(s => s.Path)
-                .SelectMany(path => Directory.GetDirectories(path))
+                .SelectMany(s => s.GetPaths())
                 .Select(path => MapHeaderHelper.GenerateMapHeader(path, true))
                 .Where(r => r.Success)
                 .Select(r => r.Data);
