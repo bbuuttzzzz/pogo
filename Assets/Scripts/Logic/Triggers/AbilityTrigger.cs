@@ -6,7 +6,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Collider))]
 public class AbilityTrigger : MonoBehaviour
 {
-    public UnityEvent OnTriggered;
+    public UnityEvent<Collider> OnTriggered;
     public AbilityDescriptor Ability;
     public Material DefaultMaterial;
 
@@ -22,7 +22,7 @@ public class AbilityTrigger : MonoBehaviour
         }
         LastTrigger = Time.time;
 
-        OnTriggered.Invoke();
+        OnTriggered.Invoke(other);
 
         var player = PogoGameManager.PogoInstance.Player;
         var abilityObject = Instantiate(Ability.Prefab, player.RenderTransform);

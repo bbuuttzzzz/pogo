@@ -10,7 +10,6 @@ namespace Pogo.CustomMaps.Entities
 {
     public class Trigger_Kill : WrappedCreatedEntity
     {
-        protected override string ClassName => "trigger_kill";
         const string Key_RenderStyle = "renderstyle";
         const string Key_KillType = "killtype";
         public enum RenderStyles
@@ -20,7 +19,7 @@ namespace Pogo.CustomMaps.Entities
             UseMapTexture = 2
         }
 
-        public Trigger_Kill(BSPLoader.EntityCreatedCallbackData data) : base(data)
+        public Trigger_Kill(BSPLoader.EntityCreatedCallbackData data) : base("trigger_kill", data)
         {
         }
 

@@ -10,7 +10,6 @@ namespace Pogo.CustomMaps.Entities
 {
     public class Trigger_Checkpoint : WrappedCreatedEntity
     {
-        protected override string ClassName => "trigger_checkpoint";
         const string Key_CheckpointNumber = "number";
         const string Key_CheckpointType = "pathtype";
         const string Key_SkipTarget = "skiptarget";
@@ -22,7 +21,7 @@ namespace Pogo.CustomMaps.Entities
             UseMapTexture = 2
         }
 
-        public Trigger_Checkpoint(BSPLoader.EntityCreatedCallbackData data) : base(data)
+        public Trigger_Checkpoint(BSPLoader.EntityCreatedCallbackData data) : base("trigger_checkpoint", data)
         {
         }
 

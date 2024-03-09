@@ -9,10 +9,9 @@ namespace Pogo.CustomMaps.Entities
 {
     public class Trigger_Finish : WrappedCreatedEntity
     {
-        protected override string ClassName => "trigger_finish";
         const string Key_RenderStyle = "renderstyle";
 
-        public Trigger_Finish(BSPLoader.EntityCreatedCallbackData data) : base(data)
+        public Trigger_Finish(BSPLoader.EntityCreatedCallbackData data) : base("trigger_finish", data)
         {
         }
 

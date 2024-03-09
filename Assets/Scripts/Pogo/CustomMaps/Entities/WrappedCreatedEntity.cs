@@ -10,12 +10,13 @@ namespace Pogo.CustomMaps.Entities
 {
     public abstract class WrappedCreatedEntity
     {
-        protected abstract string ClassName { get; }
+        protected string ClassName { get; private set; }
         protected uint SpawnFlags;
         protected BSPLoader.EntityCreatedCallbackData Data;
 
-        public WrappedCreatedEntity(BSPLoader.EntityCreatedCallbackData data)
+        public WrappedCreatedEntity(string className, BSPLoader.EntityCreatedCallbackData data)
         {
+            ClassName = className;
             if (data.Instance.entity.ClassName != ClassName)
             {
                 throw new ArgumentException($"Tried to spawn WrappedEntity {GetType()} but got unexpected ClassName {Data.Instance.entity.ClassName}");

@@ -10,8 +10,6 @@ namespace Pogo.CustomMaps.Entities
 {
     public class Trigger_Generic : WrappedCreatedEntity
     {
-        protected override string ClassName => className;
-        private string className;
         const string Key_RenderStyle = "renderstyle";
         public enum RenderStyles
         {
@@ -20,9 +18,8 @@ namespace Pogo.CustomMaps.Entities
             UseMapTexture = 2
         }
 
-        public Trigger_Generic(string className, BSPLoader.EntityCreatedCallbackData data) : base(data)
+        public Trigger_Generic(string className, BSPLoader.EntityCreatedCallbackData data) : base(className, data)
         {
-            this.className = className;
         }
 
         public RenderStyles GetRenderStyle()
