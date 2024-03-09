@@ -204,9 +204,9 @@ namespace Pogo.CustomMaps
                 CurrentCustomMap.RegisterCheckpoint(checkpoint);
             }
 
-            if (CurrentCustomMap.Finish != null)
+            if (!CurrentCustomMap.HasFinish)
             {
-                CurrentCustomMap.Finish.OnActivated.AddListener(FinishMap);
+                Debug.LogWarning("Map contains no Trigger_Finish. There's no way to win :(");
             }
 
             foreach (var checkpoint in CurrentCustomMap.Checkpoints.Values)
@@ -333,6 +333,7 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
+            AddEntityHandler(new CustomMapEntityHandler("trigger_gravity", SetupTrigger_Gravity));
             AddEntityHandler(new CustomMapEntityHandler("info_camera_preview", SetupInfo_Camera_Preview));
         }
 
@@ -389,6 +390,7 @@ namespace Pogo.CustomMaps
 
             var checkpoint = data.Instance.gameObject.GetComponent<TriggerFinish>();
             checkpoint.UpdateMesh();
+            checkpoint.OnActivated.AddListener(FinishMap);
 
             var renderStyle = entity.GetRenderStyle();
             if (renderStyle == Trigger_Finish.RenderStyles.Default)
@@ -401,7 +403,7 @@ namespace Pogo.CustomMaps
                 checkpoint.Invisible = true;
             }
 
-            CurrentCustomMap.RegisterFinish(checkpoint);
+            CurrentCustomMap.HasFinish = true;
         }
 
         private void SetupTrigger_Kill(BSPLoader.EntityCreatedCallbackData data)
@@ -426,6 +428,23 @@ namespace Pogo.CustomMaps
             else if (renderStyle == Trigger_Kill.RenderStyles.Invisible)
             {
                 killTrigger.GetComponent<Renderer>().enabled = false;
+            }
+        }
+
+        private void SetupTrigger_Gravity(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Trigger_Gravity entity = new Trigger_Gravity(data);
+
+            var gravityZone = data.Instance.gameObject.GetComponent<AbilityZone>();
+
+            var renderStyle = entity.GetRenderStyle();
+            if (renderStyle == Trigger_Gravity.RenderStyles.Default)
+            {
+                gravityZone.GetComponent<Renderer>().material = gravityZone.DefaultMaterial;
+            }
+            else if (renderStyle == Trigger_Gravity.RenderStyles.Invisible)
+            {
+                gravityZone.GetComponent<Renderer>().enabled = false;
             }
         }
         #endregion

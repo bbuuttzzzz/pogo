@@ -1,4 +1,5 @@
 // FGD file for pogo3D! this is one of the tools you need to make custom levels!
+
 @SolidClass = worldspawn : "World Entity"
 [
     mapname(string) : "Map Title"
@@ -10,6 +11,8 @@
 ]
 @baseclass = Targetname [ targetname(target_source) : "Name" ]
 @baseclass = Target [ target(target_destination) : "Target" ]
+
+// SolidClasses that inherit this have a default texture that overrides what you set in trenchbroom
 @baseclass = RenderStyle [
 	renderstyle(choices) : "Render Style" : 0 =
 	[
@@ -21,38 +24,58 @@
 
 @baseclass size(-12 -12 0, 12 12 48) = PlayerClass []
 
+// A Checkpoint Spawnpoint! every checkpoint needs one. set "Targetname" to a unique value
 @PointClass base(PlayerClass, Targetname)
     model({
         "path" : "gameconfig/info_player_respawn.mdl"
     })
      = info_player_respawn : "Respawn Point" []
 
+// A Checkpoint Trigger. set "Target" to the value of an info_player_respawn's "Targetname"
 @SolidClass base(Target, RenderStyle) = trigger_checkpoint : "Checkpoint"
 [
 	spawnflags(Flags) =
 	[
 		1 : "Can Skip" : 1
 	]
-	number(integer) : "Checkpoint Number" : 1
+	
+	// Specify the type of this checkpoint
+	// Main Path - automatically set up skipping for the next number in sequence.
+	// Side Path - unskippable unless SkipTarget is set
+	// The first "Main Path" Checkpoint will act as the spawn point
 	pathtype(choices) : "Checkpoint Type" : 0 =
 	[
 		0: "Main Path"
 		1: "Side Path"
 	]
+	// The number of this checkpoint in sequence. Don't skip any numbers.
+	// if your map has 3 main path checkpoints and 3 side path checkpoints, number them 1 2 3 and 1 2 3.
+	// ...or 0 1 2 & 0 1 2 :) both will work
+	number(integer) : "Checkpoint Number" : 1
+	// the name of the info_player_respawn the player should teleport to on skip.
 	skiptarget(target_destination) : "Override Skip Target"
 ]
 
+// A Finish-Line trigger. You should probably put 1 at the end of your level.
+// feel free to any number of these, or zero if you want
 @SolidClass base(RenderStyle) = trigger_finish : "Finish Line" []
 
+// Water. kills on contact with your hitbox
 @SolidClass base(RenderStyle) = trigger_kill : "Trigger Kill"
 [
-	killtype(choices) : "Kill Type" =
+	// What effect to play when you die
+	// as you can see from reading this, it defaults to water
+	killtype(choices) : "Kill Type" : 1 =
 	[
 		0: "Surface"
 		1: "Water"
 		2: "Space"
 	]
 ]
+
+// A zero gravity zone
+@SolidClass base(RenderStyle) = trigger_gravity : "Trigger Gravity" []
+
 
 //
 // Cameras
@@ -62,6 +85,7 @@
 
 //
 // lights - straight from quake 1 but no AppearFlags
+// lights don't do anything yet :( sorry
 //
 
 @baseclass color(255 255 40) = Light [
