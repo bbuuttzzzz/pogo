@@ -334,6 +334,7 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
             AddEntityHandler(new CustomMapEntityHandler("trigger_gravity", SetupTrigger_Gravity));
+            AddEntityHandler(new CustomMapEntityHandler("trigger_flight", SetupTrigger_Flight));
             AddEntityHandler(new CustomMapEntityHandler("info_camera_preview", SetupInfo_Camera_Preview));
         }
 
@@ -433,18 +434,35 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Gravity(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Gravity entity = new Trigger_Gravity(data);
+            Trigger_Generic entity = new Trigger_Generic("trigger_gravity",data);
 
             var gravityZone = data.Instance.gameObject.GetComponent<AbilityZone>();
 
             var renderStyle = entity.GetRenderStyle();
-            if (renderStyle == Trigger_Gravity.RenderStyles.Default)
+            if (renderStyle == Trigger_Generic.RenderStyles.Default)
             {
                 gravityZone.GetComponent<Renderer>().material = gravityZone.DefaultMaterial;
             }
-            else if (renderStyle == Trigger_Gravity.RenderStyles.Invisible)
+            else if (renderStyle == Trigger_Generic.RenderStyles.Invisible)
             {
                 gravityZone.GetComponent<Renderer>().enabled = false;
+            }
+        }
+
+        private void SetupTrigger_Flight(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Trigger_Generic entity = new Trigger_Generic("trigger_flight", data);
+
+            var trigger = data.Instance.gameObject.GetComponent<AbilityTrigger>();
+
+            var renderStyle = entity.GetRenderStyle();
+            if (renderStyle == Trigger_Generic.RenderStyles.Default)
+            {
+                trigger.GetComponent<Renderer>().material = trigger.DefaultMaterial;
+            }
+            else if (renderStyle == Trigger_Generic.RenderStyles.Invisible)
+            {
+                trigger.GetComponent<Renderer>().enabled = false;
             }
         }
         #endregion

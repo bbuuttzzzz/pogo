@@ -8,9 +8,20 @@ public class AbilityTrigger : MonoBehaviour
 {
     public UnityEvent OnTriggered;
     public AbilityDescriptor Ability;
+    public Material DefaultMaterial;
+
+    public float TriggerCooldown;
+
+    private float LastTrigger;
 
     private void OnTriggerEnter(Collider other)
     {
+        if (TriggerCooldown > 0 && LastTrigger + TriggerCooldown < Time.time)
+        {
+            return;
+        }
+        LastTrigger = Time.time;
+
         OnTriggered.Invoke();
 
         var player = PogoGameManager.PogoInstance.Player;
