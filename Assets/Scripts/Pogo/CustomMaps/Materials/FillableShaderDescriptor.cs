@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Pogo.CustomMaps.Materials;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Pogo.CustomMaps.Materials
 {

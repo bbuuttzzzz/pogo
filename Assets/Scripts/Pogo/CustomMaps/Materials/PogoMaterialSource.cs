@@ -11,8 +11,12 @@ namespace Pogo.CustomMaps.Materials
         public bool EnableLogging = true;
         private Material BaseMaterial;
         private Dictionary<string, IFillableShader> ShadersDictionary;
+        private Dictionary<string, IStockMaterial> StockMaterialDictionary;
 
-        public PogoMaterialSource(Material baseMaterial, IEnumerable<IFillableShader> fillableShaders)
+        public PogoMaterialSource(
+            Material baseMaterial,
+            IEnumerable<IFillableShader> fillableShaders,
+            IEnumerable<IStockMaterial> stockMaterials)
         {
             BaseMaterial = baseMaterial;
             ShadersDictionary = new Dictionary<string, IFillableShader>();
@@ -20,10 +24,21 @@ namespace Pogo.CustomMaps.Materials
             {
                 ShadersDictionary.Add(shader.ShaderName, shader);
             }
+            StockMaterialDictionary = new Dictionary<string, IStockMaterial>();
+            foreach(var material in stockMaterials)
+            {
+                StockMaterialDictionary.Add(material.Name, material);
+            }
         }
 
         public Material BuildMaterial(WadTextureData textureData)
         {
+            if (!string.IsNullOrEmpty(textureData.Name)
+                && StockMaterialDictionary.TryGetValue(textureData.Name, out IStockMaterial stockMaterial))
+            {
+                return stockMaterial.Material;
+            }
+
             if (string.IsNullOrEmpty(textureData.ShaderName))
             {
                 return BuildBaseMaterial(textureData);
@@ -52,19 +67,19 @@ namespace Pogo.CustomMaps.Materials
                     bool success = true;
                     switch (property.ParameterType)
                     {
-                        case Assets.Scripts.Pogo.CustomMaps.Materials.FillableShaderProperty.ParameterTypes.Float:
+                        case FillableShaderProperty.ParameterTypes.Float:
                             success = float.TryParse(value, out float valueFloat);
                             newMaterial.SetFloat(property.ParameterName, valueFloat);
                             break;
-                        case Assets.Scripts.Pogo.CustomMaps.Materials.FillableShaderProperty.ParameterTypes.Color:
+                        case FillableShaderProperty.ParameterTypes.Color:
                             success = ColorUtility.TryParseHtmlString(value, out Color valueColor);
                             newMaterial.SetColor(property.ParameterName, valueColor);
                             break;
-                        case Assets.Scripts.Pogo.CustomMaps.Materials.FillableShaderProperty.ParameterTypes.Vector2:
+                        case FillableShaderProperty.ParameterTypes.Vector2:
                             success = TryParseVector2(value, out Vector2 valueVec2);
                             newMaterial.SetVector(property.ParameterName, valueVec2);
                             break;
-                        case Assets.Scripts.Pogo.CustomMaps.Materials.FillableShaderProperty.ParameterTypes.Vector3:
+                        case FillableShaderProperty.ParameterTypes.Vector3:
                             success = TryParseVector3(value, out Vector3 valueVec3);
                             newMaterial.SetVector(property.ParameterName, valueVec3);
                             break;

@@ -39,6 +39,7 @@ namespace Pogo.CustomMaps
         public Material DefaultMaterial;
         public EntityPrefabManifest EntityPrefabs;
         public Materials.FillableShaderManifest FillableShaderManifest;
+        public Materials.StockMaterialManifest StockMaterialManifest;
         public MapAttemptData LastAttemptData;
         public GameObject InfoCameraPreviewPrefab;
 
@@ -179,7 +180,10 @@ namespace Pogo.CustomMaps
             textureSource.AddWadFolder(WadFolderRootPath);
             textureSource.AddWadFolder(folderPath);
             var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
-            var materialSource = new Materials.PogoMaterialSource(DefaultMaterial, FillableShaderManifest.Items);
+            var materialSource = new Materials.PogoMaterialSource(
+                DefaultMaterial,
+                FillableShaderManifest.Items,
+                StockMaterialManifest.Items);
             var loader = new BSPLoader(settings, textureSource, templateSource, materialSource);
 
             loader.LoadBSP();

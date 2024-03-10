@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Pogo.CustomMaps.Materials
+namespace Pogo.CustomMaps.Materials
 {
     [System.Serializable]
     public struct FillableShaderProperty

@@ -7,10 +7,9 @@ using UnityEngine;
 
 namespace Pogo.CustomMaps.Materials
 {
-    public interface IFillableShader
+    public interface IStockMaterial
     {
-        public string ShaderName { get; }
-        public Material BaseMaterial { get; }
-        public FillableShaderProperty[] Properties { get; }
+        public string Name { get; }
+        public Material Material { get; }
     }
 }
