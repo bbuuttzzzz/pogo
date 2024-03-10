@@ -10,6 +10,7 @@ using Pogo.CustomMaps.UI;
 using Pogo.Difficulties;
 using Pogo.Levels;
 using Pogo.Surfaces;
+using Pogo.Trains;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -330,6 +331,7 @@ namespace Pogo.CustomMaps
             EntityHandlers = new Dictionary<string, CustomMapEntityHandler>();
 
             // we dont need to handle info_player_respawn. it's handled by trigger_checkpoint
+            AddEntityHandler(new CustomMapEntityHandler("func_train", SetupFunc_Train));
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
@@ -344,6 +346,31 @@ namespace Pogo.CustomMaps
         }
 
         private void AddEntityHandler(CustomMapEntityHandler handler) => EntityHandlers.Add(handler.ClassName, handler);
+        
+        private void SetupFunc_Train(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Func_Train entity = new Func_Train(data);
+
+            var root = data.Instance.gameObject.GetComponent<FuncTrainRoot>();
+            BSPLoader.EntityInstance trackStart = entity.GetTrackStart();
+
+            BSPLoader.EntityInstance? nextTarget = trackStart;
+            while (nextTarget != null)
+            {
+                var track = new Info_Track(nextTarget.Value, data.Context);
+                root.AddStop(track.GetStopData());
+                var nextTargetName = track.GetNextTrackName();
+                if (!string.IsNullOrEmpty(nextTargetName)
+                    && nextTargetName == trackStart.entity.Name)
+                {
+                    // we found a cycle. let's just break
+                    break;
+                }
+
+                nextTarget = track.GetNextTrackOrDefault();
+            }
+            root.FinishTrack(entity.GetCarCount());
+        }
 
         private void SetupTrigger_Checkpoint(BSPLoader.EntityCreatedCallbackData data)
         {

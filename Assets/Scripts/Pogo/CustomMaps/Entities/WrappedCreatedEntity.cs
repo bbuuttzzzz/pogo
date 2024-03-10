@@ -37,11 +37,11 @@ namespace Pogo.CustomMaps.Entities
             }
             else if (targets.Count == 0)
             {
-                throw new FormatException($"{Data.Instance.entity.ClassName} named {Data.Instance.entity.Name} couldn't find target named {Data.TargetName}");
+                throw new FormatException($"{Data.Instance.entity.ClassName} named '{Data.Instance.entity.Name}' couldn't find {key} named '{targetName}'");
             }
             else
             {
-                throw new FormatException($"{Data.Instance.entity.ClassName} named {Data.Instance.entity.Name} found multiple targets named {Data.TargetName}. expected only 1");
+                throw new FormatException($"{Data.Instance.entity.ClassName} named '{Data.Instance.entity.Name}' found multiple {key}s named '{targetName}'. expected only 1");
             }
         }
     }

@@ -79,6 +79,34 @@
 // A "Flight Ring"
 @SolidClass base(RenderStyle) = trigger_flight : "Trigger Flight" []
 
+// Moving Platforms
+@SolidClass = func_train : "Func Train"
+[
+	// point to an info_track_start 
+	trackstart(target_destination) : "Train Track Start"
+	// evenly space this many of this train brushes along the track.   
+	carcount(int) : "Train Car Count" : 1
+]
+@PointClass base(trackoptions, Targetname, Target) = info_track_start : "Train Track Start"
+[
+]
+@PointClass base(trackoptions, Targetname, Target) = info_track : "Train Track" []
+@baseClass = trackoptions
+[
+	// how long to wait at this spot in milliseconds
+	stoptime(int) : "Stop Time (ms)" : 0
+	// how long should it take to reach the next stop in the sequence
+	traveltime(int) : "Segment Travel Time (ms)" : 1000
+	// next track in the sequence (can be left empty for non-looping tracks)
+	// target(target_destination)
+	easing(choices) : "Next Segment Easing" : 0 =
+	[
+		0: "Linear"
+		1: "Ease In"
+		2: "Ease Out"
+		3: "Ease In & Out"
+	]
+]
 
 //
 // Cameras

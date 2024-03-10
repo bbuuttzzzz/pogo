@@ -15,9 +15,21 @@ namespace WizardUtils.Extensions
             return self.StartCoroutine(WaitForSecondsUnscaled(delaySeconds, callback));
         }
 
+        public static Coroutine StartNextFrameCoroutine(this MonoBehaviour self, Action callback)
+        {
+            return self.StartCoroutine(WaitForNextFrame(callback));
+        }
+
         private static IEnumerator WaitForSecondsUnscaled(float seconds, Action callback)
         {
             yield return new WaitForSecondsRealtime(seconds);
+
+            callback();
+        }
+
+        private static IEnumerator WaitForNextFrame(Action callback)
+        {
+            yield return null;
 
             callback();
         }
