@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Surfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,12 +28,13 @@ namespace Pogo.Trains
         private Vector3 LastPhysicsPosition;
         private Vector3 CurrentPhysicsPosition;
 
-        public void CopyVisuals(MeshRenderer renderer)
+        public void CopyVisuals(MeshRenderer renderer, SurfaceConfig surface)
         {
             Mesh newMesh = renderer.GetComponent<MeshFilter>().mesh;
             RenderMeshRenderer.GetComponent<MeshFilter>().mesh = newMesh;
             RenderMeshRenderer.materials = renderer.materials;
             PhysicsMeshCollider.sharedMesh = newMesh;
+            PhysicsMeshCollider.GetComponent<SurfaceConfigSpecifier>().SurfaceConfig = surface;
 
             SubscribeTriggerBoxCollider.center = renderer.bounds.center;
             SubscribeTriggerBoxCollider.size = 2 * (renderer.bounds.extents + Vector3.one * SubscribeTriggerSkinWidth);

@@ -86,6 +86,10 @@
 	trackstart(target_destination) : "Train Track Start"
 	// evenly space this many of this train brushes along the track.   
 	carcount(int) : "Train Car Count" : 1
+	// unfortunately moving platforms don't support material sounds :(
+	// you have to manually specify the sound effect here
+	// values are the same as the ones for .metawad files
+	surface(string) : "Surface Sound Type" : "default"
 ]
 @PointClass base(trackoptions, Targetname, Target) = info_track_start : "Train Track Start"
 [

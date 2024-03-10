@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pogo.Surfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,14 +21,14 @@ namespace Pogo.Trains
 
         public void AddStop(StopData stop) => Stops.Add(stop);
 
-        public void FinishTrack(int carsCount)
+        public void FinishTrack(int carsCount, SurfaceConfig surface)
         {
             Track = new TrainTrack(name, Stops.ToArray());
-            CreateTrainCars(carsCount);
+            CreateTrainCars(carsCount, surface);
             CleanupRootVisuals();
         }
 
-        private void CreateTrainCars(int count)
+        private void CreateTrainCars(int count, SurfaceConfig surface)
         {
             MeshRenderer localRenderer = GetComponent<MeshRenderer>();
 
@@ -36,8 +37,8 @@ namespace Pogo.Trains
                 var carObject = Instantiate(TrainCarPrefab, transform);
                 var car = carObject.GetComponent<TrainCar>();
                 car.Track = Track;
-                car.Offset(n / count);
-                car.CopyVisuals(localRenderer);
+                car.Offset(n / (float)count);
+                car.CopyVisuals(localRenderer, surface);
             }
         }
 

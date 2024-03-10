@@ -353,6 +353,10 @@ namespace Pogo.CustomMaps
 
             var root = data.Instance.gameObject.GetComponent<FuncTrainRoot>();
             BSPLoader.EntityInstance trackStart = entity.GetTrackStart();
+            string surfaceName = entity.GetSurface();
+            SurfaceConfig surface = string.IsNullOrEmpty(surfaceName)
+                ? DefaultSurfaceConfig
+                : SurfaceConfigDictionary.GetValueOrDefault(surfaceName, DefaultSurfaceConfig);
 
             Info_Track currentTrack = new Info_Track_Start(trackStart, data.Context);
 
@@ -370,7 +374,7 @@ namespace Pogo.CustomMaps
                 var nextTarget = currentTrack.GetNextTrackOrDefault();
                 currentTrack = new Info_Track(nextTarget.Value, data.Context);
             }
-            root.FinishTrack(entity.GetCarCount());
+            root.FinishTrack(entity.GetCarCount(), surface);
         }
 
         private void SetupTrigger_Checkpoint(BSPLoader.EntityCreatedCallbackData data)
