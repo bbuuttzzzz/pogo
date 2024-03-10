@@ -372,7 +372,14 @@ namespace Pogo.CustomMaps
                 }
 
                 var nextTarget = currentTrack.GetNextTrackOrDefault();
-                currentTrack = new Info_Track(nextTarget.Value, data.Context);
+                if (nextTarget == null)
+                {
+                    currentTrack = null;
+                }
+                else
+                {
+                    currentTrack = new Info_Track(nextTarget.Value, data.Context);
+                }
             }
             root.FinishTrack(entity.GetCarCount(), surface);
         }
