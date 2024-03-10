@@ -354,12 +354,12 @@ namespace Pogo.CustomMaps
             var root = data.Instance.gameObject.GetComponent<FuncTrainRoot>();
             BSPLoader.EntityInstance trackStart = entity.GetTrackStart();
 
-            BSPLoader.EntityInstance? nextTarget = trackStart;
-            while (nextTarget != null)
+            Info_Track currentTrack = new Info_Track_Start(trackStart, data.Context);
+
+            while (currentTrack != null)
             {
-                var track = new Info_Track(nextTarget.Value, data.Context);
-                root.AddStop(track.GetStopData());
-                var nextTargetName = track.GetNextTrackName();
+                root.AddStop(currentTrack.GetStopData());
+                var nextTargetName = currentTrack.GetNextTrackName();
                 if (!string.IsNullOrEmpty(nextTargetName)
                     && nextTargetName == trackStart.entity.Name)
                 {
@@ -367,7 +367,8 @@ namespace Pogo.CustomMaps
                     break;
                 }
 
-                nextTarget = track.GetNextTrackOrDefault();
+                var nextTarget = currentTrack.GetNextTrackOrDefault();
+                currentTrack = new Info_Track(nextTarget.Value, data.Context);
             }
             root.FinishTrack(entity.GetCarCount());
         }

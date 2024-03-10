@@ -35,9 +35,9 @@ namespace Pogo.Trains
             {
                 var carObject = Instantiate(TrainCarPrefab, transform);
                 var car = carObject.GetComponent<TrainCar>();
+                car.Track = Track;
                 car.Offset(n / count);
                 car.CopyVisuals(localRenderer);
-                car.Track = Track;
             }
         }
 
