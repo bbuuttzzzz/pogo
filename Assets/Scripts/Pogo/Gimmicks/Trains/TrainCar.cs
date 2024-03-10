@@ -34,11 +34,8 @@ namespace Pogo.Trains
             RenderMeshRenderer.materials = renderer.materials;
             PhysicsMeshCollider.sharedMesh = newMesh;
 
-            MonobehaviourExtensions.StartNextFrameCoroutine(this, () =>
-            {
-                SubscribeTriggerBoxCollider.center = renderer.bounds.center;
-                SubscribeTriggerBoxCollider.size = 2 * (renderer.bounds.extents + Vector3.one * SubscribeTriggerSkinWidth);
-            });
+            SubscribeTriggerBoxCollider.center = renderer.bounds.center;
+            SubscribeTriggerBoxCollider.size = 2 * (renderer.bounds.extents + Vector3.one * SubscribeTriggerSkinWidth);
         }
 
         private void Awake()
