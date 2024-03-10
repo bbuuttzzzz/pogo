@@ -36,8 +36,8 @@ namespace Pogo.CustomMaps.Entities
         {
             StopData stopData = new()
             {
-                StopTime = Instance.entity.GetInt(Key_StopTime) * 1000,
-                TravelTime = Instance.entity.GetInt(Key_TravelTime) * 1000,
+                StopTime = Instance.entity.GetInt(Key_StopTime) / 1000,
+                TravelTime = Instance.entity.GetInt(Key_TravelTime) / 1000,
                 EasingType = GetEasing(),
                 Position = Instance.gameObject.transform.position
             };

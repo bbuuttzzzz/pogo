@@ -54,7 +54,7 @@ namespace Pogo.Trains
         {
             CurrentTrackTime += Time.fixedDeltaTime;
             LastPhysicsPosition = CurrentPhysicsPosition;
-            CurrentPhysicsPosition = Track.Sample(CurrentTrackTime);
+            CurrentPhysicsPosition = Track.Sample(CurrentTrackTime) - Track.Origin;
 
             // if we want to move too far in a single frame, do it without a physics update.
             if (Vector3.SqrMagnitude(CurrentPhysicsPosition - LastPhysicsPosition) > MaxFrameDistance * MaxFrameDistance)
