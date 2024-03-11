@@ -7,13 +7,14 @@ namespace Pogo.CustomMaps.Indexing
     public class MapHeader
     {
         public string FolderPath;
-        public string Version;
-        public string AuthorName;
         public string CfgPath;
         public string PreviewImagePath;
         public string BspPath;
         public string MapName;
         public Sprite PreviewSprite;
+
+        public string Version;
+        public string AuthorName;
         public ulong? WorkshopId;
 
         public void ReadCfgData(IEnumerable<KeyValuePair<string, string>> settings)
@@ -37,18 +38,22 @@ namespace Pogo.CustomMaps.Indexing
 
         public IEnumerable<KeyValuePair<string, string>> WriteCfgData()
         {
+            List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>();
+
             if (!string.IsNullOrEmpty(AuthorName))
             {
-                yield return new KeyValuePair<string, string>("Author", AuthorName);
+                data.Add(new KeyValuePair<string, string>("Author", AuthorName));
             }
             if (!string.IsNullOrEmpty(Version))
             {
-                yield return new KeyValuePair<string, string>("Version", Version);
+                data.Add(new KeyValuePair<string, string>("Version", Version));
             }
             if (WorkshopId.HasValue)
             {
-                yield return new KeyValuePair<string, string>("WorkshopId", WorkshopId.Value.ToString());
+                data.Add(new KeyValuePair<string, string>("WorkshopId", WorkshopId.Value.ToString()));
             }
+
+            return data;
         }
     }
 }
