@@ -26,6 +26,7 @@ namespace Platforms.Steam
         public string PersistentDataPath { get; private set; }
 
         public bool SupportsWorkshop => true;
+        public string WorkshopLink => $"https://steamcommunity.com/app/{AppId}/workshop/";
 
         public string PlatformURLName => "steam";
 

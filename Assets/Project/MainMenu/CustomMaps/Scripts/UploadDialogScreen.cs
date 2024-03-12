@@ -24,6 +24,7 @@ namespace Pogo.CustomMaps.UI
         public GameObject ChecklistEntryPrefab;
 
         public Button UploadButton;
+
         private bool ChecklistComplete;
 
         private Dictionary<ChecklistEntryIds, ChecklistEntry> ChecklistEntries;

@@ -17,6 +17,7 @@ namespace Platforms.Portable
         public string PlatformURLName => "portable";
 
         public bool SupportsWorkshop => false;
+        public string WorkshopLink => null;
 
         public void OnEnable()
         {

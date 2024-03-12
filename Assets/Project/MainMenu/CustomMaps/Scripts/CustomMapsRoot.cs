@@ -19,9 +19,9 @@ namespace Pogo.CustomMaps.UI
         }
 
         public PogoMainMenuController parent;
+        public CustomMapSelectScreen MapSelectScreen;
         public UploadDialogScreen UploadScreen;
         private PogoGameManager gameManager;
-        public Button UploadButton;
         [HideInInspector]
         public ScreenIds? OverrideOpenMapScreen;
 
@@ -36,13 +36,10 @@ namespace Pogo.CustomMaps.UI
         {
             gameManager = PogoGameManager.PogoInstance;
 
-            if (!gameManager.PlatformService.SupportsWorkshop)
+
+            if (gameManager.PlatformService.SupportsWorkshop)
             {
-                UploadButton.gameObject.SetActive(false);
-            }
-            else
-            {
-                UploadButton.onClick.AddListener(() => OpenScreen(ScreenIds.UploadSelect));
+                MapSelectScreen.OnUploadPressed.AddListener(() => OpenScreen(ScreenIds.UploadDialog));
             }
         }
 

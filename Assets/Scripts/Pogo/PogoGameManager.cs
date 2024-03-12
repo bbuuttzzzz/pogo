@@ -2,7 +2,6 @@
 using Assets.Scripts.Pogo.Checkpoints;
 using Inputter;
 using Platforms;
-using Platforms.Steam;
 using Pogo.Challenges;
 using Pogo.Checkpoints;
 using Pogo.Collectibles;

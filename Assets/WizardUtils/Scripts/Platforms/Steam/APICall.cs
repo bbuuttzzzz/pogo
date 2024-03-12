@@ -1,4 +1,6 @@
-﻿using Pogo.CustomMaps.Steam;
+﻿#if !DISABLESTEAMWORKS
+
+using Pogo.CustomMaps.Steam;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -56,3 +58,4 @@ namespace Platforms.Steam
         public bool IOFailure;
     }
 }
+#endif

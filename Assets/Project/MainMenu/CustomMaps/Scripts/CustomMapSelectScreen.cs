@@ -1,9 +1,11 @@
 ﻿using Pogo.CustomMaps.Indexing;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.Events;
+using UnityEngine.UI;
 using WizardUI;
 using WizardUtils;
+using ScrollView = UnityEngine.UIElements.ScrollView;
 
 namespace Pogo.CustomMaps.UI
 {
@@ -19,9 +21,29 @@ namespace Pogo.CustomMaps.UI
         private List<CustomMapButton> Buttons;
         private IEnumerator<MapHeader> UnloadedHeaders;
 
+        public Button UploadButton;
+        public Button BrowseLocalButton;
+        public Button ViewWorkshopButton;
+
+        [HideInInspector]
+        public UnityEvent OnUploadPressed;
+
         private void Awake()
         {
             gameManager = PogoGameManager.PogoInstance;
+
+            if (!gameManager.PlatformService.SupportsWorkshop)
+            {
+                UploadButton.gameObject.SetActive(false);
+                ViewWorkshopButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                UploadButton.onClick.AddListener(() => OnUploadPressed?.Invoke());
+                ViewWorkshopButton.onClick.AddListener(() => Application.OpenURL(gameManager.PlatformService.WorkshopLink));
+            }
+
+            BrowseLocalButton.onClick.AddListener(() => Application.OpenURL($"file:///{gameManager.CustomMapBuilder.WadFolderRootPath}"));
         }
 
 
