@@ -174,6 +174,10 @@ namespace Pogo.CustomMaps
             };
             WadSource textureSource = new WadSource();
 
+            var newAtmo = Instantiate(CustomMapLevel.PostProcessingPrefab).GetComponent<Atmospheres.Atmosphere>();
+            newAtmo.FogDensity = header.FogThicknessOrDefault();
+            newAtmo.FogColor = header.FogColorOrDefault();
+            gameManager.LevelManager.OverrideAtmosphere(newAtmo, true);
 
             // add built-in wad folder
             textureSource.AddWadFolder($"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}wads");

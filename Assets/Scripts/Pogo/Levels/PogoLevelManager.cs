@@ -423,6 +423,59 @@ namespace Pogo.Levels
             TransitionAtmosphere(newLevel.PostProcessingPrefab, instant);
         }
 
+        public void OverrideAtmosphere(Atmosphere newAtmosphere, bool instant)
+        {
+            AtmosphereVerboseLog($"Targetted Explicit Atmosphere {newAtmosphere.name}");
+            newAtmosphere.transform.parent = transform;
+
+            if (CurrentCrossFader != null)
+            {
+                CurrentCrossFader.FinishNow();
+                CurrentCrossFader.CleanUp();
+
+                CurrentCrossFader = null;
+            }
+
+            var atmospheres = getExistingAtmospheres();
+            if (atmospheres.Length == 0)
+            {
+                // if we don't have an initial atmosphere to crossfade, set instantly
+                newAtmosphere.FullyApply();
+                return;
+            }
+
+            // remove excess atmospheres... (order here looks arbitrary which is bad!)
+            for (int i = 1; i < atmospheres.Length; i++)
+            {
+                atmospheres[i].DisableAndDestroy();
+            }
+
+            if (atmospheres[0].SelfPrefab == null)
+            {
+                // if our initial atmosphere is malformed, let's replace it instantly
+                AtmosphereVerboseLog($"Instant set to {atmospheres[0].name} (Malformed Original Atmo)");
+                atmospheres[0].DisableAndDestroy();
+                newAtmosphere.FullyApply();
+                return;
+            }
+
+            if (instant)
+            {
+                atmospheres[0].DisableAndDestroy();
+                newAtmosphere.FullyApply();
+                AtmosphereVerboseLog($"Instant set to {newAtmosphere.name}");
+            }
+            else
+            {
+                CurrentCrossFader = new AtmosphereCrossFader(
+                    this,
+                    this,
+                    atmospheres[0],
+                    newAtmosphere);
+                CurrentCrossFader.BeginTransition();
+            }
+        }
+
         public void TransitionAtmosphere(GameObject newAtmospherePrefab, bool instant)
         {
             AtmosphereVerboseLog($"Targetted Atmosphere {newAtmospherePrefab.name}");
