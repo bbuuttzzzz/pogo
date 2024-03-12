@@ -11,12 +11,12 @@ namespace Pogo.CustomMaps.Materials
         public bool EnableLogging = true;
         private Material BaseMaterial;
         private Dictionary<string, IFillableShader> ShadersDictionary;
-        private Dictionary<string, IStockMaterial> StockMaterialDictionary;
+        private Dictionary<string, Material> StockMaterialDictionary;
 
         public PogoMaterialSource(
             Material baseMaterial,
             IEnumerable<IFillableShader> fillableShaders,
-            IEnumerable<IStockMaterial> stockMaterials)
+            IEnumerable<IStockMaterial> stockMaterials = null)
         {
             BaseMaterial = baseMaterial;
             ShadersDictionary = new Dictionary<string, IFillableShader>();
@@ -24,19 +24,27 @@ namespace Pogo.CustomMaps.Materials
             {
                 ShadersDictionary.Add(shader.ShaderName, shader);
             }
-            StockMaterialDictionary = new Dictionary<string, IStockMaterial>();
-            foreach(var material in stockMaterials)
+            StockMaterialDictionary = new Dictionary<string, Material>();
+            if (stockMaterials != null)
             {
-                StockMaterialDictionary.Add(material.Name, material);
+                foreach (var stockMaterial in stockMaterials)
+                {
+                    RegisterMaterial(stockMaterial.Name, stockMaterial.Material);
+                }
             }
+        }
+
+        public void RegisterMaterial(string name, Material material)
+        {
+            StockMaterialDictionary.Add(name, material);
         }
 
         public Material BuildMaterial(WadTextureData textureData)
         {
             if (!string.IsNullOrEmpty(textureData.Name)
-                && StockMaterialDictionary.TryGetValue(textureData.Name, out IStockMaterial stockMaterial))
+                && StockMaterialDictionary.TryGetValue(textureData.Name, out Material material))
             {
-                return stockMaterial.Material;
+                return material;
             }
 
             if (string.IsNullOrEmpty(textureData.ShaderName))
@@ -57,10 +65,16 @@ namespace Pogo.CustomMaps.Materials
             return BuildBaseMaterial(textureData);
         }
 
-        private Material BuildFillableShaderMaterial(WadTextureData textureData, IFillableShader descriptor)
+        private Material BuildFillableShaderMaterial(WadTextureData textureData, IFillableShader fillable)
         {
-            Material newMaterial = new Material(descriptor.BaseMaterial);
-            foreach(var property in descriptor.Properties)
+            Material newMaterial = new Material(fillable.BaseMaterial);
+
+            if (fillable.ReplaceMainTex)
+            {
+                newMaterial.SetTexture("_MainTex", textureData.Texture);
+            }
+
+            foreach (var property in fillable.Properties)
             {
                 if (textureData.Metadata.TryGetValue(property.PropertyName.ToLowerInvariant(), out string value))
                 {

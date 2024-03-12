@@ -8,11 +8,14 @@ namespace Pogo.CustomMaps.Materials
         public string ShaderName;
         public Material BaseMaterial;
         public FillableShaderProperty[] Properties;
+        public bool ReplaceMainTex = true;
 
         string IFillableShader.ShaderName => ShaderName;
 
         Material IFillableShader.BaseMaterial => BaseMaterial;
 
         FillableShaderProperty[] IFillableShader.Properties => Properties;
+
+        bool IFillableShader.ReplaceMainTex => ReplaceMainTex;
     }
 }

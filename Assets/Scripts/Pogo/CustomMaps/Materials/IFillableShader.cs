@@ -12,5 +12,6 @@ namespace Pogo.CustomMaps.Materials
         public string ShaderName { get; }
         public Material BaseMaterial { get; }
         public FillableShaderProperty[] Properties { get; }
+        public bool ReplaceMainTex { get; }
     }
 }

@@ -37,6 +37,8 @@ namespace Pogo.CustomMaps
 
         public CustomMap CurrentCustomMap;
         public Material DefaultMaterial;
+        public Material DefaultSkyMaterial;
+
         public EntityPrefabManifest EntityPrefabs;
         public Materials.FillableShaderManifest FillableShaderManifest;
         public Materials.StockMaterialManifest StockMaterialManifest;
@@ -172,22 +174,28 @@ namespace Pogo.CustomMaps
                 entityCreatedCallback = OnEntityCreated,
                 scaleFactor = 1f / 32f
             };
-            WadSource textureSource = new WadSource();
 
+            WadSource textureSource = new WadSource();
+            textureSource.AddWadFolder($"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}wads");
+            textureSource.AddWadFolder(WadFolderRootPath);
+            textureSource.AddWadFolder(folderPath);
+
+            var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
+
+            var materialSource = new Materials.PogoMaterialSource(
+                DefaultMaterial,
+                FillableShaderManifest.Items,
+                StockMaterialManifest.Items);
+
+            // set up atmosphere from header
             var newAtmo = Instantiate(CustomMapLevel.PostProcessingPrefab).GetComponent<Atmospheres.Atmosphere>();
             newAtmo.FogDensity = header.FogThicknessOrDefault();
             newAtmo.FogColor = header.FogColorOrDefault();
             gameManager.LevelManager.OverrideAtmosphere(newAtmo, true);
 
-            // add built-in wad folder
-            textureSource.AddWadFolder($"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}wads");
-            textureSource.AddWadFolder(WadFolderRootPath);
-            textureSource.AddWadFolder(folderPath);
-            var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
-            var materialSource = new Materials.PogoMaterialSource(
-                DefaultMaterial,
-                FillableShaderManifest.Items,
-                StockMaterialManifest.Items);
+            // set up sky texture from header
+            RegisterSkyTexture(header.SkyTexture, textureSource, materialSource, DefaultSkyMaterial);
+
             var loader = new BSPLoader(settings, textureSource, templateSource, materialSource);
 
             loader.LoadBSP();
@@ -222,10 +230,39 @@ namespace Pogo.CustomMaps
             {
                 FinishSettingUpTrigger_Checkpoint(checkpoint);
             }
-            
+
 
             StartMap();
             gameManager.Paused = false;
+        }
+
+        private static void RegisterSkyTexture(
+            string textureName,
+            WadSource textureSource,
+            PogoMaterialSource materialSource,
+            Material fallbackMaterial)
+        {
+            Material skyMaterial;
+
+            if (textureName != null)
+            {
+                var wadTexture = textureSource.LoadTexture(textureName);
+                if (wadTexture != null)
+                {
+                    skyMaterial = materialSource.BuildMaterial(wadTexture.Value);
+                }
+                else
+                {
+                    Debug.LogWarning($"Failed to load SkyTexture named '{textureName}'");
+                    skyMaterial = fallbackMaterial;
+                }
+            }
+            else
+            {
+                skyMaterial = fallbackMaterial;
+            }
+
+            materialSource.RegisterMaterial("tool_skybox", skyMaterial);
         }
 
         public IEnumerable<MapHeader> GetMapHeaders(bool uploadableOnly = false)
