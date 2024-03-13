@@ -181,7 +181,7 @@ namespace Pogo
 
         private void CreateWorkshopUploadService()
         {
-            WorkshopUploadService = new WorkshopUploadService((SteamPlatformService)PlatformService, PogoInstance);
+            WorkshopUploadService = new WorkshopUploadService((Platforms.Steam.SteamPlatformService)PlatformService, PogoInstance);
         }
 #endif
 

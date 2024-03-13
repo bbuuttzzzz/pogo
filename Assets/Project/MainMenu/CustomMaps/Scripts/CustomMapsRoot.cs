@@ -39,7 +39,7 @@ namespace Pogo.CustomMaps.UI
 
             if (gameManager.PlatformService.SupportsWorkshop)
             {
-                MapSelectScreen.OnUploadPressed.AddListener(() => OpenScreen(ScreenIds.UploadDialog));
+                MapSelectScreen.OnUploadPressed.AddListener(() => OpenScreen(ScreenIds.UploadSelect));
             }
         }
 
