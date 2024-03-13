@@ -18,6 +18,7 @@ namespace Assets.Scripts.Pogo.CustomMaps
         {
             AllowUpload = isLocalPath;
             Path = path;
+            Directory.CreateDirectory(Path);
         }
 
         public IEnumerable<string> GetPaths()
