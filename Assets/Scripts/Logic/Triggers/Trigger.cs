@@ -20,4 +20,9 @@ public class Trigger : MonoBehaviour
     {
         return true;
     }
+
+    public void FixTriggerSettings()
+    {
+        gameObject.layer = LAYER.trigger;
+    }
 }

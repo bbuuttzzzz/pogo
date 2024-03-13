@@ -20,7 +20,7 @@ namespace WizardUtils.Saving
 
         public override void Save()
         {
-            string path = Manifest.GetFilePath(PlatformService.PersistentDataPath);
+            string path = Manifest.GetFilePath(PlatformService.SaveDataPath);
             Debug.Log($"Writing to {path}");
             using (StreamWriter file = new StreamWriter(path))
             {
@@ -37,7 +37,7 @@ namespace WizardUtils.Saving
         public override void Load()
         {
             LoadedValues = new Dictionary<SaveValueDescriptor, SaveValue>();
-            string path = Manifest.GetFilePath(PlatformService.PersistentDataPath);
+            string path = Manifest.GetFilePath(PlatformService.SaveDataPath);
 
             if (!File.Exists(path)) return;
             using (StreamReader file = new StreamReader(path))

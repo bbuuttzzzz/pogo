@@ -1,12 +1,16 @@
 ﻿using Assets.Scripts.Player;
+using Assets.Scripts.Pogo.Checkpoints;
 using Inputter;
 using Platforms;
 using Pogo.Challenges;
 using Pogo.Checkpoints;
 using Pogo.Collectibles;
 using Pogo.Cosmetics;
+using Pogo.CustomMaps;
+using Pogo.CustomMaps.Steam;
 using Pogo.Difficulties;
 using Pogo.Levels;
+using Pogo.MainMenu;
 using Pogo.Saving;
 using System;
 using System.Collections;
@@ -16,6 +20,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.SceneManagement;
 using WizardPhysics.PhysicsTime;
 using WizardUI;
 using WizardUtils;
@@ -33,7 +38,12 @@ namespace Pogo
         {
             base.Awake();
             if (GameInstance != this) return;
+#if !DISABLESTEAMWORKS
+            CreateWorkshopUploadService();
+#endif
 
+            MaterialSurfaceService = new Surfaces.MaterialSurfaceService(DefaultSurfaceConfig)
+                .AddSource(new Surfaces.AssetSurfaceSource(), 0);
             CurrentDifficultyDescriptor = DifficultyManifest.FindByKey(Difficulty.Normal);
             LoadCheckpointManifest = new CheckpointManifest();
             LoadGlobalSave();
@@ -123,6 +133,59 @@ namespace Pogo
         }
 
         public ChallengeBuilder ChallengeBuilder;
+        public CustomMapBuilder CustomMapBuilder;
+
+        #region Main Menu Action
+        private Action<PogoMainMenuController> OnMainMenuLoadAction;
+
+        public bool TryGetMainMenuLoadAction(out Action<PogoMainMenuController> action)
+        {
+            action = OnMainMenuLoadAction;
+            OnMainMenuLoadAction = null;
+            return action != null;
+        }
+
+        public void DoMainMenuAction(Action<PogoMainMenuController> action)
+        {
+            var mainMenuScene = SceneManager.GetSceneByName("MainMenu");
+            if (mainMenuScene.IsValid())
+            {
+                foreach(var rootObject in mainMenuScene.GetRootGameObjects())
+                {
+                    if (rootObject.TryGetComponent<PogoMainMenuController>(out var menu))
+                    {
+                        action(menu);
+                        return;
+                    }
+                }
+                throw new MissingComponentException();
+            }
+            else
+            {
+                OnMainMenuLoadAction = action;
+            }
+        }
+
+        #endregion
+
+        #region Surfaces
+        public Surfaces.SurfaceConfig DefaultSurfaceConfig;
+
+        [NonSerialized]
+        public Surfaces.MaterialSurfaceService MaterialSurfaceService;
+        #endregion
+
+        #region Workshop
+#if !DISABLESTEAMWORKS
+        public WorkshopUploadService WorkshopUploadService;
+
+        private void CreateWorkshopUploadService()
+        {
+            WorkshopUploadService = new WorkshopUploadService((Platforms.Steam.SteamPlatformService)PlatformService, PogoInstance);
+        }
+#endif
+
+        #endregion
 
         #region Level Management
         public enum GameStates
@@ -328,31 +391,36 @@ namespace Pogo
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor == null)
+            if (CurrentCheckpoint is not ExplicitCheckpoint explicitCheckpoint)
             {
-                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} no descriptor!!!", CurrentCheckpoint);
+                throw new NotImplementedException();
+            }
+
+            if (explicitCheckpoint.Descriptor == null)
+            {
+                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {explicitCheckpoint.name} no descriptor!!!", explicitCheckpoint);
                 newData = new QuickSaveData();
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.Chapter == null)
+            if (explicitCheckpoint.Descriptor.Chapter == null)
             {
-                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Chapter!!!", CurrentCheckpoint);
+                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {explicitCheckpoint.name} missing Chapter!!!", explicitCheckpoint);
                 newData = new QuickSaveData();
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.MainLevelState.Level == null)
+            if (explicitCheckpoint.Descriptor.MainLevelState.Level == null)
             {
-                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {CurrentCheckpoint.name} missing Level!!!", CurrentCheckpoint);
+                Debug.LogWarning($"Failed to quicksave. CurrentCheckpoint {explicitCheckpoint.name} missing Level!!!", explicitCheckpoint);
                 newData = new QuickSaveData();
                 return false;
             }
 
             newData = new QuickSaveData()
             {
-                ChapterId = ChapterToId(CurrentCheckpoint.Descriptor.Chapter),
-                checkpointId = CurrentCheckpoint.Descriptor.CheckpointId,
+                ChapterId = ChapterToId(explicitCheckpoint.Descriptor.Chapter),
+                checkpointId = explicitCheckpoint.Descriptor.CheckpointId,
                 CurrentState = QuickSaveData.States.InProgress,
                 ChapterProgressDeaths = currentChapterProgressTracker?.TrackedDeaths ?? 0,
                 SessionProgressDeaths = currentSessionProgressTracker.TrackedDeaths,
@@ -406,7 +474,7 @@ namespace Pogo
             UnityAction finishLoading = null;
             finishLoading = () =>
             {
-                LoadCheckpoint(checkpoint);
+                LoadCheckpoint(checkpoint.Chapter, checkpoint.CheckpointId);
                 StartChapter(newChapter, quickSaveData);
                 OnLevelLoaded.RemoveListener(finishLoading);
             };
@@ -437,23 +505,23 @@ namespace Pogo
             titleInstance.GetComponent<TitleCardController>().DisplayTitle(CurrentChapter.Title, delay);
         }
 
-        private void LoadCheckpoint(CheckpointDescriptor checkpointDescriptor)
+        private void LoadCheckpoint(ChapterDescriptor chapter, CheckpointId checkpointId)
         {
             bool checkpointFound = false;
 
-            foreach (var checkpointTrigger in LoadCheckpointManifest.CheckpointTriggers)
+            foreach (ICheckpoint checkpoint in LoadCheckpointManifest.Checkpoints)
             {
-                checkpointTrigger.NotifyCheckpointLoad(checkpointDescriptor);
-                if (!checkpointFound && checkpointTrigger.Descriptor == checkpointDescriptor)
+                if (checkpoint.Chapter == chapter && checkpoint.Id == checkpointId)
                 {
                     checkpointFound = true;
-                    RegisterRespawnPoint(new RespawnPointData(checkpointTrigger));
+                    RegisterRespawnPoint(new RespawnPointData(checkpoint));
+                    break;
                 }
             }
 
             if (!checkpointFound)
             {
-                throw new MissingReferenceException($"Failed to find Checkpoint trigger for {checkpointDescriptor}. did we load the right levels?");
+                throw new MissingReferenceException($"Failed to find Checkpoint trigger for {chapter} & {checkpointId}. did we load the right levels?");
             }
 
             CurrentGameState = GameStates.InGame;
@@ -464,29 +532,34 @@ namespace Pogo
 
         #region Checkpoint Shit
         public CheckpointManifest LoadCheckpointManifest { get; private set; }
-        public CheckpointTrigger CurrentCheckpoint;
+        public ICheckpoint CurrentCheckpoint;
 #if UNITY_EDITOR
         public CheckpointDescriptor _CachedCheckpoint;
 #endif
 
         public bool TryGetNextCheckpoint(out CheckpointDescriptor nextCheckpoint)
         {
+            if (this.CurrentCheckpoint is not ExplicitCheckpoint explicitCheckpoint)
+            {
+                throw new NotImplementedException();
+            }
+
             // get the easy thing out of the way...
-            if (!CurrentCheckpoint.Descriptor.CanSkip)
+            if (!explicitCheckpoint.CanSkip)
             {
                 nextCheckpoint = null;
                 return false;
             }
 
-            if (CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint != null)
+            if (explicitCheckpoint.Descriptor.OverrideSkipToCheckpoint != null)
             {
-                nextCheckpoint = CurrentCheckpoint.Descriptor.OverrideSkipToCheckpoint;
+                nextCheckpoint = explicitCheckpoint.Descriptor.OverrideSkipToCheckpoint;
                 return true;
             }
-            else if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
+            else if (explicitCheckpoint.Descriptor.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
             {
 #if UNITY_EDITOR
-                Debug.LogError($"SidePath checkpoint has NO overrideSkipTarget but is marked as skippable!: {CurrentCheckpoint.Descriptor}");
+                Debug.LogError($"SidePath checkpoint has NO overrideSkipTarget but is marked as skippable!: {explicitCheckpoint.Descriptor}");
 #endif
                 nextCheckpoint = null;
                 return false;
@@ -494,13 +567,13 @@ namespace Pogo
 
 
             // checkpoint numbers are one-indexed... for some fucking reason oh god why did I do that. so this looks weird
-            if (CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 > CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
+            if (explicitCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 1 > explicitCheckpoint.Descriptor.Chapter.MainPathCheckpoints.Length)
             {
                 // get the first checkpoint in the next chapter
-                int chapterIndex = World.IndexOf(CurrentCheckpoint.Descriptor.Chapter);
+                int chapterIndex = World.IndexOf(explicitCheckpoint.Descriptor.Chapter);
                 if (chapterIndex < 0)
                 {
-                    Debug.LogError($"Tried to skip out of a chapter... Couldn't find current Chapter {CurrentCheckpoint.Descriptor.Chapter} in current world {World}... ????");
+                    Debug.LogError($"Tried to skip out of a chapter... Couldn't find current Chapter {explicitCheckpoint.Descriptor.Chapter} in current world {World}... ????");
                     nextCheckpoint = default;
                     return false;
                 }
@@ -522,21 +595,24 @@ namespace Pogo
             }
 
             // checkpoint numbers are one-indexed... for some fucking reason oh god why did I do that. so this looks weird
-            nextCheckpoint = CurrentCheckpoint.Descriptor.Chapter.MainPathCheckpoints[CurrentCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 0];
+            nextCheckpoint = explicitCheckpoint.Descriptor.Chapter.MainPathCheckpoints[explicitCheckpoint.Descriptor.CheckpointId.CheckpointNumber + 0];
             return true;
         }
 
         public bool CanSkipCheckpoint()
         {
+            if (this.CurrentCheckpoint is not ExplicitCheckpoint CurrentCheckpoint)
+            {
+                throw new NotImplementedException();
+            }
+
             if (CurrentCheckpoint == null) return false;
 
             switch (CurrentCheckpoint.SkipBehavior)
             {
-                case CheckpointTrigger.SkipBehaviors.LevelChange:
+                case SkipBehaviors.LevelChange:
                     return TrySkipCheckpointByLevelChange(true);
-                case CheckpointTrigger.SkipBehaviors.TeleportToTarget:
-                    return true;
-                case CheckpointTrigger.SkipBehaviors.HalfCheckpoint:
+                case SkipBehaviors.TeleportToTarget:
                     return true;
                 default:
                     throw new ArgumentOutOfRangeException($"Checkpoint ({CurrentCheckpoint}) has bad SkipBehaviour {CurrentCheckpoint.SkipBehavior}");
@@ -545,18 +621,18 @@ namespace Pogo
 
         public bool TrySkipCheckpoint()
         {
+            if (this.CurrentCheckpoint is not ExplicitCheckpoint CurrentCheckpoint)
+            {
+                throw new NotImplementedException();
+            }
             if (CurrentCheckpoint == null) return false;
 
             switch (CurrentCheckpoint.SkipBehavior)
             {
-                case CheckpointTrigger.SkipBehaviors.LevelChange:
+                case SkipBehaviors.LevelChange:
                     return TrySkipCheckpointByLevelChange();
-                case CheckpointTrigger.SkipBehaviors.TeleportToTarget:
+                case SkipBehaviors.TeleportToTarget:
                     MovePlayerTo(CurrentCheckpoint.SkipTarget);
-                    CurrentCheckpoint.OnSkip.Invoke();
-                    return true;
-                case CheckpointTrigger.SkipBehaviors.HalfCheckpoint:
-                    MovePlayerTo(CurrentCheckpoint.SkipTarget, true);
                     CurrentCheckpoint.OnSkip.Invoke();
                     return true;
                 default:
@@ -840,22 +916,27 @@ namespace Pogo
         #region Respawn Point
 
         public EventHandler OnCustomCheckpointChanged;
-
+        public UnityEvent<RespawnPointChangedEventArgs> OnRespawnPointChanged;
         public Transform CachedRespawnPoint;
         private RespawnPointData respawnPoint;
         public RespawnPointData RespawnPoint
         {
             get => respawnPoint; set
             {
+                OnRespawnPointChanged?.Invoke(new RespawnPointChangedEventArgs()
+                {
+                    OldSpawnPoint = respawnPoint,
+                    NewSpawnPoint = value
+                });
                 respawnPoint = value;
                 if (respawnPoint.transform != null && CachedRespawnPoint.transform != null)
                 {
                     CachedRespawnPoint.position = respawnPoint.transform.position;
                     CachedRespawnPoint.rotation = respawnPoint.transform.rotation;
                 }
-                if (respawnPoint.Trigger != null)
+                if (respawnPoint.Checkpoint != null)
                 {
-                    CurrentCheckpoint = respawnPoint.Trigger;
+                    CurrentCheckpoint = respawnPoint.Checkpoint;
                 }
             }
         }
@@ -915,7 +996,7 @@ namespace Pogo
             return false;
         }
 
-        public bool TryRegisterRespawnPoint(CheckpointTrigger trigger)
+        public bool TryRegisterRespawnPoint(Checkpoint checkpoint)
         {
             if (PogoInstance == null || PogoInstance.levelManager == null)
             {
@@ -923,9 +1004,9 @@ namespace Pogo
                 return false;
             }
 
-            if (!CanRegisterRespawnPoint(trigger.RespawnPoint)) return false;
+            if (!CanRegisterRespawnPoint(checkpoint.RespawnPoint)) return false;
 
-            RegisterRespawnPoint(new RespawnPointData(trigger));
+            RegisterRespawnPoint(new RespawnPointData(checkpoint));
             return true;
         }
 
@@ -950,7 +1031,7 @@ namespace Pogo
             return (CurrentDifficulty == Difficulty.Hard && respawnPoint.EnabledInHardMode);
         }
 
-        public override void LoadControlScene(ControlSceneDescriptor newScene, Action callback = null)
+        public override void LoadControlSceneAsync(ControlSceneDescriptor newScene, Action callback = null)
         {
             if (levelManager != null)
             {
@@ -960,7 +1041,7 @@ namespace Pogo
             {
                 Player.CurrentState = PlayerStates.Alive;
             }
-            base.LoadControlScene(newScene, callback);
+            base.LoadControlSceneAsync(newScene, callback);
             CurrentGameState = GameStates.InMenu;
         }
 
@@ -983,7 +1064,18 @@ namespace Pogo
         #region Stats
         private GameProgressTracker currentChapterProgressTracker;
         private GameProgressTracker currentSessionProgressTracker;
+        private bool hideStatsPopup;
+        public bool HideStatsPopup
+        {
+            get => hideStatsPopup;
+            set
+            {
+                hideStatsPopup = value;
+                OnHideStatsChanged?.Invoke(value);
+            }
+        }
 
+        public UnityEvent<bool> OnHideStatsChanged;
         public UnityEvent OnStatsReset;
         public void ResetStats()
         {

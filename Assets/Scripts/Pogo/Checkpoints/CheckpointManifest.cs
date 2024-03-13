@@ -9,27 +9,27 @@ namespace Pogo.Checkpoints
 {
     public class CheckpointManifest
     {
-        private List<CheckpointTrigger> checkpointTriggers = new List<CheckpointTrigger>();
-        public ReadOnlyCollection<CheckpointTrigger> CheckpointTriggers => checkpointTriggers.AsReadOnly();
+        private List<ICheckpoint> checkpoints = new List<ICheckpoint>();
+        public ReadOnlyCollection<ICheckpoint> Checkpoints => checkpoints.AsReadOnly();
 
         public CheckpointManifest()
         {
-            checkpointTriggers = new();
+            checkpoints = new();
         }
 
-        public void Add(CheckpointTrigger checkpointTrigger)
+        public void Add(ICheckpoint ICheckpoint)
         {
-            checkpointTriggers.Add(checkpointTrigger);
+            checkpoints.Add(ICheckpoint);
         }
 
-        public void Remove(CheckpointTrigger checkpointTrigger)
+        public void Remove(ICheckpoint ICheckpoint)
         {
-            checkpointTriggers.Remove(checkpointTrigger);
+            checkpoints.Remove(ICheckpoint);
         }
 
-        public void Set(ICollection<CheckpointTrigger> checkpointTriggers)
+        public void Set(ICollection<ICheckpoint> ICheckpoints)
         {
-            this.checkpointTriggers = new List<CheckpointTrigger>(checkpointTriggers);
+            this.checkpoints = new List<ICheckpoint>(ICheckpoints);
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Pogo
         public Vector3 DeltaGravity;
 
         GravityForce Force;
+        public Material DefaultMaterial;
 
         private void Awake()
         {

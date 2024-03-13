@@ -13,7 +13,7 @@ namespace WizardUtils.GameSettings
     {
         Dictionary<string, GameSettingFloat> GameSettings;
         private IPlatformService PlatformService;
-        private string FilePath => $"{PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}{FileName}.cfg";
+        private string FilePath => $"{PlatformService.SaveDataPath}{Path.DirectorySeparatorChar}{FileName}.cfg";
         private string FileName;
         private bool IsDirty;
         private bool IsLoading;

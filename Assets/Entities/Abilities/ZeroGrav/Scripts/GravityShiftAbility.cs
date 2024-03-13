@@ -26,7 +26,7 @@ public class GravityShiftAbility : PlayerAbility
         
         EffectData data = new EffectData();
         data.position = Owner.RenderPosition;
-        WizardEffects.EffectManager.CreateEffect(EffectName, data);
+        //WizardEffects.EffectManager.CreateEffect(EffectName, data);
     }
 
     protected override void OnCleanse()
@@ -35,6 +35,6 @@ public class GravityShiftAbility : PlayerAbility
 
         EffectData data = new EffectData();
         data.position = Owner.RenderPosition;
-        WizardEffects.EffectManager.CreateEffect(EffectName, data);
+        //WizardEffects.EffectManager.CreateEffect(EffectName, data);
     }
 }

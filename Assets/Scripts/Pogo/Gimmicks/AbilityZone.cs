@@ -7,6 +7,7 @@ namespace Pogo
     public class AbilityZone : MonoBehaviour
     {
         public AbilityDescriptor Ability;
+        public Material DefaultMaterial;
 
         private PlayerAbility cachedAbilityInstance;
 

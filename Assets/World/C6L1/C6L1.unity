@@ -11280,6 +11280,7 @@ MonoBehaviour:
       m_Calls: []
   Type: {fileID: 11400000, guid: b73291a7a0f857f418f316d05d5dfaae, type: 2}
   DoExpensiveOriginStuff: 0
+  DefaultMaterial: {fileID: 0}
 --- !u!65 &1047407911
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11427,6 +11428,7 @@ MonoBehaviour:
       m_Calls: []
   Type: {fileID: 11400000, guid: b73291a7a0f857f418f316d05d5dfaae, type: 2}
   DoExpensiveOriginStuff: 0
+  DefaultMaterial: {fileID: 0}
 --- !u!1 &1054981537
 GameObject:
   m_ObjectHideFlags: 0
@@ -14909,6 +14911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Ability: {fileID: 11400000, guid: eed9c049c0a658740aa173a00aaaf3a7, type: 2}
+  DefaultMaterial: {fileID: 0}
 --- !u!114 &1631639487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14936,12 +14939,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1631639492}
+        m_TargetAssemblyTypeName: Pogo.Gimmicks.ColliderSplashEffect, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnExit:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1631639486}
         m_TargetAssemblyTypeName: Pogo.AbilityZone, Assembly-CSharp
         m_MethodName: Remove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1631639492}
+        m_TargetAssemblyTypeName: Pogo.Gimmicks.ColliderSplashEffect, Assembly-CSharp
+        m_MethodName: Trigger
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14964,6 +14991,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 47, y: 17.999996, z: 118.39998}
   m_Center: {x: -3.5, y: 0, z: 8.200004}
+--- !u!114 &1631639492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631639484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 969714eddf71446428e3edbea1b36757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Effect: {fileID: 11400000, guid: bc2012b9c52b8904eb381aafe4049f10, type: 2}
 --- !u!1 &1662682446
 GameObject:
   m_ObjectHideFlags: 0
@@ -15925,7 +15965,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4130756547994525346, guid: 262a16cf5a0fa194ba6d6c911440f283, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4130756547994525346, guid: 262a16cf5a0fa194ba6d6c911440f283, type: 3}
       propertyPath: m_LocalScale.x
@@ -16911,6 +16951,7 @@ MonoBehaviour:
       m_Calls: []
   Type: {fileID: 11400000, guid: b73291a7a0f857f418f316d05d5dfaae, type: 2}
   DoExpensiveOriginStuff: 0
+  DefaultMaterial: {fileID: 0}
 --- !u!64 &2032928245
 MeshCollider:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ namespace Pogo.Checkpoints
     }
 
     [System.Serializable]
-    public struct CheckpointId
+    public struct CheckpointId : IEquatable<CheckpointId>
     {
         public CheckpointTypes CheckpointType;
         public int CheckpointNumber;
@@ -29,5 +29,39 @@ namespace Pogo.Checkpoints
         {
             return $"{CheckpointType} {CheckpointNumber}";
         }
+
+        #region Equals
+        public bool Equals(CheckpointId other)
+        {
+            return other.CheckpointType == CheckpointType
+                && other.CheckpointNumber == CheckpointNumber;
+        }
+
+        public static bool operator ==(CheckpointId left, CheckpointId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CheckpointId left, CheckpointId right)
+        {
+            return !left.Equals(right);
+        }
+
+        public static CheckpointId operator +(CheckpointId left, int right)
+        {
+            left.CheckpointNumber += right;
+            return left;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is CheckpointId otherId && Equals(otherId);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+#endregion
     }
 }

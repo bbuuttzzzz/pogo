@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WizardUtils;
+using WizardUtils.GameSettings;
 using WizardUtils.SceneManagement;
 
 namespace Pogo.Levels
@@ -15,6 +16,7 @@ namespace Pogo.Levels
     {
         public bool LoadInitialLevelImmediately = true;
         public LevelShareCodeManifest ShareCodeManifest;
+        private PogoGameManager gameManager;
 
         private List<LevelSceneLoader> CurrentLevelSceneLoaders;
         private LevelLoadingSettings? CurrentLevelLoadSettings;
@@ -22,11 +24,11 @@ namespace Pogo.Levels
         void Start()
         {
             CurrentLevelSceneLoaders = new List<LevelSceneLoader>();
-            PogoGameManager game = GetComponent<PogoGameManager>();
-            game.OnControlSceneChanged += onControlSceneChanged;
-            if (LoadInitialLevelImmediately && !game.DontLoadScenesInEditor && game.InitialLevel != null)
+            gameManager = GetComponent<PogoGameManager>();
+            gameManager.OnControlSceneChanged += onControlSceneChanged;
+            if (LoadInitialLevelImmediately && !gameManager.DontLoadScenesInEditor && gameManager.InitialLevel != null)
             {
-                LoadLevelInstantly(game.InitialLevel);
+                LoadLevelInstantly(gameManager.InitialLevel);
             }
         }
 
@@ -120,9 +122,9 @@ namespace Pogo.Levels
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="newLevel">the Level to load</param>
+        /// <param name="newLevel">the SceneIndex to load</param>
         /// <param name="settings"></param>
-        /// <returns>FALSE if Level is already loaded</returns>
+        /// <returns>FALSE if SceneIndex is already loaded</returns>
         public bool LoadLevelAsync(LevelLoadingSettings settings)
         {
             if (currentLevel == settings.Level && !settings.ForceReload)
@@ -133,7 +135,15 @@ namespace Pogo.Levels
                 }
                 return false;
             }
+
+            CurrentLevelLoadSettings = settings;
             currentLevel = settings.Level;
+
+            if (settings.LoadingFromMenu)
+            {
+                gameManager.LoadScenesAsync(settings.Level.LoadLevels.Select(l => l.BuildIndex), FinishLoadingLevel);
+                return true;
+            }
 
             (List<LevelDescriptor> scenesToLoad, List<Scene> scenesToUnload) = GetSceneDifference(settings.Level, CurrentLevelSceneLoaders);
 
@@ -170,7 +180,6 @@ namespace Pogo.Levels
                 loader.MarkNotNeeded(settings.Instantly);
             }
 
-            CurrentLevelLoadSettings = settings;
             RecalculateFinishedLoadingLevel();
 
             return true;
@@ -242,7 +251,7 @@ namespace Pogo.Levels
         {
             if (!CurrentLevelLoadSettings.HasValue) return;
             LevelLoadingSettings settings = CurrentLevelLoadSettings.Value;
-
+            gameManager.LoadingRoot.SetOpen(false);
             TransitionAtmosphere(CurrentLevel, settings.Instantly);
             PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
             if (settings.MainLevelState.HasValue)
@@ -264,7 +273,6 @@ namespace Pogo.Levels
 
             if (settings.LoadingFromMenu)
             {
-                PogoGameManager.PogoInstance.UnloadControlScene();
                 PogoGameManager.PogoInstance.ResetStats();
             }
 
@@ -347,13 +355,13 @@ namespace Pogo.Levels
                     }
                     else
                     {
-                        // Level already exists, so we don't need to load it
+                        // SceneIndex already exists, so we don't need to load it
                         scenesToLoad.Remove(matchingToLoadLevel);
                     }
                 }
                 else
                 {
-                    // Level no longer exists. so we need to get rid of it
+                    // SceneIndex no longer exists. so we need to get rid of it
                     scenesToUnload.Add(scene);
                 }
             }
@@ -407,7 +415,65 @@ namespace Pogo.Levels
 
         public void TransitionAtmosphere(LevelDescriptor newLevel, bool instant)
         {
+            if (newLevel == null)
+            {
+                Debug.LogError("Can't transition atmosphere to NULL level");
+                return;
+            }
             TransitionAtmosphere(newLevel.PostProcessingPrefab, instant);
+        }
+
+        public void OverrideAtmosphere(Atmosphere newAtmosphere, bool instant)
+        {
+            AtmosphereVerboseLog($"Targetted Explicit Atmosphere {newAtmosphere.name}");
+            newAtmosphere.transform.parent = transform;
+
+            if (CurrentCrossFader != null)
+            {
+                CurrentCrossFader.FinishNow();
+                CurrentCrossFader.CleanUp();
+
+                CurrentCrossFader = null;
+            }
+
+            var atmospheres = getExistingAtmospheres();
+            if (atmospheres.Length == 0)
+            {
+                // if we don't have an initial atmosphere to crossfade, set instantly
+                newAtmosphere.FullyApply();
+                return;
+            }
+
+            // remove excess atmospheres... (order here looks arbitrary which is bad!)
+            for (int i = 1; i < atmospheres.Length; i++)
+            {
+                atmospheres[i].DisableAndDestroy();
+            }
+
+            if (atmospheres[0].SelfPrefab == null)
+            {
+                // if our initial atmosphere is malformed, let's replace it instantly
+                AtmosphereVerboseLog($"Instant set to {atmospheres[0].name} (Malformed Original Atmo)");
+                atmospheres[0].DisableAndDestroy();
+                newAtmosphere.FullyApply();
+                return;
+            }
+
+            if (instant)
+            {
+                atmospheres[0].DisableAndDestroy();
+                newAtmosphere.FullyApply();
+                AtmosphereVerboseLog($"Instant set to {newAtmosphere.name}");
+            }
+            else
+            {
+                CurrentCrossFader = new AtmosphereCrossFader(
+                    this,
+                    this,
+                    atmospheres[0],
+                    newAtmosphere);
+                CurrentCrossFader.BeginTransition();
+            }
         }
 
         public void TransitionAtmosphere(GameObject newAtmospherePrefab, bool instant)

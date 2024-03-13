@@ -65,9 +65,9 @@ namespace Pogo.Collectibles
             }
         }
 
-        private CheckpointTrigger FindWorldObject()
+        private ExplicitCheckpoint FindWorldObject()
         {
-            var checkpointTriggers = FindObjectsOfType<CheckpointTrigger>();
+            var checkpointTriggers = FindObjectsOfType<ExplicitCheckpoint>();
             foreach (var checkpointTrigger in checkpointTriggers)
             {
                 if (checkpointTrigger.Descriptor == self)

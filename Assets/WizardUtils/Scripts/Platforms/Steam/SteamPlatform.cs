@@ -2,6 +2,7 @@
 using Pogo;
 using Steamworks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,11 @@ namespace Platforms.Steam
         private SteamAPIWarningMessageHook_t SteamAPIWarningMessageHook;
         private Callback<GameOverlayActivated_t> m_OnGameOverlayActivated;
 
+        public string SaveDataPath { get; private set; }
         public string PersistentDataPath { get; private set; }
+
+        public bool SupportsWorkshop => true;
+        public string WorkshopLink => $"https://steamcommunity.com/app/{AppId}/workshop/";
 
         public string PlatformURLName => "steam";
 
@@ -48,9 +53,20 @@ namespace Platforms.Steam
             if (!initialized)
             {
                 Debug.LogError("[Steamworks.NET] SteamAPI_Init() failed.");
+                Application.Quit();
             }
 
             SetupPersistentDataPath();
+            PogoGameManager.PogoInstance.StartCoroutine(SpawnRunCallbacksCoroutine());
+        }
+
+        private IEnumerator SpawnRunCallbacksCoroutine()
+        {
+            while(initialized)
+            {
+                SteamAPI.RunCallbacks();
+                yield return null;
+            }
         }
 
         public IGameSettingService BuildGameSettingService(IEnumerable<GameSettingFloat> settings)
@@ -92,8 +108,9 @@ namespace Platforms.Steam
         {
             AccountID_t steamId = SteamUser.GetSteamID().GetAccountID();
 
+            PersistentDataPath = Application.persistentDataPath;
             // %home%/steamsaves/steam64id
-            PersistentDataPath = $"{Application.persistentDataPath}{Path.DirectorySeparatorChar}steamsaves{Path.DirectorySeparatorChar}{steamId}";
+            SaveDataPath = $"{Application.persistentDataPath}{Path.DirectorySeparatorChar}steamsaves{Path.DirectorySeparatorChar}{steamId}";
         }
         private void OnGameOverlayActivated(GameOverlayActivated_t callback)
         {

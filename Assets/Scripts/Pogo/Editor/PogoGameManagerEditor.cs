@@ -66,7 +66,7 @@ public class PogoGameManagerEditor : GameManagerEditor
                     Undo.SetCurrentGroupName("Move Spawnpoint");
                     int undoGroup = Undo.GetCurrentGroup();
 
-                    CheckpointTrigger checkpointTrigger = itempath.item.GetComponentInParent<CheckpointTrigger>();
+                    ExplicitCheckpoint checkpointTrigger = itempath.item.GetComponentInParent<ExplicitCheckpoint>();
                     if (checkpointTrigger != null)
                     {
                         self._CachedCheckpoint = checkpointTrigger.Descriptor;

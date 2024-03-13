@@ -1,0 +1,94 @@
+﻿using Pogo.CustomMaps.Indexing;
+using Pogo.CustomMaps.Steam;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UIElements;
+using WizardUI;
+using WizardUtils;
+
+namespace Pogo.CustomMaps.UI
+{
+    [AddComponentMenu("Pogo.CustomMaps.UI.UploadSelectScreen")]
+    public class UploadSelectScreen : MonoBehaviour
+    {
+        private PogoGameManager gameManager;
+        public CustomMapsRoot parent;
+
+        public int LoadMoreCount = 5;
+        private bool CanLoadMore;
+        public GameObject ButtonPrefab;
+        public Transform ButtonsRoot;
+        public ScrollView Scroller;
+        private List<CustomMapButton> Buttons;
+        private IEnumerator<MapHeader> UnloadedHeaders;
+
+        private void Awake()
+        {
+            gameManager = PogoGameManager.PogoInstance;
+        }
+
+
+        private void OnEnable()
+        {
+            ResetButtons();
+        }
+
+        private void ResetButtons()
+        {
+            if (Buttons != null)
+            {
+                foreach (var button in Buttons)
+                {
+                    Destroy(button.gameObject);
+                }
+            }
+            Buttons = new List<CustomMapButton>();
+            UnloadedHeaders = gameManager.CustomMapBuilder
+                .GetMapHeaders(uploadableOnly: true)
+                .GetEnumerator();
+            CanLoadMore = true;
+            LoadMore(100);
+        }
+
+
+
+        private void OpenUploadMapDialog(MapHeader header)
+        {
+            parent.OpenUploadDialog(header);
+        }
+
+        private void AddButton(MapHeader header)
+        {
+            var obj = Instantiate(ButtonPrefab, ButtonsRoot);
+            var button = obj.GetComponent<CustomMapButton>();
+            button.Header = header;
+            button.UIButton.onClick.AddListener(() =>
+            {
+                OpenUploadMapDialog(header);
+            });
+            Buttons.Add(button);
+        }
+
+        public void LoadMore(int count = -1)
+        {
+            if (count < 0) count = LoadMoreCount;
+
+            if (!CanLoadMore)
+            {
+                return;
+            }
+
+            for (int n = 0; n < count; n++)
+            {
+                if (!UnloadedHeaders.MoveNext())
+                {
+                    CanLoadMore = false;
+                    break;
+                }
+                AddButton(UnloadedHeaders.Current);
+            }
+        }
+    }
+}

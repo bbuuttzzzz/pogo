@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82483527c4b32d74fba019d7fe03d691, type: 3}
+  m_Name: cmat_effect_scroll
+  m_EditorClassIdentifier: 
+  ShaderName: effect_scroll
+  BaseMaterial: {fileID: 2100000, guid: 1f66404a8a172ba49aeb7423f355ebd9, type: 2}
+  Properties:
+  - PropertyName: Color1
+    ParameterName: _Color1
+    ParameterType: 1
+  - PropertyName: Color2
+    ParameterName: _Color2
+    ParameterType: 1
+  - PropertyName: Alpha
+    ParameterName: _Alpha
+    ParameterType: 0
+  - PropertyName: ScrollSpeed
+    ParameterName: _ScrollSpeed
+    ParameterType: 2

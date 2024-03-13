@@ -1,5 +1,5 @@
 using Pogo.Cosmetics;
-using Pogo.MaterialTypes;
+using Pogo.Surfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,7 +29,6 @@ namespace Pogo
 
         private void Awake()
         {
-            loadSurfaceProperties();
             collisionGroup = GetComponent<CollisionGroup>();
             GetComponent<Equipper>().OnEquip.AddListener(Equipper_OnEquip);
             OnModelControllerChanged = new UnityEvent<PlayerModelController>();
@@ -219,39 +218,10 @@ namespace Pogo
                 }
             }
 
-            surfaceCache.SurfaceConfig = surfacePropertiesDict.ContainsKey(material) ? (surfacePropertiesDict[material] ?? DefaultSurfaceConfig)
-                : DefaultSurfaceConfig;
+            surfaceCache.SurfaceConfig = PogoGameManager.PogoInstance.MaterialSurfaceService.CheckMaterial(material);
             return surfaceCache.SurfaceConfig;
         }
 
-
-        public SurfaceConfig DefaultSurfaceConfig;
-        Dictionary<Material, SurfaceConfig> surfacePropertiesDict;
-        void loadSurfaceProperties()
-        {
-            surfacePropertiesDict = new Dictionary<Material, SurfaceConfig>();
-            var surfaceConfigs = Resources.LoadAll<SurfaceConfig>("Surfaces");
-            foreach (var config in surfaceConfigs)
-            {
-                foreach (var material in config.Materials)
-                {
-                    try
-                    {
-                        surfacePropertiesDict.Add(material, config);
-                    }
-                    catch (ArgumentNullException)
-                    {
-                        Debug.LogError($"NULL Material for surface definition: {config.name}", config);
-                    }
-                    catch (ArgumentException)
-                    {
-                        // throw a pretty error for duplicate materials
-                        var existingSurfaceConfigName = surfacePropertiesDict[material].name;
-                        Debug.LogError($"Duplicate Surface Definition for material {material.name}: {existingSurfaceConfigName} & {config.name}", config);
-                    }
-                }
-            }
-        }
         #endregion
     }
 }

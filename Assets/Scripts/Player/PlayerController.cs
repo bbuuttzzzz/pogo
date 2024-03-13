@@ -3,7 +3,7 @@ using Inputter;
 using Pogo;
 using Pogo.Abilities;
 using Pogo.Cosmetics;
-using Pogo.MaterialTypes;
+using Pogo.Surfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -65,7 +65,6 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
         PogoGameManager.GameInstance.OnControlSceneChanged += onControlSceneChanged;
         PogoGameManager.PogoInstance.TimeManager.OnPhysicsUpdate.AddListener(PhysicsUpdate);
         PogoGameManager.PogoInstance.TimeManager.OnRenderUpdate.AddListener(RenderUpdate);
-        loadSurfaceProperties();
 
         var sensitivitySetting = PogoGameManager.GameInstance.FindGameSetting(PogoGameManager.SETTINGKEY_SENSITIVITY);
         sensitivitySetting.OnChanged += onSensitivityChanged;
@@ -238,42 +237,19 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
     [HideInInspector]
     public UnityEvent OnDie;
 
-    public SurfaceConfig DefaultSurfaceConfig;
     public KillTypeDescriptor CollisionKillType;
-    Dictionary<Material, SurfaceConfig> surfacePropertiesDict;
-    void loadSurfaceProperties()
-    {
-        surfacePropertiesDict = new Dictionary<Material, SurfaceConfig>();
-        var surfaceConfigs = Resources.LoadAll<SurfaceConfig>("Surfaces");
-        foreach( var config in surfaceConfigs )
-        {
-            foreach( var material in config.Materials )
-            {
-                try
-                {
-                    surfacePropertiesDict.Add(material, config);
-                }
-                catch(ArgumentException e)
-                {
-                    // throw a pretty error for duplicate materials
-                    var existingSurfaceConfigName = surfacePropertiesDict[material].name;
-                    throw new ArgumentException($"Duplicate Surface Definition for material {material.name}: {existingSurfaceConfigName} & {config.name}", e);
-                }
-            }
-        }
-    }
 
     SurfaceConfigCacheEntry surfaceCache = new SurfaceConfigCacheEntry();
     SurfaceConfig GetSurfacePropertyFromCollision(RaycastHit hitInfo)
     {
         Material material = null;
 
-        var specifier = hitInfo.collider.GetComponent<SurfaceConfigSpecifier>();
+        var specifier = hitInfo.collider.GetComponent<ISurfaceConfigOverride>();
         if (specifier != null)
         {
             surfaceCache.Collider = hitInfo.collider;
-            surfaceCache.SurfaceConfig = specifier.SurfaceConfig;
-            return specifier.SurfaceConfig;
+            surfaceCache.SurfaceConfig = specifier.CheckSurface(hitInfo);
+            return surfaceCache.SurfaceConfig;
         }
         if (hitInfo.collider is MeshCollider)
         {
@@ -327,15 +303,8 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
                 material = renderer.sharedMaterial;
             }
         }
-        try
-        {
-            surfaceCache.SurfaceConfig = surfacePropertiesDict.ContainsKey(material) ? (surfacePropertiesDict[material] ?? DefaultSurfaceConfig)
-                : DefaultSurfaceConfig;
-        }
-        catch(ArgumentNullException)
-        {
-            Debug.LogError($"Missing surfaceConfig for material {material}", material);
-        }
+
+        surfaceCache.SurfaceConfig = PogoGameManager.PogoInstance.MaterialSurfaceService.CheckMaterial(material);
         return surfaceCache.SurfaceConfig;
     }
 
@@ -440,7 +409,6 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
 
     void setControlSceneBehavior(bool inControlScene)
     {
-        Debug.Log($"Player setControlSceneBehavior {inControlScene}");
         gameObject.SetActive(!inControlScene);
         UpdateCursorLock(inControlScene);
     }

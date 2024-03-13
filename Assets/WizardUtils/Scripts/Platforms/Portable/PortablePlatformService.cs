@@ -11,9 +11,13 @@ namespace Platforms.Portable
 {
     public class PortablePlatformService : IPlatformService
     {
+        public string SaveDataPath => Application.persistentDataPath;
         public string PersistentDataPath => Application.persistentDataPath;
 
         public string PlatformURLName => "portable";
+
+        public bool SupportsWorkshop => false;
+        public string WorkshopLink => null;
 
         public void OnEnable()
         {

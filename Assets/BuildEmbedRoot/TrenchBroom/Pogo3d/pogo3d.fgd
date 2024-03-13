@@ -1,0 +1,159 @@
+// FGD file for pogo3D! this is one of the tools you need to make custom levels!
+
+@SolidClass = worldspawn : "World Entity"
+[
+    mapname(string) : "Map Title"
+]
+
+@baseClass = Angles
+[
+	angles(string) : "Pitch Yaw Roll (Y Z X)" : "0 0 0"
+]
+@baseclass = Targetname [ targetname(target_source) : "Name" ]
+@baseclass = Target [ target(target_destination) : "Target" ]
+
+// SolidClasses that inherit this have a default texture that overrides what you set in trenchbroom
+@baseclass = RenderStyle [
+	renderstyle(choices) : "Render Style" : 0 =
+	[
+		0: "Default"
+		1: "Invisible"
+		2: "Use Map Texture"
+	]
+]
+
+@baseclass size(-12 -12 0, 12 12 48) = PlayerClass []
+
+// A Checkpoint Spawnpoint! every checkpoint needs one. set "Targetname" to a unique value
+@PointClass base(PlayerClass, Targetname)
+    model({
+        "path" : "gameconfig/info_player_respawn.mdl"
+    })
+     = info_player_respawn : "Respawn Point" []
+
+// A Checkpoint Trigger. set "Target" to the value of an info_player_respawn's "Targetname"
+@SolidClass base(Target, RenderStyle) = trigger_checkpoint : "Checkpoint"
+[
+	spawnflags(Flags) =
+	[
+		1 : "Can Skip" : 1
+	]
+	
+	// Specify the type of this checkpoint
+	// Main Path - automatically set up skipping for the next number in sequence.
+	// Side Path - unskippable unless SkipTarget is set
+	// The first "Main Path" Checkpoint will act as the spawn point
+	pathtype(choices) : "Checkpoint Type" : 0 =
+	[
+		0: "Main Path"
+		1: "Side Path"
+	]
+	// The number of this checkpoint in sequence. Don't skip any numbers.
+	// if your map has 3 main path checkpoints and 3 side path checkpoints, number them 1 2 3 and 1 2 3.
+	// ...or 0 1 2 & 0 1 2 :) both will work
+	number(integer) : "Checkpoint Number" : 1
+	// the name of the info_player_respawn the player should teleport to on skip.
+	skiptarget(target_destination) : "Override Skip Target"
+]
+
+// A Finish-Line trigger. You should probably put 1 at the end of your level.
+// feel free to any number of these, or zero if you want
+@SolidClass base(RenderStyle) = trigger_finish : "Finish Line" []
+
+// Water. kills on contact with your hitbox
+@SolidClass base(RenderStyle) = trigger_kill : "Trigger Kill"
+[
+	// What effect to play when you die
+	// as you can see from reading this, it defaults to water
+	killtype(choices) : "Kill Type" : 1 =
+	[
+		0: "Surface"
+		1: "Water"
+		2: "Space"
+	]
+]
+
+// A zero gravity zone
+@SolidClass base(RenderStyle) = trigger_gravity : "Trigger Gravity" []
+
+// A "Flight Ring"
+@SolidClass base(RenderStyle) = trigger_flight : "Trigger Flight" []
+
+// Moving Platforms
+@SolidClass = func_train : "Func Train"
+[
+	// point to an info_track_start 
+	trackstart(target_destination) : "Train Track Start"
+	// evenly space this many of this train brushes along the track.   
+	carcount(int) : "Train Car Count" : 1
+	// unfortunately moving platforms don't support material sounds :(
+	// you have to manually specify the sound effect here
+	// values are the same as the ones for .metawad files
+	surface(string) : "Surface Sound Type" : "default"
+]
+@PointClass base(trackoptions, Targetname, Target) = info_track_start : "Train Track Start"
+[
+]
+@PointClass base(trackoptions, Targetname, Target) = info_track : "Train Track" []
+@baseClass = trackoptions
+[
+	// how long to wait at this spot in milliseconds
+	stoptime(int) : "Stop Time (ms)" : 0
+	// how long should it take to reach the next stop in the sequence
+	traveltime(int) : "Segment Travel Time (ms)" : 1000
+	// next track in the sequence (can be left empty for non-looping tracks)
+	// target(target_destination)
+	easing(choices) : "Next Segment Easing" : 0 =
+	[
+		0: "Linear"
+		1: "Ease In"
+		2: "Ease Out"
+		3: "Ease In & Out"
+	]
+]
+
+//
+// Cameras
+//
+
+@PointClass base(Angles) = info_camera_preview : "Preview Image Camera" []
+
+//
+// lights - straight from quake 1 but no AppearFlags
+// lights don't do anything yet :( sorry
+//
+
+@baseclass color(255 255 40) = Light [
+	light(integer) : "Brightness" : 300
+	wait(integer) : "Fade distance multiplier" : 1
+	delay(choices) : "Attenuation" =
+	[
+		0 : "Linear falloff (Default)"
+		1 : "Inverse distance falloff"
+		2 : "Inverse distance squared"
+		3 : "No falloff"
+		4 : "Local minlight"
+		5 : "Inverse distance squared B"
+	]
+	mangle(string) : "Spotlight angle"
+	style(Choices) : "Appearance" : 0 =
+	[
+		0 : "Normal"
+		10: "Fluorescent flicker"
+		2 : "Slow, strong pulse"
+		11: "Slow pulse, noblack"
+		5 : "Gentle pulse"
+		1 : "Flicker A"
+		6 : "Flicker B"
+		3 : "Candle A"
+		7 : "Candle B"
+		8 : "Candle C"
+		4 : "Fast strobe"
+		9 : "Slow strobe"
+	]
+]
+
+@PointClass size(-8 -8 -8, 8 8 8) base(Light, Target, Targetname) =
+	light : "Invisible light source"
+	[
+	]
