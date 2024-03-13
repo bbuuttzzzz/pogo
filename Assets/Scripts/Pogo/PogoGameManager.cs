@@ -66,9 +66,10 @@ namespace Pogo
             OnQuitToMenu.AddListener(FullResetSessionData);
             OnQuitToDesktop.AddListener(GameManager_OnQuitToDesktop);
             CustomCheckpoint.OnPlaced.AddListener(() => OnCustomCheckpointChanged?.Invoke(this, EventArgs.Empty));
+
 #if UNITY_EDITOR
 #else
-            LoadControlScene(MainMenuControlScene);       
+            LoadControlSceneAsync(MainMenuControlScene);
 #endif
         }
 
