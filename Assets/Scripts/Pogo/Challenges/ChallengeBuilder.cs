@@ -198,6 +198,7 @@ namespace Pogo.Challenges
             ChallengePickup.transform.position = new Vector3(0, -20, 0);
             PauseMenu.OverrideMenu = null;
             CurrentChallenge = null;
+            ChallengePickup.gameObject.SetActive(false);
             OnChallengeChanged?.Invoke(CurrentChallenge);
             PogoGameManager.PogoInstance.OnPlayerDeath.RemoveListener(resetChallenge);
         }
@@ -212,6 +213,7 @@ namespace Pogo.Challenges
             {
                 pogoInstance.CustomCheckpoint.Place(CurrentChallenge.WorldStartPoint, CurrentChallenge.StartRotation);
                 pogoInstance.RegisterRespawnPoint(new RespawnPointData(pogoInstance.CustomCheckpoint, CurrentChallenge.LevelState.Level));
+                ChallengePickup.gameObject.SetActive(true);
                 ChallengePickup.transform.position = CurrentChallenge.WorldEndPoint;
                 PogoGameManager.PogoInstance.OnPlayerDeath.AddListener(resetChallenge);
                 PogoGameManager.PogoInstance.SpawnPlayer();
