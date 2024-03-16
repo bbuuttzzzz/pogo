@@ -390,15 +390,30 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
         CameraSwivelPoint.transform.rotation = target.rotation.YawOnly();
     }
 #endif
-    public void TeleportTo(Transform target, bool preservePhysics = false)
+    public void TeleportTo(Transform target)
     {
         PhysicsPosition = target.position;
         RenderPosition = target.position;
         internalEyeAngles = new Vector3(0, target.rotation.eulerAngles.y, 0);
-        if (!preservePhysics)
-        {
-            ResetPhysics();
-        }
+        ResetPhysics();
+
+        Disjoint();
+    }
+
+    public void TeleportToAndPreservePhysics(Transform target, float angleChange = 0)
+    {
+
+        var initialYawQuat = GetYawQuat();
+
+        PhysicsPosition = target.position;
+        RenderPosition = target.position;
+        internalEyeAngles = new Vector3(0, internalEyeAngles.y + angleChange, 0);
+        
+        Velocity = Quaternion.Euler(0, angleChange, 0) * Velocity;
+        PhysicsRotation = DesiredModelRotation;
+        RenderRotation = DesiredModelRotation;
+        UpdateCameraRotation();
+
         Disjoint();
     }
 

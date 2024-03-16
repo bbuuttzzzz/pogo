@@ -385,6 +385,7 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
             AddEntityHandler(new CustomMapEntityHandler("trigger_gravity", SetupTrigger_Gravity));
             AddEntityHandler(new CustomMapEntityHandler("trigger_flight", SetupTrigger_Flight));
+            AddEntityHandler(new CustomMapEntityHandler("trigger_teleport", SetupTrigger_Teleport));
             AddEntityHandler(new CustomMapEntityHandler("info_camera_preview", SetupInfo_Camera_Preview));
         }
 
@@ -569,6 +570,30 @@ namespace Pogo.CustomMaps
             else if (renderStyle == Trigger_Generic.RenderStyles.Invisible)
             {
                 trigger.GetComponent<Renderer>().enabled = false;
+            }
+        }
+
+        private void SetupTrigger_Teleport(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Trigger_Teleport entity = new Trigger_Teleport(data);
+
+            var target = entity.GetSingleTarget();
+
+            var teleport = data.Instance.gameObject.GetComponent<Gimmicks.TeleportTrigger>();
+            teleport.RespawnPoint = target.gameObject.transform;
+            teleport.PreservePhysics = entity.GetPreservePhysics();
+            teleport.PhysicsReorientAngle = entity.GetPreservePhysicsAngle();
+            teleport.UpdateMesh();
+
+            var renderStyle = entity.GetRenderStyle();
+
+            if (renderStyle == Trigger_Teleport.RenderStyles.Default)
+            {
+                teleport.GetComponent<Renderer>().material = teleport.DefaultMaterial;
+            }
+            else if (renderStyle == Trigger_Teleport.RenderStyles.Invisible)
+            {
+                teleport.GetComponent<Renderer>().enabled = false;
             }
         }
 

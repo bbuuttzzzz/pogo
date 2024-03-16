@@ -128,6 +128,23 @@
 // A "Flight Ring"
 @SolidClass base(RenderStyle) = trigger_flight : "Trigger Flight" []
 
+// A Teleporter
+@SolidClass base(Target, RenderStyle) = trigger_teleport : "Trigger Teleport"
+[
+	// Target should be an info_player_respawn :) you can make one just for this teleport, or reuse one that a checkpoint is already using
+
+	// What happens to your velocity and angle when you go through the teleporter?
+	keep_phys(choices) : "Preserve Physics" : 0 =
+	[
+		// Appear at the other end like you just respawned
+		0: "Don't Preserve"
+		// Maintain angle and velocity
+		1: "Preserve"
+	]
+	// 0-360 angle. if keep_phys = 1, rotate the player by this angle
+	phys_angle(int) : "Preserve Physics Angle" : 0
+]
+
 //
 // Cameras
 //
