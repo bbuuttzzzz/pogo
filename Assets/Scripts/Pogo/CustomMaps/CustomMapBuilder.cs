@@ -377,6 +377,8 @@ namespace Pogo.CustomMaps
 
             // we dont need to handle info_player_respawn. it's handled by trigger_checkpoint
             AddEntityHandler(new CustomMapEntityHandler("func_train", SetupFunc_Train));
+            AddEntityHandler(new CustomMapEntityHandler("func_illusionary", SetupFunc_Illusionary));
+            AddEntityHandler(new CustomMapEntityHandler("func_Invisible", SetupFunc_Invisible));
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
@@ -392,6 +394,16 @@ namespace Pogo.CustomMaps
 
         private void AddEntityHandler(CustomMapEntityHandler handler) => EntityHandlers.Add(handler.ClassName, handler);
         
+        private void SetupFunc_Illusionary(BSPLoader.EntityCreatedCallbackData data)
+        {
+            data.Instance.gameObject.GetComponent<MeshCollider>().enabled = false;
+        }
+
+        private void SetupFunc_Invisible(BSPLoader.EntityCreatedCallbackData data)
+        {
+            data.Instance.gameObject.GetComponent<MeshRenderer>().enabled = false;
+        }
+
         private void SetupFunc_Train(BSPLoader.EntityCreatedCallbackData data)
         {
             Func_Train entity = new Func_Train(data);
@@ -549,6 +561,7 @@ namespace Pogo.CustomMaps
                 trigger.GetComponent<Renderer>().enabled = false;
             }
         }
+
         #endregion
 
         private void FinishSettingUpTrigger_Checkpoint(GeneratedCheckpoint checkpoint)
