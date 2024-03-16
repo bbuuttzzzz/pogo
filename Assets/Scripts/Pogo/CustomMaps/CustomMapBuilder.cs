@@ -376,9 +376,10 @@ namespace Pogo.CustomMaps
             EntityHandlers = new Dictionary<string, CustomMapEntityHandler>();
 
             // we dont need to handle info_player_respawn. it's handled by trigger_checkpoint
-            AddEntityHandler(new CustomMapEntityHandler("func_train", SetupFunc_Train));
+            AddEntityHandler(new CustomMapEntityHandler("func_breakable", SetupFunc_Breakable));
             AddEntityHandler(new CustomMapEntityHandler("func_illusionary", SetupFunc_Illusionary));
-            AddEntityHandler(new CustomMapEntityHandler("func_Invisible", SetupFunc_Invisible));
+            AddEntityHandler(new CustomMapEntityHandler("func_invisible", SetupFunc_Invisible));
+            AddEntityHandler(new CustomMapEntityHandler("func_train", SetupFunc_Train));
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
@@ -387,13 +388,22 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("info_camera_preview", SetupInfo_Camera_Preview));
         }
 
+        private void AddEntityHandler(CustomMapEntityHandler handler) => EntityHandlers.Add(handler.ClassName, handler);
+
         private void SetupInfo_Camera_Preview(BSPLoader.EntityCreatedCallbackData data)
         {
             CurrentCustomMap.InfoCameraThumbnailObject = data.Instance.gameObject;
         }
 
-        private void AddEntityHandler(CustomMapEntityHandler handler) => EntityHandlers.Add(handler.ClassName, handler);
-        
+        private void SetupFunc_Breakable(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Func_Breakable self = new Func_Breakable(data);
+
+            var breakable = data.Instance.gameObject.GetComponent<Gimmicks.FuncBreakable>();
+            breakable.UpdateMesh();
+            breakable.RegenerateOnPlayerSpawn = self.GetRegenOnPlayerSpawn();
+        }
+
         private void SetupFunc_Illusionary(BSPLoader.EntityCreatedCallbackData data)
         {
             data.Instance.gameObject.GetComponent<MeshCollider>().enabled = false;

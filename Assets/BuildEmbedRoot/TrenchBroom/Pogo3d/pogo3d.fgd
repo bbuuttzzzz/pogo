@@ -24,6 +24,15 @@
 
 @baseclass size(-12 -12 0, 12 12 48) = PlayerClass []
 
+// Break on first contact with stick or face
+@SolidClass = func_breakable : "Func Breakable" [
+	resetondeath(choices) : "Reset On Death" : 0 =
+	[
+		0: "Don't Reset"
+		1: "Reset"
+	]
+]
+
 // You can see it, but you can't bounce off of it
 @SolidClass = func_illusionary : "Func Illusionary" []
 
@@ -42,6 +51,7 @@
 	// values are the same as the ones for .metawad files
 	surface(string) : "Surface Sound Type" : "default"
 ]
+
 @PointClass base(trackoptions, Targetname, Target) = info_track_start : "Train Track Start"
 [
 ]
