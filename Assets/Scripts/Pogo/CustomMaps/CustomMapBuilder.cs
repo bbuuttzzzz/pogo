@@ -670,12 +670,12 @@ namespace Pogo.CustomMaps
             {
                 string type = error.Severity switch
                 {
-                    Errors.MapError.Severities.Error => "ERROR",
-                    Errors.MapError.Severities.Warning => "ERROR",
+                    Errors.MapError.Severities.Error =>   "ERROR",
+                    Errors.MapError.Severities.Warning => "WARNING",
                     _ => "????",
                 };
 
-                sw.WriteLine($"#### {type} {index++}");
+                sw.WriteLine($"#### {type} {index++} ".PadRight(80, '#'));
                 sw.Write(error.ToLogString());
                 sw.WriteLine();
                 sw.WriteLine();
