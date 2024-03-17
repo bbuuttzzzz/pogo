@@ -198,7 +198,17 @@ namespace Pogo.CustomMaps
 
             var loader = new BSPLoader(settings, textureSource, templateSource, materialSource);
 
-            loader.LoadBSP();
+            try
+            {
+                loader.LoadBSP();
+            }
+            catch(Exception ex)
+            {
+                CurrentCustomMap.AddError(new Errors.MapError(
+                    ex,
+                    "Load Error - See Exception",
+                    Errors.MapError.Severities.Error));
+            }
             SceneManager.MoveGameObjectToScene(loader.root, SceneManager.GetSceneByBuildIndex(CustomMapLevel.BuildIndex));
             SetupMapSurfaceSource(loader);
             gameManager.MaterialSurfaceService.AddSource(CurrentCustomMap.SurfaceSource, -1);
@@ -207,30 +217,46 @@ namespace Pogo.CustomMaps
             {
                 if (CurrentCustomMap.PlayerStart == null)
                 {
-                    throw new FormatException("Map contains no Main Path Checkpoints (an info_player_start works in a pinch!)");
+                    CurrentCustomMap.AddError(new Errors.MapError(
+                        null,
+                        "Map contains no Main Path Checkpoints (an info_player_start works in a pinch!)",
+                        Errors.MapError.Severities.Error));
                 }
                 else
                 {
-                    Debug.LogWarning("Map Contains no Main Path Checkpoints. Defaulting to an info_player_start!");
+                    CurrentCustomMap.AddError(new Errors.MapError(
+                        null,
+                        "Map Contains no Main Path Checkpoints. Defaulting to an info_player_start!",
+                        Errors.MapError.Severities.Warning));
+
+                    CurrentCustomMap.PlayerStart.AddComponent<BoxCollider>();
+                    var checkpoint = CurrentCustomMap.PlayerStart.AddComponent<GeneratedCheckpoint>();
+                    checkpoint.FixTriggerSettings();
+                    checkpoint.Id = new CheckpointId(CheckpointTypes.MainPath, 0);
+                    checkpoint.RespawnPoint = CurrentCustomMap.PlayerStart.transform;
+                    CurrentCustomMap.RegisterCheckpoint(checkpoint);
                 }
-                CurrentCustomMap.PlayerStart.AddComponent<BoxCollider>();
-                var checkpoint = CurrentCustomMap.PlayerStart.AddComponent<GeneratedCheckpoint>();
-                checkpoint.FixTriggerSettings();
-                checkpoint.Id = new CheckpointId(CheckpointTypes.MainPath, 0);
-                checkpoint.RespawnPoint = CurrentCustomMap.PlayerStart.transform;
-                CurrentCustomMap.RegisterCheckpoint(checkpoint);
             }
 
             if (!CurrentCustomMap.HasFinish)
             {
-                Debug.LogWarning("Map contains no Trigger_Finish. There's no way to win :(");
+                CurrentCustomMap.AddError(new Errors.MapError(
+                    null,
+                    "Map contains no Trigger_Finish. There's no way to win :(",
+                    Errors.MapError.Severities.Warning));
             }
 
+            WriteMapLoadLogs(gameManager, CurrentCustomMap);
             foreach (var checkpoint in CurrentCustomMap.Checkpoints.Values)
             {
                 FinishSettingUpTrigger_Checkpoint(checkpoint);
             }
 
+            if (CurrentCustomMap.HasError)
+            {
+                ReturnToMainMenuAndShowErrors();
+                return;
+            }
 
             StartMap();
             gameManager.Paused = false;
@@ -338,7 +364,14 @@ namespace Pogo.CustomMaps
         {
             if (EntityHandlers.TryGetValue(data.Instance.entity.ClassName, out var handler))
             {
-                handler.SetupAction.Invoke(data);
+                try
+                {
+                    handler.SetupAction.Invoke(data);
+                }
+                catch (Exception e)
+                {
+                    CurrentCustomMap.AddError(new Errors.CreateEntityError(e, data));
+                }
             }
         }
 
@@ -595,6 +628,63 @@ namespace Pogo.CustomMaps
             {
                 teleport.GetComponent<Renderer>().enabled = false;
             }
+        }
+
+        #endregion
+
+        #region Errors
+
+        private void ReturnToMainMenuAndShowErrors()
+        {
+            CustomMap currentMap = CurrentCustomMap;
+            gameManager.LoadControlSceneAsync(gameManager.MainMenuControlScene, () =>
+            {
+                gameManager.DoMainMenuAction((mainMenu) =>
+                {
+                    mainMenu.OpenPopup(new MainMenu.MenuPopupData()
+                    {
+                        Title = $"Failed to load {currentMap.Header.MapName}",
+                        Body = $"Encountered {currentMap.ErrorCount} errors & {currentMap.WarningCount} warnings.",
+                        CancelText = "Close",
+                        OkText = "Open Logs",
+                        OkPressedCallback= () => OpenMapLoadLogs(PogoGameManager.PogoInstance)
+                    });
+                });
+            });
+        }
+
+
+        private static void WriteMapLoadLogs(GameManager gameManager, CustomMap currentMap)
+        {
+            Directory.CreateDirectory(gameManager.PersistentDataPath);
+            using FileStream file = File.Open($"{gameManager.PersistentDataPath}{Path.DirectorySeparatorChar}CustomMapLoad.log", FileMode.Create);
+            using StreamWriter sw = new StreamWriter(file);
+
+            sw.WriteLine($"LOAD map {currentMap.Header.MapName} encountered {currentMap.ErrorCount} Errors & {currentMap.WarningCount} Warnings");
+            sw.WriteLine("Earlier errors may lead to later errors, so you should try to solve from the top down.");
+            sw.WriteLine("Running into trouble? Get help online in the steam community forums or the official discord");
+            sw.WriteLine();
+
+            int index = 1;
+            foreach (var error in currentMap.Errors)
+            {
+                string type = error.Severity switch
+                {
+                    Errors.MapError.Severities.Error => "ERROR",
+                    Errors.MapError.Severities.Warning => "ERROR",
+                    _ => "????",
+                };
+
+                sw.WriteLine($"#### {type} {index++}");
+                sw.Write(error.ToLogString());
+                sw.WriteLine();
+                sw.WriteLine();
+            }
+        }
+
+        private static void OpenMapLoadLogs(GameManager gameManager)
+        {
+            Application.OpenURL($"file:///{gameManager.PersistentDataPath}{Path.DirectorySeparatorChar}CustomMapLoad.log");
         }
 
         #endregion
