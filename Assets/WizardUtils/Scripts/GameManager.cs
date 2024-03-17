@@ -130,7 +130,7 @@ namespace WizardUtils
         public bool InControlScene => CurrentControlScene != null;
         public bool InGameScene => CurrentControlScene == null;
 
-        private const float MinimumSceneLoadTimeSeconds = 1f;
+        private const float MinimumSceneLoadTimeSeconds = 0.5f;
         private List<SceneLoader> CurrentSceneLoaders;
         public ControlSceneDescriptor MainMenuControlScene;
         [HideInInspector]
