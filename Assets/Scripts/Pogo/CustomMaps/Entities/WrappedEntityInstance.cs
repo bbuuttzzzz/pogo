@@ -16,7 +16,7 @@ namespace Pogo.CustomMaps.Entities
 
         protected string ClassName { get; private set; }
         protected uint SpawnFlags;
-        private EntityInstance Instance;
+        public EntityInstance Instance;
         private IBSPLoaderContext Context;
         public GameObject InstanceGameObject => Instance.gameObject;
 

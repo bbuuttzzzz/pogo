@@ -527,7 +527,10 @@ namespace Pogo.CustomMaps
             }
             catch (ArgumentException e)
             {
-                throw new FormatException($"Map contains duplicate checkpoints with pathtype {id.CheckpointType} & number {id.CheckpointNumber}", e);
+                CurrentCustomMap.AddError(new MapError(
+                    null,
+                    $"Map contains duplicate checkpoints with 'pathtype' {id.CheckpointType} & 'number' {id.CheckpointNumber}.\nEach checkpoint needs a different ID (pathtype + number)",
+                    MapError.Severities.Error));
             }
         }
 
