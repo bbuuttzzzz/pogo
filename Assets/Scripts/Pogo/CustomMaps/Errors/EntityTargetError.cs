@@ -28,7 +28,10 @@ namespace Pogo.CustomMaps.Errors
             sb.AppendLine(key);
             sb.Append("Target Name: ");
             sb.AppendLine(targetName);
-            sb.Append("Entity: " + instance.entity.ToString());
+            sb.Append("Entity: ");
+            sb.Append(instance.entity.ClassName);
+            sb.Append(" ");
+            sb.Append(instance.entity.ToString());
 
             return sb.ToString();
         }

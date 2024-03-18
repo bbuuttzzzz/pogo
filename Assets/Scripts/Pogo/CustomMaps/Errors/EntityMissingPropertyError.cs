@@ -23,7 +23,10 @@ namespace Pogo.CustomMaps.Errors
             StringBuilder sb = new StringBuilder();
             sb.Append("Missing Key: ");
             sb.AppendLine(key);
-            sb.Append("Entity: " + instance.entity.ToString());
+            sb.Append("Entity: ");
+            sb.Append(instance.entity.ClassName);
+            sb.Append(" ");
+            sb.Append(instance.entity.ToString());
 
             return sb.ToString();
         }

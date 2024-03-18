@@ -25,7 +25,10 @@ namespace Pogo.CustomMaps.Errors
             sb.AppendLine(failReason ?? "See Exception");
             sb.Append("Malformed Key: ");
             sb.AppendLine(key);
-            sb.Append("Entity: " + instance.entity.ToString());
+            sb.Append("Entity: ");
+            sb.Append(instance.entity.ClassName);
+            sb.Append(" ");
+            sb.Append(instance.entity.ToString());
 
             return sb.ToString();
         }
