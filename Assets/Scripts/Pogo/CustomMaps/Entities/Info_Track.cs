@@ -24,7 +24,7 @@ namespace Pogo.CustomMaps.Entities
         {
         }
 
-        public string GetNextTrackName() => Instance.entity[Key_Next];
+        public string GetNextTrackName() => GetValue(Key_Next);
         public BSPLoader.EntityInstance? GetNextTrackOrDefault()
         {
             if (string.IsNullOrEmpty(GetNextTrackName())) return null;
@@ -36,10 +36,10 @@ namespace Pogo.CustomMaps.Entities
         {
             StopData stopData = new()
             {
-                StopTime = Instance.entity.GetInt(Key_StopTime) / 1000,
-                TravelTime = Instance.entity.GetInt(Key_TravelTime) / 1000,
+                StopTime = SafeGetInt(Key_StopTime, minValue: 0) / 1000,
+                TravelTime = SafeGetInt(Key_TravelTime, minValue: 0) / 1000,
                 EasingType = GetEasing(),
-                Position = Instance.gameObject.transform.position
+                Position = InstanceGameObject.transform.position
             };
 
             return stopData;
@@ -47,12 +47,7 @@ namespace Pogo.CustomMaps.Entities
 
         public EasingTypes GetEasing()
         {
-            int key = Instance.entity.GetInt(Key_Easing, 0);
-            if (key < 0 || key > (int)EasingTypes.EaseInAndOut)
-            {
-                throw new FormatException($"{Instance.entity.ClassName} has bad Easing {key}. expected 0-3");
-            }
-
+            int key = SafeGetInt(Key_Easing, 0, (int)EasingTypes.EaseInAndOut);
             return (EasingTypes)key;
         }
     }

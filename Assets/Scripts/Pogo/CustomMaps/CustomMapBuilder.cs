@@ -575,16 +575,16 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Gravity(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Generic entity = new Trigger_Generic("trigger_gravity", data.Instance, data.Context);
+            WrappedEntityInstance entity = new WrappedEntityInstance("trigger_gravity", data.Instance, data.Context);
 
             var gravityZone = data.Instance.gameObject.GetComponent<AbilityZone>();
 
             var renderStyle = entity.GetRenderStyle();
-            if (renderStyle == Trigger_Generic.RenderStyles.Default)
+            if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
             {
                 gravityZone.GetComponent<Renderer>().material = gravityZone.DefaultMaterial;
             }
-            else if (renderStyle == Trigger_Generic.RenderStyles.Invisible)
+            else if (renderStyle == WrappedEntityInstance.RenderStyles.Invisible)
             {
                 gravityZone.GetComponent<Renderer>().enabled = false;
             }
@@ -592,16 +592,16 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Flight(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Generic entity = new Trigger_Generic("trigger_flight", data.Instance, data.Context);
+            WrappedEntityInstance entity = new WrappedEntityInstance("trigger_flight", data.Instance, data.Context);
 
             var trigger = data.Instance.gameObject.GetComponent<AbilityTrigger>();
 
             var renderStyle = entity.GetRenderStyle();
-            if (renderStyle == Trigger_Generic.RenderStyles.Default)
+            if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
             {
                 trigger.GetComponent<Renderer>().material = trigger.DefaultMaterial;
             }
-            else if (renderStyle == Trigger_Generic.RenderStyles.Invisible)
+            else if (renderStyle == WrappedEntityInstance.RenderStyles.Invisible)
             {
                 trigger.GetComponent<Renderer>().enabled = false;
             }
