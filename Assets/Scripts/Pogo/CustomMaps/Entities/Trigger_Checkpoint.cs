@@ -34,7 +34,7 @@ namespace Pogo.CustomMaps.Entities
             return id;
         }
 
-        public string GetOverrideSkipTargetName() => GetValue(Key_SkipTarget);
+        public string GetOverrideSkipTargetName() => GetValueOrDefault(Key_SkipTarget, "");
         public BSPLoader.EntityInstance GetSingleOverrideSkipTarget() => GetSingleTarget(Key_SkipTarget);
 
         public bool GetCanSkip() => GetSpawnFlag(1u);
