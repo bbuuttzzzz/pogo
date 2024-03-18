@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Pogo.CustomMaps.Entities
 {
-    public class Trigger_Generic : WrappedCreatedEntity
+    public class Trigger_Generic : WrappedEntityInstance
     {
         const string Key_RenderStyle = "renderstyle";
         public enum RenderStyles
@@ -18,16 +18,16 @@ namespace Pogo.CustomMaps.Entities
             UseMapTexture = 2
         }
 
-        public Trigger_Generic(string className, BSPLoader.EntityCreatedCallbackData data) : base(className, data)
+        public Trigger_Generic(string className, BSPLoader.EntityInstance instance, IBSPLoaderContext context) : base(className, instance, context)
         {
         }
 
         public RenderStyles GetRenderStyle()
         {
-            int key = Data.Instance.entity.GetInt(Key_RenderStyle, 0);
+            int key = Instance.entity.GetInt(Key_RenderStyle, 0);
             if (key < 0 || key > (int)RenderStyles.UseMapTexture)
             {
-                throw new FormatException($"{Data.Instance.entity.ClassName} has bad RenderStyle {key}. expected 0, 1, or 2");
+                throw new FormatException($"{Instance.entity.ClassName} has bad RenderStyle {key}. expected 0, 1, or 2");
             }
 
             return (RenderStyles)key;

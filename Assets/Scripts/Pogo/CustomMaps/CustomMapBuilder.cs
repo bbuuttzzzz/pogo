@@ -432,7 +432,7 @@ namespace Pogo.CustomMaps
 
         private void SetupFunc_Breakable(BSPLoader.EntityCreatedCallbackData data)
         {
-            Func_Breakable self = new Func_Breakable(data);
+            Func_Breakable self = new Func_Breakable(data.Instance, data.Context);
 
             var breakable = data.Instance.gameObject.GetComponent<Gimmicks.FuncBreakable>();
             breakable.UpdateMesh();
@@ -451,7 +451,7 @@ namespace Pogo.CustomMaps
 
         private void SetupFunc_Train(BSPLoader.EntityCreatedCallbackData data)
         {
-            Func_Train entity = new Func_Train(data);
+            Func_Train entity = new Func_Train(data.Instance, data.Context);
 
             var root = data.Instance.gameObject.GetComponent<FuncTrainRoot>();
             BSPLoader.EntityInstance trackStart = entity.GetTrackStart();
@@ -488,7 +488,7 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Checkpoint(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Checkpoint entity = new Trigger_Checkpoint(data);
+            Trigger_Checkpoint entity = new Trigger_Checkpoint(data.Instance, data.Context);
             CheckpointId id = entity.GetCheckpointId();
 
             var target = entity.GetSingleTarget();
@@ -528,7 +528,7 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Finish(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Finish entity = new Trigger_Finish(data);
+            Trigger_Finish entity = new Trigger_Finish(data.Instance, data.Context);
 
             var checkpoint = data.Instance.gameObject.GetComponent<TriggerFinish>();
             checkpoint.UpdateMesh();
@@ -550,7 +550,7 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Kill(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Kill entity = new Trigger_Kill(data);
+            Trigger_Kill entity = new Trigger_Kill(data.Instance, data.Context);
 
             var killTrigger = data.Instance.gameObject.GetComponent<KillTrigger>();
             killTrigger.DoExpensiveOriginStuff = true;
@@ -575,7 +575,7 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Gravity(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Generic entity = new Trigger_Generic("trigger_gravity",data);
+            Trigger_Generic entity = new Trigger_Generic("trigger_gravity", data.Instance, data.Context);
 
             var gravityZone = data.Instance.gameObject.GetComponent<AbilityZone>();
 
@@ -592,7 +592,7 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Flight(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Generic entity = new Trigger_Generic("trigger_flight", data);
+            Trigger_Generic entity = new Trigger_Generic("trigger_flight", data.Instance, data.Context);
 
             var trigger = data.Instance.gameObject.GetComponent<AbilityTrigger>();
 
@@ -609,7 +609,7 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Teleport(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Teleport entity = new Trigger_Teleport(data);
+            Trigger_Teleport entity = new Trigger_Teleport(data.Instance, data.Context);
 
             var target = entity.GetSingleTarget();
 

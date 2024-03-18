@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Pogo.CustomMaps.Entities
 {
-    public class Func_Breakable : WrappedCreatedEntity
+    public class Func_Breakable : WrappedEntityInstance
     {
         public const string Key_RegenOnPlayerSpawn = "resetondeath";
 
-        public Func_Breakable(BSPLoader.EntityCreatedCallbackData data) : base("func_breakable", data)
+        public Func_Breakable(BSPLoader.EntityInstance instance, IBSPLoaderContext context) : base("func_breakable", instance, context)
         {
         }
 
-        public bool GetRegenOnPlayerSpawn() => Data.Instance.entity.GetInt(Key_RegenOnPlayerSpawn) > 0;
+        public bool GetRegenOnPlayerSpawn() => Instance.entity.GetInt(Key_RegenOnPlayerSpawn) > 0;
     }
 }
