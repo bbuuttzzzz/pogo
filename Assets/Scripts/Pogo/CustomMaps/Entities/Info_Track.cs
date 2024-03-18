@@ -24,7 +24,7 @@ namespace Pogo.CustomMaps.Entities
         {
         }
 
-        public string GetNextTrackName() => GetValue(Key_Next);
+        public string GetNextTrackName() => GetValueOrDefault(Key_Next, "");
         public BSPLoader.EntityInstance? GetNextTrackOrDefault()
         {
             if (string.IsNullOrEmpty(GetNextTrackName())) return null;
