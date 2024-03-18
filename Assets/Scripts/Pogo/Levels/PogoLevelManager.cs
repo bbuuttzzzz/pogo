@@ -503,8 +503,9 @@ namespace Pogo.Levels
             if (atmospheres.Length == 0)
             {
                 // if we don't have an initial atmosphere to crossfade, set instantly
-                SpawnAtmosphere(newAtmospherePrefab).FullyApply();
-                AtmosphereVerboseLog($"Instant set to {atmospheres[0].name} (Missing Original Atmo)");
+                var newAtmo = SpawnAtmosphere(newAtmospherePrefab);
+                newAtmo.FullyApply();
+                AtmosphereVerboseLog($"Instant set to {newAtmo.name} (Missing Original Atmo)");
                 return;
             }
             

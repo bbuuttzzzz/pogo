@@ -3,6 +3,7 @@ using BSPImporter;
 using BSPImporter.Textures;
 using Pogo.Checkpoints;
 using Pogo.CustomMaps.Entities;
+using Pogo.CustomMaps.Errors;
 using Pogo.CustomMaps.Indexing;
 using Pogo.CustomMaps.MapSources;
 using Pogo.CustomMaps.Materials;
@@ -179,6 +180,7 @@ namespace Pogo.CustomMaps
             textureSource.AddWadFolder($"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}wads");
             textureSource.AddWadFolder(WadFolderRootPath);
             textureSource.AddWadFolder(folderPath);
+            textureSource.OnTextureNotFound += TextureSource_OnTextureNotFound;
 
             var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
 
@@ -198,7 +200,17 @@ namespace Pogo.CustomMaps
 
             var loader = new BSPLoader(settings, textureSource, templateSource, materialSource);
 
-            loader.LoadBSP();
+            try
+            {
+                loader.LoadBSP();
+            }
+            catch(Exception ex)
+            {
+                CurrentCustomMap.AddError(new Errors.MapError(
+                    ex,
+                    "Load Error - See Exception",
+                    Errors.MapError.Severities.Error));
+            }
             SceneManager.MoveGameObjectToScene(loader.root, SceneManager.GetSceneByBuildIndex(CustomMapLevel.BuildIndex));
             SetupMapSurfaceSource(loader);
             gameManager.MaterialSurfaceService.AddSource(CurrentCustomMap.SurfaceSource, -1);
@@ -207,30 +219,46 @@ namespace Pogo.CustomMaps
             {
                 if (CurrentCustomMap.PlayerStart == null)
                 {
-                    throw new FormatException("Map contains no Main Path Checkpoints (an info_player_start works in a pinch!)");
+                    CurrentCustomMap.AddError(new Errors.MapError(
+                        null,
+                        "Map contains no Main Path Checkpoints (an info_player_start works in a pinch!)",
+                        Errors.MapError.Severities.Error));
                 }
                 else
                 {
-                    Debug.LogWarning("Map Contains no Main Path Checkpoints. Defaulting to an info_player_start!");
+                    CurrentCustomMap.AddError(new Errors.MapError(
+                        null,
+                        "Map Contains no Main Path Checkpoints. Defaulting to an info_player_start!",
+                        Errors.MapError.Severities.Warning));
+
+                    CurrentCustomMap.PlayerStart.AddComponent<BoxCollider>();
+                    var checkpoint = CurrentCustomMap.PlayerStart.AddComponent<GeneratedCheckpoint>();
+                    checkpoint.FixTriggerSettings();
+                    checkpoint.Id = new CheckpointId(CheckpointTypes.MainPath, 0);
+                    checkpoint.RespawnPoint = CurrentCustomMap.PlayerStart.transform;
+                    CurrentCustomMap.RegisterCheckpoint(checkpoint);
                 }
-                CurrentCustomMap.PlayerStart.AddComponent<BoxCollider>();
-                var checkpoint = CurrentCustomMap.PlayerStart.AddComponent<GeneratedCheckpoint>();
-                checkpoint.FixTriggerSettings();
-                checkpoint.Id = new CheckpointId(CheckpointTypes.MainPath, 0);
-                checkpoint.RespawnPoint = CurrentCustomMap.PlayerStart.transform;
-                CurrentCustomMap.RegisterCheckpoint(checkpoint);
             }
 
             if (!CurrentCustomMap.HasFinish)
             {
-                Debug.LogWarning("Map contains no Trigger_Finish. There's no way to win :(");
+                CurrentCustomMap.AddError(new Errors.MapError(
+                    null,
+                    "Map contains no Trigger_Finish. There's no way to win :(",
+                    Errors.MapError.Severities.Warning));
             }
 
+            WriteMapLoadLogs(gameManager, CurrentCustomMap);
             foreach (var checkpoint in CurrentCustomMap.Checkpoints.Values)
             {
                 FinishSettingUpTrigger_Checkpoint(checkpoint);
             }
 
+            if (CurrentCustomMap.HasError)
+            {
+                ReturnToMainMenuAndShowErrors();
+                return;
+            }
 
             StartMap();
             gameManager.Paused = false;
@@ -338,7 +366,18 @@ namespace Pogo.CustomMaps
         {
             if (EntityHandlers.TryGetValue(data.Instance.entity.ClassName, out var handler))
             {
-                handler.SetupAction.Invoke(data);
+                try
+                {
+                    handler.SetupAction.Invoke(data);
+                }
+                catch (MapErrorException e)
+                {
+                    CurrentCustomMap.AddError(e.MapError);
+                }
+                catch (Exception e)
+                {
+                    CurrentCustomMap.AddError(new Errors.CreateEntityError(e, data));
+                }
             }
         }
 
@@ -398,7 +437,7 @@ namespace Pogo.CustomMaps
 
         private void SetupFunc_Breakable(BSPLoader.EntityCreatedCallbackData data)
         {
-            Func_Breakable self = new Func_Breakable(data);
+            Func_Breakable self = new Func_Breakable(data.Instance, data.Context);
 
             var breakable = data.Instance.gameObject.GetComponent<Gimmicks.FuncBreakable>();
             breakable.UpdateMesh();
@@ -417,7 +456,7 @@ namespace Pogo.CustomMaps
 
         private void SetupFunc_Train(BSPLoader.EntityCreatedCallbackData data)
         {
-            Func_Train entity = new Func_Train(data);
+            Func_Train entity = new Func_Train(data.Instance, data.Context);
 
             var root = data.Instance.gameObject.GetComponent<FuncTrainRoot>();
             BSPLoader.EntityInstance trackStart = entity.GetTrackStart();
@@ -454,7 +493,7 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Checkpoint(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Checkpoint entity = new Trigger_Checkpoint(data);
+            Trigger_Checkpoint entity = new Trigger_Checkpoint(data.Instance, data.Context);
             CheckpointId id = entity.GetCheckpointId();
 
             var target = entity.GetSingleTarget();
@@ -488,13 +527,16 @@ namespace Pogo.CustomMaps
             }
             catch (ArgumentException e)
             {
-                throw new FormatException($"Map contains duplicate checkpoints with pathtype {id.CheckpointType} & number {id.CheckpointNumber}", e);
+                CurrentCustomMap.AddError(new MapError(
+                    null,
+                    $"Map contains duplicate checkpoints with 'pathtype' {id.CheckpointType} & 'number' {id.CheckpointNumber}.\nEach checkpoint needs a different ID (pathtype + number)",
+                    MapError.Severities.Error));
             }
         }
 
         private void SetupTrigger_Finish(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Finish entity = new Trigger_Finish(data);
+            Trigger_Finish entity = new Trigger_Finish(data.Instance, data.Context);
 
             var checkpoint = data.Instance.gameObject.GetComponent<TriggerFinish>();
             checkpoint.UpdateMesh();
@@ -516,7 +558,7 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Kill(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Kill entity = new Trigger_Kill(data);
+            Trigger_Kill entity = new Trigger_Kill(data.Instance, data.Context);
 
             var killTrigger = data.Instance.gameObject.GetComponent<KillTrigger>();
             killTrigger.DoExpensiveOriginStuff = true;
@@ -541,16 +583,16 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Gravity(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Generic entity = new Trigger_Generic("trigger_gravity",data);
+            WrappedEntityInstance entity = new WrappedEntityInstance("trigger_gravity", data.Instance, data.Context);
 
             var gravityZone = data.Instance.gameObject.GetComponent<AbilityZone>();
 
             var renderStyle = entity.GetRenderStyle();
-            if (renderStyle == Trigger_Generic.RenderStyles.Default)
+            if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
             {
                 gravityZone.GetComponent<Renderer>().material = gravityZone.DefaultMaterial;
             }
-            else if (renderStyle == Trigger_Generic.RenderStyles.Invisible)
+            else if (renderStyle == WrappedEntityInstance.RenderStyles.Invisible)
             {
                 gravityZone.GetComponent<Renderer>().enabled = false;
             }
@@ -558,16 +600,16 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Flight(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Generic entity = new Trigger_Generic("trigger_flight", data);
+            WrappedEntityInstance entity = new WrappedEntityInstance("trigger_flight", data.Instance, data.Context);
 
             var trigger = data.Instance.gameObject.GetComponent<AbilityTrigger>();
 
             var renderStyle = entity.GetRenderStyle();
-            if (renderStyle == Trigger_Generic.RenderStyles.Default)
+            if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
             {
                 trigger.GetComponent<Renderer>().material = trigger.DefaultMaterial;
             }
-            else if (renderStyle == Trigger_Generic.RenderStyles.Invisible)
+            else if (renderStyle == WrappedEntityInstance.RenderStyles.Invisible)
             {
                 trigger.GetComponent<Renderer>().enabled = false;
             }
@@ -575,7 +617,7 @@ namespace Pogo.CustomMaps
 
         private void SetupTrigger_Teleport(BSPLoader.EntityCreatedCallbackData data)
         {
-            Trigger_Teleport entity = new Trigger_Teleport(data);
+            Trigger_Teleport entity = new Trigger_Teleport(data.Instance, data.Context);
 
             var target = entity.GetSingleTarget();
 
@@ -595,6 +637,67 @@ namespace Pogo.CustomMaps
             {
                 teleport.GetComponent<Renderer>().enabled = false;
             }
+        }
+
+        #endregion
+
+        #region Errors
+        private void TextureSource_OnTextureNotFound(object sender, TextureNotFoundEventArgs e)
+        {
+            CurrentCustomMap.AddError(new Errors.TextureLoadWarning(null, e.TextureName));
+        }
+
+        private void ReturnToMainMenuAndShowErrors()
+        {
+            CustomMap currentMap = CurrentCustomMap;
+            gameManager.LoadControlSceneAsync(gameManager.MainMenuControlScene, () =>
+            {
+                gameManager.DoMainMenuAction((mainMenu) =>
+                {
+                    mainMenu.OpenPopup(new MainMenu.MenuPopupData()
+                    {
+                        Title = $"Failed to load {currentMap.Header.MapName}",
+                        Body = $"Encountered {currentMap.ErrorCount} errors & {currentMap.WarningCount} warnings.",
+                        CancelText = "Close",
+                        OkText = "Open Logs",
+                        OkPressedCallback= () => OpenMapLoadLogs(PogoGameManager.PogoInstance)
+                    });
+                });
+            });
+        }
+
+
+        private static void WriteMapLoadLogs(GameManager gameManager, CustomMap currentMap)
+        {
+            Directory.CreateDirectory(gameManager.PersistentDataPath);
+            using FileStream file = File.Open($"{gameManager.PersistentDataPath}{Path.DirectorySeparatorChar}CustomMapLoad.log", FileMode.Create);
+            using StreamWriter sw = new StreamWriter(file);
+
+            sw.WriteLine($"LOAD map {currentMap.Header.MapName} encountered {currentMap.ErrorCount} Errors & {currentMap.WarningCount} Warnings");
+            sw.WriteLine("Earlier errors may lead to later errors, so you should try to solve from the top down.");
+            sw.WriteLine("Running into trouble? Get help online in the steam community forums or the official discord");
+            sw.WriteLine();
+
+            int index = 1;
+            foreach (var error in currentMap.Errors)
+            {
+                string type = error.Severity switch
+                {
+                    Errors.MapError.Severities.Error =>   "ERROR",
+                    Errors.MapError.Severities.Warning => "WARNING",
+                    _ => "????",
+                };
+
+                sw.WriteLine($"#### {type} {index++} ".PadRight(80, '#'));
+                sw.Write(error.ToLogString());
+                sw.WriteLine();
+                sw.WriteLine();
+            }
+        }
+
+        private static void OpenMapLoadLogs(GameManager gameManager)
+        {
+            Application.OpenURL($"file:///{gameManager.PersistentDataPath}{Path.DirectorySeparatorChar}CustomMapLoad.log");
         }
 
         #endregion
