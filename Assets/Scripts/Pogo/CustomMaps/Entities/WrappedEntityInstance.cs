@@ -92,6 +92,12 @@ namespace Pogo.CustomMaps.Entities
 
         public bool GetBoolOrDefault(string key, bool defaultValue) => GetIntOrDefault(key, defaultValue ? 1 : 0, 0, 1) > 0;
 
+        public string GetValueOrDefault(string key, string defaultValue)
+        {
+            if (TryGetValue(key, out string value)) return value;
+            return defaultValue;
+        }
+
         public string GetValue(string key)
         {
             if (!Instance.entity.TryGetValue(key, out string value))
