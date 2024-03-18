@@ -252,10 +252,10 @@ namespace WizardUtils
                 if (loader == null)
                 {
                     loader = new SceneLoader(this, sceneIndex, false);
+                    loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingControlScene);
+                    loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
                 }
                 loader.MarkNeeded();
-                loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingControlScene);
-                loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
             }
 
             foreach (var sceneIndex in scenesToUnload)
@@ -266,10 +266,10 @@ namespace WizardUtils
                 {
                     loader = new SceneLoader(this, sceneIndex, true);
                     CurrentSceneLoaders.Add(loader);
+                    loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingControlScene);
+                    loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
                 }
                 loader.MarkNotNeeded(true);
-                loader.OnReadyToActivate.AddListener(RecalculateFinishedLoadingControlScene);
-                loader.OnIdle.AddListener(RecalculateFinishedLoadingControlScene);
             }
 
         }
@@ -291,6 +291,8 @@ namespace WizardUtils
 
         private void RecalculateFinishedLoadingControlScene()
         {
+            if (CurrentSceneLoadingData == null) return;
+
             for (int i = CurrentSceneLoaders.Count - 1; i >= 0; i--)
             {
                 SceneLoader loader = CurrentSceneLoaders[i];
