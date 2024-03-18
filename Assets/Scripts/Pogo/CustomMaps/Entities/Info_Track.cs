@@ -36,8 +36,8 @@ namespace Pogo.CustomMaps.Entities
         {
             StopData stopData = new()
             {
-                StopTime = SafeGetInt(Key_StopTime, minValue: 0) / 1000,
-                TravelTime = SafeGetInt(Key_TravelTime, minValue: 0) / 1000,
+                StopTime = GetIntOrDefault(Key_StopTime, 1000, minValue: 0) / 1000,
+                TravelTime = GetIntOrDefault(Key_TravelTime, 1000, minValue: 0) / 1000,
                 EasingType = GetEasing(),
                 Position = InstanceGameObject.transform.position
             };
@@ -47,7 +47,7 @@ namespace Pogo.CustomMaps.Entities
 
         public EasingTypes GetEasing()
         {
-            int key = SafeGetInt(Key_Easing, 0, (int)EasingTypes.EaseInAndOut);
+            int key = GetIntOrDefault(Key_Easing, 0, 0, (int)EasingTypes.EaseInAndOut);
             return (EasingTypes)key;
         }
     }

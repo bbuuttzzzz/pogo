@@ -17,7 +17,7 @@ namespace Pogo.CustomMaps.Entities
 
         public int GetKillTypeId()
         {
-            int key = SafeGetInt(Key_KillType, 0);
+            int key = GetIntOrDefault(Key_KillType, 1, 0);
             return key;
         }
     }

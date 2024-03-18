@@ -16,7 +16,7 @@ namespace Pogo.CustomMaps.Entities
         {
         }
 
-        public bool GetPreservePhysics() => SafeGetBool(Key_PreservePhysics);
-        public float GetPreservePhysicsAngle() => SafeGetInt(Key_PreservePhysicsAngle, -360, 360);
+        public bool GetPreservePhysics() => GetBoolOrDefault(Key_PreservePhysics, false);
+        public float GetPreservePhysicsAngle() => GetIntOrDefault(Key_PreservePhysicsAngle, 0, -360, 360);
     }
 }

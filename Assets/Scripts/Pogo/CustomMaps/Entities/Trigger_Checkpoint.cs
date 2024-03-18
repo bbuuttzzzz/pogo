@@ -22,8 +22,8 @@ namespace Pogo.CustomMaps.Entities
         {
             var id = new CheckpointId()
             {
-                CheckpointType = (CheckpointTypes)SafeGetInt(Key_CheckpointType, 0, 1),
-                CheckpointNumber = SafeGetInt(Key_CheckpointNumber, 0)
+                CheckpointType = (CheckpointTypes)GetIntOrDefault(Key_CheckpointType, 0, 0, 1),
+                CheckpointNumber = GetIntOrDefault(Key_CheckpointNumber, 1, 0)
             };
 
             if (id.CheckpointType != CheckpointTypes.MainPath && id.CheckpointType != CheckpointTypes.SidePath)

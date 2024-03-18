@@ -15,6 +15,6 @@ namespace Pogo.CustomMaps.Entities
         {
         }
 
-        public bool GetRegenOnPlayerSpawn() => SafeGetInt(Key_RegenOnPlayerSpawn, 0, 1) > 0;
+        public bool GetRegenOnPlayerSpawn() => GetIntOrDefault(Key_RegenOnPlayerSpawn, 0, 0, 1) > 0;
     }
 }

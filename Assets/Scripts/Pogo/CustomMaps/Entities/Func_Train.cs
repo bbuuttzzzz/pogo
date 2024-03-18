@@ -18,7 +18,7 @@ namespace Pogo.CustomMaps.Entities
         }
 
         public BSPLoader.EntityInstance GetTrackStart() => GetSingleTarget(Key_TrackStart);
-        public int GetCarCount() => SafeGetInt(Key_Count, 1);
+        public int GetCarCount() => GetIntOrDefault(Key_Count, 1, 1);
         public string GetSurface() => GetValue(Key_Surface);
     }
 }
