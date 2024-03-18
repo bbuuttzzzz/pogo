@@ -12,20 +12,20 @@ namespace Pogo.CustomMaps.Errors
     {
         public EntityBadFormatError(
             Exception exception,
-            EntityInstance entity,
+            EntityInstance instance,
             string key,
-            string failReason = null) : base(exception, GetMessage(entity, key, failReason), Severities.Error)
+            string failReason = null) : base(exception, GetMessage(instance, key, failReason), Severities.Error)
         {
 
         }
 
-        private static string GetMessage(EntityInstance entity, string key, string failReason = null)
+        private static string GetMessage(EntityInstance instance, string key, string failReason = null)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(failReason ?? "See Exception");
             sb.Append("Malformed Key: ");
             sb.AppendLine(key);
-            sb.Append("Entity: " + entity.ToString());
+            sb.Append("Entity: " + instance.entity.ToString());
 
             return sb.ToString();
         }

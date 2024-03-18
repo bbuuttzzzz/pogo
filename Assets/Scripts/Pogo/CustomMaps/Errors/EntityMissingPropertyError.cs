@@ -12,18 +12,18 @@ namespace Pogo.CustomMaps.Errors
     {
         public EntityMissingPropertyError(
             Exception exception,
-            EntityInstance entity,
-            string key) : base(exception, GetMessage(entity, key), Severities.Error)
+            EntityInstance instance,
+            string key) : base(exception, GetMessage(instance, key), Severities.Error)
         {
 
         }
 
-        private static string GetMessage(EntityInstance entity, string key)
+        private static string GetMessage(EntityInstance instance, string key)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Missing Key: ");
             sb.AppendLine(key);
-            sb.Append("Entity: " + entity.ToString());
+            sb.Append("Entity: " + instance.entity.ToString());
 
             return sb.ToString();
         }

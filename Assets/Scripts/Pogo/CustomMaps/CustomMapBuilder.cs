@@ -3,6 +3,7 @@ using BSPImporter;
 using BSPImporter.Textures;
 using Pogo.Checkpoints;
 using Pogo.CustomMaps.Entities;
+using Pogo.CustomMaps.Errors;
 using Pogo.CustomMaps.Indexing;
 using Pogo.CustomMaps.MapSources;
 using Pogo.CustomMaps.Materials;
@@ -368,6 +369,10 @@ namespace Pogo.CustomMaps
                 try
                 {
                     handler.SetupAction.Invoke(data);
+                }
+                catch (MapErrorException e)
+                {
+                    CurrentCustomMap.AddError(e.MapError);
                 }
                 catch (Exception e)
                 {

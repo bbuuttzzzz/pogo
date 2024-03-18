@@ -12,15 +12,15 @@ namespace Pogo.CustomMaps.Errors
     {
         public EntityTargetError(
             Exception exception,
-            EntityInstance entity,
+            EntityInstance instance,
             string key,
             string targetName,
-            string failReason = null) : base(exception, GetMessage(entity, key, targetName, failReason), Severities.Error)
+            string failReason = null) : base(exception, GetMessage(instance, key, targetName, failReason), Severities.Error)
         {
 
         }
 
-        private static string GetMessage(EntityInstance entity, string key, string targetName, string failReason = null)
+        private static string GetMessage(EntityInstance instance, string key, string targetName, string failReason = null)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(failReason ?? "See Exception");
@@ -28,7 +28,7 @@ namespace Pogo.CustomMaps.Errors
             sb.AppendLine(key);
             sb.Append("Target Name: ");
             sb.AppendLine(targetName);
-            sb.Append("Entity: " + entity.ToString());
+            sb.Append("Entity: " + instance.entity.ToString());
 
             return sb.ToString();
         }
