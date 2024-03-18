@@ -179,6 +179,7 @@ namespace Pogo.CustomMaps
             textureSource.AddWadFolder($"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}wads");
             textureSource.AddWadFolder(WadFolderRootPath);
             textureSource.AddWadFolder(folderPath);
+            textureSource.OnTextureNotFound += TextureSource_OnTextureNotFound;
 
             var templateSource = new BSPImporter.EntityFactories.PrefabEntityFactory(GetEntityPrefabs());
 
@@ -633,6 +634,10 @@ namespace Pogo.CustomMaps
         #endregion
 
         #region Errors
+        private void TextureSource_OnTextureNotFound(object sender, TextureNotFoundEventArgs e)
+        {
+            CurrentCustomMap.AddError(new Errors.TextureLoadWarning(null, e.TextureName));
+        }
 
         private void ReturnToMainMenuAndShowErrors()
         {
