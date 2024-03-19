@@ -29,7 +29,7 @@ namespace Pogo.Building
 
         private static void CopyFilesRecursivelyIgnoringMetaFiles(string sourceDir, string destDir)
         {
-            Regex regex = new Regex(".*\\.meta", RegexOptions.Compiled);
+            Regex regex = new Regex(".*\\.meta$", RegexOptions.Compiled);
 
             // Check if the source directory exists
             if (!Directory.Exists(sourceDir))
