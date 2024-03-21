@@ -162,6 +162,12 @@ namespace Pogo.CustomMaps
             {
                 Header = header,
             };
+
+            if (header.CfgPath == null)
+            {
+                CurrentCustomMap.AddError(new MapError(null, $"Couldn't find a {MapHeaderHelper.mapDefinitionFileName}. This file is optional.", MapError.Severities.Warning));
+            }
+
             string fullMapPath = $"{folderPath}{Path.DirectorySeparatorChar}{header.MapName}.bsp";
             Debug.Log($"Tried to spawn customMap at path {fullMapPath} :D");
             BSPLoader.Settings settings = new()
