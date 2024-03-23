@@ -7,8 +7,10 @@ using Pogo.CustomMaps.Errors;
 using Pogo.CustomMaps.Indexing;
 using Pogo.CustomMaps.MapSources;
 using Pogo.CustomMaps.Materials;
+using Pogo.CustomMaps.Pickups;
 using Pogo.CustomMaps.UI;
 using Pogo.Difficulties;
+using Pogo.Gimmicks;
 using Pogo.Levels;
 using Pogo.Surfaces;
 using Pogo.Trains;
@@ -70,6 +72,7 @@ namespace Pogo.CustomMaps
         {
             gameManager = PogoGameManager.PogoInstance;
             gameManager.OnControlSceneChanged += GameManager_OnControlSceneChanged;
+            gameManager.OnPickupCollected.AddListener(GameManager_OnPickupCollected);
             SurfaceConfigDictionary = new Dictionary<string, SurfaceConfig>();
             foreach (var config in Resources.LoadAll<SurfaceConfig>("Surfaces"))
             {
@@ -82,6 +85,11 @@ namespace Pogo.CustomMaps
         private void GameManager_OnControlSceneChanged(object sender, ControlSceneEventArgs e)
         {
             DisposeCurrentMap();
+        }
+
+        private void GameManager_OnPickupCollected(PickupCollectedEventArgs arg0)
+        {
+            CurrentCustomMap?.AddPickup(arg0.PickupId);
         }
 
         private IEnumerable<IMapSource> GetMapSources()
@@ -162,6 +170,12 @@ namespace Pogo.CustomMaps
             {
                 Header = header,
             };
+
+            if (header.CfgPath == null)
+            {
+                CurrentCustomMap.AddError(new MapError(null, $"Couldn't find a {MapHeaderHelper.mapDefinitionFileName}. This file is optional.", MapError.Severities.Warning));
+            }
+
             string fullMapPath = $"{folderPath}{Path.DirectorySeparatorChar}{header.MapName}.bsp";
             Debug.Log($"Tried to spawn customMap at path {fullMapPath} :D");
             BSPLoader.Settings settings = new()
@@ -313,6 +327,7 @@ namespace Pogo.CustomMaps
         {
             if (CurrentCustomMap == null) throw new InvalidOperationException("Tried to Restart with no Custom Map loaded");
 
+            CurrentCustomMap.ResetAll();
             StartMap();
         }
 
@@ -419,6 +434,12 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("func_illusionary", SetupFunc_Illusionary));
             AddEntityHandler(new CustomMapEntityHandler("func_invisible", SetupFunc_Invisible));
             AddEntityHandler(new CustomMapEntityHandler("func_train", SetupFunc_Train));
+            AddEntityHandler(new CustomMapEntityHandler("func_unlockable_coin", SetupFunc_Unlockable_Coin));
+            AddEntityHandler(new CustomMapEntityHandler("func_unlockable_key", SetupFunc_Unlockable_Key));
+            AddEntityHandler(new CustomMapEntityHandler("item_key_blue", SetupItemPickup));
+            AddEntityHandler(new CustomMapEntityHandler("item_key_red", SetupItemPickup));
+            AddEntityHandler(new CustomMapEntityHandler("item_key_yellow", SetupItemPickup));
+            AddEntityHandler(new CustomMapEntityHandler("item_penny", SetupItemPickup));
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
@@ -442,6 +463,7 @@ namespace Pogo.CustomMaps
             var breakable = data.Instance.gameObject.GetComponent<Gimmicks.FuncBreakable>();
             breakable.UpdateMesh();
             breakable.RegenerateOnPlayerSpawn = self.GetRegenOnPlayerSpawn();
+            CurrentCustomMap.OnRestart.AddListener(breakable.Respawn);
         }
 
         private void SetupFunc_Illusionary(BSPLoader.EntityCreatedCallbackData data)
@@ -532,6 +554,57 @@ namespace Pogo.CustomMaps
                     $"Map contains duplicate checkpoints with 'pathtype' {id.CheckpointType} & 'number' {id.CheckpointNumber}.\nEach checkpoint needs a different ID (pathtype + number)",
                     MapError.Severities.Error));
             }
+        }
+
+        private void SetupFunc_Unlockable_Coin(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Func_Unlockable_Coin entity = new Func_Unlockable_Coin(data.Instance, data.Context);
+
+            var unlockable = data.Instance.gameObject.GetComponent<FuncCoinUnlockable>();
+            unlockable.CoinsToUnlock = entity.GetCoinsRequired();
+            unlockable.UpdateMesh();
+            CurrentCustomMap.OnRestart.AddListener(unlockable.Respawn);
+
+            var renderStyle = entity.GetRenderStyle();
+
+            if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
+            {
+                unlockable.GetComponent<Renderer>().material = unlockable.DefaultMaterial;
+            }
+            else if (renderStyle == WrappedEntityInstance.RenderStyles.Invisible)
+            {
+                unlockable.GetComponent<Renderer>().enabled = false;
+                unlockable.Invisible = true;
+            }
+
+            unlockable.UpdateShader();
+        }
+        private void SetupFunc_Unlockable_Key(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Func_Unlockable_Key entity = new Func_Unlockable_Key(data.Instance, data.Context);
+
+            var unlockable = data.Instance.gameObject.GetComponent<FuncKeyUnlockable>();
+            unlockable.PickupId = entity.GetKeyColor();
+            unlockable.UpdateMesh();
+            CurrentCustomMap.OnRestart.AddListener(unlockable.Respawn);
+
+            var renderStyle = entity.GetRenderStyle();
+
+            if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
+            {
+                unlockable.LoadDefaultMaterial();
+            }
+            else if (renderStyle == WrappedEntityInstance.RenderStyles.Invisible)
+            {
+                unlockable.GetComponent<Renderer>().enabled = false;
+                unlockable.Invisible = true;
+            }
+        }
+
+        private void SetupItemPickup(BSPLoader.EntityCreatedCallbackData data)
+        {
+            var pickup = data.Instance.gameObject.GetComponent<ItemPickupTrigger>();
+            CurrentCustomMap.OnRestart.AddListener(pickup.Respawn);
         }
 
         private void SetupTrigger_Finish(BSPLoader.EntityCreatedCallbackData data)

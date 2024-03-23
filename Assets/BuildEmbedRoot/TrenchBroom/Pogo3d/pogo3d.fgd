@@ -22,7 +22,8 @@
 	]
 ]
 
-@baseclass size(-12 -12 0, 12 12 48) = PlayerClass []
+@baseclass size(-16 -16 0, 16 16 48) = PlayerClass []
+@baseclass size(-16 -16 0, 16 16 32) = ItemPickup []
 
 // Break on first contact with stick or face
 @SolidClass = func_breakable : "Func Breakable" [
@@ -52,6 +53,25 @@
 	surface(string) : "Surface Sound Type" : "default"
 ]
 
+// opens when you touch it after getting enough pennies
+@SolidClass base(RenderStyle) = func_unlockable_coin : "Unlockable Door (Coin)"
+[
+	// This can be as high as you want, but the door only shows up to the value 15.
+	// so ideally do not go over 15 coins. 1-5 is a good value here
+	coins_required(int): "Coins Required" : 1
+]
+
+// opens when you touch it after getting the key of the right color
+@SolidClass base(RenderStyle) = func_unlockable_key : "Unlockable Door (Key)"
+[
+	key_color(choices): "Key Color" : 1 =
+	[
+		1: "Red"
+		2: "Blue"
+		3: "Yellow"
+	]
+]
+
 @PointClass base(trackoptions, Targetname, Target) = info_track_start : "Train Track Start"
 [
 ]
@@ -79,6 +99,35 @@
         "path" : "models/info_player_respawn.mdl"
     })
      = info_player_respawn : "Respawn Point" []
+
+// A mostly useless item you pick up when you touch it
+@PointClass 
+	base(ItemPickup)
+	model({
+		"path" : "models/item_penny.mdl"
+	})
+	= item_penny : "Penny" []
+
+@PointClass 
+	base(ItemPickup)
+	model({
+		"path" : "models/item_key_red.mdl"
+	})
+	= item_key_red : "Red Key" []
+	
+@PointClass 
+	base(ItemPickup)
+	model({
+		"path" : "models/item_key_blue.mdl"
+	})
+	= item_key_blue : "Blue Key" []
+
+@PointClass 
+	base(ItemPickup)
+	model({
+		"path" : "models/item_key_yellow.mdl"
+	})
+	= item_key_yellow : "Yellow Key" []
 
 // A Checkpoint Trigger. set "Target" to the value of an info_player_respawn's "Targetname"
 @SolidClass base(Target, RenderStyle) = trigger_checkpoint : "Checkpoint"

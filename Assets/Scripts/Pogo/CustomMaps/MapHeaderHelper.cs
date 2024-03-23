@@ -40,19 +40,13 @@ namespace Pogo.CustomMaps
             mapHeader.CfgPath = Directory.GetFiles(folderPath, mapDefinitionFileName)
                 .FirstOrDefault();
 
-            if (mapHeader.CfgPath == null)
-            {
-                exit = true;
-                result = new GenerateMapHeaderResult(folderPath, GenerateMapHeaderResult.FailReasons.MissingMapDefinition);
-            }
-
             if (!exit)
             {
                 mapHeader.PreviewImagePath = Directory.GetFiles(folderPath, previewSpriteFileName)
                     .FirstOrDefault();
             }
 
-            if (!exit)
+            if (!exit && mapHeader.CfgPath != null)
             {
                 try
                 {

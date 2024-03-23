@@ -1,73 +1,77 @@
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using WizardPhysics;
 
-namespace Pogo.Gimmicks
+namespace Pogo.CustomMaps
 {
-    public class FuncBreakable : CollisionOrbTrigger
+    public abstract class FuncUnlockable : CollisionOrbTrigger
     {
-        public bool RegenerateOnPlayerSpawn;
-
-        public AudioSource AudioSource;
         public ParticleSystemData[] ActivatedParticleSystems;
-        new private MeshCollider collider;
-        new private MeshRenderer renderer;
+        public UnityEvent OnUnlocked;
+        public UnityEvent OnLocked;
+        public float TextCrawlDelaySeconds = 0.75f;
 
-        private void Awake()
+        protected PogoGameManager gameManager;
+        new protected MeshCollider collider;
+        new protected MeshRenderer renderer;
+
+        public bool Invisible;
+
+        public abstract bool CanUnlock();
+
+        protected virtual void Awake()
         {
+            gameManager = PogoGameManager.PogoInstance;
             collider = GetComponent<MeshCollider>();
             renderer = GetComponent<MeshRenderer>();
             OnActivated.AddListener(Base_OnActivated);
-            PogoGameManager.PogoInstance.OnPlayerSpawn.AddListener(GameManager_OnPlayerSpawn);
         }
 
-        private void GameManager_OnPlayerSpawn()
+        public virtual void Respawn()
         {
-            if (RegenerateOnPlayerSpawn)
-            {
-                Respawn();
-            }
+            collider.enabled = true;
+            renderer.enabled = true;
         }
 
         private void Base_OnActivated(CollisionEventArgs arg0)
         {
-            Trigger();
+            if (CanUnlock())
+            {
+                Trigger();
+            }
+            else
+            {
+                gameManager.ShowTextCrawl(GetFailMessage(), TextCrawlDelaySeconds);
+                OnLocked?.Invoke();
+            }
         }
+
+        protected abstract string GetFailMessage();
 
         public void Trigger()
         {
+            OnUnlocked?.Invoke();
             collider.enabled = false;
             renderer.enabled = false;
-            AudioSource.Play();
             foreach (var system in ActivatedParticleSystems)
             {
                 system.System.Play();
             }
         }
 
-        public void Respawn()
-        {
-            collider.enabled = true;
-            renderer.enabled = true;
-        }
-
         public void UpdateMesh()
         {
             var currentMesh = GetComponent<MeshFilter>().sharedMesh;
-            Material currentMaterial = GetComponent<MeshRenderer>().sharedMaterial;
 
             foreach (var system in ActivatedParticleSystems)
             {
                 var shape = system.System.shape;
                 shape.mesh = currentMesh;
-                if (system.SetMaterial)
-                {
-                    var renderer = system.System.GetComponent<ParticleSystemRenderer>();
-                    renderer.material = currentMaterial;
-                }
             }
         }
 
@@ -75,8 +79,6 @@ namespace Pogo.Gimmicks
         public struct ParticleSystemData
         {
             public ParticleSystem System;
-            public bool SetMaterial;
         }
     }
-
 }

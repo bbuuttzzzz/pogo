@@ -7,6 +7,7 @@ using Pogo.Checkpoints;
 using Pogo.Collectibles;
 using Pogo.Cosmetics;
 using Pogo.CustomMaps;
+using Pogo.CustomMaps.Pickups;
 using Pogo.CustomMaps.Steam;
 using Pogo.Difficulties;
 using Pogo.Levels;
@@ -499,11 +500,15 @@ namespace Pogo
             CurrentSlotDataTracker.RollbackQuicksaveProgress();
         }
 
-        private void ShowChapterTitle(float delay = 0)
+        public void ShowChapterTitle(float delaySeconds = 0)
         {
+            ShowTextCrawl(CurrentChapter.Title, delaySeconds);
+        }
 
+        public void ShowTextCrawl(string text, float delaySeconds = 0)
+        {
             var titleInstance = UIManager.Instance.SpawnUIElement(ChapterTitleCardPrefab);
-            titleInstance.GetComponent<TitleCardController>().DisplayTitle(CurrentChapter.Title, delay);
+            titleInstance.GetComponent<TitleCardController>().DisplayTitle(text, delaySeconds);
         }
 
         private void LoadCheckpoint(ChapterDescriptor chapter, CheckpointId checkpointId)
@@ -1278,6 +1283,8 @@ namespace Pogo
         #endregion
 
         #region Collectibles
+        public UnityEvent<PickupCollectedEventArgs> OnPickupCollected;
+
         public UnityEvent<CollectibleUnlockedEventArgs> OnCollectibleUnlocked;
         public GameObject GenericCollectibleNotificationPrefab;
         public CollectibleManifest CollectibleManifest;
