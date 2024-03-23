@@ -21,7 +21,6 @@ namespace Pogo.CustomMaps
         new protected MeshRenderer renderer;
 
         public bool Invisible;
-        public Material DefaultMaterial;
 
         public abstract bool CanUnlock();
 

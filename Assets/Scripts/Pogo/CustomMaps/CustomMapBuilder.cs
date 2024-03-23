@@ -435,7 +435,11 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("func_invisible", SetupFunc_Invisible));
             AddEntityHandler(new CustomMapEntityHandler("func_train", SetupFunc_Train));
             AddEntityHandler(new CustomMapEntityHandler("func_unlockable_coin", SetupFunc_Unlockable_Coin));
-            AddEntityHandler(new CustomMapEntityHandler("item_penny", SetupItem_Penny));
+            AddEntityHandler(new CustomMapEntityHandler("func_unlockable_key", SetupFunc_Unlockable_Key));
+            AddEntityHandler(new CustomMapEntityHandler("item_key_blue", SetupItemPickup));
+            AddEntityHandler(new CustomMapEntityHandler("item_key_red", SetupItemPickup));
+            AddEntityHandler(new CustomMapEntityHandler("item_key_yellow", SetupItemPickup));
+            AddEntityHandler(new CustomMapEntityHandler("item_penny", SetupItemPickup));
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
@@ -575,8 +579,29 @@ namespace Pogo.CustomMaps
 
             unlockable.UpdateShader();
         }
+        private void SetupFunc_Unlockable_Key(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Func_Unlockable_Key entity = new Func_Unlockable_Key(data.Instance, data.Context);
 
-        private void SetupItem_Penny(BSPLoader.EntityCreatedCallbackData data)
+            var unlockable = data.Instance.gameObject.GetComponent<FuncKeyUnlockable>();
+            unlockable.PickupId = entity.GetKeyColor();
+            unlockable.UpdateMesh();
+            CurrentCustomMap.OnRestart.AddListener(unlockable.Respawn);
+
+            var renderStyle = entity.GetRenderStyle();
+
+            if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
+            {
+                unlockable.LoadDefaultMaterial();
+            }
+            else if (renderStyle == WrappedEntityInstance.RenderStyles.Invisible)
+            {
+                unlockable.GetComponent<Renderer>().enabled = false;
+                unlockable.Invisible = true;
+            }
+        }
+
+        private void SetupItemPickup(BSPLoader.EntityCreatedCallbackData data)
         {
             var pickup = data.Instance.gameObject.GetComponent<ItemPickupTrigger>();
             CurrentCustomMap.OnRestart.AddListener(pickup.Respawn);

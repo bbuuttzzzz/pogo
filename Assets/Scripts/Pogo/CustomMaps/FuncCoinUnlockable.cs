@@ -10,9 +10,9 @@ namespace Pogo.CustomMaps
 {
     public class FuncCoinUnlockable : FuncUnlockable
     {
-        private PogoGameManager gameManager;
         public int CoinsToUnlock;
         public int CoinsCollected;
+        public Material DefaultMaterial;
         public int CoinsRemaining => math.max(CoinsToUnlock - CoinsCollected, 0);
 
         private Material localMaterial;
@@ -20,8 +20,6 @@ namespace Pogo.CustomMaps
         protected override void Awake()
         {
             base.Awake();
-            gameManager = PogoGameManager.PogoInstance;
-
             gameManager.OnPickupCollected.AddListener(Parent_OnPickupCollected);
         }
 
@@ -32,18 +30,18 @@ namespace Pogo.CustomMaps
 
         private void Parent_OnPickupCollected(PickupCollectedEventArgs arg0)
         {
-            CoinsCollected++;
-            UpdateShader();
+            if (arg0.PickupId == PickupIds.Penny)
+            {
+                CoinsCollected++;
+            }
         }
 
         public override void Respawn()
         {
             base.Respawn();
             CoinsCollected = 0;
-            UpdateShader();
         }
 
-        [ContextMenu("Update Shader Now")]
         public void UpdateShader()
         {
 #if DEBUG
@@ -70,7 +68,8 @@ namespace Pogo.CustomMaps
 
         protected override string GetFailMessage()
         {
-            return $"locked - need {CoinsRemaining} more";
+            if (CoinsRemaining == 1) return "Need 1 more coin";
+            return $"Need {CoinsRemaining} more coins";
         }
     }
 }
