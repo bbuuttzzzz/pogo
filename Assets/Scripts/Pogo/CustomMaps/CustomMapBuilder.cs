@@ -7,8 +7,10 @@ using Pogo.CustomMaps.Errors;
 using Pogo.CustomMaps.Indexing;
 using Pogo.CustomMaps.MapSources;
 using Pogo.CustomMaps.Materials;
+using Pogo.CustomMaps.Pickups;
 using Pogo.CustomMaps.UI;
 using Pogo.Difficulties;
+using Pogo.Gimmicks;
 using Pogo.Levels;
 using Pogo.Surfaces;
 using Pogo.Trains;
@@ -70,6 +72,7 @@ namespace Pogo.CustomMaps
         {
             gameManager = PogoGameManager.PogoInstance;
             gameManager.OnControlSceneChanged += GameManager_OnControlSceneChanged;
+            gameManager.OnPickupCollected.AddListener(GameManager_OnPickupCollected);
             SurfaceConfigDictionary = new Dictionary<string, SurfaceConfig>();
             foreach (var config in Resources.LoadAll<SurfaceConfig>("Surfaces"))
             {
@@ -82,6 +85,11 @@ namespace Pogo.CustomMaps
         private void GameManager_OnControlSceneChanged(object sender, ControlSceneEventArgs e)
         {
             DisposeCurrentMap();
+        }
+
+        private void GameManager_OnPickupCollected(PickupCollectedEventArgs arg0)
+        {
+            CurrentCustomMap?.AddPickup(arg0.PickupId);
         }
 
         private IEnumerable<IMapSource> GetMapSources()
@@ -319,6 +327,7 @@ namespace Pogo.CustomMaps
         {
             if (CurrentCustomMap == null) throw new InvalidOperationException("Tried to Restart with no Custom Map loaded");
 
+            CurrentCustomMap.ResetAll();
             StartMap();
         }
 
@@ -426,7 +435,7 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("func_invisible", SetupFunc_Invisible));
             AddEntityHandler(new CustomMapEntityHandler("func_train", SetupFunc_Train));
             AddEntityHandler(new CustomMapEntityHandler("func_unlockable_coin", SetupFunc_Unlockable_Coin));
-            // we dont need to handle item_penny. it's just a prefab.
+            AddEntityHandler(new CustomMapEntityHandler("item_penny", SetupItem_Penny));
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
@@ -450,6 +459,7 @@ namespace Pogo.CustomMaps
             var breakable = data.Instance.gameObject.GetComponent<Gimmicks.FuncBreakable>();
             breakable.UpdateMesh();
             breakable.RegenerateOnPlayerSpawn = self.GetRegenOnPlayerSpawn();
+            CurrentCustomMap.OnRestart.AddListener(breakable.Respawn);
         }
 
         private void SetupFunc_Illusionary(BSPLoader.EntityCreatedCallbackData data)
@@ -549,6 +559,7 @@ namespace Pogo.CustomMaps
             var unlockable = data.Instance.gameObject.GetComponent<FuncCoinUnlockable>();
             unlockable.CoinsToUnlock = entity.GetCoinsRequired();
             unlockable.UpdateMesh();
+            CurrentCustomMap.OnRestart.AddListener(unlockable.Respawn);
 
             var renderStyle = entity.GetRenderStyle();
 
@@ -564,6 +575,13 @@ namespace Pogo.CustomMaps
 
             unlockable.UpdateShader();
         }
+
+        private void SetupItem_Penny(BSPLoader.EntityCreatedCallbackData data)
+        {
+            var pickup = data.Instance.gameObject.GetComponent<ItemPickupTrigger>();
+            CurrentCustomMap.OnRestart.AddListener(pickup.Respawn);
+        }
+
         private void SetupTrigger_Finish(BSPLoader.EntityCreatedCallbackData data)
         {
             Trigger_Finish entity = new Trigger_Finish(data.Instance, data.Context);

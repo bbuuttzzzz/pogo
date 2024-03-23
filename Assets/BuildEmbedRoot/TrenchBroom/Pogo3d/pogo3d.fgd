@@ -52,6 +52,13 @@
 	surface(string) : "Surface Sound Type" : "default"
 ]
 
+@SolidClass base(RenderStyle) = func_unlockable_coin : "Unlockable Door (Coin)"
+[
+	// This can be as high as you want, but the door only shows up to the value 15.
+	// so ideally do not go over 15 coins. 1-5 is a good value here
+	coins_required(int): "Coins Required" : 1
+]
+
 @PointClass base(trackoptions, Targetname, Target) = info_track_start : "Train Track Start"
 [
 ]

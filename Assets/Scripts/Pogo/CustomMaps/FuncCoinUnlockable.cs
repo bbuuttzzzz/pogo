@@ -15,10 +15,12 @@ namespace Pogo.CustomMaps
         public int CoinsCollected;
         public int CoinsRemaining => math.max(CoinsToUnlock - CoinsCollected, 0);
 
+        private Material localMaterial;
+
         protected override void Awake()
         {
             base.Awake();
-            gameManager = GetComponent<PogoGameManager>();
+            gameManager = PogoGameManager.PogoInstance;
 
             gameManager.OnPickupCollected.AddListener(Parent_OnPickupCollected);
         }
@@ -34,9 +36,30 @@ namespace Pogo.CustomMaps
             UpdateShader();
         }
 
+        public override void Respawn()
+        {
+            base.Respawn();
+            CoinsCollected = 0;
+            UpdateShader();
+        }
+
+        [ContextMenu("Update Shader Now")]
         public void UpdateShader()
         {
-            renderer.materials[0].SetFloat("NumberValue", CoinsRemaining);
+#if DEBUG
+            if (!Application.isPlaying)
+            {
+                throw new InvalidOperationException("You should only do this ingame");
+            }
+#endif
+
+            if (localMaterial == null)
+            {
+                localMaterial = Instantiate(renderer.materials[0]);
+                renderer.sharedMaterials[0] = localMaterial;
+            }
+
+            localMaterial.SetFloat("_NumberValue", CoinsRemaining);
         }
 
         public override bool CanUnlock()

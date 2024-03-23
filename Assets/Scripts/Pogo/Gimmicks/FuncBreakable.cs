@@ -28,7 +28,7 @@ namespace Pogo.Gimmicks
         {
             if (RegenerateOnPlayerSpawn)
             {
-                Regenerate();
+                Respawn();
             }
         }
 
@@ -48,7 +48,7 @@ namespace Pogo.Gimmicks
             }
         }
 
-        public void Regenerate()
+        public void Respawn()
         {
             collider.enabled = true;
             renderer.enabled = true;
