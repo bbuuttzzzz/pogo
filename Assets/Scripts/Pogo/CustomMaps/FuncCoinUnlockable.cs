@@ -60,12 +60,17 @@ namespace Pogo.CustomMaps
                 renderer.sharedMaterial = localMaterial;
             }
 
-            localMaterial.SetFloat("_NumberValue", CoinsRemaining);
+            localMaterial.SetFloat("_NumberValue", CoinsToUnlock);
         }
 
         public override bool CanUnlock()
         {
             return CoinsRemaining == 0;
+        }
+
+        protected override string GetFailMessage()
+        {
+            return $"locked - need {CoinsRemaining} more";
         }
     }
 }

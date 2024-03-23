@@ -15,6 +15,7 @@ namespace Pogo.CustomMaps
         public UnityEvent OnUnlocked;
         public UnityEvent OnLocked;
 
+        protected PogoGameManager gameManager;
         new protected MeshCollider collider;
         new protected MeshRenderer renderer;
 
@@ -25,6 +26,7 @@ namespace Pogo.CustomMaps
 
         protected virtual void Awake()
         {
+            gameManager = PogoGameManager.PogoInstance;
             collider = GetComponent<MeshCollider>();
             renderer = GetComponent<MeshRenderer>();
             OnActivated.AddListener(Base_OnActivated);
@@ -44,9 +46,12 @@ namespace Pogo.CustomMaps
             }
             else
             {
+                gameManager.ShowTextCrawl(GetFailMessage(), 1);
                 OnLocked?.Invoke();
             }
         }
+
+        protected abstract string GetFailMessage();
 
         public void Trigger()
         {
