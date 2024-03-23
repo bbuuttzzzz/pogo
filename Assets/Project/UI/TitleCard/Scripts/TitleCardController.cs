@@ -15,13 +15,8 @@ public class TitleCardController : MonoBehaviour
 
     public void DisplayTitle(string title, float delay = 0)
     {
-        GetComponent<Animator>().SetTrigger("Display");
-
-        var text = GetComponent<TextMeshProUGUI>();
-        Vector2 desiredSize = text.GetPreferredValues(title);
-        GetComponent<RectTransform>().sizeDelta = desiredSize;
         StartCoroutine(SetTextAnimated(title, delay));
-        Destroy(gameObject, DestroyDelaySeconds);
+        Destroy(gameObject, delay + DestroyDelaySeconds);
     }
 
 
@@ -32,7 +27,12 @@ public class TitleCardController : MonoBehaviour
         {
             yield return new WaitForSecondsRealtime(delay);
         }
+
         var text = GetComponent<TextMeshProUGUI>();
+        GetComponent<Animator>().SetTrigger("Display");
+        Vector2 desiredSize = text.GetPreferredValues(title);
+        GetComponent<RectTransform>().sizeDelta = desiredSize;
+
         for (int n = 0; n <= title.Length; n++)
         {
             text.text = title.Substring(0,n);
