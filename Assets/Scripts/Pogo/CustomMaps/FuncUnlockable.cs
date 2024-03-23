@@ -14,6 +14,7 @@ namespace Pogo.CustomMaps
         public ParticleSystemData[] ActivatedParticleSystems;
         public UnityEvent OnUnlocked;
         public UnityEvent OnLocked;
+        public float TextCrawlDelaySeconds = 0.75f;
 
         protected PogoGameManager gameManager;
         new protected MeshCollider collider;
@@ -46,7 +47,7 @@ namespace Pogo.CustomMaps
             }
             else
             {
-                gameManager.ShowTextCrawl(GetFailMessage(), 1);
+                gameManager.ShowTextCrawl(GetFailMessage(), TextCrawlDelaySeconds);
                 OnLocked?.Invoke();
             }
         }
