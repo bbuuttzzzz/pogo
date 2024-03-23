@@ -7,6 +7,7 @@ using Pogo.Checkpoints;
 using Pogo.Collectibles;
 using Pogo.Cosmetics;
 using Pogo.CustomMaps;
+using Pogo.CustomMaps.Pickups;
 using Pogo.CustomMaps.Steam;
 using Pogo.Difficulties;
 using Pogo.Levels;
@@ -1278,6 +1279,8 @@ namespace Pogo
         #endregion
 
         #region Collectibles
+        public UnityEvent<PickupCollectedEventArgs> OnPickupCollected;
+
         public UnityEvent<CollectibleUnlockedEventArgs> OnCollectibleUnlocked;
         public GameObject GenericCollectibleNotificationPrefab;
         public CollectibleManifest CollectibleManifest;

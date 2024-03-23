@@ -425,6 +425,8 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("func_illusionary", SetupFunc_Illusionary));
             AddEntityHandler(new CustomMapEntityHandler("func_invisible", SetupFunc_Invisible));
             AddEntityHandler(new CustomMapEntityHandler("func_train", SetupFunc_Train));
+            AddEntityHandler(new CustomMapEntityHandler("func_unlockable_coin", SetupFunc_Unlockable_Coin));
+            // we dont need to handle item_penny. it's just a prefab.
             AddEntityHandler(new CustomMapEntityHandler("trigger_checkpoint", SetupTrigger_Checkpoint));
             AddEntityHandler(new CustomMapEntityHandler("trigger_finish", SetupTrigger_Finish));
             AddEntityHandler(new CustomMapEntityHandler("trigger_kill", SetupTrigger_Kill));
@@ -540,6 +542,28 @@ namespace Pogo.CustomMaps
             }
         }
 
+        private void SetupFunc_Unlockable_Coin(BSPLoader.EntityCreatedCallbackData data)
+        {
+            Func_Unlockable_Coin entity = new Func_Unlockable_Coin(data.Instance, data.Context);
+
+            var unlockable = data.Instance.gameObject.GetComponent<FuncCoinUnlockable>();
+            unlockable.CoinsToUnlock = entity.GetCoinsRequired();
+            unlockable.UpdateMesh();
+
+            var renderStyle = entity.GetRenderStyle();
+
+            if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
+            {
+                unlockable.GetComponent<Renderer>().material = unlockable.DefaultMaterial;
+            }
+            else if (renderStyle == WrappedEntityInstance.RenderStyles.Invisible)
+            {
+                unlockable.GetComponent<Renderer>().enabled = false;
+                unlockable.Invisible = true;
+            }
+
+            unlockable.UpdateShader();
+        }
         private void SetupTrigger_Finish(BSPLoader.EntityCreatedCallbackData data)
         {
             Trigger_Finish entity = new Trigger_Finish(data.Instance, data.Context);
