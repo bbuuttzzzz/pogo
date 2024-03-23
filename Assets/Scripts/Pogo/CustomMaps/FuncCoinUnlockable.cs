@@ -55,8 +55,9 @@ namespace Pogo.CustomMaps
 
             if (localMaterial == null)
             {
-                localMaterial = Instantiate(renderer.materials[0]);
-                renderer.sharedMaterials[0] = localMaterial;
+                localMaterial = Instantiate(renderer.sharedMaterial);
+                localMaterial.name = $"Local Material for {nameof(FuncCoinUnlockable)} {name}";
+                renderer.sharedMaterial = localMaterial;
             }
 
             localMaterial.SetFloat("_NumberValue", CoinsRemaining);
