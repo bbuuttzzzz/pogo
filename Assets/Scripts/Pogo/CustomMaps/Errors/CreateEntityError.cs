@@ -9,7 +9,12 @@ namespace Pogo.CustomMaps.Errors
 {
     public class CreateEntityError : MapError
     {
-        public CreateEntityError(Exception exception, EntityCreatedCallbackData data, string failReason = null) : base(exception, GetMessage(data, failReason), MapError.Severities.Error)
+        public CreateEntityError(
+            Exception exception,
+            EntityCreatedCallbackData data,
+            string failReason = null,
+            Severities severity = Severities.Error)
+            : base(exception, GetMessage(data, failReason), severity)
         {
             
         }
