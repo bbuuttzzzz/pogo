@@ -54,6 +54,7 @@ namespace Pogo.CustomMaps
         public KillTypeDescriptor[] KillTypes;
 
         public string WadFolderRootPath => $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}wads";
+        public string MapsFolderRootPath => $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps";
         private string BuiltInCustomFolder
         {
             get
