@@ -43,7 +43,7 @@ namespace Pogo.CustomMaps.UI
                 ViewWorkshopButton.onClick.AddListener(() => Application.OpenURL(gameManager.PlatformService.WorkshopLink));
             }
 
-            BrowseLocalButton.onClick.AddListener(() => Application.OpenURL($"file:///{gameManager.CustomMapBuilder.WadFolderRootPath}"));
+            BrowseLocalButton.onClick.AddListener(() => Application.OpenURL($"file:///{gameManager.CustomMapBuilder.MapsFolderRootPath}"));
         }
 
 
