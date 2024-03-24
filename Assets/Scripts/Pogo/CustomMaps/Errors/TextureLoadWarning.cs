@@ -16,7 +16,7 @@ namespace Pogo.CustomMaps.Errors
 
         private static string GetMessage(string textureName, string failReason = null)
         {
-            return "Texture " + textureName + " could not be found. Are you missing a .wad?";
+            return "Texture '" + textureName + "' could not be found. Are you missing a .wad?";
         }
     }
 }
