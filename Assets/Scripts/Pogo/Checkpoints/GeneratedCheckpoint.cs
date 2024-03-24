@@ -56,5 +56,16 @@ namespace Pogo
                 GetComponent<Renderer>().enabled = false;
             }
         }
+
+        public Vector3 GetDefaultRespawnPoint()
+        {
+            const float floorOffset = 1f;
+            var bounds = GetComponent<MeshCollider>().bounds;
+            
+            return new Vector3(
+                bounds.center.x,
+                bounds.min.y + floorOffset,
+                bounds.center.z);
+        }
     }
 }

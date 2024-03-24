@@ -93,7 +93,7 @@
 	]
 ]
 
-// A Checkpoint Spawnpoint! every checkpoint needs one. set "Targetname" to a unique value
+// Used by trigger_checkpoint and trigger_teleport to mark where the player respawns
 @PointClass base(PlayerClass, Targetname)
     model({
         "path" : "models/info_player_respawn.mdl"
@@ -129,9 +129,16 @@
 	})
 	= item_key_yellow : "Yellow Key" []
 
-// A Checkpoint Trigger. set "Target" to the value of an info_player_respawn's "Targetname"
+// A Checkpoint!
 @SolidClass base(Target, RenderStyle) = trigger_checkpoint : "Checkpoint"
 [
+	// This is the name of the info_player_respawn the player will appear at after respawning
+	// This is optional! without one, the player will respawn in the middle of the checkpoint
+	// target(target_destination)
+
+	// IF AND ONLY IF there is no target for this checkpoint, specify the player's angle after respawn
+	angle(integer) : "Generated Respawn Point Angle" : 0
+
 	spawnflags(Flags) =
 	[
 		1 : "Can Skip" : 1
@@ -146,9 +153,8 @@
 		0: "Main Path"
 		1: "Side Path"
 	]
-	// The number of this checkpoint in sequence. Don't skip any numbers.
-	// if your map has 3 main path checkpoints and 3 side path checkpoints, number them 1 2 3 and 1 2 3.
-	// ...or 0 1 2 & 0 1 2 :) both will work
+	// For Main Path checkpoints, The number of this checkpoint in sequence.
+	// Does nothing for Side Path checkpoints
 	number(integer) : "Checkpoint Number" : 1
 	// the name of the info_player_respawn the player should teleport to on skip.
 	skiptarget(target_destination) : "Override Skip Target"

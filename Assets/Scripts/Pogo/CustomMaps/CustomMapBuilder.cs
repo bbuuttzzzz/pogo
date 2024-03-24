@@ -518,12 +518,24 @@ namespace Pogo.CustomMaps
         {
             Trigger_Checkpoint entity = new Trigger_Checkpoint(data.Instance, data.Context);
             CheckpointId id = entity.GetCheckpointId();
+            GeneratedCheckpoint checkpoint = data.Instance.gameObject.GetComponent<GeneratedCheckpoint>();
 
-            var target = entity.GetSingleTarget();
+            Transform target;
+            if (string.IsNullOrEmpty(entity.Instance.entity["target"]))
+            {
+                CurrentCustomMap.AddError(new CreateEntityError(null, data, "'target' was left blank. Guessing the location instead.", MapError.Severities.Warning));
+                var newObj = new GameObject("Generated Respawn Point");
+                newObj.transform.parent = data.Instance.gameObject.transform;
+                target = newObj.transform;
+                target.SetPositionAndRotation(checkpoint.GetDefaultRespawnPoint(), entity.GetDefaultRespawnRotation());
+            }
+            else
+            {
+                target = entity.GetSingleTarget().gameObject.transform;
+            }
 
-            var checkpoint = data.Instance.gameObject.GetComponent<GeneratedCheckpoint>();
             checkpoint.Id = id;
-            checkpoint.RespawnPoint = target.gameObject.transform;
+            checkpoint.RespawnPoint = target;
             checkpoint.CanSkip = entity.GetCanSkip();
             checkpoint.UpdateMesh();
             if (checkpoint.CanSkip && !string.IsNullOrEmpty(entity.GetOverrideSkipTargetName()))

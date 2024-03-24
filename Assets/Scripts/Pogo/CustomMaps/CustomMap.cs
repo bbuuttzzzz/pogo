@@ -18,6 +18,8 @@ namespace Pogo.CustomMaps
     {
         public MapHeader Header;
         public Dictionary<CheckpointId, GeneratedCheckpoint> Checkpoints;
+        private int LastSidePathNumber;
+
         public GameObject PlayerStart;
         public GeneratedCheckpoint FirstCheckpoint;
         public bool HasFinish;
@@ -41,6 +43,7 @@ namespace Pogo.CustomMaps
             errors = new List<MapError>();
             OnRestart = new UnityEvent();
             CollectedKeys = new List<PickupIds>();
+            LastSidePathNumber = -1;
         }
 
         public void ResetAll()
@@ -80,6 +83,11 @@ namespace Pogo.CustomMaps
 
         public void RegisterCheckpoint(GeneratedCheckpoint checkpoint)
         {
+            if (checkpoint.CheckpointId.CheckpointType == CheckpointTypes.SidePath)
+            {
+                checkpoint.Id = new CheckpointId(CheckpointTypes.SidePath, ++LastSidePathNumber);
+            }
+
             Checkpoints.Add(checkpoint.Id, checkpoint);
 
             if (checkpoint.CheckpointId.CheckpointType == CheckpointTypes.MainPath
