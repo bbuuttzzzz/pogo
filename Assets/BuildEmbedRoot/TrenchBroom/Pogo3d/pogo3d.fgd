@@ -93,7 +93,7 @@
 	]
 ]
 
-// A Checkpoint Spawnpoint! every checkpoint needs one. set "Targetname" to a unique value
+// Used by trigger_checkpoint and trigger_teleport to mark where the player respawns
 @PointClass base(PlayerClass, Targetname)
     model({
         "path" : "models/info_player_respawn.mdl"
@@ -129,9 +129,16 @@
 	})
 	= item_key_yellow : "Yellow Key" []
 
-// A Checkpoint Trigger. set "Target" to the value of an info_player_respawn's "Targetname"
+// A Checkpoint!
 @SolidClass base(Target, RenderStyle) = trigger_checkpoint : "Checkpoint"
 [
+	// This is the name of the info_player_respawn the player will appear at after respawning
+	// This is optional! without one, the player will respawn in the middle of the checkpoint
+	// target(target_destination)
+
+	// IF AND ONLY IF there is no target for this checkpoint, specify the player's angle after respawn
+	angle(integer) : "Generated Respawn Point Angle" : 0
+
 	spawnflags(Flags) =
 	[
 		1 : "Can Skip" : 1

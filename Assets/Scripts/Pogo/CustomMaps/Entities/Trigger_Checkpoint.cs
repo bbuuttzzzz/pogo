@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Pogo.CustomMaps.Entities
 {
@@ -38,5 +39,12 @@ namespace Pogo.CustomMaps.Entities
         public BSPLoader.EntityInstance GetSingleOverrideSkipTarget() => GetSingleTarget(Key_SkipTarget);
 
         public bool GetCanSkip() => GetSpawnFlag(1u);
+
+        public Quaternion GetDefaultRespawnRotation()
+        {
+            var angles = Instance.entity.Angles;
+
+            return Quaternion.Euler(0, angles.y, 0);
+        }
     }
 }
