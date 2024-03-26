@@ -107,24 +107,36 @@ namespace Pogo.CustomMaps.Steam
 
         private UpdateMapResult UpdateMap_Process(APICallResult<SubmitItemUpdateResult_t> result, MapHeader header)
         {
-            if (result.CallResult.m_eResult != EResult.k_EResultOK || result.IOFailure)
+            try
             {
+                if (result.CallResult.m_eResult != EResult.k_EResultOK || result.IOFailure)
+                {
+                    return new UpdateMapResult()
+                    {
+                        ResultType = UpdateMapResult.ResultTypes.Failure,
+                        ErrorMessage = $"There was a problem creating this workshop item ({result.CallResult.m_eResult})",
+                        UpdatedHeader = null
+                    };
+                }
+
+                header.WorkshopId = (ulong)result.CallResult.m_nPublishedFileId;
+                MapHeaderHelper.SaveMapHeaderConfig(header);
+
+                return new UpdateMapResult()
+                {
+                    ResultType = UpdateMapResult.ResultTypes.Success,
+                    UpdatedHeader = header
+                };
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e);
                 return new UpdateMapResult()
                 {
                     ResultType = UpdateMapResult.ResultTypes.Failure,
-                    ErrorMessage = $"There was a problem creating this workshop item ({result.CallResult.m_eResult})",
-                    UpdatedHeader = null
+                    ErrorMessage = "Ran into a weird unexpected error. check your Player.log and contact the dev!"
                 };
             }
-
-            header.WorkshopId = (ulong)result.CallResult.m_nPublishedFileId;
-            MapHeaderHelper.SaveMapHeaderConfig(header);
-
-            return new UpdateMapResult()
-            {
-                ResultType = UpdateMapResult.ResultTypes.Success,
-                UpdatedHeader = header
-            };
         }
 
         #endregion

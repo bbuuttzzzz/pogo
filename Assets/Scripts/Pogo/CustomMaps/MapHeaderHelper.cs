@@ -16,6 +16,10 @@ namespace Pogo.CustomMaps
 
         public static void SaveMapHeaderConfig(MapHeader header)
         {
+            if (header.CfgPath == null)
+            {
+                header.CfgPath = $"{header.FolderPath}{Path.DirectorySeparatorChar}{mapDefinitionFileName}";
+            }
             CfgFileSerializationHelper.Serialize(header.CfgPath, header.WriteCfgData());   
         }
 
