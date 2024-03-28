@@ -48,7 +48,7 @@ namespace Pogo.CustomMaps.Indexing
                     case "FogColor":
                         if (!ColorUtility.TryParseHtmlString(setting.Value, out var color))
                         {
-                            throw new FormatException($"FogColor '{setting.Value}' couldn't parse as a hex color");
+                            throw new FormatException($"FogColor '{setting.Value}' couldn't parse as a hex color. Expected format #RRGGBB");
                         }
                         FogColor = color;
                         break;

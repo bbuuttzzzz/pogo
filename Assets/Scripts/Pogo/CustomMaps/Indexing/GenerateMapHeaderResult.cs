@@ -55,9 +55,9 @@ namespace Pogo.CustomMaps.Indexing
             switch (FailReason)
             {
                 case FailReasons.MissingMapDefinition:
-                    return $"Couldn't find a mapdefinition.txt for map {LoadData} D:";
+                    return $"Couldn't find a mapdefinition.txt D:";
                 case FailReasons.MissingBSP:
-                    return $"Couldn't find a .bsp for map {LoadData} D:";
+                    return $"Couldn't find a .bsp D:";
                 case FailReasons.Custom:
                     return CustomWarning;
                 default:
