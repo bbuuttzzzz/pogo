@@ -6,6 +6,8 @@ using UnityEngine;
 using System.Linq;
 using WizardUtils.Configurations;
 using WizardUtils.Helpers;
+using Pogo.CustomMaps.MapSources;
+using LibBSP;
 
 namespace Pogo.CustomMaps
 {
@@ -28,21 +30,34 @@ namespace Pogo.CustomMaps
             header.PreviewImagePath = path;
         }
 
-        public static GenerateMapHeaderResult GenerateMapHeader(string folderPath, bool logWarnings = true)
+        public static string GetMapName(string folderPath)
+        {
+            string bspPath = Directory.GetFiles(folderPath, "*.bsp")
+                   .FirstOrDefault();
+
+            if (bspPath != null)
+            {
+                return Path.GetFileNameWithoutExtension(bspPath);
+            }
+
+            return Path.GetFileName(folderPath);
+        }
+
+        public static GenerateMapHeaderResult GenerateMapHeader(MapLoadData loadData, bool logWarnings = true)
         {
             bool exit = false;
             MapHeader mapHeader = new MapHeader()
             {
-                FolderPath = folderPath
+                FolderPath = loadData.FolderPath
             };
             GenerateMapHeaderResult result = default;
 
-            mapHeader.CfgPath = Directory.GetFiles(folderPath, mapDefinitionFileName)
+            mapHeader.CfgPath = Directory.GetFiles(loadData.FolderPath, mapDefinitionFileName)
                 .FirstOrDefault();
 
             if (!exit)
             {
-                mapHeader.PreviewImagePath = Directory.GetFiles(folderPath, previewSpriteFileName)
+                mapHeader.PreviewImagePath = Directory.GetFiles(loadData.FolderPath, previewSpriteFileName)
                     .FirstOrDefault();
             }
 
@@ -56,13 +71,13 @@ namespace Pogo.CustomMaps
                 catch(FormatException e)
                 {
                     exit = true;
-                    result = new GenerateMapHeaderResult(folderPath, $"Failed to parse {mapDefinitionFileName} for map {mapHeader.FolderPath}. {e.Message}");
+                    result = new GenerateMapHeaderResult(loadData, $"Failed to parse {mapDefinitionFileName} for map {mapHeader.FolderPath}. {e.Message}");
                 }
             }
 
             if (!exit)
             {
-                string spritePath = $"{folderPath}{Path.DirectorySeparatorChar}{previewSpriteFileName}";
+                string spritePath = $"{loadData.FolderPath}{Path.DirectorySeparatorChar}{previewSpriteFileName}";
                 if (File.Exists(spritePath))
                 {
                     try
@@ -78,23 +93,23 @@ namespace Pogo.CustomMaps
 
             if (!exit)
             {
-                mapHeader.BspPath = Directory.GetFiles(folderPath, "*.bsp")
+                mapHeader.BspPath = Directory.GetFiles(loadData.FolderPath, "*.bsp")
                     .FirstOrDefault();
 
                 if (mapHeader.BspPath == null)
                 {
                     exit = true;
-                    result = new GenerateMapHeaderResult(folderPath, GenerateMapHeaderResult.FailReasons.MissingBSP);
+                    result = new GenerateMapHeaderResult(loadData, GenerateMapHeaderResult.FailReasons.MissingBSP);
                 }
             }
 
             if (!exit)
             {
                 mapHeader.MapName = Path.GetFileNameWithoutExtension(mapHeader.BspPath);
-                result = new GenerateMapHeaderResult(folderPath, mapHeader);
+                result = new GenerateMapHeaderResult(loadData, mapHeader);
             }
             
-            result.LogWarnings();
+            if (logWarnings) result.LogWarnings();
             return result;
         }
     }

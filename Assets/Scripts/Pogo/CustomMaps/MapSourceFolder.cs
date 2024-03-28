@@ -13,17 +13,29 @@ namespace Assets.Scripts.Pogo.CustomMaps
     {
         public string Path;
         public bool AllowUpload { get; private set; }
+        private string SourceName;
 
-        public MapSourceFolder(bool isLocalPath, string path)
+        public MapSourceFolder(bool isLocalPath, string path, string sourceName)
         {
             AllowUpload = isLocalPath;
             Path = path;
+            SourceName = sourceName;
             Directory.CreateDirectory(Path);
         }
 
-        public IEnumerable<string> GetPaths()
+        public IEnumerable<MapLoadData> GetMaps()
         {
-            return Directory.GetDirectories(Path);
+            return Directory.GetDirectories(Path)
+                .Select(path => GetLoadData(path));
+        }
+
+        private MapLoadData GetLoadData(string path)
+        {
+            return new MapLoadData()
+            {
+                FolderPath = path,
+                Source = SourceName,
+            };
         }
     }
 }
