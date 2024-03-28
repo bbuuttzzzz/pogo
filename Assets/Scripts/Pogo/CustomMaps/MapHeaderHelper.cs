@@ -75,7 +75,7 @@ namespace Pogo.CustomMaps
                 catch(FormatException e)
                 {
                     exit = true;
-                    result = new GenerateMapHeaderResult(loadData, $"Failed to parse {mapDefinitionFileName} for map {mapHeader.FolderPath}. {e.Message}");
+                    result = new GenerateMapHeaderResult(loadData, $"Failed to parse {mapDefinitionFileName}. {e.Message}");
                 }
             }
 
