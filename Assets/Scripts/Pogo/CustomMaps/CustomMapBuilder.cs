@@ -97,8 +97,8 @@ namespace Pogo.CustomMaps
         {
             return new IMapSource[]
             {
-                new MapSourceFolder(true, $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps"),
-                new MapSourceFolder(false, $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps"),
+                new MapSourceFolder(true, $"{gameManager.PlatformService.PersistentDataPath}{Path.DirectorySeparatorChar}custom{Path.DirectorySeparatorChar}maps", "Local Maps"),
+                new MapSourceFolder(false, $"{BuiltInCustomFolder}{Path.DirectorySeparatorChar}maps", "Internal Maps"),
 #if !DISABLESTEAMWORKS
                 new Steam.WorkshopSubscriptionSource()
 #endif
@@ -308,6 +308,21 @@ namespace Pogo.CustomMaps
             materialSource.RegisterMaterial("tool_skybox", skyMaterial);
         }
 
+        public IEnumerable<GenerateMapHeaderResult> GenerateMapHeaders(bool uploadableOnly = false)
+        {
+            IEnumerable<IMapSource> sources = GetMapSources();
+            if (uploadableOnly)
+            {
+                sources = sources
+                    .Where(s => s.AllowUpload);
+            }
+
+            return sources
+                .SelectMany(s => s.GetMaps())
+                .Select(path => MapHeaderHelper.GenerateMapHeader(path, true));
+        }
+
+        [Obsolete("")]
         public IEnumerable<MapHeader> GetMapHeaders(bool uploadableOnly = false)
         {
             IEnumerable<IMapSource> sources = GetMapSources();
@@ -318,7 +333,7 @@ namespace Pogo.CustomMaps
             }
 
             return sources
-                .SelectMany(s => s.GetPaths())
+                .SelectMany(s => s.GetMaps())
                 .Select(path => MapHeaderHelper.GenerateMapHeader(path, true))
                 .Where(r => r.Success)
                 .Select(r => r.Data);

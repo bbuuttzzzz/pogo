@@ -12,7 +12,7 @@ namespace Pogo.CustomMaps.Steam
     {
         public bool AllowUpload => false;
 
-        public IEnumerable<string> GetPaths()
+        public IEnumerable<MapLoadData> GetMaps()
         {
             uint subscribedItemCount = SteamUGC.GetNumSubscribedItems();
             PublishedFileId_t[] files = new PublishedFileId_t[subscribedItemCount];
@@ -25,7 +25,11 @@ namespace Pogo.CustomMaps.Steam
                     continue;
                 }
 
-                yield return folderPath;
+                yield return new MapLoadData()
+                {
+                    FolderPath = folderPath,
+                    Source = "Workshop"
+                };
             }
         }
     }

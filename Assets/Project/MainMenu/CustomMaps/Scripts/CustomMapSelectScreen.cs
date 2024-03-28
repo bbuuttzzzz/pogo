@@ -16,10 +16,11 @@ namespace Pogo.CustomMaps.UI
         public int LoadMoreCount = 5;
         private bool CanLoadMore;
         public GameObject ButtonPrefab;
-        public Transform ButtonsRoot;
+        public GameObject ErrorMessagePrefab;
+        public Transform MapsRoot;
         public ScrollView Scroller;
-        private List<CustomMapButton> Buttons;
-        private IEnumerator<MapHeader> UnloadedHeaders;
+        private List<GameObject> MapsGameObjects;
+        private IEnumerator<GenerateMapHeaderResult> UnloadedHeaders;
 
         public Button UploadButton;
         public Button BrowseLocalButton;
@@ -55,15 +56,15 @@ namespace Pogo.CustomMaps.UI
 
         private void ResetButtons()
         {
-            if (Buttons != null)
+            if (MapsGameObjects != null)
             {
-                foreach (var button in Buttons)
+                foreach (var button in MapsGameObjects)
                 {
                     Destroy(button.gameObject);
                 }
             }
-            Buttons = new List<CustomMapButton>();
-            UnloadedHeaders = gameManager.CustomMapBuilder.GetMapHeaders().GetEnumerator();
+            MapsGameObjects = new List<GameObject>();
+            UnloadedHeaders = gameManager.CustomMapBuilder.GenerateMapHeaders().GetEnumerator();
             CanLoadMore = true;
         }
 
@@ -73,16 +74,24 @@ namespace Pogo.CustomMaps.UI
             gameManager.CustomMapBuilder.LoadCustomMapLevel(header);
         }
 
-        private void AddButton(MapHeader header)
+        private void AddMapHeaderButton(MapHeader header)
         {
-            var obj = Instantiate(ButtonPrefab, ButtonsRoot);
+            var obj = Instantiate(ButtonPrefab, MapsRoot);
             var button = obj.GetComponent<CustomMapButton>();
             button.Header = header;
             button.UIButton.onClick.AddListener(() =>
             {
                 SelectMap(header);
             });
-            Buttons.Add(button);
+            MapsGameObjects.Add(obj);
+        }
+
+        private void AddErrorMessage(GenerateMapHeaderResult result)
+        {
+            var obj = Instantiate(ErrorMessagePrefab, MapsRoot);
+            var badge = obj.GetComponent<CustomMapLoadFailureBadge>();
+            badge.Result = result;
+            MapsGameObjects.Add(obj);
         }
 
         public void LoadMore(int count = -1)
@@ -101,7 +110,16 @@ namespace Pogo.CustomMaps.UI
                     CanLoadMore = false;
                     break;
                 }
-                AddButton(UnloadedHeaders.Current);
+
+                var current = UnloadedHeaders.Current;
+                if (current.Success)
+                {
+                    AddMapHeaderButton(UnloadedHeaders.Current.Data);
+                }
+                else
+                {
+                    AddErrorMessage(current);
+                }
             }
         }
     }

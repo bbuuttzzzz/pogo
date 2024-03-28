@@ -10,6 +10,6 @@ namespace Pogo.CustomMaps.MapSources
     public interface IMapSource
     {
         public bool AllowUpload { get; }
-        public IEnumerable<string> GetPaths();
+        public IEnumerable<MapLoadData> GetMaps();
     }
 }

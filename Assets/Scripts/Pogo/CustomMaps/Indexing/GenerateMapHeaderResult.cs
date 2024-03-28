@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Pogo.CustomMaps.MapSources;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Pogo.CustomMaps.Indexing
 {
@@ -6,7 +8,7 @@ namespace Pogo.CustomMaps.Indexing
     {
         public FailReasons FailReason;
         public MapHeader Data;
-        public string Path;
+        public MapLoadData LoadData;
         public string CustomWarning;
 
         public enum FailReasons
@@ -19,25 +21,25 @@ namespace Pogo.CustomMaps.Indexing
 
         public readonly bool Success => FailReason == FailReasons.None;
 
-        public GenerateMapHeaderResult(string path, FailReasons failReason)
+        public GenerateMapHeaderResult(MapLoadData loadData, FailReasons failReason)
         {
-            Path = path;
+            LoadData = loadData;
             FailReason = failReason;
             Data = null;
             CustomWarning = null;
         }
 
-        public GenerateMapHeaderResult(string path, MapHeader data)
+        public GenerateMapHeaderResult(MapLoadData loadData, MapHeader data)
         {
-            Path = path;
+            LoadData = loadData;
             FailReason = FailReasons.None;
             Data = data;
             CustomWarning = null;
         }
 
-        public GenerateMapHeaderResult(string path, string customWarning)
+        public GenerateMapHeaderResult(MapLoadData loadData, string customWarning)
         {
-            Path = path;
+            LoadData = loadData;
             FailReason = FailReasons.Custom;
             Data = null;
             CustomWarning = customWarning;
@@ -45,14 +47,21 @@ namespace Pogo.CustomMaps.Indexing
 
         public void LogWarnings()
         {
-            switch(FailReason)
+            Debug.LogWarning(GetErrorText());
+        }
+
+        public string GetErrorText()
+        {
+            switch (FailReason)
             {
                 case FailReasons.MissingMapDefinition:
-                    Debug.LogWarning($"Couldn't find a mapdefinition.txt for map {Path} D:");
-                    break;
+                    return $"Couldn't find a mapdefinition.txt for map {LoadData} D:";
                 case FailReasons.MissingBSP:
-                    Debug.LogWarning($"Couldn't find a .bsp for map {Path} D:");
-                    break;
+                    return $"Couldn't find a .bsp for map {LoadData} D:";
+                case FailReasons.Custom:
+                    return CustomWarning;
+                default:
+                    return $"Unknown fail reason {FailReason}";
             }
         }
     }
