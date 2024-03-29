@@ -74,7 +74,7 @@ namespace Pogo.CustomMaps.Indexing
             }
             if (FogColor.HasValue)
             {
-                data.Add(new KeyValuePair<string, string>("FogColor", ColorUtility.ToHtmlStringRGB(FogColor.Value)));
+                data.Add(new KeyValuePair<string, string>("FogColor", "#" + ColorUtility.ToHtmlStringRGB(FogColor.Value)));
             }
 
             return data;
