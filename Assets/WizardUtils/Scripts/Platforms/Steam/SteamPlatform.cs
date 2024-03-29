@@ -117,11 +117,10 @@ namespace Platforms.Steam
             if (callback.m_bActive != 0)
             {
                 // overlay is active
-                PogoGameManager.PogoInstance.Paused = true;
-            }
-            else
-            {
-                
+                if (GameManager.GameInstance.InGameScene)
+                {
+                    GameManager.GameInstance.Paused = true;
+                }
             }
         }
 
