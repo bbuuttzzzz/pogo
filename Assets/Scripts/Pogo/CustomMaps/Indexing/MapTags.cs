@@ -10,10 +10,17 @@ namespace Pogo.CustomMaps.Indexing
     {
         None,
         Kaizo,
+        Troll,
+        Experimental,
         ShortMap,
-        LongMap,
         Speedrun,
-        FreeRoam
+        FreeRoam,
+        C0,
+        C1,
+        C2,
+        C3,
+        C4,
+        C5
     }
 
     public static class MapTagsHelper
@@ -22,10 +29,17 @@ namespace Pogo.CustomMaps.Indexing
         {
             null,
             "Kaizo",
-            "Short Map",
-            "Long Map",
+            "Troll",
+            "Experimental",
+            "Short And Sweet",
             "Speedrun",
-            "Free Roam"
+            "Free Roam",
+            "C0",
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
         };
 
         public static bool TryParse(string str, out MapTags result)
