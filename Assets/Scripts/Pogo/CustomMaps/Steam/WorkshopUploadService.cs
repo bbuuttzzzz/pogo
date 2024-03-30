@@ -90,6 +90,7 @@ namespace Pogo.CustomMaps.Steam
             UGCUpdateHandle_t handle = SteamUGC.StartItemUpdate(SteamPlatformService.AppId, (PublishedFileId_t)header.WorkshopId);
 
             SteamUGC.SetItemTitle(handle, header.MapName);
+            SteamUGC.SetItemTags(handle, MapTagsHelper.ToSteamTagFormat(header.Tags));
 
             if (header.PreviewImagePath != null)
             {

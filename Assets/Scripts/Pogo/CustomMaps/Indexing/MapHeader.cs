@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Pogo.CustomMaps.Indexing
@@ -12,6 +14,7 @@ namespace Pogo.CustomMaps.Indexing
         public string BspPath;
         public string MapName;
         public Sprite PreviewSprite;
+        public MapTags[] Tags;
 
         public string Version;
         public string AuthorName;
@@ -52,6 +55,9 @@ namespace Pogo.CustomMaps.Indexing
                         }
                         FogColor = color;
                         break;
+                    case "Tags":
+                        Tags = ParseTags(setting.Value);
+                        break;
                 }
             }
         }
@@ -76,6 +82,10 @@ namespace Pogo.CustomMaps.Indexing
             {
                 data.Add(new KeyValuePair<string, string>("FogColor", "#" + ColorUtility.ToHtmlStringRGB(FogColor.Value)));
             }
+            if (Tags != null && Tags.Length != 0)
+            {
+                data.Add(new KeyValuePair<string, string>("Tags", WriteTags(Tags)));
+            }
 
             return data;
         }
@@ -86,6 +96,46 @@ namespace Pogo.CustomMaps.Indexing
             {
                 data.Add(new KeyValuePair<string, string>(key, value));
             }
+        }
+
+        private static MapTags[] ParseTags(string slug)
+        {
+            List<MapTags> tags = new List<MapTags>();
+            Regex regex = new Regex("[\\w\\s]", RegexOptions.Compiled);
+            MatchCollection matches = regex.Matches(slug);
+
+            for (int n = 0; n < matches.Count; n++)
+            {
+                string capture = matches[n].Captures[0].Value.Trim();
+                if (!MapTagsHelper.TryParse(capture, out MapTags result))
+                {
+                    throw new FormatException($"Invalid Map Tag '{capture}'. Expected tags slug like 'Kaizo, Short Map, Speedrun'");
+                }
+
+                if (tags.Contains(result))
+                {
+                    throw new FormatException($"Duplicate Map Tag '{capture}'. Each tag should only appear once");
+                }
+
+                tags.Add(result);
+            }
+
+            return tags.ToArray();
+        }
+
+        private static string WriteTags(MapTags[] tags)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int n = 0; n < tags.Length; n++)
+            {
+                if (n != 0)
+                {
+                    sb.Append(", ");
+                }
+                sb.Append(tags[n]);
+            }
+
+            return sb.ToString();
         }
     }
 }

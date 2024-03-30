@@ -112,8 +112,12 @@ namespace Pogo.CustomMaps
                 mapHeader.MapName = Path.GetFileNameWithoutExtension(mapHeader.BspPath);
                 result = new GenerateMapHeaderResult(loadData, mapHeader);
             }
-            
-            if (logWarnings) result.LogWarnings();
+
+            if (result.FailReason != GenerateMapHeaderResult.FailReasons.None
+                && logWarnings)
+            {
+                result.LogWarnings();
+            }
             return result;
         }
     }
