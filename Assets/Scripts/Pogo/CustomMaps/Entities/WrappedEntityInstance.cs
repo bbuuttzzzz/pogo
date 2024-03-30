@@ -13,6 +13,7 @@ namespace Pogo.CustomMaps.Entities
     public class WrappedEntityInstance
     {
         const string Key_RenderStyle = "renderstyle";
+        const string Key_Convex = "convex";
 
         protected string ClassName { get; private set; }
         protected uint SpawnFlags;
@@ -59,6 +60,8 @@ namespace Pogo.CustomMaps.Entities
                 throw new MapErrorException(new EntityTargetError(null, Instance, key, targetName, $"Found Duplicate targets with that name (total {targets.Count})"));
             }
         }
+
+        public bool GetIsConvex() => GetBoolOrDefault(Key_Convex, true);
 
 
         /// <summary>

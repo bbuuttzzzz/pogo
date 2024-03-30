@@ -552,6 +552,7 @@ namespace Pogo.CustomMaps
             checkpoint.Id = id;
             checkpoint.RespawnPoint = target;
             checkpoint.CanSkip = entity.GetCanSkip();
+            checkpoint.GetComponent<MeshCollider>().convex = entity.GetIsConvex();
             checkpoint.UpdateMesh();
             if (checkpoint.CanSkip && !string.IsNullOrEmpty(entity.GetOverrideSkipTargetName()))
             {
@@ -642,6 +643,7 @@ namespace Pogo.CustomMaps
             var checkpoint = data.Instance.gameObject.GetComponent<TriggerFinish>();
             checkpoint.UpdateMesh();
             checkpoint.OnActivated.AddListener(FinishMap);
+            checkpoint.GetComponent<MeshCollider>().convex = entity.GetIsConvex();
 
             var renderStyle = entity.GetRenderStyle();
             if (renderStyle == Trigger_Finish.RenderStyles.Default)
@@ -661,24 +663,25 @@ namespace Pogo.CustomMaps
         {
             Trigger_Kill entity = new Trigger_Kill(data.Instance, data.Context);
 
-            var killTrigger = data.Instance.gameObject.GetComponent<KillTrigger>();
-            killTrigger.DoExpensiveOriginStuff = true;
+            var trigger = data.Instance.gameObject.GetComponent<KillTrigger>();
+            trigger.GetComponent<MeshCollider>().convex = entity.GetIsConvex();
+            trigger.DoExpensiveOriginStuff = true;
 
             int killTypeId = entity.GetKillTypeId();
             if (!ArrayHelper.ContainsIndex(KillTypes, killTypeId))
             {
                 killTypeId = 0;
             }
-            killTrigger.Type = KillTypes[killTypeId];
+            trigger.Type = KillTypes[killTypeId];
 
             var renderStyle = entity.GetRenderStyle();
             if (renderStyle == Trigger_Kill.RenderStyles.Default)
             {
-                killTrigger.GetComponent<Renderer>().material = killTrigger.DefaultMaterial;
+                trigger.GetComponent<Renderer>().material = trigger.DefaultMaterial;
             }
             else if (renderStyle == Trigger_Kill.RenderStyles.Invisible)
             {
-                killTrigger.GetComponent<Renderer>().enabled = false;
+                trigger.GetComponent<Renderer>().enabled = false;
             }
         }
 
@@ -686,16 +689,17 @@ namespace Pogo.CustomMaps
         {
             WrappedEntityInstance entity = new WrappedEntityInstance("trigger_gravity", data.Instance, data.Context);
 
-            var gravityZone = data.Instance.gameObject.GetComponent<AbilityZone>();
+            var trigger = data.Instance.gameObject.GetComponent<AbilityZone>();
+            trigger.GetComponent<MeshCollider>().convex = entity.GetIsConvex();
 
             var renderStyle = entity.GetRenderStyle();
             if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
             {
-                gravityZone.GetComponent<Renderer>().material = gravityZone.DefaultMaterial;
+                trigger.GetComponent<Renderer>().material = trigger.DefaultMaterial;
             }
             else if (renderStyle == WrappedEntityInstance.RenderStyles.Invisible)
             {
-                gravityZone.GetComponent<Renderer>().enabled = false;
+                trigger.GetComponent<Renderer>().enabled = false;
             }
         }
 
@@ -704,6 +708,7 @@ namespace Pogo.CustomMaps
             WrappedEntityInstance entity = new WrappedEntityInstance("trigger_flight", data.Instance, data.Context);
 
             var trigger = data.Instance.gameObject.GetComponent<AbilityTrigger>();
+            trigger.GetComponent<MeshCollider>().convex = entity.GetIsConvex();
 
             var renderStyle = entity.GetRenderStyle();
             if (renderStyle == WrappedEntityInstance.RenderStyles.Default)
@@ -722,21 +727,22 @@ namespace Pogo.CustomMaps
 
             var target = entity.GetSingleTarget();
 
-            var teleport = data.Instance.gameObject.GetComponent<Gimmicks.TeleportTrigger>();
-            teleport.RespawnPoint = target.gameObject.transform;
-            teleport.PreservePhysics = entity.GetPreservePhysics();
-            teleport.PhysicsReorientAngle = entity.GetPreservePhysicsAngle();
-            teleport.UpdateMesh();
+            var trigger = data.Instance.gameObject.GetComponent<Gimmicks.TeleportTrigger>();
+            trigger.GetComponent<MeshCollider>().convex = entity.GetIsConvex();
+            trigger.RespawnPoint = target.gameObject.transform;
+            trigger.PreservePhysics = entity.GetPreservePhysics();
+            trigger.PhysicsReorientAngle = entity.GetPreservePhysicsAngle();
+            trigger.UpdateMesh();
 
             var renderStyle = entity.GetRenderStyle();
 
             if (renderStyle == Trigger_Teleport.RenderStyles.Default)
             {
-                teleport.GetComponent<Renderer>().material = teleport.DefaultMaterial;
+                trigger.GetComponent<Renderer>().material = trigger.DefaultMaterial;
             }
             else if (renderStyle == Trigger_Teleport.RenderStyles.Invisible)
             {
-                teleport.GetComponent<Renderer>().enabled = false;
+                trigger.GetComponent<Renderer>().enabled = false;
             }
         }
 

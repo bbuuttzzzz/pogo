@@ -14,6 +14,16 @@
 ]
 @baseclass = Targetname [ targetname(target_source) : "Name" ]
 @baseclass = Target [ target(target_destination) : "Target" ]
+@baseclass = Convex [
+	convex(choices) : "Convex Mode" : 1 =
+	[
+		// google convex vs concave.
+		// if you aren't using multiple brushes that form a concave or disjointed shape,
+		// then just leave it as convex
+		0: "Concave (Can be weirdly shaped)",
+		1: "Convex (Can detect teleportation)"
+	]
+]
 
 // SolidClasses that inherit this have a default texture that overrides what you set in trenchbroom
 @baseclass = RenderStyle [
@@ -133,7 +143,7 @@
 	= item_key_yellow : "Yellow Key" []
 
 // A Checkpoint!
-@SolidClass base(Target, RenderStyle) = trigger_checkpoint : "Checkpoint"
+@SolidClass base(Target, RenderStyle, Convex) = trigger_checkpoint : "Checkpoint"
 [
 	// This is the name of the info_player_respawn the player will appear at after respawning
 	// This is optional! without one, the player will respawn in the middle of the checkpoint
@@ -165,10 +175,10 @@
 
 // A Finish-Line trigger. You should probably put 1 at the end of your level.
 // feel free to any number of these, or zero if you want
-@SolidClass base(RenderStyle) = trigger_finish : "Finish Line" []
+@SolidClass base(RenderStyle, Convex) = trigger_finish : "Finish Line" []
 
 // Water. kills on contact with your hitbox
-@SolidClass base(RenderStyle) = trigger_kill : "Trigger Kill"
+@SolidClass base(RenderStyle, Convex) = trigger_kill : "Trigger Kill"
 [
 	// What effect to play when you die
 	// as you can see from reading this, it defaults to water
@@ -181,13 +191,13 @@
 ]
 
 // A zero gravity zone
-@SolidClass base(RenderStyle) = trigger_gravity : "Trigger Gravity" []
+@SolidClass base(RenderStyle, Convex) = trigger_gravity : "Trigger Gravity" []
 
 // A "Flight Ring"
-@SolidClass base(RenderStyle) = trigger_flight : "Trigger Flight" []
+@SolidClass base(RenderStyle, Convex) = trigger_flight : "Trigger Flight" []
 
 // A Teleporter
-@SolidClass base(Target, RenderStyle) = trigger_teleport : "Trigger Teleport"
+@SolidClass base(Target, RenderStyle, Convex) = trigger_teleport : "Trigger Teleport"
 [
 	// Target should be an info_player_respawn :) you can make one just for this teleport, or reuse one that a checkpoint is already using
 
