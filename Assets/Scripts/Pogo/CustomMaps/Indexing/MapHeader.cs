@@ -101,7 +101,7 @@ namespace Pogo.CustomMaps.Indexing
         private static MapTags[] ParseTags(string slug)
         {
             List<MapTags> tags = new List<MapTags>();
-            Regex regex = new Regex("[\\w\\s]", RegexOptions.Compiled);
+            Regex regex = new Regex("[\\w\\s]+", RegexOptions.Compiled);
             MatchCollection matches = regex.Matches(slug);
 
             for (int n = 0; n < matches.Count; n++)
@@ -132,7 +132,7 @@ namespace Pogo.CustomMaps.Indexing
                 {
                     sb.Append(", ");
                 }
-                sb.Append(tags[n]);
+                sb.Append(MapTagsHelper.ToString(tags[n]));
             }
 
             return sb.ToString();

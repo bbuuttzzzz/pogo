@@ -13,7 +13,7 @@ namespace Pogo.CustomMaps.Steam
         {
             Success,
             CheckLegalAgreement,
-            Failure
+            Failure,
         }
 
         public MapHeader UpdatedHeader;
