@@ -22,6 +22,8 @@ namespace Pogo.CustomMaps
 
         public GameObject PlayerStart;
         public GeneratedCheckpoint FirstCheckpoint;
+        public Transform ForceInitialSpawn { get; private set; }
+        private string ForceInitialSpawnName;
         public bool HasFinish;
         public GameObject InfoCameraThumbnailObject;
         public UnityEvent OnRestart;
@@ -95,6 +97,18 @@ namespace Pogo.CustomMaps
             {
                 FirstCheckpoint = checkpoint;
             }
+        }
+
+        public void RegisterForceInitialSpawn(Transform spawnPoint, string targetName)
+        {
+            if (ForceInitialSpawn != null)
+            {
+                AddError(new MapError(null, $"Multiple info_player_respawn are set with Force Initial Spawn = 1! '{targetName}' and '{ForceInitialSpawnName}'", MapError.Severities.Error));
+                return;
+            }
+
+            ForceInitialSpawn = spawnPoint;
+            ForceInitialSpawnName = targetName;
         }
     }
 }

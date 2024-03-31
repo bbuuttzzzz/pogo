@@ -350,7 +350,14 @@ namespace Pogo.CustomMaps
         private void StartMap()
         {
             gameManager.ResetStats();
-            gameManager.RegisterRespawnPoint(new RespawnPointData(CurrentCustomMap.FirstCheckpoint.RespawnPoint));
+            if (CurrentCustomMap.ForceInitialSpawn != null)
+            {
+                gameManager.RegisterRespawnPoint(new RespawnPointData(CurrentCustomMap.ForceInitialSpawn));
+            }
+            else
+            {
+                gameManager.RegisterRespawnPoint(new RespawnPointData(CurrentCustomMap.FirstCheckpoint.RespawnPoint));
+            }
             PogoGameManager.PogoInstance.SpawnPlayer();
         }
 
@@ -463,6 +470,7 @@ namespace Pogo.CustomMaps
             AddEntityHandler(new CustomMapEntityHandler("trigger_flight", SetupTrigger_Flight));
             AddEntityHandler(new CustomMapEntityHandler("trigger_teleport", SetupTrigger_Teleport));
             AddEntityHandler(new CustomMapEntityHandler("info_camera_preview", SetupInfo_Camera_Preview));
+            AddEntityHandler(new CustomMapEntityHandler("info_player_respawn", SetupInfo_Player_Respawn));
         }
 
         private void AddEntityHandler(CustomMapEntityHandler handler) => EntityHandlers.Add(handler.ClassName, handler);
@@ -470,6 +478,16 @@ namespace Pogo.CustomMaps
         private void SetupInfo_Camera_Preview(BSPLoader.EntityCreatedCallbackData data)
         {
             CurrentCustomMap.InfoCameraThumbnailObject = data.Instance.gameObject;
+        }
+
+        private void SetupInfo_Player_Respawn(BSPLoader.EntityCreatedCallbackData data)
+        {
+            const uint Flag_ForceStart = 1;
+            if (data.Instance.entity.SpawnflagsSet(Flag_ForceStart))
+            {
+                string targetname = data.Instance.entity.Name;
+                CurrentCustomMap.RegisterForceInitialSpawn(data.Instance.gameObject.transform, targetname ?? "(NULL)");
+            }
         }
 
         private void SetupFunc_Breakable(BSPLoader.EntityCreatedCallbackData data)
