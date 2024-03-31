@@ -13,6 +13,7 @@ namespace Pogo.CustomMaps.Indexing
         public string PreviewImagePath;
         public string BspPath;
         public string MapName;
+        public string DisplayName;
         public Sprite PreviewSprite;
         public MapTags[] Tags;
 
@@ -33,6 +34,9 @@ namespace Pogo.CustomMaps.Indexing
             {
                 switch(setting.Key)
                 {
+                    case "DisplayName":
+                        DisplayName = setting.Value;
+                        break;
                     case "Version":
                         Version = setting.Value;
                         break;
@@ -69,6 +73,7 @@ namespace Pogo.CustomMaps.Indexing
             AddCfgDataIfNotEmpty(data, "Author", AuthorName);
             AddCfgDataIfNotEmpty(data, "Version", Version);
             AddCfgDataIfNotEmpty(data, "SkyTexture", SkyTexture);
+            AddCfgDataIfNotEmpty(data, "DisplayName", DisplayName);
 
             if (WorkshopId.HasValue)
             {

@@ -30,7 +30,7 @@ namespace Pogo.CustomMaps.UI
         public void HeaderChanged()
         {
             PreviewImage.sprite = _Header.PreviewSprite != null ? _Header.PreviewSprite : DefaultPreviewSprite;
-            TitleText.text = _Header.MapName ?? "Unknown";
+            TitleText.text = _Header.DisplayName ?? _Header.MapName ?? "Unknown";
             AuthorText.text = _Header.AuthorName ?? "Anonymous";
             VersionText.text = $"v{_Header.Version ?? "0.1.0"}";
         }
