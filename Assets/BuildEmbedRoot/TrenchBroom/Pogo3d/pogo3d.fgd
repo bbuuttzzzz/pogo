@@ -110,14 +110,15 @@
 @PointClass base(PlayerClass, Targetname)
     model({
         "path" : "models/info_player_respawn.mdl"
-    })
+    }) = info_player_respawn : "Respawn Point"
+[
 	spawnflags(Flags) =
 	[
 		// Force the player to start here when the map loads
 		// Easily start here for the purposes of testing!
 		1 : "Force Initial Spawn" : 0
 	]
-     = info_player_respawn : "Respawn Point" []
+]
 
 // A mostly useless item you pick up when you touch it
 @PointClass 
