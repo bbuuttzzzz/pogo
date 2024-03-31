@@ -461,7 +461,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 60}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &962538963132129554
 CanvasRenderer:
@@ -1707,7 +1707,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 6
-  m_Spacing: 5
+  m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -3046,7 +3046,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: -20}
+  m_SizeDelta: {x: -30, y: -30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4501409911595321725
 CanvasRenderer:
@@ -3076,7 +3076,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7109b2912af626b4c9582bdf1b72f46f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 05b2acca15d2d48428568997691789b4, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3102,7 +3102,7 @@ GameObject:
   - component: {fileID: 3046857818103175344}
   - component: {fileID: 7944273120916388372}
   m_Layer: 5
-  m_Name: Workshop
+  m_Name: Upload
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3128,7 +3128,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 60}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5591631602034220535
 CanvasRenderer:
@@ -3325,7 +3325,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 15, y: 60}
+  m_SizeDelta: {x: 5, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4972657247314370741
 GameObject:
@@ -3383,9 +3383,9 @@ MonoBehaviour:
   ButtonPrefab: {fileID: 949337921770822284, guid: 7e352516a23e8984dbd5398e3ea8bdb2, type: 3}
   ErrorMessagePrefab: {fileID: 949337921770822284, guid: 2131d700faa23ba4eb26eec5ac877cf4, type: 3}
   MapsRoot: {fileID: 2875848288925022296}
-  UploadButton: {fileID: 8440237576361552803}
+  UploadButton: {fileID: 5058299968485780113}
   BrowseLocalButton: {fileID: 962538963132129552}
-  ViewWorkshopButton: {fileID: 5058299968485780113}
+  ViewWorkshopButton: {fileID: 8440237576361552803}
   OnUploadPressed:
     m_PersistentCalls:
       m_Calls: []
@@ -4655,7 +4655,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5965210753865823916, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Name
-      value: Upload
+      value: Get Maps
       objectReference: {fileID: 0}
     - target: {fileID: 5965210753865823916, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_IsActive
@@ -4663,15 +4663,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5965210754208147026, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_text
-      value: UPLOAD
+      value: GET MAPS
       objectReference: {fileID: 0}
     - target: {fileID: 5965210754208147026, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_fontSize
-      value: 30
+      value: 27.2
       objectReference: {fileID: 0}
     - target: {fileID: 5965210754208147026, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_fontSizeBase
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5965210754208147026, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5965210754208147027, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_Pivot.y
@@ -4695,7 +4699,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5965210754208147027, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -30
       objectReference: {fileID: 0}
     - target: {fileID: 5965210754208147027, guid: 305a1ab3f81aac54e81d4f64eadbd1ff, type: 3}
       propertyPath: m_SizeDelta.y
