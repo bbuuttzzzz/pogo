@@ -9,6 +9,9 @@ namespace Pogo
     {
         public abstract ChapterDescriptor Chapter { get; }
         public abstract CheckpointId CheckpointId { get; }
+
+        Vector3 ICheckpoint.InitialVelocity => InitialVelocity;
+        public Vector3 InitialVelocity;
         Transform ICheckpoint.SpawnPoint => RespawnPoint;
         public Transform RespawnPoint;
         public abstract bool CanSkip { get; set; }

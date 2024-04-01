@@ -960,6 +960,22 @@ namespace Pogo
             return point == null ? CachedRespawnPoint.transform : point;
         }
 
+        public TeleportData GetRespawnTeleportData()
+        {
+            if (CurrentDifficulty == Difficulty.Assist && CustomRespawnActive)
+            {
+                return new TeleportData(CustomCheckpoint.transform, Vector3.zero);
+            }
+            else if (RespawnPoint.transform != null)
+            {
+                return new TeleportData(RespawnPoint.transform, RespawnPoint.InitialVelocity);                
+            }
+            else
+            {
+                return new TeleportData(CachedRespawnPoint.transform, Vector3.zero);
+            }
+        }
+
         public DifficultyManifest DifficultyManifest;
         public UnityEvent<DifficultyChangedEventArgs> OnDifficultyChanged;
         public DifficultyDescriptor CurrentDifficultyDescriptor { get; private set; }

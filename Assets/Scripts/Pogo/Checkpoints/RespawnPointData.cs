@@ -14,6 +14,7 @@ namespace Pogo.Checkpoints
         public ICheckpoint Checkpoint;
         public CustomCheckpointController CustomCheckpoint;
         public LevelDescriptor OverrideLevel;
+        public Vector3 InitialVelocity;
 
         public RespawnPointData(Transform transform, LevelDescriptor overrideLevel = null)
         {
@@ -21,6 +22,7 @@ namespace Pogo.Checkpoints
             Checkpoint = null;
             CustomCheckpoint = null;
             OverrideLevel = overrideLevel;
+            InitialVelocity = Vector3.zero;
         }
 
         public RespawnPointData(ICheckpoint checkpoint, LevelDescriptor overrideLevel = null)
@@ -29,6 +31,7 @@ namespace Pogo.Checkpoints
             Checkpoint = checkpoint;
             CustomCheckpoint = null;
             OverrideLevel = overrideLevel;
+            InitialVelocity = checkpoint.InitialVelocity;
         }
 
         public RespawnPointData(CustomCheckpointController customCheckpoint, LevelDescriptor overrideLevel = null)
@@ -37,6 +40,7 @@ namespace Pogo.Checkpoints
             Checkpoint = null;
             CustomCheckpoint = customCheckpoint;
             OverrideLevel = overrideLevel;
+            InitialVelocity = Vector3.zero;
         }
     }
 }

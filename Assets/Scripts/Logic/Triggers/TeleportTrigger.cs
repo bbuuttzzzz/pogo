@@ -16,6 +16,7 @@ namespace Pogo.Gimmicks
         public Transform RespawnPoint;
         public bool PreservePhysics;
         public float PhysicsReorientAngle;
+        public Vector3 InitialVelocity;
 
         private void Awake()
         {
@@ -31,7 +32,7 @@ namespace Pogo.Gimmicks
             }
             else
             {
-                gameManager.Player.TeleportTo(RespawnPoint);
+                gameManager.Player.TeleportTo(new TeleportData(transform, InitialVelocity));
             }
         }
         public void UpdateMesh()

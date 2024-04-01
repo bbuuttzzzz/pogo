@@ -16,6 +16,7 @@ namespace Pogo
         public Transform SpawnPoint { get; }
         public bool CanSkip { get; set; }
         public UnityEvent OnSkip { get; }
+        public Vector3 InitialVelocity { get; }
 
         public string ToString()
         {

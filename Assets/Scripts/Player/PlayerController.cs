@@ -16,6 +16,7 @@ using WizardPhysics.PhysicsTime;
 using WizardUtils;
 using WizardUtils.Equipment;
 using WizardUtils.SceneManagement;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
 {
@@ -368,7 +369,7 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
 
     private void TeleportToSpawnpoint()
     {
-        TeleportTo(PogoGameManager.PogoInstance.GetRespawnTransform());
+        TeleportTo(PogoGameManager.PogoInstance.GetRespawnTeleportData());
     }
 
     private void ResetPhysics()
@@ -392,10 +393,16 @@ public class PlayerController : MonoBehaviour, IPlayerModelControllerProvider
 #endif
     public void TeleportTo(Transform target)
     {
-        PhysicsPosition = target.position;
-        RenderPosition = target.position;
-        internalEyeAngles = new Vector3(0, target.rotation.eulerAngles.y, 0);
+        TeleportTo(new TeleportData(target, Vector3.zero));
+    }
+
+    public void TeleportTo(TeleportData data)
+    {
+        PhysicsPosition = data.Position;
+        RenderPosition = data.Position;
+        internalEyeAngles = new Vector3(0, data.Yaw, 0);
         ResetPhysics();
+        Velocity = data.Velocity;
 
         Disjoint();
     }
