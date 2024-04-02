@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -50,7 +51,7 @@ namespace Pogo.CustomMaps.Indexing
                         WorkshopId = ulong.Parse(setting.Value);
                         break;
                     case "FogThickness":
-                        FogThickness = float.Parse(setting.Value);
+                        FogThickness = float.Parse(setting.Value, CultureInfo.InvariantCulture);
                         break;
                     case "FogColor":
                         if (!ColorUtility.TryParseHtmlString(setting.Value, out var color))
