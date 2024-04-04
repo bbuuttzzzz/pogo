@@ -32,7 +32,7 @@ namespace Pogo.Gimmicks
             }
             else
             {
-                gameManager.Player.TeleportTo(new TeleportData(transform, InitialVelocity));
+                gameManager.Player.TeleportTo(new TeleportData(RespawnPoint, InitialVelocity));
             }
         }
         public void UpdateMesh()
