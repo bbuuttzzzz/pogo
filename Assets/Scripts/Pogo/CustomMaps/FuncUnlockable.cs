@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.UI;
 using WizardPhysics;
 using WizardUtils.Extensions;
 
@@ -18,6 +19,7 @@ namespace Pogo.CustomMaps
         public UnityEvent OnLocked;
         public float TextCrawlDelaySeconds = 0.75f;
         public bool AutoUnlock;
+        public float AutoUnlockDelaySeconds;
 
         protected PogoGameManager gameManager;
         new protected MeshCollider collider;
@@ -45,7 +47,14 @@ namespace Pogo.CustomMaps
         {
             if (AutoUnlock && CanUnlock())
             {
-                Trigger();
+                if (AutoUnlockDelaySeconds > 0)
+                {
+                    this.StartDelayCoroutineUnscaled(AutoUnlockDelaySeconds, Trigger);
+                }
+                else
+                {
+                    Trigger();
+                }
             }
         }
 

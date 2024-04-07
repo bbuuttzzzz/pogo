@@ -610,6 +610,7 @@ namespace Pogo.CustomMaps
             var unlockable = data.Instance.gameObject.GetComponent<FuncCoinUnlockable>();
             unlockable.CoinsToUnlock = entity.GetCoinsRequired();
             unlockable.AutoUnlock = entity.GetAutoUnlock();
+            unlockable.AutoUnlockDelaySeconds = entity.GetAutoUnlockDelaySeconds();
             unlockable.UpdateMesh();
             CurrentCustomMap.OnRestart.AddListener(unlockable.Respawn);
 
@@ -634,6 +635,7 @@ namespace Pogo.CustomMaps
             var unlockable = data.Instance.gameObject.GetComponent<FuncKeyUnlockable>();
             unlockable.PickupId = entity.GetKeyColor();
             unlockable.AutoUnlock = entity.GetAutoUnlock();
+            unlockable.AutoUnlockDelaySeconds = entity.GetAutoUnlockDelaySeconds();
             unlockable.UpdateMesh();
             CurrentCustomMap.OnRestart.AddListener(unlockable.Respawn);
 

@@ -73,6 +73,10 @@
 	// so ideally do not go over 15 coins. 1-5 is a good value here
 	coins_required(int): "Coins Required" : 1
 	
+	// If Auto Unlock Flag is set, auto unlock is delayed by this long
+	// Unless you need it, leave it at default so the sound is obvious when far away
+	auto_unlock_delay(int) : "Auto Unlock Delay (ms)" : 500
+	
 	spawnflags(Flags) =
 	[
 		// Unlock instantly when enough coins are picked up
@@ -90,6 +94,10 @@
 		2: "Blue"
 		3: "Yellow"
 	]
+
+	// If Auto Unlock Flag is set, auto unlock is delayed by this long
+	// Unless you need it, leave it at default so the sound is obvious when far away
+	auto_unlock_delay(int) : "Auto Unlock Delay (ms)" : 500
 	spawnflags(Flags) =
 	[
 		// Unlock instantly when the key is picked up
