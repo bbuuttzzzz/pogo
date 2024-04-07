@@ -15,6 +15,7 @@ namespace Pogo.CustomMaps
         public UnityEvent OnUnlocked;
         public UnityEvent OnLocked;
         public float TextCrawlDelaySeconds = 0.75f;
+        public bool AutoUnlock;
 
         protected PogoGameManager gameManager;
         new protected MeshCollider collider;
@@ -36,6 +37,14 @@ namespace Pogo.CustomMaps
         {
             collider.enabled = true;
             renderer.enabled = true;
+        }
+
+        protected void CheckAutoUnlock()
+        {
+            if (AutoUnlock && CanUnlock())
+            {
+                Trigger();
+            }
         }
 
         private void Base_OnActivated(CollisionEventArgs arg0)

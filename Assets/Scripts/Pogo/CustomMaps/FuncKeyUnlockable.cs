@@ -40,6 +40,7 @@ namespace Pogo.CustomMaps
             if (arg0.PickupId == PickupId)
             {
                 Collected = true;
+                CheckAutoUnlock();
             }
         }
 

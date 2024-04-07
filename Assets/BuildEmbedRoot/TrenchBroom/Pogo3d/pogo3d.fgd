@@ -72,6 +72,13 @@
 	// This can be as high as you want, but the door only shows up to the value 15.
 	// so ideally do not go over 15 coins. 1-5 is a good value here
 	coins_required(int): "Coins Required" : 1
+	
+	spawnflags(Flags) =
+	[
+		// Unlock instantly when enough coins are picked up
+		1 : "Auto Unlock" : 0
+	]
+
 ]
 
 // opens when you touch it after getting the key of the right color
@@ -82,6 +89,11 @@
 		1: "Red"
 		2: "Blue"
 		3: "Yellow"
+	]
+	spawnflags(Flags) =
+	[
+		// Unlock instantly when the key is picked up
+		1 : "Auto Unlock" : 0
 	]
 ]
 

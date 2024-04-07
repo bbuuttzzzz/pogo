@@ -33,6 +33,7 @@ namespace Pogo.CustomMaps
             if (arg0.PickupId == PickupIds.Penny)
             {
                 CoinsCollected++;
+                CheckAutoUnlock();
             }
         }
 

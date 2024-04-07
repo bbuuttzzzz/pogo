@@ -11,11 +11,13 @@ namespace Pogo.CustomMaps.Entities
     public class Func_Unlockable_Coin : WrappedEntityInstance
     {
         const string Key_CoinsRequired = "coins_required";
+        const uint Flag_AutoUnlock = 1;
 
         public Func_Unlockable_Coin(BSPLoader.EntityInstance instance, IBSPLoaderContext context) : base("func_unlockable_coin", instance, context)
         {
         }
 
         public int GetCoinsRequired() => GetIntOrDefault(Key_CoinsRequired, 1);
+        public bool GetAutoUnlock() => GetSpawnFlag(Flag_AutoUnlock);
     }
 }
