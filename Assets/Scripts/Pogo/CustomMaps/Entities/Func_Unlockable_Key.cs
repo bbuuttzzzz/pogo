@@ -12,8 +12,7 @@ namespace Pogo.CustomMaps.Entities
     public class Func_Unlockable_Key : WrappedEntityInstance
     {
         const string Key_KeyColor = "key_color";
-        const string Key_AutoUnlockDelay = "auto_unlock_delay";
-        const uint Flag_AutoUnlock = 1;
+        const string Key_AutoUnlockDelay = "auto_unlock";
         const PickupIds defaultKeyColor = PickupIds.RedKey;
 
         public Func_Unlockable_Key(BSPLoader.EntityInstance instance, IBSPLoaderContext context) : base("func_unlockable_key", instance, context)
@@ -21,11 +20,8 @@ namespace Pogo.CustomMaps.Entities
         }
 
         public PickupIds GetKeyColor() => (PickupIds)GetIntOrDefault(Key_KeyColor, (int)defaultKeyColor, (int)PickupIds.RedKey, (int)PickupIds.YellowKey);
-        public bool GetAutoUnlock() => GetSpawnFlag(Flag_AutoUnlock);
-        public float GetAutoUnlockDelaySeconds()
-        {
-            int delayMilliseconds = GetIntOrDefault(Key_AutoUnlockDelay, 500);
-            return delayMilliseconds / 1000f;
-        }
+
+        public bool GetAutoUnlock() => GetIntOrDefault(Key_AutoUnlockDelay, 0) > 0;
+        public float GetAutoUnlockDelaySeconds() => GetIntOrDefault(Key_AutoUnlockDelay, 0) == 1 ? 0.5f : 0f;
     }
 }

@@ -73,16 +73,17 @@
 	// so ideally do not go over 15 coins. 1-5 is a good value here
 	coins_required(int): "Coins Required" : 1
 	
-	// If Auto Unlock Flag is set, auto unlock is delayed by this long
-	// Unless you need it, leave it at default so the sound is obvious when far away
-	auto_unlock_delay(int) : "Auto Unlock Delay (ms)" : 500
-	
-	spawnflags(Flags) =
+	auto_unlock(choices) : "Auto Unlock" : 0 =
 	[
+		// Touch the door after getting enough coins to unlock it
+		0: "Don't Auto Unlock"
+		// Unlock when enough coins are picked up
+		1: "Auto Unlock"
 		// Unlock instantly when enough coins are picked up
-		1 : "Auto Unlock" : 0
+		// prefer regular Auto Unlock unless you REALLY need it
+		// because the effect is nicer with a delay :)
+		2: "Auto Unlock (no delay)"
 	]
-
 ]
 
 // opens when you touch it after getting the key of the right color
@@ -95,13 +96,16 @@
 		3: "Yellow"
 	]
 
-	// If Auto Unlock Flag is set, auto unlock is delayed by this long
-	// Unless you need it, leave it at default so the sound is obvious when far away
-	auto_unlock_delay(int) : "Auto Unlock Delay (ms)" : 500
-	spawnflags(Flags) =
+	auto_unlock(choices) : "Auto Unlock" : 0 =
 	[
+		// Touch the door after getting the key to unlock it
+		0: "Don't Auto Unlock"
+		// Unlock when the key is picked up
+		1: "Auto Unlock"
 		// Unlock instantly when the key is picked up
-		1 : "Auto Unlock" : 0
+		// prefer regular Auto Unlock unless you REALLY need it
+		// because the effect is nicer with a delay :)
+		2: "Auto Unlock (no delay)"
 	]
 ]
 
