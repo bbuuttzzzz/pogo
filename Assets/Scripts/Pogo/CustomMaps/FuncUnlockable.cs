@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using WizardPhysics;
+using WizardUtils.Extensions;
 
 namespace Pogo.CustomMaps
 {
     public abstract class FuncUnlockable : CollisionOrbTrigger
     {
+        public Transform[] ActivatedAudioSourceTransforms;
         public ParticleSystemData[] ActivatedParticleSystems;
         public UnityEvent OnUnlocked;
         public UnityEvent OnLocked;
@@ -75,12 +77,18 @@ namespace Pogo.CustomMaps
 
         public void UpdateMesh()
         {
-            var currentMesh = GetComponent<MeshFilter>().sharedMesh;
+            MeshFilter meshFilter = GetComponent<MeshFilter>();
+            var currentMesh = meshFilter.sharedMesh;
 
             foreach (var system in ActivatedParticleSystems)
             {
                 var shape = system.System.shape;
                 shape.mesh = currentMesh;
+            }
+
+            foreach(var audioTransform in ActivatedAudioSourceTransforms)
+            {
+                audioTransform.position = currentMesh.bounds.center;
             }
         }
 
