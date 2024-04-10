@@ -7,6 +7,11 @@
 
 @SolidClass = func_group : "Group of brushes for in-editor use" []
 @SolidClass = func_detail : "Group of brushes for certain compilers" []
+// Func_Walls do some weird world slicing stuff.
+// If you are using a transparent texture and it's slicing up the world making holes
+// try making the transparent objects into func_walls
+@SolidClass = func_wall : "Group of brushes for certain compilers" []
+@SolidClass = func_detail_wall : "Group of brushes for certain compilers" []
 
 @baseClass = Angles
 [
