@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82483527c4b32d74fba019d7fe03d691, type: 3}
   m_Name: mat_cutout
   m_EditorClassIdentifier: 
-  ShaderName: sky_linear
-  BaseMaterial: {fileID: 2100000, guid: 7f6c4ae5da9f2b742ab0fe35ba4ec434, type: 2}
-  Properties: []
+  ShaderName: mat_cutout
+  BaseMaterial: {fileID: 2100000, guid: 517a07174e1e35843ab15bea33add211, type: 2}
+  Properties:
+  - PropertyName: _AlphaClipThreshold
+    ParameterName: AlphaClip
+    ParameterType: 0
   ReplaceMainTex: 1
