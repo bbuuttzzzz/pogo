@@ -272,6 +272,11 @@ namespace WizardUtils
                 loader.MarkNotNeeded(true);
             }
 
+            if (scenesToLoad.Count == 0
+                && scenesToUnload.Count == 0)
+            {
+                CurrentSceneLoadingData.DelayedFinishLoadCoroutine = this.StartDelayCoroutineUnscaled(CurrentSceneLoadingData.MinimumLoadTime, FinishLoadingControlScene);
+            }
         }
 
         private void FinishLoadingControlScene()
