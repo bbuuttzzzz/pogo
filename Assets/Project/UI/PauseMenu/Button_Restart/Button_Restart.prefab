@@ -437,6 +437,7 @@ GameObject:
   - component: {fileID: 8190025505314077508}
   - component: {fileID: 4491060120633569534}
   - component: {fileID: 5328905938068406748}
+  - component: {fileID: 5112133831309812095}
   m_Layer: 5
   m_Name: Button_Restart
   m_TagString: Untagged
@@ -641,3 +642,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sound: {fileID: 0}
+--- !u!114 &5112133831309812095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8730029380349121330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 402dc1c4bcb03cb43b75ffca34ac3c3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnTrigger:
+    m_PersistentCalls:
+      m_Calls: []
+  Clicks: 0
+  CustomMapRestartClicks: 2
+  FullGameRestartClicks: 3
+  ClickResetDelaySeconds: 5
+  GlyphGameObject: {fileID: 8176074325579272171}
+  CountdownText: {fileID: 5120193272450398652}

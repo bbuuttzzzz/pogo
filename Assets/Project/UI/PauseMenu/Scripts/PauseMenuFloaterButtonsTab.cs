@@ -72,19 +72,25 @@ namespace Pogo.PauseMenu
                 GetDisplayType = GetRestartButtonDisplayType
             };
 
-            button.Button.onClick.AddListener(Restart);
+            button.Button.GetComponent<RestartButtonController>().OnTrigger.AddListener(Restart);
 
             return button;
         }
 
         private PauseMenuFloaterButton.DisplayTypes GetRestartButtonDisplayType()
         {
-            return PauseMenuFloaterButton.DisplayTypes.Enabled;
+            if (PogoGameManager.PogoInstance.CustomMapBuilder.CurrentCustomMap != null)
+                return PauseMenuFloaterButton.DisplayTypes.Enabled;
+
+            return PauseMenuFloaterButton.DisplayTypes.Disabled;
         }
 
         private void Restart()
         {
-            throw new NotImplementedException();
+            if (PogoGameManager.PogoInstance.CustomMapBuilder.CurrentCustomMap != null)
+            {
+                PogoGameManager.PogoInstance.CustomMapBuilder.RestartMap();
+            }
         }
 
         public void Refresh()
