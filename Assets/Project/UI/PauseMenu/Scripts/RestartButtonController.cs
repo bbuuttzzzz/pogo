@@ -26,6 +26,7 @@ public class RestartButtonController : MonoBehaviour
 
     public GameObject GlyphGameObject;
     public TextMeshProUGUI CountdownText;
+    public TextMeshProUGUI LabelText;
 
     private void Start()
     {
@@ -78,5 +79,8 @@ public class RestartButtonController : MonoBehaviour
     private void InvalidateUI()
     {
         CountdownText.text = (GetRestartClicks() - Clicks).ToString();
+        LabelText.text = PogoGameManager.PogoInstance.CustomMapBuilder.CurrentCustomMap != null
+            ? "<b>RESTART</b>"
+            : "<b>RESTART</b>\r\n<size=0.55em>Wipes Save Data!";
     }
 }
