@@ -1151,11 +1151,12 @@ namespace Pogo
 
         public void QuickRestart()
         {
+            string saveName = CurrentSlotDataTracker.PreviewData.name;
             FullResetSessionData();
             NewGameSlot(
                 CurrentSlotId,
                 CurrentDifficultyDescriptor,
-                CurrentSlotDataTracker.PreviewData.name
+                saveName
                 );
             LoadSlot(CurrentSlotId);
             LoadChapter(World.Chapters[0].Chapter);
