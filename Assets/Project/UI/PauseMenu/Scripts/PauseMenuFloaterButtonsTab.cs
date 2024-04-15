@@ -99,7 +99,7 @@ namespace Pogo.PauseMenu
             }
             else if (ShowRestartSetting.Value == 1)
             {
-                throw new NotImplementedException();
+                PogoGameManager.PogoInstance.QuickRestart();
             }
             PogoGameManager.PogoInstance.Paused = false;
         }

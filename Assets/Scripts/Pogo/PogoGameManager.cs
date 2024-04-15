@@ -1123,6 +1123,7 @@ namespace Pogo
         [HideInInspector]
         public UnityEvent OnSaveSlotChanged;
 
+        private SaveSlotIds CurrentSlotId;
         private SaveSlotDataTracker currentSlotDataTracker;
         public SaveSlotDataTracker CurrentSlotDataTracker
         {
@@ -1148,11 +1149,23 @@ namespace Pogo
             tracker.Delete();
         }
 
+        public void QuickRestart()
+        {
+            NewGameSlot(
+                CurrentSlotId,
+                CurrentDifficultyDescriptor,
+                CurrentSlotDataTracker.PreviewData.name
+                );
+            LoadSlot(CurrentSlotId);
+            LoadChapter(World.Chapters[0].Chapter);
+        }
+
         public void LoadSlot(SaveSlotIds slotId)
         {
             SaveSlot();
 
             CurrentSlotDataTracker = GetSaveSlotTracker(slotId);
+            CurrentSlotId = slotId;
             CurrentSlotDataTracker.Load();
             OnSaveSlotChanged?.Invoke();
 
