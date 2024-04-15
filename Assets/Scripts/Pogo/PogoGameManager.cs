@@ -1151,11 +1151,13 @@ namespace Pogo
 
         public void QuickRestart()
         {
+            SaveSlotIds slotId = CurrentSlotId;
+            DifficultyDescriptor difficulty = CurrentDifficultyDescriptor;
             string saveName = CurrentSlotDataTracker.PreviewData.name;
             FullResetSessionData();
             NewGameSlot(
-                CurrentSlotId,
-                CurrentDifficultyDescriptor,
+                slotId,
+                difficulty,
                 saveName
                 );
             LoadSlot(CurrentSlotId);
