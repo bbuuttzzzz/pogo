@@ -252,6 +252,7 @@ namespace Pogo.Levels
             if (!CurrentLevelLoadSettings.HasValue) return;
             LevelLoadingSettings settings = CurrentLevelLoadSettings.Value;
             gameManager.LoadingRoot.SetOpen(false);
+            gameManager.Paused = false;
             TransitionAtmosphere(CurrentLevel, settings.Instantly);
             PogoGameManager.PogoInstance.OnLevelLoaded?.Invoke();
             if (settings.MainLevelState.HasValue)
