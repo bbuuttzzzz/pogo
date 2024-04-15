@@ -1151,6 +1151,7 @@ namespace Pogo
 
         public void QuickRestart()
         {
+            FullResetSessionData();
             NewGameSlot(
                 CurrentSlotId,
                 CurrentDifficultyDescriptor,
