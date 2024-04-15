@@ -96,12 +96,12 @@ namespace Pogo.PauseMenu
             if (PogoGameManager.PogoInstance.CustomMapBuilder.CurrentCustomMap != null)
             {
                 PogoGameManager.PogoInstance.CustomMapBuilder.RestartMap();
+                PogoGameManager.PogoInstance.Paused = false;
             }
             else if (ShowRestartSetting.Value == 1)
             {
                 PogoGameManager.PogoInstance.QuickRestart();
             }
-            PogoGameManager.PogoInstance.Paused = false;
         }
 
         public void Refresh()
