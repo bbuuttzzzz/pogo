@@ -16,13 +16,12 @@ public class RestartButtonController : MonoBehaviour
     private Button button;
     public Coroutine ResetCountdownCoroutine;
 
-    [HideInInspector]
-    public int Clicks = 0;
+    private int Clicks = 0;
 
-    public int CustomMapRestartClicks = 2;
-    public int FullGameRestartClicks = 3;
+    public int CustomMapRestartClicks;
+    public int FullGameRestartClicks;
 
-    public float ClickResetDelaySeconds = 5;
+    public float ClickResetDelaySeconds;
 
 
     public GameObject GlyphGameObject;
@@ -32,9 +31,10 @@ public class RestartButtonController : MonoBehaviour
     {
         button = GetComponent<Button>();
         button.onClick.AddListener(button_OnClick);
-        GameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
+        GameManager.GameInstance.OnPauseStateChanged += OnPauseStateChanged;
+        InvalidateUI();
     }
-    protected virtual void onPauseStateChanged(object sender, bool nowPaused)
+    protected void OnPauseStateChanged(object sender, bool nowPaused)
     {
         if (nowPaused)
         {
