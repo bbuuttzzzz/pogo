@@ -36,7 +36,7 @@ public class RestartButtonController : MonoBehaviour
 
     private void button_OnClick()
     {
-        StopCoroutine(ResetCountdownCoroutine);
+        if (ResetCountdownCoroutine != null) StopCoroutine(ResetCountdownCoroutine);
         Clicks++;
 
         if (Clicks >= GetRestartClicks())
