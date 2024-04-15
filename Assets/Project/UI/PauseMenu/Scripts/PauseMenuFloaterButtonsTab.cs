@@ -16,7 +16,7 @@ namespace Pogo.PauseMenu
         public GameObject RestartButtonPrefab;
 
         private PauseMenuFloaterButton[] pauseMenuFloaterButtons;
-
+        private GameSettingFloat ShowRestartSetting;
         private void Start()
         {
             pauseMenuFloaterButtons = new[]
@@ -25,6 +25,7 @@ namespace Pogo.PauseMenu
                 MakeRestartButton()
             };
             GameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
+            ShowRestartSetting = PogoGameManager.PogoInstance.FindGameSetting(PogoGameManager.SETTINGKEY_SHOWRESTART);
         }
 
         protected virtual void onPauseStateChanged(object sender, bool nowPaused)
@@ -82,7 +83,12 @@ namespace Pogo.PauseMenu
             if (PogoGameManager.PogoInstance.CustomMapBuilder.CurrentCustomMap != null)
                 return PauseMenuFloaterButton.DisplayTypes.Enabled;
 
-            return PauseMenuFloaterButton.DisplayTypes.Disabled;
+            if (ShowRestartSetting.Value == 1)
+            {
+                return PauseMenuFloaterButton.DisplayTypes.Enabled;
+            }
+
+            return PauseMenuFloaterButton.DisplayTypes.Hidden;
         }
 
         private void Restart()
@@ -90,8 +96,12 @@ namespace Pogo.PauseMenu
             if (PogoGameManager.PogoInstance.CustomMapBuilder.CurrentCustomMap != null)
             {
                 PogoGameManager.PogoInstance.CustomMapBuilder.RestartMap();
-                PogoGameManager.PogoInstance.Paused = false;
             }
+            else if (ShowRestartSetting.Value == 1)
+            {
+                throw new NotImplementedException();
+            }
+            PogoGameManager.PogoInstance.Paused = false;
         }
 
         public void Refresh()

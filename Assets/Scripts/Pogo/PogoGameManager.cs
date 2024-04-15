@@ -101,6 +101,7 @@ namespace Pogo
             list.Add(new GameSettingFloat(SETTINGKEY_INVERT, 0f));
             list.Add(new GameSettingFloat(SETTINGKEY_TIMER, 0f));
             list.Add(new GameSettingFloat(SETTINGKEY_RESPAWNDELAY, 0.5f));
+            list.Add(new GameSettingFloat(SETTINGKEY_SHOWRESTART, 0));
             list.Add(new GameSettingFloat(SETTINGKEY_GAMMA, 100));
 
             return list;
@@ -1081,6 +1082,7 @@ namespace Pogo
         public static string SETTINGKEY_TIMER = "ShowTimer";
         public static string SETTINGKEY_GAMMA = "Gamma";
         public static string SETTINGKEY_RESPAWNDELAY = "RespawnDelay";
+        public static string SETTINGKEY_SHOWRESTART = "ShowRestart";
         #endregion
 
         #region Stats
