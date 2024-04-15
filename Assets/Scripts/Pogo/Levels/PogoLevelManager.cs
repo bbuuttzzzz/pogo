@@ -291,15 +291,23 @@ namespace Pogo.Levels
 
         public void StopAndCleanUp(Action callback = null)
         {
-            CleanupCallback = callback;
-            foreach (var loader in CurrentLevelSceneLoaders)
+            if (CurrentLevelSceneLoaders.Count > 0)
             {
-                loader.MarkNotNeeded(true);
-                loader.OnReadyToActivate.RemoveAllListeners();
-                loader.OnIdle.RemoveAllListeners();
+                CleanupCallback = callback;
 
-                loader.OnReadyToActivate.AddListener(RecalculateFinishedCleanup);
-                loader.OnIdle.AddListener(RecalculateFinishedCleanup);
+                foreach (var loader in CurrentLevelSceneLoaders)
+                {
+                    loader.MarkNotNeeded(true);
+                    loader.OnReadyToActivate.RemoveAllListeners();
+                    loader.OnIdle.RemoveAllListeners();
+
+                    loader.OnReadyToActivate.AddListener(RecalculateFinishedCleanup);
+                    loader.OnIdle.AddListener(RecalculateFinishedCleanup);
+                }
+            }
+            else
+            {
+                callback?.Invoke();
             }
         }
 
