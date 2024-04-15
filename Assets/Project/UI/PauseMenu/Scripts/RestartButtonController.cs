@@ -32,6 +32,14 @@ public class RestartButtonController : MonoBehaviour
     {
         button = GetComponent<Button>();
         button.onClick.AddListener(button_OnClick);
+        GameManager.GameInstance.OnPauseStateChanged += onPauseStateChanged;
+    }
+    protected virtual void onPauseStateChanged(object sender, bool nowPaused)
+    {
+        if (nowPaused)
+        {
+            InvalidateUI();
+        }
     }
 
     private void button_OnClick()
@@ -48,7 +56,7 @@ public class RestartButtonController : MonoBehaviour
         {
             StartCoroutine(ResetCountdownAsync());
         }
-        Invalidate();
+        InvalidateUI();
     }
 
     private int GetRestartClicks()
@@ -64,10 +72,10 @@ public class RestartButtonController : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(ClickResetDelaySeconds);
         Clicks = 0;
-        Invalidate();
+        InvalidateUI();
     }
 
-    private void Invalidate()
+    private void InvalidateUI()
     {
         CountdownText.text = (GetRestartClicks() - Clicks).ToString();
     }
