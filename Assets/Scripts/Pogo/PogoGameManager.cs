@@ -1151,6 +1151,7 @@ namespace Pogo
 
         public void QuickRestart()
         {
+            LoadingRoot.SetOpen(true);
             SaveSlotIds slotId = CurrentSlotId;
             DifficultyDescriptor difficulty = CurrentDifficultyDescriptor;
             string saveName = CurrentSlotDataTracker.PreviewData.name;
@@ -1161,7 +1162,11 @@ namespace Pogo
                 saveName
                 );
             LoadSlot(CurrentSlotId);
-            LoadChapter(World.Chapters[0].Chapter);
+
+            LevelManager.StopAndCleanUp(() =>
+            {
+                LoadChapter(World.Chapters[0].Chapter);
+            });
         }
 
         public void LoadSlot(SaveSlotIds slotId)

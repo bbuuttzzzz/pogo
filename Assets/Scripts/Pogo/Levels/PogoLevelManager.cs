@@ -285,6 +285,53 @@ namespace Pogo.Levels
             currentLevel = null;
         }
 
+        #region Cleanup
+
+        private Action CleanupCallback;
+
+        public void StopAndCleanUp(Action callback = null)
+        {
+            CleanupCallback = callback;
+            foreach (var loader in CurrentLevelSceneLoaders)
+            {
+                loader.MarkNotNeeded(true);
+                loader.OnReadyToActivate.RemoveAllListeners();
+                loader.OnIdle.RemoveAllListeners();
+
+                loader.OnReadyToActivate.AddListener(RecalculateFinishedCleanup);
+                loader.OnIdle.AddListener(RecalculateFinishedCleanup);
+            }
+        }
+
+        private void RecalculateFinishedCleanup()
+        {
+            for (int i = CurrentLevelSceneLoaders.Count - 1; i >= 0; i--)
+            {
+                LevelSceneLoader loader = CurrentLevelSceneLoaders[i];
+                if (loader.IsIdle)
+                {
+                    loader.OnReadyToActivate.RemoveAllListeners();
+                    loader.OnIdle.RemoveAllListeners();
+                    CurrentLevelSceneLoaders.RemoveAt(i);
+                }
+            }
+
+            if (AllLoadingLevelsFinished())
+            {
+                FinishCleanup();
+            }
+        }
+
+        private void FinishCleanup()
+        {
+            if (CleanupCallback == null) return;
+
+            CleanupCallback();
+            CleanupCallback = null;
+        }
+
+        #endregion
+
         #region Scenes
 
         private LevelDescriptor FindLevelBySceneBuildIndex(int buildIndex)
