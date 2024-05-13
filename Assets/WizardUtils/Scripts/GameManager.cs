@@ -11,6 +11,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using WizardUtils.Audio;
 using WizardUtils.Extensions;
 using WizardUtils.GameSettings;
 using WizardUtils.Saving;

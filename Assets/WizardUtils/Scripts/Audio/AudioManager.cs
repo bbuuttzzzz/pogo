@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
-using WizardUtils.Audio;
 
-namespace WizardUtils
+namespace WizardUtils.Audio
 {
     [RequireComponent(typeof(GameManager))]
     public class AudioManager : MonoBehaviour
@@ -57,7 +56,7 @@ namespace WizardUtils
             RecalculateShouldMute();
         }
 
-        private void RecalculateShouldMute()
+        private void RecalulateShouldMute()
         {
             SetGameMuted(shouldMuteOnLoseFocus && !applicationHasFocus);
         }
